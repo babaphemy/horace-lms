@@ -60,8 +60,10 @@
   },
   "husky": {
     "hooks": {
-      "precommit": "yarn run format",
-      "pre-push": "yarn run lint"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "*": "prettier --write"
   }
 }
