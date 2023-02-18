@@ -1,9 +1,7 @@
 node_modules
 .next
-<<<<<<< HEAD
 /.next
 /.next/*
 /coverage
 /coverage/*
-=======
->>>>>>> 4b301709b275b050af4067c8ee26a55b472e1fa9
+
