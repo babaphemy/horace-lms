@@ -13,6 +13,7 @@
     "@types/node": "^16.18.11",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "next": "12.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
@@ -22,10 +23,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "test": "jest --watch",
     "prepare": "husky install"
   },
   "eslintConfig": {
@@ -48,6 +51,12 @@
   },
   "devDependencies": {
     "husky": "^8.0.0",
-    "lint-staged": "^13.1.1"
+    "lint-staged": "^13.1.1",
+    "prettier": "^2.8.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "prettier --write"
+    }
   }
 }
