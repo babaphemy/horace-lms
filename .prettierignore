@@ -11,3 +11,5 @@ coverage/*
 **/*.d.ts
 /public/*
 /types/*
+/assets/*
+/assets
