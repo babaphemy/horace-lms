@@ -26,7 +26,13 @@ const Footer = () => {
 			<Container maxWidth="lg">
 				<Grid container columnSpacing={2}>
 					<Grid item sm={12} md={3}>
-						<Image src={logo} alt="logo" width={120} height={50} />
+						<Image
+							src={logo}
+							alt="logo"
+							width={150}
+							height={50}
+							style={footerStyles.logo}
+						/>
 						<Box sx={footerStyles.section}>
 							<Typography variant="body2">
 								This is a mobile and web-based application that aims to increase
@@ -151,10 +157,15 @@ const footerStyles = {
 		background: '#00A9C1',
 		color: '#fff',
 		px: 3,
+		textTransform: 'capitalize',
 
 		'&:hover': {
 			background: '#000',
 		},
+	},
+	logo: {
+		marginTop: '-10px',
+		marginLeft: '-10px',
 	},
 };
 
