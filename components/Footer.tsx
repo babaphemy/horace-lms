@@ -27,12 +27,12 @@ const Footer = () => {
 				<Grid container columnSpacing={2}>
 					<Grid item sm={12} md={3}>
 						<Image src={logo} alt="logo" width={120} height={50} />
-						<Box>
-							<Typography variant="body1">
+						<Box sx={footerStyles.section}>
+							<Typography variant="body2">
 								This is a mobile and web-based application that aims to increase
 								kids’ interest
 							</Typography>
-							<Typography variant="body1">
+							<Typography variant="body2">
 								in technology and get them to love tech-related courses early in
 								life
 							</Typography>
@@ -83,7 +83,7 @@ const Footer = () => {
 					</Grid>
 					<Grid item sm={12} md={3}>
 						<Typography variant="h6">Newsletter</Typography>
-						<Box>
+						<Box sx={footerStyles.newsletter}>
 							<Typography variant="body1">
 								Subscribe for latest updates
 							</Typography>
@@ -93,7 +93,10 @@ const Footer = () => {
 								fullWidth
 								sx={footerStyles.rounded}
 							/>
-							<Button variant="contained" sx={footerStyles.rounded}>
+							<Button
+								variant="contained"
+								sx={[footerStyles.rounded, footerStyles.newsButton]}
+							>
 								Subscribe
 							</Button>
 						</Box>
@@ -126,13 +129,32 @@ const footerStyles = {
 		},
 	},
 	noLeftPadding: {
-		'& > :not(style)': { paddingLeft: 0 },
+		'& > :not(style)': { paddingLeft: 0, cursor: 'pointer' },
 	},
 	center: { textAlign: 'center', py: 2 },
 	divider: {
 		background: '#1A055F',
 		height: '3px',
 		my: 2,
+	},
+	section: {
+		'& > :not(style)': {
+			my: 1,
+		},
+	},
+	newsletter: {
+		'& > :not(style)': {
+			my: 1,
+		},
+	},
+	newsButton: {
+		background: '#00A9C1',
+		color: '#fff',
+		px: 3,
+
+		'&:hover': {
+			background: '#000',
+		},
 	},
 };
 
