@@ -8,7 +8,9 @@ const Login = () => {
 		<Box>
 			<Header />
 			<Container maxWidth="lg">
-				<Typography variant="h1">Login</Typography>
+				<Typography variant="h1" height={'50vh'}>
+					Login
+				</Typography>
 			</Container>
 			<Footer />
 		</Box>
