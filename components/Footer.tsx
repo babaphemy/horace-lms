@@ -9,6 +9,7 @@ import {
 	ListItem,
 	TextField,
 	Button,
+	Divider,
 } from '@mui/material';
 import Image from 'next/image';
 import logo from '../assets/img/logo.png';
@@ -23,9 +24,9 @@ const Footer = () => {
 	return (
 		<Box sx={footerStyles.container}>
 			<Container maxWidth="lg">
-				<Grid container spacing={5}>
+				<Grid container columnSpacing={2}>
 					<Grid item sm={12} md={3}>
-						<Image src={logo} alt="logo" width={100} height={50} />
+						<Image src={logo} alt="logo" width={120} height={50} />
 						<Box>
 							<Typography variant="body1">
 								This is a mobile and web-based application that aims to increase
@@ -57,10 +58,10 @@ const Footer = () => {
 							})}
 						</Box>
 					</Grid>
-					<Grid item sm={12} md={3}>
+					<Grid item sm={6} md={3}>
 						<Typography variant="h6">Quick Links</Typography>
 						<Box>
-							<List>
+							<List sx={footerStyles.noLeftPadding}>
 								<ListItem>Home</ListItem>
 								<ListItem>About</ListItem>
 								<ListItem>Courses</ListItem>
@@ -68,10 +69,10 @@ const Footer = () => {
 							</List>
 						</Box>
 					</Grid>
-					<Grid item sm={12} md={3}>
+					<Grid item sm={6} md={3}>
 						<Typography variant="h6">Quick Links</Typography>
 						<Box>
-							<List>
+							<List sx={footerStyles.noLeftPadding}>
 								<ListItem>Help Center</ListItem>
 								<ListItem>Ask Questions</ListItem>
 								<ListItem>Send Feedback</ListItem>
@@ -92,12 +93,16 @@ const Footer = () => {
 								fullWidth
 								sx={footerStyles.rounded}
 							/>
-							<Button variant="contained" sx={footerStyles.rounded} fullWidth>
+							<Button variant="contained" sx={footerStyles.rounded}>
 								Subscribe
 							</Button>
 						</Box>
 					</Grid>
 				</Grid>
+				<Divider sx={footerStyles.divider} />
+				<Typography variant="body1" sx={footerStyles.center}>
+					Created By Horace | All Rights Reserved!
+				</Typography>
 			</Container>
 		</Box>
 	);
@@ -119,6 +124,15 @@ const footerStyles = {
 		'& .MuiOutlinedInput-root': {
 			borderRadius: 10,
 		},
+	},
+	noLeftPadding: {
+		'& > :not(style)': { paddingLeft: 0 },
+	},
+	center: { textAlign: 'center', py: 2 },
+	divider: {
+		background: '#1A055F',
+		height: '3px',
+		my: 2,
 	},
 };
 
