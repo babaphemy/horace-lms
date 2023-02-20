@@ -5,6 +5,7 @@
 	"singleQuote": true,
 	"trailingComma": "es5",
 	"endOfLine": "lf",
+	"parser": "typescript",
 	"bracketSpacing": true,
 	"proseWrap": "preserve",
 	"useTabs": true,
@@ -17,7 +18,12 @@
 			}
 		},
 		{
-			"files": ["*.json", "*.md", "*.toml", "*.yml"],
+			"files": [
+				"*.json",
+				"*.md",
+				"*.toml",
+				"*.yml"
+			],
 			"options": {
 				"useTabs": false
 			}

@@ -17,8 +17,42 @@ import yeah from '../../assets/img/yeah.png';
 import Link from 'next/link';
 import man from '../../assets/img/man.png';
 import { loginStyles } from '../../styles/loginStyles';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+// Form Validation with Yup
+
+const schema = yup.object().shape({
+	email: yup
+		.string()
+		.email('You must enter a valid email')
+		.required('You must enter a email'),
+	password: yup
+		.string()
+		.required('Please enter your password.')
+		.min(4, 'Password is too short - should be 4 chars minimum.'),
+});
+
+const defaultValues = {
+	email: '',
+	password: '',
+};
 
 const Login = () => {
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		resolver: yupResolver(schema),
+		defaultValues,
+	});
+
+	const onSubmit = (data: { email: string; password: string | number }) => {
+		console.log(data);
+	};
+
 	return (
 		<Box>
 			<Header />
@@ -59,7 +93,11 @@ const Login = () => {
 									</Typography>
 									<Divider sx={loginStyles.divider} />
 								</Box>
-								<Box component="form" sx={loginStyles.form}>
+								<Box
+									component="form"
+									sx={loginStyles.form}
+									onSubmit={handleSubmit(onSubmit)}
+								>
 									<TextField
 										sx={loginStyles.input}
 										label="Email"
