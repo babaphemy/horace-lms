@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Typography, Button } from '@mui/material';
+import { Box, Container, Typography, Button, Divider } from '@mui/material';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Image from 'next/image';
@@ -40,6 +40,14 @@ const Login = () => {
 										<Image src={fb} alt="fb" width={25} height={25} />
 										Login with Facebook
 									</Button>
+								</Box>
+								<Box sx={loginStyles.dividerContainer}>
+									<Divider sx={loginStyles.divider} />{' '}
+									<Typography variant="body1" sx={{ mx: 2 }}>
+										{' '}
+										or{' '}
+									</Typography>
+									<Divider sx={loginStyles.divider} />
 								</Box>
 							</Box>
 							<Box sx={loginStyles.subtract}>
@@ -150,5 +158,18 @@ const loginStyles = {
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
+	},
+	dividerContainer: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		mt: 2,
+		mb: 2,
+		width: '100%',
+	},
+	divider: {
+		background: '#1A055F',
+		height: '1px',
+		width: '100px',
 	},
 };
