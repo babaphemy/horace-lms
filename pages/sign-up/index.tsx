@@ -6,7 +6,6 @@ import Image from 'next/image';
 import subtract from '../../assets/img/subtract.png';
 import thumb from '../../assets/img/thumb.png';
 import woman from '../../assets/img/woman.png';
-import Link from 'next/link';
 import { loginStyles } from '../../styles/loginStyles';
 
 const SignUp = () => {
