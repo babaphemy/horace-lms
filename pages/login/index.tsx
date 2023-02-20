@@ -15,6 +15,7 @@ import fb from '../../assets/img/fbcolor.png';
 import google from '../../assets/img/ggcolor.png';
 import yeah from '../../assets/img/yeah.png';
 import Link from 'next/link';
+import man from '../../assets/img/man.png';
 
 const Login = () => {
 	return (
@@ -90,7 +91,7 @@ const Login = () => {
 									src={subtract}
 									alt="logo"
 									width={'450rem'}
-									height={'400rem'}
+									height={'550rem'}
 									style={{
 										position: 'absolute',
 										bottom: 0,
@@ -98,7 +99,15 @@ const Login = () => {
 									}}
 								/>
 								<Box sx={loginStyles.glass}>
-									<Typography variant="h1">Login</Typography>
+									<Typography variant="h5" sx={loginStyles.note}>
+										the best courses you will find here sign up now
+									</Typography>
+									<Image
+										src={man}
+										alt="man holding a laptop"
+										width={'420rem'}
+										height={'400rem'}
+									/>
 								</Box>
 							</Box>
 						</Box>
@@ -139,6 +148,10 @@ const loginStyles = {
 	},
 	subtract: {
 		position: 'relative',
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center',
 		margin: 0,
 		height: '100%',
 		background:
@@ -149,21 +162,16 @@ const loginStyles = {
 		},
 	},
 	glass: {
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-		flexDirection: 'column',
 		position: 'absolute',
+		minWidth: '70%',
 		top: '50%',
 		left: '50%',
 		transform: 'translate(-50%, -50%)',
-		width: '80%',
 		background:
 			'linear-gradient(0deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(197.86deg, #F59B9B 17.24%, #2295B8 52.62%, #0F5E76 61.46%)',
 		mixBlendMode: 'normal',
-		opacity: 0.7,
 		backdropFilter: 'blur(2px)',
-		borderRadius: '30px',
+		borderRadius: '20px',
 	},
 	button: {
 		m: 1,
@@ -236,5 +244,14 @@ const loginStyles = {
 		'&:hover': {
 			background: '#000000',
 		},
+	},
+	note: {
+		fontWeight: 700,
+		color: 'white',
+		position: 'relative',
+		top: '1rem',
+		left: '1rem',
+		maxWidth: '200px',
+		textTransform: 'capitalize',
 	},
 };
