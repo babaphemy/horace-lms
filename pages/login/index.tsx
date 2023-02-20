@@ -1,5 +1,12 @@
 import React from 'react';
-import { Box, Container, Typography, Button, Divider } from '@mui/material';
+import {
+	Box,
+	Container,
+	Typography,
+	Button,
+	Divider,
+	TextField,
+} from '@mui/material';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Image from 'next/image';
@@ -7,6 +14,7 @@ import subtract from '../../assets/img/subtract.png';
 import fb from '../../assets/img/fbcolor.png';
 import google from '../../assets/img/ggcolor.png';
 import yeah from '../../assets/img/yeah.png';
+import Link from 'next/link';
 
 const Login = () => {
 	return (
@@ -48,6 +56,33 @@ const Login = () => {
 										or{' '}
 									</Typography>
 									<Divider sx={loginStyles.divider} />
+								</Box>
+								<Box component="form" sx={loginStyles.form}>
+									<TextField
+										sx={loginStyles.input}
+										label="Email"
+										variant="outlined"
+										fullWidth
+									/>
+									<TextField
+										sx={loginStyles.input}
+										label="Password"
+										variant="outlined"
+										fullWidth
+									/>
+									<Link href="/forgot-password" passHref>
+										<Typography variant="body1" sx={{ textAlign: 'right' }}>
+											Forgot Password?
+										</Typography>
+									</Link>
+
+									<Button
+										sx={[loginStyles.button, loginStyles.submit]}
+										variant="contained"
+										fullWidth
+									>
+										Login
+									</Button>
 								</Box>
 							</Box>
 							<Box sx={loginStyles.subtract}>
@@ -171,5 +206,35 @@ const loginStyles = {
 		background: '#1A055F',
 		height: '1px',
 		width: '100px',
+	},
+	form: {
+		display: 'flex',
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center',
+		minWidth: '70%',
+
+		'& .MuiTextField-root': {
+			m: 1,
+		},
+	},
+	input: {
+		borderRadius: 10,
+
+		'& .MuiOutlinedInput-root': {
+			borderRadius: 10,
+		},
+		'& .MuiOutlinedInput-input': {
+			padding: '14px 15px',
+			fontSize: '16px',
+			fontWeight: 400,
+		},
+	},
+	submit: {
+		background: '#1A055F',
+		color: 'white',
+		'&:hover': {
+			background: '#000000',
+		},
 	},
 };
