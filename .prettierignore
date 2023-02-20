@@ -25,3 +25,5 @@ next.config.js
 next-env.d.ts
 .prettierrc
 .prettierignore
+.env.local
+.env

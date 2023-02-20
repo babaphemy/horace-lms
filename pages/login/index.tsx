@@ -6,6 +6,9 @@ import {
 	Button,
 	Divider,
 	TextField,
+	Icon,
+	IconButton,
+	InputAdornment,
 } from '@mui/material';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -20,6 +23,10 @@ import { loginStyles } from '../../styles/loginStyles';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useMutation } from 'react-query';
+import { loginUser } from '../../api/rest';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 // Form Validation with Yup
 
@@ -39,18 +46,38 @@ const defaultValues = {
 	password: '',
 };
 
+// Props
+type loginProps = {
+	email: string;
+	password: string;
+	type?: any;
+};
+
 const Login = () => {
+	const [showPassword, setShowPassword] = React.useState(false);
 	const {
 		control,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm({
 		resolver: yupResolver(schema),
 		defaultValues,
 	});
 
-	const onSubmit = (data: { email: string; password: string | number }) => {
-		console.log(data);
+	const { mutate } = useMutation(loginUser, {
+		onSuccess: (data: any) => {
+			console.log(data);
+			reset(defaultValues);
+		},
+		onError: (error: any) => {
+			console.log(error);
+		},
+	});
+
+	const onSubmit = (data: loginProps) => {
+		data.type = 'USER';
+		mutate(data);
 	};
 
 	return (
@@ -98,17 +125,60 @@ const Login = () => {
 									sx={loginStyles.form}
 									onSubmit={handleSubmit(onSubmit)}
 								>
-									<TextField
-										sx={loginStyles.input}
-										label="Email"
-										variant="outlined"
-										fullWidth
+									<Controller
+										name="email"
+										control={control}
+										rules={{
+											required: true,
+										}}
+										render={({ field, fieldState: { error } }) => (
+											<TextField
+												{...field}
+												error={!!error}
+												id="email"
+												label="Email"
+												variant="outlined"
+												type="email"
+												fullWidth
+												sx={loginStyles.input}
+												helperText={error?.message}
+											/>
+										)}
 									/>
-									<TextField
-										sx={loginStyles.input}
-										label="Password"
-										variant="outlined"
-										fullWidth
+									<Controller
+										name="password"
+										control={control}
+										rules={{
+											required: true,
+										}}
+										render={({ field, fieldState: { error } }) => (
+											<TextField
+												{...field}
+												error={!!error}
+												id="password"
+												label="Password"
+												variant="outlined"
+												fullWidth
+												sx={loginStyles.input}
+												helperText={error?.message}
+												InputProps={{
+													type: showPassword ? 'text' : 'password',
+													endAdornment: (
+														<InputAdornment position="end">
+															<IconButton
+																onClick={() => setShowPassword(!showPassword)}
+															>
+																{showPassword ? (
+																	<VisibilityIcon />
+																) : (
+																	<VisibilityOffIcon />
+																)}
+															</IconButton>
+														</InputAdornment>
+													),
+												}}
+											/>
+										)}
 									/>
 									<Link href="/forgot-password" passHref>
 										<Typography variant="body1" sx={{ textAlign: 'right' }}>
@@ -120,6 +190,7 @@ const Login = () => {
 										sx={[loginStyles.button, loginStyles.submit]}
 										variant="contained"
 										fullWidth
+										type="submit"
 									>
 										Login
 									</Button>
