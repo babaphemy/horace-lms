@@ -6,6 +6,7 @@ import Image from 'next/image';
 import subtract from '../../assets/img/subtract.png';
 import fb from '../../assets/img/fbcolor.png';
 import google from '../../assets/img/ggcolor.png';
+import yeah from '../../assets/img/yeah.png';
 
 const Login = () => {
 	return (
@@ -16,6 +17,12 @@ const Login = () => {
 					<Box sx={loginStyles.center}>
 						<Box sx={loginStyles.box}>
 							<Box sx={loginStyles.right}>
+								<Typography
+									variant="h4"
+									sx={[loginStyles.center, loginStyles.title]}
+								>
+									Login <Image src={yeah} alt="yeah" width={30} height={30} />
+								</Typography>
 								<Box sx={loginStyles.socials}>
 									<Button
 										variant="outlined"
@@ -63,6 +70,10 @@ const Login = () => {
 export default Login;
 
 const loginStyles = {
+	title: {
+		fontWeight: 700,
+		mb: 3,
+	},
 	body: {
 		background:
 			'linear-gradient(90deg, rgba(245,155,155,0.04254201680672265) 0%, rgba(245,155,155,0.10136554621848737) 35%, rgba(157,220,235,0.10136554621848737) 100%)',

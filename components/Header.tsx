@@ -69,7 +69,8 @@ const Header = () => {
 export default Header;
 const headerStyles = {
 	container: {
-		marginTop: 5,
+		marginTop: 1.5,
+		marginBottom: 2,
 		position: 'relative',
 	},
 	flexHeader: {
