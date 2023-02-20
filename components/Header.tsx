@@ -76,11 +76,13 @@ const headerStyles = {
 		display: 'flex',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+		px: 0,
 	},
 	flexList: {
 		display: 'flex',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+		px: 0,
 
 		'& > :not(style)': {
 			listStyle: 'none',
