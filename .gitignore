@@ -1,2 +1,7 @@
 node_modules
 .next
+/.next
+/.next/*
+/coverage
+/coverage/*
+.env.local
