@@ -24,9 +24,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useMutation } from 'react-query';
 import { loginUser } from '../../api/rest';
+import { AppDpx } from '../../context/AppContext';
+import { USER_ADD } from '../../context/Action';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import { useRouter } from 'next/router';
 
 // Form Validation with Yup
 
@@ -54,6 +57,8 @@ type loginProps = {
 };
 
 const Login = () => {
+	const dispatch = React.useContext(AppDpx);
+	const router = useRouter();
 	const [showPassword, setShowPassword] = React.useState(false);
 	const {
 		control,
@@ -68,7 +73,9 @@ const Login = () => {
 
 	const { mutate } = useMutation(loginUser, {
 		onSuccess: (data: any) => {
-			console.log(data);
+			localStorage.setItem('horaceUser', JSON.stringify(data));
+			dispatch({ type: USER_ADD, payload: data });
+			router.push('/');
 			reset(defaultValues);
 		},
 		onError: (error: any) => {

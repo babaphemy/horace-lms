@@ -29,6 +29,9 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import { Allcountries } from '../../utils/countries';
 import { registerUser, verifyEmail } from '../../api/rest';
+import { AppDpx } from '../../context/AppContext';
+import { USER_ADD } from '../../context/Action';
+import { useRouter } from 'next/router';
 
 // Form Validation with Yup
 
@@ -60,6 +63,8 @@ const defaultValues = {
 };
 
 const SignUp = () => {
+	const router = useRouter();
+	const dispatch = React.useContext(AppDpx);
 	const [checked, setChecked] = React.useState(false);
 	const {
 		control,
@@ -74,7 +79,10 @@ const SignUp = () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { mutate, isLoading } = useMutation(registerUser, {
 		onSuccess: (data) => {
-			console.log(data);
+			localStorage.setItem('horaceUser', JSON.stringify(data));
+			dispatch({ type: USER_ADD, payload: data });
+			router.push('/');
+			reset(defaultValues);
 		},
 		onError: (error) => {
 			console.log(error);
@@ -90,7 +98,6 @@ const SignUp = () => {
 		}
 
 		mutate(data);
-		reset(defaultValues);
 	};
 
 	const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
