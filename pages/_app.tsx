@@ -6,6 +6,8 @@ import { muiTheme } from '../styles/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AppProvider, AppDpx } from '../context/AppContext';
 import { USER_ADD } from '../context/Action';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient();
 
@@ -29,6 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 					<Component {...pageProps} />
 				</QueryClientProvider>
 			</AppProvider>
+			<ToastContainer />
 		</ThemeProvider>
 	);
 }
