@@ -332,7 +332,7 @@ const SignUp = () => {
 									src={subtract}
 									alt="logo"
 									width={'500rem'}
-									height={'700rem'}
+									height={'750rem'}
 									style={{
 										position: 'absolute',
 										bottom: 0,

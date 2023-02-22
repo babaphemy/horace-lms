@@ -6,19 +6,56 @@ import {
 	Link as MuiLink,
 	Typography,
 	Button,
+	IconButton,
+	Drawer,
 } from '@mui/material';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import logo from '../assets/img/logo.png';
 import LanguageIcon from '@mui/icons-material/Language';
 import TopBg from './TopBg';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Header = () => {
+	const [open, setOpen] = React.useState(false);
 	return (
 		<>
 			<TopBg />
 			<Box sx={headerStyles.container}>
 				<Container maxWidth="lg">
+					<Box sx={headerStyles.drawerContainer}>
+						<Image
+							src={logo}
+							alt="logo"
+							width={150}
+							height={50}
+							style={headerStyles.logo}
+						/>
+						<IconButton
+							edge="start"
+							color="inherit"
+							aria-label="menu"
+							onClick={() => setOpen(true)}
+						>
+							<MenuIcon fontSize="large" />
+						</IconButton>
+						<Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+							<List sx={headerStyles.flexList}>
+								<NextLink href="/" passHref>
+									<MuiLink>Home</MuiLink>
+								</NextLink>
+								<NextLink href="/" passHref>
+									<MuiLink>About</MuiLink>
+								</NextLink>
+								<NextLink href="/" passHref>
+									<MuiLink>Courses</MuiLink>
+								</NextLink>
+								<NextLink href="/" passHref>
+									<MuiLink>Contact</MuiLink>
+								</NextLink>
+							</List>
+						</Drawer>
+					</Box>
 					<Box sx={headerStyles.flexHeader}>
 						<Box sx={headerStyles.flexHeader}>
 							<Image
@@ -74,7 +111,7 @@ const headerStyles = {
 		position: 'relative',
 	},
 	flexHeader: {
-		display: 'flex',
+		display: { xs: 'none', sm: 'none', md: 'flex' },
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		px: 0,
@@ -132,5 +169,11 @@ const headerStyles = {
 		'&:hover': {
 			background: '#000',
 		},
+	},
+	drawerContainer: {
+		display: { xs: 'flex', sm: 'flex', md: 'none' },
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		px: 0,
 	},
 };
