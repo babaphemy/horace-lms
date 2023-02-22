@@ -10,11 +10,14 @@ type Props = {
 };
 
 const getuser = () => {
-	const user = localStorage.getItem('horaceUser');
-	if (user) {
-		return JSON.parse(user);
+	if (typeof window !== 'undefined') {
+		const user = localStorage.getItem('horaceUser');
+		if (user) {
+			return JSON.parse(user);
+		}
+		return null;
 	}
-	return null;
+	return;
 };
 
 const initialState: State = {
