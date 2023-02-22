@@ -39,21 +39,63 @@ const Header = () => {
 						>
 							<MenuIcon fontSize="large" />
 						</IconButton>
-						<Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
-							<List sx={headerStyles.flexList}>
-								<NextLink href="/" passHref>
-									<MuiLink>Home</MuiLink>
+						<Drawer
+							anchor="right"
+							open={open}
+							onClose={() => setOpen(false)}
+							PaperProps={{
+								sx: headerStyles.paper,
+							}}
+							variant="temporary"
+						>
+							<Box>
+								<Image
+									src={logo}
+									alt="logo"
+									width={150}
+									height={50}
+									style={headerStyles.logo}
+								/>
+								<List sx={headerStyles.mobileList}>
+									<NextLink href="/" passHref>
+										<MuiLink>Home</MuiLink>
+									</NextLink>
+									<NextLink href="/" passHref>
+										<MuiLink>About</MuiLink>
+									</NextLink>
+									<NextLink href="/" passHref>
+										<MuiLink>Courses</MuiLink>
+									</NextLink>
+									<NextLink href="/" passHref>
+										<MuiLink>Contact</MuiLink>
+									</NextLink>
+								</List>
+							</Box>
+							<Box>
+								<Box sx={headerStyles.mobileList}>
+									<Typography variant="body1" sx={headerStyles.language}>
+										English
+									</Typography>
+									<NextLink href="/login" passHref>
+										<MuiLink>Login</MuiLink>
+									</NextLink>
+								</Box>
+								<NextLink href="/sign-up" passHref>
+									<MuiLink>
+										<Button
+											variant="contained"
+											sx={[
+												headerStyles.authButton,
+												{
+													m: 4,
+												},
+											]}
+										>
+											Sign Up
+										</Button>
+									</MuiLink>
 								</NextLink>
-								<NextLink href="/" passHref>
-									<MuiLink>About</MuiLink>
-								</NextLink>
-								<NextLink href="/" passHref>
-									<MuiLink>Courses</MuiLink>
-								</NextLink>
-								<NextLink href="/" passHref>
-									<MuiLink>Contact</MuiLink>
-								</NextLink>
-							</List>
+							</Box>
 						</Drawer>
 					</Box>
 					<Box sx={headerStyles.flexHeader}>
@@ -175,5 +217,46 @@ const headerStyles = {
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		px: 0,
+	},
+
+	mobileList: {
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'flex-start',
+		justifyContent: 'center',
+		px: 3,
+		py: 3,
+
+		'& > *': {
+			borderRadius: 1,
+			justifyContent: 'flex-start',
+			px: 2,
+			py: 1,
+			my: 1,
+			fontSize: '1.2rem',
+			textAlign: 'left',
+			textTransform: 'none',
+			width: '100%',
+			backgroundColor: 'transparent',
+			color: 'black',
+			listStyle: 'none',
+			textDecoration: 'none',
+
+			'&:hover': {
+				backgroundColor: '#8E1512',
+				borderRadius: 10,
+				color: 'white',
+			},
+		},
+	},
+
+	paper: {
+		padding: '20px 0',
+		color: '#FFFFFF',
+		width: 280,
+		display: 'flex',
+		flexDirection: 'column',
+		alignItems: 'flex--start',
+		justifyContent: 'space-between',
 	},
 };
