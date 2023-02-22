@@ -6,7 +6,6 @@ import {
 	Button,
 	Divider,
 	TextField,
-	Icon,
 	IconButton,
 	InputAdornment,
 } from '@mui/material';
@@ -27,6 +26,7 @@ import { useMutation } from 'react-query';
 import { loginUser } from '../../api/rest';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
 // Form Validation with Yup
 
@@ -58,6 +58,7 @@ const Login = () => {
 	const {
 		control,
 		handleSubmit,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		formState: { errors },
 		reset,
 	} = useForm({
@@ -142,6 +143,15 @@ const Login = () => {
 												fullWidth
 												sx={loginStyles.input}
 												helperText={error?.message}
+												InputProps={{
+													endAdornment: (
+														<InputAdornment position="end">
+															<IconButton>
+																<MailOutlineIcon />
+															</IconButton>
+														</InputAdornment>
+													),
+												}}
 											/>
 										)}
 									/>
@@ -166,6 +176,7 @@ const Login = () => {
 													endAdornment: (
 														<InputAdornment position="end">
 															<IconButton
+																aria-label="toggle password visibility"
 																onClick={() => setShowPassword(!showPassword)}
 															>
 																{showPassword ? (

@@ -1,5 +1,18 @@
 import React from 'react';
-import { Box, Container, Typography, Button, TextField } from '@mui/material';
+import {
+	Box,
+	Container,
+	Typography,
+	Button,
+	TextField,
+	InputAdornment,
+	Select,
+	MenuItem,
+	FormControl,
+	Link,
+	Checkbox,
+} from '@mui/material';
+
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Image from 'next/image';
@@ -7,8 +20,83 @@ import subtract from '../../assets/img/subtract.png';
 import thumb from '../../assets/img/thumb.png';
 import woman from '../../assets/img/woman.png';
 import { loginStyles } from '../../styles/loginStyles';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useMutation } from 'react-query';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import { Allcountries } from '../../utils/countries';
+import { registerUser, verifyEmail } from '../../api/rest';
+
+// Form Validation with Yup
+
+const schema = yup.object().shape({
+	firstname: yup.string().required('First name is required'),
+	lastname: yup.string().required('Last name is required'),
+	type: yup.string().required('Registration Type is required'),
+	email: yup
+		.string()
+		.email('You must enter a valid email')
+		.required('You must enter a email'),
+	password: yup
+		.string()
+		.required('Please enter your password.')
+		.min(8, 'Password is too short - should be 8 chars minimum.'),
+	passwordConfirm: yup
+		.string()
+		.oneOf([yup.ref('password'), ''], 'Passwords must match'),
+});
+
+const defaultValues = {
+	firstname: '',
+	lastname: '',
+	email: '',
+	password: '',
+	passwordConfirm: '',
+	country: 'AT',
+	type: 'STUDENT',
+};
 
 const SignUp = () => {
+	const [checked, setChecked] = React.useState(false);
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+		reset,
+	} = useForm({
+		resolver: yupResolver(schema),
+		defaultValues,
+	});
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { mutate, isLoading } = useMutation(registerUser, {
+		onSuccess: (data) => {
+			console.log(data);
+		},
+		onError: (error) => {
+			console.log(error);
+		},
+	});
+
+	const onSubmit = async (data: any) => {
+		const checkEmail: string = await verifyEmail(data.email);
+
+		if (checkEmail === 'true') {
+			alert('Email already exists');
+			return;
+		}
+
+		mutate(data);
+		reset(defaultValues);
+	};
+
+	const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setChecked(event.target.checked);
+	};
+
 	return (
 		<Box>
 			<Header />
@@ -25,26 +113,217 @@ const SignUp = () => {
 									<Image src={thumb} alt="thumb" width={30} height={30} />
 								</Typography>
 
-								<Box component="form" sx={loginStyles.form}>
-									<TextField
-										sx={loginStyles.input}
-										label="Email"
-										variant="outlined"
-										fullWidth
+								<Box
+									component="form"
+									sx={loginStyles.form}
+									onSubmit={handleSubmit(onSubmit)}
+								>
+									<Controller
+										name="firstname"
+										control={control}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												sx={loginStyles.input}
+												fullWidth
+												type="text"
+												label="First name"
+												error={!!errors.firstname}
+												helperText={errors?.firstname?.message}
+												InputProps={{
+													endAdornment: (
+														<InputAdornment position="end">
+															<PersonOutlineIcon />
+														</InputAdornment>
+													),
+												}}
+												variant="outlined"
+												required
+											/>
+										)}
 									/>
-									<TextField
-										sx={loginStyles.input}
-										label="Password"
-										variant="outlined"
-										fullWidth
+									<Controller
+										name="lastname"
+										control={control}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												sx={loginStyles.input}
+												fullWidth
+												type="text"
+												label="Last name"
+												error={!!errors.lastname}
+												helperText={errors?.lastname?.message}
+												InputProps={{
+													endAdornment: (
+														<InputAdornment position="end">
+															<PersonOutlineIcon />
+														</InputAdornment>
+													),
+												}}
+												variant="outlined"
+												required
+											/>
+										)}
+									/>
+									<Controller
+										name="email"
+										control={control}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												sx={loginStyles.input}
+												fullWidth
+												type="text"
+												error={!!errors.email}
+												helperText={errors?.email?.message}
+												label="Email"
+												InputProps={{
+													endAdornment: (
+														<InputAdornment position="end">
+															<MailOutlineIcon />
+														</InputAdornment>
+													),
+												}}
+												variant="outlined"
+												required
+											/>
+										)}
 									/>
 
+									<Controller
+										name="password"
+										control={control}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												sx={loginStyles.input}
+												fullWidth
+												type="password"
+												label="Password"
+												error={!!errors.password}
+												helperText={errors?.password?.message}
+												InputProps={{
+													endAdornment: (
+														<InputAdornment position="end">
+															<VpnKeyIcon />
+														</InputAdornment>
+													),
+												}}
+												variant="outlined"
+												required
+											/>
+										)}
+									/>
+
+									<Controller
+										name="passwordConfirm"
+										control={control}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												sx={loginStyles.input}
+												fullWidth
+												type="password"
+												label="Confirm Password"
+												error={!!errors.passwordConfirm}
+												helperText={errors?.passwordConfirm?.message}
+												InputProps={{
+													endAdornment: (
+														<InputAdornment position="end">
+															<VpnKeyIcon />
+														</InputAdornment>
+													),
+												}}
+												variant="outlined"
+												required
+											/>
+										)}
+									/>
+									<FormControl
+										sx={{
+											my: 1,
+										}}
+										fullWidth
+									>
+										<Controller
+											name="type"
+											control={control}
+											render={({ field }) => (
+												<Select
+													{...field}
+													variant="outlined"
+													id="countries"
+													sx={loginStyles.input}
+													fullWidth
+												>
+													<MenuItem value="STUDENT">Student</MenuItem>
+													<MenuItem value="INSTRUCTOR">Instructor</MenuItem>
+												</Select>
+											)}
+										/>
+									</FormControl>
+									<FormControl
+										sx={{
+											my: 1,
+										}}
+										fullWidth
+									>
+										<Controller
+											name="country"
+											control={control}
+											render={({ field }) => (
+												<Select
+													{...field}
+													variant="outlined"
+													id="countries"
+													sx={loginStyles.input}
+													fullWidth
+												>
+													{Allcountries.map((a) => (
+														<MenuItem key={a.code} value={a.code}>
+															{a.name}
+														</MenuItem>
+													))}
+												</Select>
+											)}
+										/>
+									</FormControl>
+									<Box
+										sx={{
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'space-between',
+											color: 'black',
+											fontSize: '12px',
+
+											'& .MuiCheckbox-root': {
+												color: 'purle',
+											},
+										}}
+									>
+										<Checkbox checked={checked} onChange={handleCheck} />
+										<Typography variant="body2">
+											I agree to the{' '}
+											<Link href="#" underline="hover">
+												Terms of Service
+											</Link>{' '}
+											and{' '}
+											<Link href="#" underline="hover">
+												Privacy Policy
+											</Link>
+										</Typography>
+									</Box>
 									<Button
 										sx={[loginStyles.button, loginStyles.submit]}
 										variant="contained"
+										disabled={!checked}
 										fullWidth
+										type="submit"
+										aria-label="REGISTER"
+										value="legacy"
 									>
-										Sign Up
+										Register
 									</Button>
 								</Box>
 							</Box>
@@ -52,8 +331,8 @@ const SignUp = () => {
 								<Image
 									src={subtract}
 									alt="logo"
-									width={'450rem'}
-									height={'550rem'}
+									width={'500rem'}
+									height={'700rem'}
 									style={{
 										position: 'absolute',
 										bottom: 0,
