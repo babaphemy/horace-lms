@@ -353,8 +353,8 @@ const SignUp = () => {
 									<Image
 										src={woman}
 										alt="woman standing"
-										width={'300rem'}
-										height={'300rem'}
+										width={'420rem'}
+										height={'400rem'}
 									/>
 								</Box>
 							</Box>
