@@ -4,6 +4,7 @@ import React from 'react';
 import { ThemeProvider } from '@mui/material';
 import { muiTheme } from '../styles/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { AppProvider } from '../context/AllProvider';
 
 const queryClient = new QueryClient();
 
@@ -11,7 +12,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<ThemeProvider theme={muiTheme}>
 			<QueryClientProvider client={queryClient}>
-				<Component {...pageProps} />
+				<AppProvider>
+					<Component {...pageProps} />
+				</AppProvider>
 			</QueryClientProvider>
 		</ThemeProvider>
 	);
