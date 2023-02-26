@@ -1,19 +1,27 @@
-import React from 'react';
+import { Paper } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import ReactPlayer from 'react-player';
 import DashboardHoc from '../../components/DashboardHoc';
+import Coursebar from '../../components/layout/Coursebar';
+import { AppContext } from '../../context/AllProvider';
 
 const classroom = () => {
+	const { lecture } = useContext(AppContext);
+
 	return (
 		<DashboardHoc isClass={true}>
-			<p>
-				header: thumbnail, course name, brief, lessons count, reviews, stars,
-				call to action (check doorpicker), cost | free | inProgress
-			</p>
-			<h1>Classroom</h1>
-			<p>Progress bar if inProgress</p>
-			<p>Course Description</p>
-			<p>Course Objectives</p>
-			<p>Student reviews</p>
-			<p>similar courses</p>
+			<Coursebar />
+			<Paper>
+				<p>title</p>
+				{lecture?.type === 'lecture' && (
+					<ReactPlayer
+						url={`https://essl.b-cdn.net/${lecture?.video}`}
+						width="640"
+						height="360"
+						controls
+					/>
+				)}
+			</Paper>
 		</DashboardHoc>
 	);
 };

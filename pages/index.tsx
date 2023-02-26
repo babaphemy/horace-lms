@@ -2,13 +2,24 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
 import styles from '../styles/Home.module.css';
-import { Box, Container, Typography, CircularProgress } from '@mui/material';
+import {
+	Box,
+	Container,
+	Typography,
+	CircularProgress,
+	LinearProgress,
+} from '@mui/material';
+import { useQuery } from 'react-query';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import useAuth from '../hooks/useAuth';
+import { fetchCourses } from '../api/rest';
+import Coursecard from '../components/courses/Coursecard';
 
 const Home: NextPage = () => {
-	const [users, loading] = useAuth();
+	const { data, isLoading } = useQuery('usersAdddoc', fetchCourses, {
+		staleTime: 5000,
+		cacheTime: 10,
+	});
 	return (
 		<div className={styles.container}>
 			<Head>
@@ -31,10 +42,10 @@ const Home: NextPage = () => {
 			<Box>
 				<Header />
 				<Container>
-					{loading && <CircularProgress />}
+					{isLoading && <CircularProgress />}
 					<Typography variant="h1">Horace Learning</Typography>
-					{users?.map((user: any) => (
-						<Typography key={user.id}>{user.email}</Typography>
+					{data?.map((course: any, idx: number) => (
+						<Coursecard course={course} key={idx + course.id} />
 					))}
 				</Container>
 				<Footer />

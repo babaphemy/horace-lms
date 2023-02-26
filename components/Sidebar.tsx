@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { detailStyles } from '../styles/courseStyles';
+import Link from 'next/link';
 
 const Sidebar = () => {
 	return (
@@ -8,7 +9,9 @@ const Sidebar = () => {
 			<Box margin={4}>
 				<p>Author image</p>
 				<p>Author Bio</p>
-				<Typography>Curriculum</Typography>
+				<p>Buy or Join class</p>
+				<Typography variant="body1">share on social media</Typography>
+				<Link href="/course/classroom">Start | Continue | Buy</Link>
 			</Box>
 		</Box>
 	);

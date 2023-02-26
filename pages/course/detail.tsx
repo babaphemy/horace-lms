@@ -1,24 +1,20 @@
+import { useRouter } from 'next/router';
 import React from 'react';
+import CourseObjectives from '../../components/courses/CourseObjectives';
+import CourseReview from '../../components/courses/CourseReview';
 import DashboardHoc from '../../components/DashboardHoc';
-const videoLink = `https://essl.b-cdn.net/budgeting.mp4`;
+import CourseHeader from '../../components/layout/CourseHeader';
+
 const detail = () => {
-	// get selected course and put in context
+	const router = useRouter();
+	const cid = router.query.cid as string;
 	return (
 		<DashboardHoc>
-			<p>
-				header: thumbnail, course name, brief, lessons count, reviews, stars,
-				call to action (check doorpicker), cost | free | inProgress
-			</p>
-			<h1>Detail</h1>
-			<p>Progress bar if inProgress</p>
-			<p>Course Description</p>
-			<p>Course Objectives</p>
-			<p>Student reviews</p>
-			<p>similar courses</p>
+			<CourseHeader id={cid} />
+			<CourseObjectives />
 
-			{/* <video width="750" height="500" controls>
-					<source src={`${videoLink}`} type="video/mp4" />
-				</video> */}
+			<CourseReview />
+			<p>similar courses</p>
 		</DashboardHoc>
 	);
 };
