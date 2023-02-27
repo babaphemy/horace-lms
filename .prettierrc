@@ -5,11 +5,19 @@
 	"singleQuote": true,
 	"trailingComma": "es5",
 	"endOfLine": "lf",
-	"parser": "typescript",
-	"bracketSpacing": true,
-	"proseWrap": "preserve",
-	"useTabs": true,
-	"arrowParens": "always",
+	"rules": [
+		{
+			"at-rule-no-unknown": null,
+			"scss/at-rule-no-unknown": [
+				true,
+				{
+					"ignoreAtRules": [
+						"tailwind"
+					]
+				}
+			]
+		}
+	],
 	"overrides": [
 		{
 			"files": "*.json",
