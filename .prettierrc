@@ -1,0 +1,47 @@
+{
+	"semi": true,
+	"tabWidth": 2,
+	"printWidth": 80,
+	"singleQuote": true,
+	"trailingComma": "es5",
+	"endOfLine": "lf",
+	"rules": [
+		{
+			"at-rule-no-unknown": null,
+			"scss/at-rule-no-unknown": [
+				true,
+				{
+					"ignoreAtRules": [
+						"tailwind"
+					]
+				}
+			]
+		}
+	],
+	"overrides": [
+		{
+			"files": "*.json",
+			"options": {
+				"singleQuote": false
+			}
+		},
+		{
+			"files": [
+				"*.json",
+				"*.md",
+				"*.toml",
+				"*.yml"
+			],
+			"options": {
+				"useTabs": false
+			}
+		},
+		{
+			"files": ".*rc",
+			"options": {
+				"singleQuote": false,
+				"parser": "json"
+			}
+		}
+	]
+}
