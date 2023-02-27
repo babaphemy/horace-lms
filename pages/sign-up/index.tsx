@@ -34,8 +34,6 @@ import { AppDpx } from '../../context/AppContext';
 import { USER_ADD } from '../../context/Action';
 import { useRouter } from 'next/router';
 
-// Form Validation with Yup
-
 const schema = yup.object().shape({
   firstname: yup.string().required('First name is required'),
   lastname: yup.string().required('Last name is required'),
