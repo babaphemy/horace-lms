@@ -346,6 +346,13 @@ const colors = {
 	},
 };
 export const muiTheme = createTheme({
+	components: {
+		MuiListItemButton: {
+			defaultProps: {
+				disableTouchRipple: true,
+			},
+		},
+	},
 	breakpoints: {
 		values: {
 			xs: 0,
@@ -365,6 +372,7 @@ export const muiTheme = createTheme({
 		background: {
 			default: '#fff',
 		},
+		mode: 'dark',
 	},
 	typography: {
 		button: {
