@@ -12,28 +12,28 @@ import 'react-toastify/dist/ReactToastify.css';
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-	const dispatch = React.useContext(AppDpx);
-	React.useEffect(() => {
-		const user = localStorage.getItem('horaceUser');
-		if (user) {
-			dispatch({
-				type: USER_ADD,
-				payload: JSON.parse(user),
-			});
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+  const dispatch = React.useContext(AppDpx);
+  React.useEffect(() => {
+    const user = localStorage.getItem('horaceUser');
+    if (user) {
+      dispatch({
+        type: USER_ADD,
+        payload: JSON.parse(user),
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-	return (
-		<ThemeProvider theme={muiTheme}>
-			<AppProvider>
-				<QueryClientProvider client={queryClient}>
-					<Component {...pageProps} />
-				</QueryClientProvider>
-			</AppProvider>
-			<ToastContainer />
-		</ThemeProvider>
-	);
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <AppProvider>
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
+      </AppProvider>
+      <ToastContainer />
+    </ThemeProvider>
+  );
 }
 
 export default MyApp;

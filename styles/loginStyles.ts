@@ -5,7 +5,7 @@ export const loginStyles = {
   },
   body: {
     background:
-      'linear-gradient(90deg, rgba(245,155,155,0.04254201680672265) 0%, rgba(245,155,155,0.10136554621848737) 35%, rgba(157,220,235,0.10136554621848737) 100%)',
+      'linear-gradient(90deg, rgba(245,155,155,0.04254201680672265) 0%, rgba(245,155,155,0.10136554621848737) 35%, rgba(157,220,235,0.10136554621848737) 100%) !important',
     width: '100%',
   },
   center: {
@@ -88,7 +88,7 @@ export const loginStyles = {
     width: '100%',
   },
   divider: {
-    background: '#1A055F',
+    background: '#1A055F !important',
     height: '1px',
     width: '100px',
   },
@@ -120,10 +120,10 @@ export const loginStyles = {
     },
   },
   submit: {
-    background: '#1A055F',
+    background: '#1A055F !important',
     color: 'white',
     '&:hover': {
-      background: '#000000',
+      background: '#000000 !important',
     },
   },
   note: {

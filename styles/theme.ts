@@ -372,7 +372,7 @@ export const muiTheme = createTheme({
     background: {
       default: '#fff',
     },
-    mode: 'dark',
+    mode: 'light',
   },
   typography: {
     button: {

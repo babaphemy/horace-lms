@@ -15,7 +15,7 @@ const Detail = () => {
     ['acourse', cid],
     () => fetchCourse(cid),
     {
-      staleTime: 5000,
+      staleTime: 500,
       cacheTime: 10,
       enabled: !!cid,
     }

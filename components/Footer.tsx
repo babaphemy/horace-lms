@@ -154,7 +154,7 @@ const footerStyles = {
     },
   },
   newsButton: {
-    background: '#00A9C1',
+    background: '#00A9C1 !important',
     color: '#fff',
     px: 3,
     textTransform: 'capitalize',
