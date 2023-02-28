@@ -5,6 +5,7 @@ import {
   Typography,
   Button,
   TextField,
+  Link,
   InputAdornment,
 } from '@mui/material';
 import Header from '../../components/Header';
@@ -49,8 +50,10 @@ const ForgotPass = () => {
         <Box sx={loginStyles.center}>
           <Box sx={loginStyles.paper}>
             <Box>
-              <Typography variant="h4">Forgot Password</Typography>
-              <Typography variant="body1">
+              <Typography variant="h4" my={2}>
+                Forgot Password
+              </Typography>
+              <Typography variant="body1" my={2}>
                 Enter your email address below and we'll send you a link to
                 reset your password.
               </Typography>
@@ -64,6 +67,7 @@ const ForgotPass = () => {
                   render={({ field }) => (
                     <TextField
                       {...field}
+                      margin="dense"
                       label="Email"
                       variant="outlined"
                       fullWidth
@@ -82,18 +86,36 @@ const ForgotPass = () => {
                     />
                   )}
                 />
-                <Box>
+                <Box my={2}>
                   <Button
                     type="submit"
                     variant="contained"
                     color="primary"
                     fullWidth
-                    sx={[loginStyles.button, loginStyles.submit]}
+                    sx={[
+                      loginStyles.button,
+                      loginStyles.submit,
+                      {
+                        margin: '0 !important',
+                      },
+                    ]}
                   >
                     Send
                   </Button>
                 </Box>
               </Box>
+              <Typography
+                variant="body1"
+                sx={{
+                  textAlign: 'center',
+                  width: '100%',
+                  my: 1,
+                }}
+              >
+                <Link href="/login" underline="hover">
+                  Back to Login Page
+                </Link>{' '}
+              </Typography>
             </Box>
           </Box>
         </Box>

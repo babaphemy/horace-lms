@@ -30,6 +30,10 @@ export const loginStyles = {
     my: 3,
     p: { sm: 3, md: 4, lg: 5 },
     width: { sm: '90%', md: '60%', lg: '50%' },
+    minHeight: '50vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   subtract: {
     position: 'relative',

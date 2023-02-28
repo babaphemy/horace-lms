@@ -9,6 +9,7 @@ import {
   IconButton,
   Alert,
   InputAdornment,
+  Link,
 } from '@mui/material';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -17,7 +18,6 @@ import subtract from '../../assets/img/subtract.png';
 import fb from '../../assets/img/fbcolor.png';
 import google from '../../assets/img/ggcolor.png';
 import yeah from '../../assets/img/yeah.png';
-import Link from 'next/link';
 import man from '../../assets/img/man.png';
 import { loginStyles } from '../../styles/loginStyles';
 import { useForm, Controller } from 'react-hook-form';
@@ -216,11 +216,18 @@ const Login = () => {
                       />
                     )}
                   />
-                  <Link href="/forgot-password" passHref>
-                    <Typography variant="body1" sx={{ textAlign: 'right' }}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      textAlign: 'right',
+                      width: '100%',
+                      paddingRight: '1rem',
+                    }}
+                  >
+                    <Link href="/forgot-password" underline="hover">
                       Forgot Password?
-                    </Typography>
-                  </Link>
+                    </Link>{' '}
+                  </Typography>
 
                   <Button
                     sx={[loginStyles.button, loginStyles.submit]}
