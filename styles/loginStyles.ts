@@ -115,6 +115,11 @@ export const loginStyles = {
       m: 1,
     },
   },
+  resetForm: {
+    '& .MuiTextField-root': {
+      m: 1,
+    },
+  },
   alert: {
     my: 2,
     borderRadius: 2,

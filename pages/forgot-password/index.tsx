@@ -7,15 +7,19 @@ import {
   TextField,
   Link,
   InputAdornment,
+  Alert,
 } from '@mui/material';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import * as yup from 'yup';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-// import { useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { loginStyles } from '../../styles/loginStyles';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import { doToken, verifyEmail } from '../../api/rest';
+import { useRouter } from 'next/router';
+import { notifySuccess } from '../../utils/notification';
 
 /**
  * Form Validation Schema
@@ -31,6 +35,11 @@ const defaultValues = {
   email: '',
 };
 const ForgotPass = () => {
+  const router = useRouter();
+  const [al, setAlert] = React.useState<{
+    show: boolean;
+    msg: string;
+  } | null>(null);
   const {
     control,
     handleSubmit,
@@ -41,7 +50,35 @@ const ForgotPass = () => {
     defaultValues,
   });
 
-  const onSubmit = (data: any) => {};
+  const { mutate } = useMutation(doToken, {
+    onSuccess: (data) => {
+      notifySuccess('Token sent to your email');
+      router.push('/forgot-password/reset');
+      return;
+    },
+    onError: (error) => {
+      setAlert({
+        show: true,
+        msg: 'Email not found, please try again',
+      });
+      return;
+    },
+  });
+
+  const onSubmit = async (data: any) => {
+    const checkEmail: string = await verifyEmail(data.email);
+    data.type = 'USER';
+
+    if (checkEmail === 'true') {
+      mutate(data);
+      return;
+    }
+    setAlert({
+      show: true,
+      msg: 'Email not found, please try again',
+    });
+    return;
+  };
 
   return (
     <Box>
@@ -59,6 +96,15 @@ const ForgotPass = () => {
               </Typography>
             </Box>
             <Box>
+              {al?.show && (
+                <Alert
+                  severity="error"
+                  onClose={() => setAlert(null)}
+                  sx={loginStyles.alert}
+                >
+                  {al.msg}
+                </Alert>
+              )}
               <Box component="form" onSubmit={handleSubmit(onSubmit)}>
                 <Controller
                   name="email"
