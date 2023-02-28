@@ -29,4 +29,18 @@ const fetchCourses = async () => {
   }
   return response.json();
 };
-export { getUsers, loginUser, registerUser, verifyEmail, fetchCourses };
+const fetchCourse = async (id: string) => {
+  const response = await fetch(`${basePath}course/${id}`, auth);
+  if (!response.ok) {
+    return { error: response.status };
+  }
+  return response.json();
+};
+export {
+  getUsers,
+  loginUser,
+  registerUser,
+  verifyEmail,
+  fetchCourses,
+  fetchCourse,
+};
