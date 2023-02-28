@@ -162,6 +162,7 @@ const Login = () => {
                         id="email"
                         label="Email"
                         variant="outlined"
+                        size="small"
                         type="email"
                         fullWidth
                         sx={loginStyles.input}
@@ -191,6 +192,7 @@ const Login = () => {
                         id="password"
                         label="Password"
                         variant="outlined"
+                        size="small"
                         fullWidth
                         sx={loginStyles.input}
                         helperText={error?.message}

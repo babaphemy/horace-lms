@@ -23,6 +23,14 @@ export const loginStyles = {
     minWidth: '80%',
     alignItems: 'center',
   },
+  paper: {
+    background: 'white',
+    boxShadow: '0px 0px 15px 0px rgba(0,0,0,0.25)',
+    borderRadius: 2,
+    my: 3,
+    p: { sm: 3, md: 4, lg: 5 },
+    width: { sm: '90%', md: '60%', lg: '50%' },
+  },
   subtract: {
     position: 'relative',
     display: 'flex',
@@ -114,14 +122,13 @@ export const loginStyles = {
       borderRadius: 10,
     },
     '& .MuiOutlinedInput-input': {
-      padding: '14px 15px',
       fontSize: '16px',
       fontWeight: 400,
     },
   },
   submit: {
     background: '#1A055F !important',
-    color: 'white',
+    color: 'white !important',
     '&:hover': {
       background: '#000000 !important',
     },
