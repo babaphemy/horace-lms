@@ -5,7 +5,7 @@ export const loginStyles = {
   },
   body: {
     background:
-      'linear-gradient(90deg, rgba(245,155,155,0.04254201680672265) 0%, rgba(245,155,155,0.10136554621848737) 35%, rgba(157,220,235,0.10136554621848737) 100%)',
+      'linear-gradient(90deg, rgba(245,155,155,0.04254201680672265) 0%, rgba(245,155,155,0.10136554621848737) 35%, rgba(157,220,235,0.10136554621848737) 100%) !important',
     width: '100%',
   },
   center: {
@@ -22,6 +22,18 @@ export const loginStyles = {
     justifyContent: 'center',
     minWidth: '80%',
     alignItems: 'center',
+  },
+  paper: {
+    background: 'white',
+    boxShadow: '0px 0px 15px 0px rgba(0,0,0,0.25)',
+    borderRadius: 2,
+    my: 3,
+    p: { sm: 3, md: 4, lg: 5 },
+    width: { sm: '90%', md: '60%', lg: '50%' },
+    minHeight: '50vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   subtract: {
     position: 'relative',
@@ -88,7 +100,7 @@ export const loginStyles = {
     width: '100%',
   },
   divider: {
-    background: '#1A055F',
+    background: '#1A055F !important',
     height: '1px',
     width: '100px',
   },
@@ -99,6 +111,11 @@ export const loginStyles = {
     alignItems: 'center',
     minWidth: '70%',
 
+    '& .MuiTextField-root': {
+      m: 1,
+    },
+  },
+  resetForm: {
     '& .MuiTextField-root': {
       m: 1,
     },
@@ -114,16 +131,15 @@ export const loginStyles = {
       borderRadius: 10,
     },
     '& .MuiOutlinedInput-input': {
-      padding: '14px 15px',
       fontSize: '16px',
       fontWeight: 400,
     },
   },
   submit: {
-    background: '#1A055F',
-    color: 'white',
+    background: '#1A055F !important',
+    color: 'white !important',
     '&:hover': {
-      background: '#000000',
+      background: '#000000 !important',
     },
   },
   note: {

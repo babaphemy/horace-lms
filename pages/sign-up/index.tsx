@@ -151,6 +151,7 @@ const SignUp = () => {
                       <TextField
                         {...field}
                         sx={loginStyles.input}
+                        size="small"
                         fullWidth
                         type="text"
                         label="First name"
@@ -175,6 +176,7 @@ const SignUp = () => {
                       <TextField
                         {...field}
                         sx={loginStyles.input}
+                        size="small"
                         fullWidth
                         type="text"
                         label="Last name"
@@ -199,6 +201,7 @@ const SignUp = () => {
                       <TextField
                         {...field}
                         sx={loginStyles.input}
+                        size="small"
                         fullWidth
                         type="text"
                         error={!!errors.email}
@@ -224,6 +227,7 @@ const SignUp = () => {
                       <TextField
                         {...field}
                         sx={loginStyles.input}
+                        size="small"
                         fullWidth
                         type="password"
                         label="Password"
@@ -249,6 +253,7 @@ const SignUp = () => {
                       <TextField
                         {...field}
                         sx={loginStyles.input}
+                        size="small"
                         fullWidth
                         type="password"
                         label="Confirm Password"
@@ -281,6 +286,7 @@ const SignUp = () => {
                           variant="outlined"
                           id="countries"
                           sx={loginStyles.input}
+                          size="small"
                           fullWidth
                         >
                           <MenuItem value="STUDENT">Student</MenuItem>
@@ -304,6 +310,7 @@ const SignUp = () => {
                           variant="outlined"
                           id="countries"
                           sx={loginStyles.input}
+                          size="small"
                           fullWidth
                         >
                           {Allcountries.map((a) => (

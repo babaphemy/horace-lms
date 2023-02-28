@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Box, Paper, Tab, Tabs, Typography } from '@mui/material';
-import Curriculum from './Curriculum';
+import { ReactElement, useState } from 'react';
+import { Box, Button, Paper, Tab, Tabs, Typography } from '@mui/material';
+import CourseReview from './CourseReview';
 
 const goals = [
   'Makes you happy',
@@ -9,13 +9,19 @@ const goals = [
   'be great',
 ];
 const ranges = {
-  curriculum: 'Content',
-  objectives: 'Goals',
+  content: 'Content',
+  reviews: 'Reviews',
 };
-const CourseObjectives = () => {
+interface Props {
+  category?: string;
+  target?: string;
+  modified?: string;
+}
+const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
+  const { target, category, modified } = props;
   const [tabValue, setTabValue] = useState(0);
   return (
-    <Paper className="flex flex-auto p-24 w-full shadow rounded-2xl overflow-hidden">
+    <Paper className="flex flex-col p-10 w-full shadow rounded-2xl overflow-hidden">
       <div className="flex sm:flex-row items-start justify-between">
         <Tabs
           value={tabValue}
@@ -47,11 +53,31 @@ const CourseObjectives = () => {
           ))}
         </Tabs>
       </div>
-      <div className="w-full sm:mt-16">
-        {tabValue === 0 && <Curriculum />}
+      <div className="w-full sm:mt-5">
+        {tabValue === 0 && (
+          <div>
+            <Typography variant="subtitle1" className="mb-4">
+              Target Audience: {target || 'Beginner'}
+            </Typography>
+            <Typography variant="subtitle1" className="mb-4">
+              Category: {category?.toString() || 'web'}
+            </Typography>
+            <Typography variant="subtitle1" className="mb-4">
+              Last Updated: {modified || new Date().toDateString()}
+            </Typography>
+            <Typography variant="subtitle1" className="mb-4">
+              Requirements:{' '}
+            </Typography>
+            <Typography variant="subtitle1" className="mb-4">
+              AT the end of this course, you should be able to do the following:
+            </Typography>
+            <Button>Join Class</Button>
+          </div>
+        )}
         {tabValue === 1 && (
           <div className="flex flex-col">
-            <div className="flex-auto grid grid-cols-4 gap-16 mt-24">
+            <CourseReview />
+            <div className="flex-auto grid grid-cols-4 gap-16 *mt-24">
               {goals.map((goal, index) => (
                 <div
                   key={index}
