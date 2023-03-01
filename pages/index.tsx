@@ -8,6 +8,8 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { fetchCourses } from '../api/rest';
 import Coursecard from '../components/courses/Coursecard';
+import Hero from '../components/home/Hero';
+import Benefits from '../components/home/Benefits';
 
 const Home: NextPage = () => {
   const { data, isLoading } = useQuery('usersAdddoc', fetchCourses, {
@@ -23,19 +25,13 @@ const Home: NextPage = () => {
           content="In Horace learning, We are building the best global education network"
         />
         <link rel="icon" href="/favicon.ico" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i|Playfair+Display:400,400i,700,700i,900,900i"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        />
       </Head>
 
       <Box>
         <Header />
         <Container>
+          <Hero />
+          <Benefits />
           {isLoading && <CircularProgress />}
           <Typography variant="h1">Horace Learning</Typography>
           {data?.map((course: any, idx: number) => (
