@@ -1,4 +1,5 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
+import BenefitCard from './BenefitCard';
 
 const Benefits = () => {
   return (
@@ -23,6 +24,15 @@ const Benefits = () => {
           everywhere!
         </Typography>
       </Box>
+      <Box sx={benefitsStyles.cardContainer}>
+        <Grid container spacing={2}>
+          {cards.map((card, idx) => (
+            <Grid item xs={12} sm={6} md={4}>
+              <BenefitCard key={idx} {...card} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </Box>
   );
 };
@@ -30,11 +40,37 @@ const Benefits = () => {
 export default Benefits;
 
 const benefitsStyles = {
-  container: {},
+  cardContainer: {
+    my: 5,
+  },
   top: {
     maxWidth: '700px',
     '& > *': {
-      marginBottom: '10px',
+      marginBottom: '20px',
     },
   },
 };
+
+const cards = [
+  {
+    icon: require('../../assets/img/plus.png'),
+    title: 'Learn New Skills',
+    description:
+      'Get access to top-notch educational resources to learn new skills from leaders in your field, working professionals, and experienced teachers',
+    color: '#F9AD56',
+  },
+  {
+    icon: require('../../assets/img/book.png'),
+    title: "Free Trial's Available",
+    description:
+      "Our platform offers the chance to explore our courses, try them out, and only pay once you're sure you want to continue. Get a feel for our courses and start learning from the best",
+    color: '#16C79A',
+  },
+  {
+    icon: require('../../assets/img/group.png'),
+    title: "Expert Tutor's",
+    description:
+      'Horace Learning provides expert tutors to help students reach their full potential. Our tutors come from all backgrounds and specializations, and are committed to providing personalized instruction to each learner.',
+    color: '#FF5E78',
+  },
+];
