@@ -177,7 +177,7 @@ const headerStyles = {
   },
   logo: {
     marginRight: 5,
-    marginTop: '-3px',
+    marginTop: '-.3rem',
     marginLeft: '-10px',
   },
   language: {
