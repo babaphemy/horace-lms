@@ -80,6 +80,7 @@ const headerStyles = {
 		px: 0,
 	},
 	flexList: {
+		fontFamily: 'Lato,Inter, open Sans',
 		display: 'flex',
 		justifyContent: 'space-between',
 		alignItems: 'center',

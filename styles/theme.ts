@@ -372,13 +372,12 @@ export const muiTheme = createTheme({
 		background: {
 			default: '#fff',
 		},
-		mode: 'dark',
 	},
 	typography: {
 		button: {
 			fontWeight: 600,
 		},
-		fontFamily: `"Lato",  'Inter', 'open Sans'`,
+		fontFamily: `'Mulish','Lato',  'Inter', 'open Sans'`,
 		body1: {
 			fontSize: '1rem',
 			fontWeight: 400,
