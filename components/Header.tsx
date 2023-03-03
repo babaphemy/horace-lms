@@ -153,7 +153,7 @@ const headerStyles = {
     position: 'relative',
   },
   flexHeader: {
-    display: 'flex',
+    display: { xs: 'none', sm: 'none', md: 'flex' },
     justifyContent: 'space-between',
     alignItems: 'center',
     px: 0,

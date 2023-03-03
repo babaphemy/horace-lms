@@ -9,7 +9,7 @@ const Hero = () => {
   return (
     <Box sx={heroStyles.container}>
       <Box sx={heroStyles.left}>
-        <Typography variant="h2">
+        <Typography variant="h2" mb={'20px'}>
           Grow Your{' '}
           <Typography component="span" variant="h2" color={'#FF6854'}>
             Skills
@@ -17,7 +17,7 @@ const Hero = () => {
           <br />
           With Horace Learning
         </Typography>
-        <Typography variant="body2">
+        <Typography variant="body2" mb={'20px'}>
           At Horace Learning, we are committed to building the best global
           education network, one that connects students, educators and
           professionals from all over the world.
@@ -52,12 +52,10 @@ const heroStyles = {
     px: 3,
     borderRadius: 10,
     textTransform: 'capitalize',
+    mb: '20px',
   },
   left: {
     maxWidth: '600px',
-    '& > *': {
-      marginBottom: '20px',
-    },
   },
   right: {
     maxWidth: '500px',

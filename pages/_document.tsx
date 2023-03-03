@@ -6,6 +6,18 @@ export default function Document() {
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i|Playfair+Display:400,400i,700,700i,900,900i"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Mulish:100,100i,300,300i,400,400i,700,700i,900,900i|Playfair+Display:400,400i,700,700i,900,900i"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        />
+        <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin=""

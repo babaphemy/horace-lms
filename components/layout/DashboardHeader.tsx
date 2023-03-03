@@ -1,25 +1,23 @@
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
-  IconButton,
-  Theme,
-  Link as MuiLink,
-  List,
-  Container,
-  Toolbar,
+  Avatar,
   Box,
+  Button,
+  Container,
+  IconButton,
   Menu,
   MenuItem,
-  Typography,
-  Button,
+  Theme,
+  Toolbar,
   Tooltip,
-  Avatar,
+  Typography,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import MenuIcon from '@mui/icons-material/Menu';
-import NextLink from 'next/link';
 import Image from 'next/image';
 import React from 'react';
 import logo from '../../assets/img/logo.png';
+import { useRouter } from 'next/router';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     textAlign: 'center',
@@ -36,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const pages = ['Home', 'About', 'Courses', 'Contact'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const DashboardHeader = () => {
+  const router = useRouter();
   const classes = useStyles();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -60,7 +59,11 @@ const DashboardHeader = () => {
     <AppBar position="static" className="mb-8">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <IconButton className={classes.menuButton} aria-label="Menu">
+          <IconButton
+            className={classes.menuButton}
+            aria-label="Menu"
+            onClick={() => router.push('/')}
+          >
             <Image src={logo} alt="logo" width={150} height={50} />
           </IconButton>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
