@@ -48,6 +48,8 @@ export interface State {
   }
   export type tCurriculum = {
     section: tSection[];
+    objective?: string[];
+    requirement?: string[];
   };
   export type tCourse = {
     id: string;

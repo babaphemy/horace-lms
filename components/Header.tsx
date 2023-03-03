@@ -153,12 +153,13 @@ const headerStyles = {
     position: 'relative',
   },
   flexHeader: {
-    display: { xs: 'none', sm: 'none', md: 'flex' },
+    display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     px: 0,
   },
   flexList: {
+    fontFamily: 'Lato,Inter, open Sans',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',

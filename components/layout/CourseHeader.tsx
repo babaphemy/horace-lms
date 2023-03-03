@@ -1,46 +1,50 @@
 import React from 'react';
-import { Badge, Box, Chip, Rating, Typography } from '@mui/material';
+import { Badge, Box, Chip, Rating, Stack, Typography } from '@mui/material';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import ReviewsIcon from '@mui/icons-material/Reviews';
 
 import ProgressWithLabel from '../common/ProgressWithLabel';
 interface Props {
-  id: string;
-  name: string;
-  author: string;
-  lessonCount: number;
-  category: string;
-  brief: string;
-  ratings?: number | null;
-  reviews?: number | null;
+  courseProps: {
+    id: string;
+    name: string;
+    author: string;
+    lessonCount: number;
+    category: string;
+    brief: string;
+    ratings?: number | null;
+    reviews?: number | null;
+    preview?: string;
+  };
 }
 const CourseHeader = (props: Props) => {
-  const { name, brief, category, lessonCount, ratings, author } = props;
-  const handleOpenProjectMenu = () => {};
+  const { name, brief, category, lessonCount, ratings, author, preview } =
+    props?.courseProps || {};
+  // props;
   return (
     <div className="flex flex-col w-full *px-24 *sm:px-20">
       <div className="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-32 sm:my-2">
         <div className="flex flex-auto items-center min-w-0">
-          <div className="box-border h-32 w-32 p-4 border-2 rounded-lg">
-            <Typography variant="caption" color={'graytext'}>
-              Watch preview
-            </Typography>
+          <div className="box-border h-40 w-42 border-2 rounded-lg">
+            <video
+              controls
+              className="h-full w-full"
+              src={`https://essl.b-cdn.net/${preview}`}
+            />
           </div>
 
           <div className="flex flex-col min-w-0 mx-16">
-            <Typography variant="caption" color="graytext">
+            <Stack direction={'row'} spacing={1}>
               {category?.split(',').map((x) => (
                 <Chip key={x} label={x} variant="outlined" color="primary" />
-              ))}{' '}
-              | {lessonCount} lessons
-            </Typography>
+              ))}
+            </Stack>
             <Typography className="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">
               {name}
             </Typography>
             <Typography variant="caption" color="graytext">
-              by {author}
+              by {author}. | {lessonCount} Lessons
             </Typography>
-
             <div className="flex items-center mt-4">
               <NotificationsActiveIcon />
 
