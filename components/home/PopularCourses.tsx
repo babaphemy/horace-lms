@@ -64,6 +64,14 @@ const popularStyles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     my: '50px',
+    flexWrap: 'wrap',
+
+    '@media (max-width: 600px)': {
+      '& > *': {
+        width: '100%',
+        my: '5px',
+      },
+    },
   },
 };
 
