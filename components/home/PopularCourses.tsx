@@ -2,6 +2,14 @@ import { Box, Typography, Grid, CircularProgress } from '@mui/material';
 import Batch from './Batch';
 import { useState, useEffect } from 'react';
 import PopularCard from './PopularCard';
+import img1 from '../../assets/img/1.png';
+import img2 from '../../assets/img/2.png';
+import img3 from '../../assets/img/3.png';
+import img4 from '../../assets/img/4.png';
+import img5 from '../../assets/img/5.png';
+import img6 from '../../assets/img/6.png';
+
+const cardImage = [img1, img2, img3, img4, img5, img6];
 
 const PopularCourses = ({ data, isLoading }: any) => {
   const [active, setActive] = useState('all');
@@ -44,10 +52,10 @@ const PopularCourses = ({ data, isLoading }: any) => {
       </Box>
       <Box>
         <Grid container spacing={5}>
-          {filteredData?.map((course: any) => {
+          {filteredData?.map((course: any, index: number) => {
             return (
               <Grid item xs={12} sm={6} md={4}>
-                <PopularCard data={course} />
+                <PopularCard data={course} img={cardImage[index]} />
               </Grid>
             );
           })}

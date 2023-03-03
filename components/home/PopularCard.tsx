@@ -1,7 +1,6 @@
 import { Avatar, Box, Divider, Rating, Typography } from '@mui/material';
 import Image from 'next/image';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-import working from '../../assets/img/working.png';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useRouter } from 'next/router';
@@ -19,7 +18,7 @@ const Tag = ({ label }: { label: string }) => {
   );
 };
 
-const PopularCard = ({ data }: any) => {
+const PopularCard = ({ data, img }: any) => {
   const router = useRouter();
   const { id, courseName, author, category, brief, posts } = data;
 
@@ -47,7 +46,7 @@ const PopularCard = ({ data }: any) => {
       <Box sx={cardStyles.card}>
         <Box sx={cardStyles.image}>
           <Image
-            src={working}
+            src={img}
             alt="a man smiling"
             width={'400rem'}
             height={'250rem'}
