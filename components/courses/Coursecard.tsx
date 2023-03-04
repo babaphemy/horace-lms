@@ -9,7 +9,7 @@ const Coursecard: React.FC<Props> = (props: Props): ReactElement => {
 	const { course } = props;
 	return (
 		<div>
-			<Link href={`/course/detailb?cid=${course.id}`}>
+			<Link href={`/course/detailb?cid=${course.id}`} shallow>
 				<Typography variant="body1">{course.courseName}</Typography>
 			</Link>
 			<Button>Join</Button>

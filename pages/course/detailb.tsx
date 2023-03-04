@@ -4,7 +4,7 @@ import {
 	Button,
 	Container,
 	Divider,
-	Link,
+	Link as MuiLink,
 	List,
 	ListItem,
 	ListItemIcon,
@@ -28,11 +28,13 @@ import {
 	School,
 	ShoppingCart,
 } from '@mui/icons-material';
+import Link from 'next/link';
 import FooterLte from '../../components/layout/FooterLte';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 import { fetchCourse } from '../../api/rest';
 import { tSection } from '../../types/types';
+
 const Detailb = () => {
 	function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
 		event.preventDefault();
@@ -83,16 +85,17 @@ const Detailb = () => {
 				<CourseHeader courseProps={headerProps} />
 				<div role="presentation" onClick={handleClick} className="my-4">
 					<Breadcrumbs aria-label="breadcrumb">
-						<Link
-							underline="hover"
-							sx={{ display: 'flex', alignItems: 'center' }}
-							color="inherit"
-							href="/"
-						>
-							<HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-							Home
+						<Link href={'/'} shallow>
+							<MuiLink
+								underline="hover"
+								sx={{ display: 'flex', alignItems: 'center' }}
+								color="inherit"
+							>
+								<HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+								Home
+							</MuiLink>
 						</Link>
-						<Link
+						<MuiLink
 							underline="hover"
 							sx={{ display: 'flex', alignItems: 'center' }}
 							color="inherit"
@@ -100,7 +103,7 @@ const Detailb = () => {
 						>
 							<School sx={{ mr: 0.5 }} fontSize="inherit" />
 							Courses
-						</Link>
+						</MuiLink>
 						<Typography
 							sx={{ display: 'flex', alignItems: 'center' }}
 							color="text.primary"
@@ -167,7 +170,10 @@ const Detailb = () => {
 							<div className="flex mt-4">
 								<Avatar
 									alt="instructor"
-									src="https://material-ui.com/static/images/avatar/1.jpg"
+									src={
+										course?.author?.dp ||
+										'https://material-ui.com/static/images/avatar/1.jpg'
+									}
 									sx={{ width: 56, height: 56 }}
 								/>
 								<div className="ml-4">

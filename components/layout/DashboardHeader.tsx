@@ -3,7 +3,6 @@ import {
 	IconButton,
 	Theme,
 	Link as MuiLink,
-	List,
 	Container,
 	Toolbar,
 	Box,
