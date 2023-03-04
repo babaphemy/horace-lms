@@ -9,8 +9,12 @@ const withRouterAndRef = (WrappedComponent) => {
     }
   }
 
-  const ComponentWithRouter = withRouter(InnerComponentWithRef, { withRef: true });
-  return forwardRef((props, ref) => <ComponentWithRouter {...props} forwardRef={ref} />);
+  const ComponentWithRouter = withRouter(InnerComponentWithRef, {
+    withRef: true,
+  });
+  return forwardRef((props, ref) => (
+    <ComponentWithRouter {...props} forwardRef={ref} />
+  ));
 };
 
 export default withRouterAndRef;

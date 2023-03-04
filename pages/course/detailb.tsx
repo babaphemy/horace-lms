@@ -20,13 +20,13 @@ import DashboardHeader from '../../components/layout/DashboardHeader';
 import CourseHeader from '../../components/layout/CourseHeader';
 import CourseObjectives from '../../components/courses/CourseObjectives';
 import {
-	Code,
-	Download,
-	NoteAddRounded,
-	PlayCircle,
-	QuizRounded,
-	School,
-	ShoppingCart,
+  Code,
+  Download,
+  NoteAddRounded,
+  PlayCircle,
+  QuizRounded,
+  School,
+  ShoppingCart,
 } from '@mui/icons-material';
 import Link from 'next/link';
 import FooterLte from '../../components/layout/FooterLte';

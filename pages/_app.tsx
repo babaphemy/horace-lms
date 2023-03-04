@@ -4,20 +4,36 @@ import React from 'react';
 import { ThemeProvider } from '@mui/material';
 import { muiTheme } from '../styles/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { AppProvider } from '../context/AllProvider';
+import { AppProvider, AppDpx } from '../context/AppContext';
+import { USER_ADD } from '../context/Action';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-	return (
-		<ThemeProvider theme={muiTheme}>
-			<QueryClientProvider client={queryClient}>
-				<AppProvider>
-					<Component {...pageProps} />
-				</AppProvider>
-			</QueryClientProvider>
-		</ThemeProvider>
-	);
+  const dispatch = React.useContext(AppDpx);
+  React.useEffect(() => {
+    const user = localStorage.getItem('horaceUser');
+    if (user) {
+      dispatch({
+        type: USER_ADD,
+        payload: JSON.parse(user),
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <AppProvider>
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
+      </AppProvider>
+      <ToastContainer />
+    </ThemeProvider>
+  );
 }
 
 export default MyApp;

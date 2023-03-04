@@ -20,139 +20,139 @@ import { LECTURE_SET } from '../../context/actions';
 import { tCurriculum } from '../../types/types';
 
 const data = [
-	{ icon: <PlayCircleIcon />, label: 'lecture' },
-	{ icon: <QuizIcon />, label: 'quiz' },
-	{ icon: <NoteIcon />, label: 'note' },
-	{ icon: <SlideshowIcon />, label: 'slide' },
+  { icon: <PlayCircleIcon />, label: 'lecture' },
+  { icon: <QuizIcon />, label: 'quiz' },
+  { icon: <NoteIcon />, label: 'note' },
+  { icon: <SlideshowIcon />, label: 'slide' },
 ];
 
 const FireNav = styled(List)<{ component?: React.ElementType }>({
-	'& .MuiListItemButton-root': {
-		paddingLeft: 24,
-		paddingRight: 24,
-	},
-	'& .MuiListItemIcon-root': {
-		minWidth: 0,
-		marginRight: 16,
-	},
-	'& .MuiSvgIcon-root': {
-		fontSize: 20,
-	},
+  '& .MuiListItemButton-root': {
+    paddingLeft: 24,
+    paddingRight: 24,
+  },
+  '& .MuiListItemIcon-root': {
+    minWidth: 0,
+    marginRight: 16,
+  },
+  '& .MuiSvgIcon-root': {
+    fontSize: 20,
+  },
 });
 interface Props {
-	isClass?: boolean;
-	curriculum?: tCurriculum;
-	courseName?: string;
+  isClass?: boolean;
+  curriculum?: tCurriculum;
+  courseName?: string;
 }
 const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
-	const { curriculum, courseName } = props;
-	const [selected, setSel] = React.useState<string>('1');
-	const dispatch = useContext(AppDpx);
-	const doSel = (id: string) => {
-		setSel((v) => (v === id ? '' : id));
-	};
-	return (
-		<Box className="flex w-fit">
-			<Paper elevation={0}>
-				<FireNav disablePadding>
-					<Divider />
-					<ListItem component="div" disablePadding>
-						<ListItemButton className="h-18">
-							<ListItemIcon>
-								<Home color="primary" />
-							</ListItemIcon>
-							<ListItemText
-								primary={courseName || ''}
-								primaryTypographyProps={{
-									color: 'primary',
-									fontWeight: 'medium',
-									variant: 'body2',
-								}}
-							/>
-						</ListItemButton>
-					</ListItem>
-					<Divider />
-					{curriculum?.section.map((item) => (
-						<Box
-							key={item.id}
-							sx={{
-								bgcolor: selected === item.id ? 'rgba(71, 98, 130, 0.2)' : null,
-								pb: selected === item.id ? 2 : 0,
-							}}
-						>
-							<ListItemButton
-								alignItems="flex-start"
-								onClick={() => doSel(item.id)}
-								sx={{
-									px: 3,
-									pt: 2.5,
-									pb: selected === item.id ? 0 : 2.5,
-									'&:hover, &:focus': {
-										'& svg': { opacity: selected === item.id ? 1 : 0 },
-									},
-								}}
-							>
-								<ListItemText
-									primary={item.title}
-									primaryTypographyProps={{
-										fontSize: 15,
-										fontWeight: 'medium',
-										lineHeight: '20px',
-										mb: '2px',
-									}}
-									secondary={item.description}
-									secondaryTypographyProps={{
-										noWrap: true,
-										fontSize: 12,
-										lineHeight: '16px',
-										color:
-											selected === item.id
-												? 'rgba(0,0,0,0)'
-												: 'rgba(255,255,255,0.5)',
-									}}
-									sx={{ my: 0 }}
-								/>
-								<KeyboardArrowDown
-									sx={{
-										mr: -1,
-										opacity: 0,
-										transform:
-											selected === item.id ? 'rotate(-180deg)' : 'rotate(0)',
-										transition: '0.2s',
-									}}
-								/>
-							</ListItemButton>
-							{selected === item.id &&
-								item?.lecture?.map((item) => (
-									<ListItemButton
-										key={item.title}
-										sx={{
-											py: 0,
-											minHeight: 32,
-											color: 'rgba(255,255,255,.8)',
-										}}
-									>
-										<ListItemIcon sx={{ color: 'inherit' }}>
-											{data.find((i) => i.label === item.type)?.icon}
-										</ListItemIcon>
-										<ListItemText
-											primary={item.title}
-											primaryTypographyProps={{
-												fontSize: 14,
-												fontWeight: 'medium',
-											}}
-											onClick={() =>
-												dispatch({ type: LECTURE_SET, data: item })
-											}
-										/>
-									</ListItemButton>
-								))}
-						</Box>
-					))}
-				</FireNav>
-			</Paper>
-		</Box>
-	);
+  const { curriculum, courseName } = props;
+  const [selected, setSel] = React.useState<string>('1');
+  const dispatch = useContext(AppDpx);
+  const doSel = (id: string) => {
+    setSel((v) => (v === id ? '' : id));
+  };
+  return (
+    <Box className="flex w-fit">
+      <Paper elevation={0}>
+        <FireNav disablePadding>
+          <Divider />
+          <ListItem component="div" disablePadding>
+            <ListItemButton className="h-18">
+              <ListItemIcon>
+                <Home color="primary" />
+              </ListItemIcon>
+              <ListItemText
+                primary={courseName || ''}
+                primaryTypographyProps={{
+                  color: 'primary',
+                  fontWeight: 'medium',
+                  variant: 'body2',
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <Divider />
+          {curriculum?.section.map((item) => (
+            <Box
+              key={item.id}
+              sx={{
+                bgcolor: selected === item.id ? 'rgba(71, 98, 130, 0.2)' : null,
+                pb: selected === item.id ? 2 : 0,
+              }}
+            >
+              <ListItemButton
+                alignItems="flex-start"
+                onClick={() => doSel(item.id)}
+                sx={{
+                  px: 3,
+                  pt: 2.5,
+                  pb: selected === item.id ? 0 : 2.5,
+                  '&:hover, &:focus': {
+                    '& svg': { opacity: selected === item.id ? 1 : 0 },
+                  },
+                }}
+              >
+                <ListItemText
+                  primary={item.title}
+                  primaryTypographyProps={{
+                    fontSize: 15,
+                    fontWeight: 'medium',
+                    lineHeight: '20px',
+                    mb: '2px',
+                  }}
+                  secondary={item.description}
+                  secondaryTypographyProps={{
+                    noWrap: true,
+                    fontSize: 12,
+                    lineHeight: '16px',
+                    color:
+                      selected === item.id
+                        ? 'rgba(0,0,0,0)'
+                        : 'rgba(255,255,255,0.5)',
+                  }}
+                  sx={{ my: 0 }}
+                />
+                <KeyboardArrowDown
+                  sx={{
+                    mr: -1,
+                    opacity: 0,
+                    transform:
+                      selected === item.id ? 'rotate(-180deg)' : 'rotate(0)',
+                    transition: '0.2s',
+                  }}
+                />
+              </ListItemButton>
+              {selected === item.id &&
+                item?.lecture?.map((item) => (
+                  <ListItemButton
+                    key={item.title}
+                    sx={{
+                      py: 0,
+                      minHeight: 32,
+                      color: 'rgba(255,255,255,.8)',
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'inherit' }}>
+                      {data.find((i) => i.label === item.type)?.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.title}
+                      primaryTypographyProps={{
+                        fontSize: 14,
+                        fontWeight: 'medium',
+                      }}
+                      onClick={() =>
+                        dispatch({ type: LECTURE_SET, data: item })
+                      }
+                    />
+                  </ListItemButton>
+                ))}
+            </Box>
+          ))}
+        </FireNav>
+      </Paper>
+    </Box>
+  );
 };
 
 export default Curriculumb;
