@@ -9,12 +9,15 @@ const Benefits = () => {
           variant="h5"
           sx={{
             color: '#FF6854',
+            mb: 2,
           }}
         >
           Benefits
         </Typography>
-        <Typography variant="h3">Learn From The Best Teachers</Typography>
-        <Typography variant="body2">
+        <Typography variant="h3" mb={2}>
+          Learn From The Best Teachers
+        </Typography>
+        <Typography variant="body2" mb={2}>
           We believe that education should be accessible to all and strive to
           provide equal opportunities to those looking to learn, grow and make a
           positive impact in the world. With our platform, you can gain
@@ -45,9 +48,6 @@ const benefitsStyles = {
   },
   top: {
     maxWidth: '700px',
-    '& > *': {
-      marginBottom: '20px',
-    },
   },
 };
 

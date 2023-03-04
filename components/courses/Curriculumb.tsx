@@ -15,7 +15,6 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import QuizIcon from '@mui/icons-material/Quiz';
 import NoteIcon from '@mui/icons-material/Note';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
-import SchoolIcon from '@mui/icons-material/School';
 import { AppDpx } from '../../context/AllProvider';
 import { LECTURE_SET } from '../../context/actions';
 import { tCurriculum } from '../../types/types';
@@ -53,23 +52,9 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
     setSel((v) => (v === id ? '' : id));
   };
   return (
-    <Box className="flex h-screen w-64 mr-8">
+    <Box className="flex w-fit">
       <Paper elevation={0}>
-        <FireNav component="nav" disablePadding>
-          <ListItemButton component="a" href="#customized-list">
-            <ListItemIcon sx={{ fontSize: 20 }}>
-              <SchoolIcon />
-            </ListItemIcon>
-            <ListItemText
-              sx={{ my: 0 }}
-              primary="Details"
-              primaryTypographyProps={{
-                fontSize: 20,
-                fontWeight: 'medium',
-                letterSpacing: 0,
-              }}
-            />
-          </ListItemButton>
+        <FireNav disablePadding>
           <Divider />
           <ListItem component="div" disablePadding>
             <ListItemButton className="h-18">

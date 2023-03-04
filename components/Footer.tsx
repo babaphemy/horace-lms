@@ -110,7 +110,8 @@ const Footer = () => {
         </Grid>
         <Divider sx={footerStyles.divider} />
         <Typography variant="body1" sx={footerStyles.center}>
-          Created By Horace | All Rights Reserved!
+          Powered By Horace | All Rights Reserved! &copy;{' '}
+          {new Date().getFullYear()}
         </Typography>
       </Container>
     </Box>
