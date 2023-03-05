@@ -20,7 +20,7 @@ interface Props {
 const CourseHeader = (props: Props) => {
   const { name, brief, category, lessonCount, ratings, author, preview } =
     props?.courseProps || {};
-  // props;
+  const isRegd = false;
   return (
     <div className="flex flex-col w-full *px-24 *sm:px-20">
       <div className="flex flex-col sm:flex-row flex-auto sm:items-center min-w-0 my-32 sm:my-2">
@@ -69,7 +69,7 @@ const CourseHeader = (props: Props) => {
           </Badge>
         </div>
       </div>
-      <ProgressWithLabel value={30} />
+      {isRegd && <ProgressWithLabel value={30} />}
     </div>
   );
 };

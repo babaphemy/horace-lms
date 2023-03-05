@@ -17,10 +17,10 @@ import { tCurriculum } from '../../types/types';
 import { Check, TextSnippet } from '@mui/icons-material';
 
 const goals = [
-  'Makes you happy',
-  'Makes you rich',
-  'Makes you famous',
-  'be great',
+  'Great course',
+  'Content is well paced',
+  'Clear & conscice explanations',
+  'nice, I love it',
 ];
 const ranges = {
   content: 'Content',
@@ -109,42 +109,47 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
           )}
         </div>
       </Paper>
-      <Paper className="p-10 mt-8 rounded-2xl border-2 border-t-red-500">
-        <Typography variant="h6" className="mb-4">
-          What you will learn
-        </Typography>
-        <Typography variant="subtitle1" className="mb-4">
-          AT the end of this course, you will:
-        </Typography>
-        <List>
-          {curriculum?.objective?.map((obj, index) => (
-            <ListItem key={index + obj}>
-              <ListItemIcon>
-                <TextSnippet />
-              </ListItemIcon>
-              <ListItemText primary={obj} />
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
-      <Paper className="p-10 mt-8 rounded-2xl border-2 border-t-red-500">
-        <Typography variant="h6" className="mb-4">
-          Requirements
-        </Typography>
-        <Typography variant="subtitle1" className="mb-4">
-          Good to have the following skills before taking this course:
-        </Typography>
-        <List>
-          {curriculum?.requirement?.map((req, index) => (
-            <ListItem key={index}>
-              <ListItemIcon>
-                <Check />
-              </ListItemIcon>
-              <ListItemText primary={req} />
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
+      {curriculum?.objective && (
+        <Paper className="p-10 mt-8 rounded-2xl border-2 border-t-red-500">
+          <Typography variant="h6" className="mb-4">
+            What you will learn
+          </Typography>
+          <Typography variant="subtitle1" className="mb-4">
+            AT the end of this course, you will:
+          </Typography>
+          <List>
+            {curriculum?.objective?.map((obj, index) => (
+              <ListItem key={index + obj}>
+                <ListItemIcon>
+                  <TextSnippet />
+                </ListItemIcon>
+                <ListItemText primary={obj} />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
+      )}
+      {curriculum?.requirement && (
+        <Paper className="p-10 mt-8 rounded-2xl border-2 border-t-red-500">
+          <Typography variant="h6" className="mb-4">
+            Requirements
+          </Typography>
+          <Typography variant="subtitle1" className="mb-4">
+            Good to have the following skills before taking this course:
+          </Typography>
+          <List>
+            {curriculum?.requirement?.map((req, index) => (
+              <ListItem key={index}>
+                <ListItemIcon>
+                  <Check />
+                </ListItemIcon>
+                <ListItemText primary={req} />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
+      )}
+
       <Paper className="p-10 mt-8 rounded-2xl border-2 border-t-red-500">
         <Typography variant="h6" className="mb-4">
           Syllabus

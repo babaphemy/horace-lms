@@ -1,18 +1,18 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import {
-	AppBar,
-	IconButton,
-	Theme,
-	Link as MuiLink,
-	Container,
-	Toolbar,
-	Box,
-	Menu,
-	MenuItem,
-	Typography,
-	Button,
-	Tooltip,
-	Avatar,
+  AppBar,
+  IconButton,
+  Theme,
+  Link as MuiLink,
+  Container,
+  Toolbar,
+  Box,
+  Menu,
+  MenuItem,
+  Typography,
+  Button,
+  Tooltip,
+  Avatar,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const pages = ['Home', 'About', 'Courses', 'Contact'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const isAuth = false;
 const DashboardHeader = () => {
   const router = useRouter();
   const classes = useStyles();
@@ -113,35 +114,37 @@ const DashboardHeader = () => {
               </Button>
             ))}
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          {isAuth && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
 
           {/* <List>
 						<NextLink href="/" passHref>
