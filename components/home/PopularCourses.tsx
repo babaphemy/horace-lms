@@ -20,8 +20,10 @@ const PopularCourses = ({ data, isLoading }: any) => {
     if (active === 'all') {
       setFilteredData(data);
     } else {
-      const filtered = data?.filter((course: tCourse) =>
-        course?.category?.split(',').includes(active.toLowerCase())
+      const filtered = data?.filter(
+        (course: tCourse) =>
+          course?.category?.split(',').includes(active.toLowerCase()) ||
+          course?.courseName?.toLowerCase().includes(active.toLowerCase())
       );
       // const filtered = data?.filter((course: tCourse) => {
       //   if (course.category === active) {
@@ -32,7 +34,7 @@ const PopularCourses = ({ data, isLoading }: any) => {
       // });
       setFilteredData(filtered);
     }
-  }, [active]);
+  }, [active, data]);
 
   if (isLoading) return <CircularProgress />;
 

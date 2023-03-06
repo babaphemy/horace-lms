@@ -76,6 +76,7 @@ const StyledMenu = styled((props: MenuProps) => (
 const Header = () => {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const { user } = useContext(Appcontext);
   const dispatch = useContext(AppDpx);
 
@@ -87,12 +88,18 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  // const handleLogout = () => {
-  //   handleClose();
-  //   localStorage.removeItem('horaceUser');
-  //   dispatch({ type: USER_RESET, payload: null });
-  //   router.push('/login');
-  // };
+  const handleLogout = () => {
+    handleClose();
+    localStorage.removeItem('horaceUser');
+    dispatch({ type: USER_RESET, payload: null });
+    router.push('/login');
+  };
+
+  React.useEffect(() => {
+    if (user?.id) {
+      setLoggedIn(true);
+    }
+  }, [user]);
 
   return (
     <>
@@ -152,13 +159,13 @@ const Header = () => {
                   <Typography variant="body1" sx={headerStyles.language}>
                     English
                   </Typography>
-                  {!user?.id && (
+                  {!loggedIn && (
                     <NextLink href="/login" passHref>
                       <MuiLink>Login</MuiLink>
                     </NextLink>
                   )}
                 </Box>
-                {!user?.id && (
+                {!loggedIn && (
                   <NextLink href="/sign-up" passHref>
                     <MuiLink>
                       <Button
@@ -207,7 +214,7 @@ const Header = () => {
                 <LanguageIcon />
                 English
               </Typography>
-              {!user?.id ? (
+              {!loggedIn ? (
                 <>
                   <NextLink href="/login" passHref>
                     <MuiLink>Login</MuiLink>
@@ -285,8 +292,7 @@ const Header = () => {
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
-                        // handleLogout();
-                        handleClose();
+                        handleLogout();
                       }}
                       disableRipple
                     >
