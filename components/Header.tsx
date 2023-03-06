@@ -90,9 +90,9 @@ const Header = () => {
   };
   const handleLogout = () => {
     handleClose();
-    localStorage.removeItem('horaceUser');
     dispatch({ type: USER_RESET, payload: null });
     router.push('/login');
+    localStorage.removeItem('horaceUser');
   };
 
   React.useEffect(() => {
@@ -237,30 +237,12 @@ const Header = () => {
                     variant="contained"
                     disableElevation
                     onClick={handleClick}
-                    sx={{
-                      border: '1px solid #00A9C1',
-                      fontSize: '8pt',
-                      borderRadius: 2,
-                      padding: '0.3rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-
-                      '&:hover': {
-                        cursor: 'pointer',
-                        border: '1px solid black',
-                        backgroundColor: 'transparent',
-                      },
-                    }}
+                    sx={headerStyles.menuButton}
                   >
                     <Box display="flex" alignItems="center">
                       <Typography
                         variant="body2"
-                        sx={{
-                          fontWeight: 700,
-                          fontSize: '8pt',
-                          px: 1,
-                        }}
+                        sx={headerStyles.menuButtonName}
                       >
                         {user?.firstname + ' ' + user?.lastname ||
                           user?.email?.split('@')[0]}
@@ -425,5 +407,27 @@ const headerStyles = {
     flexDirection: 'column',
     alignItems: 'flex--start',
     justifyContent: 'space-between',
+  },
+
+  menuButton: {
+    border: '1px solid #00A9C1',
+    fontSize: '8pt',
+    borderRadius: 2,
+    padding: '0.3rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+
+    '&:hover': {
+      cursor: 'pointer',
+      border: '1px solid black',
+      backgroundColor: 'transparent',
+    },
+  },
+  menuButtonName: {
+    fontWeight: 700,
+    fontSize: '8pt',
+    px: 1,
+    textTransform: 'capitalize',
   },
 };
