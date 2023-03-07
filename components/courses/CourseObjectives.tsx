@@ -11,9 +11,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { ReactElement, useContext, useState } from 'react';
-import { MODAL_SET } from '../../context/Action';
-import { AppDpx } from '../../context/AppContext';
+import { ReactElement, useState } from 'react';
 import { tCurriculum } from '../../types/types';
 import CourseReview from './CourseReview';
 import Curriculumb from './Curriculumb';
@@ -40,9 +38,9 @@ interface Props {
   brief: string;
   posts?: any[];
   ratings?: number | null;
+  handleJoinClass: () => void;
 }
 const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
-  const dispatch = useContext(AppDpx);
   const {
     target,
     category,
@@ -52,11 +50,9 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     brief,
     posts,
     ratings,
+    handleJoinClass,
   } = props;
   const [tabValue, setTabValue] = useState(0);
-  const handleJoinClass = () => {
-    dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });
-  };
 
   return (
     <>

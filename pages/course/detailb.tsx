@@ -31,10 +31,10 @@ import {
 import Link from 'next/link';
 import FooterLte from '../../components/layout/FooterLte';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
-import { fetchCourse } from '../../api/rest';
+import { useQuery, useMutation } from 'react-query';
+import { addUserCourse, fetchCourse } from '../../api/rest';
 import { MODAL_SET } from '../../context/Action';
-import { AppDpx } from '../../context/AppContext';
+import { Appcontext, AppDpx } from '../../context/AppContext';
 import ModalLogin from '../../components/auth/ModalLogin';
 import SignUpLogin from '../../components/auth/SignUpLogin';
 
@@ -43,6 +43,7 @@ const Detailb = () => {
     event.preventDefault();
     //console.info('You clicked a breadcrumb.');
   }
+  const { user } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
   const router = useRouter();
   const cid = router.query.cid as string;
@@ -80,6 +81,33 @@ const Detailb = () => {
   const preview = curriculum?.section[0]?.lecture[0]?.video;
   const { lessonCount, downloadCount, quizCount, labCount, noteCount } =
     assetCount || {};
+
+  const addCourseToUser = useMutation(addUserCourse, {
+    onSuccess: (data) => {
+      console.log('data', data);
+    },
+    onError: (error) => {
+      console.log('error', error);
+    },
+  });
+
+  const handleJoinClass = () => {
+    if (user?.id) {
+      if (data?.price === 0) {
+        const payload = {
+          id: data?.id,
+          user: user?.id,
+        };
+        addCourseToUser.mutate(payload);
+        return;
+      } else {
+        console.log('Proceed to payment');
+      }
+    } else {
+      dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });
+    }
+  };
+
   const headerProps = {
     id: data?.id,
     name: courseName,
@@ -102,10 +130,7 @@ const Detailb = () => {
     brief,
     posts,
     ratings: calculatedRating(),
-  };
-
-  const handleJoinClass = () => {
-    dispatch({ type: MODAL_SET, data: { open: true, type: 'signup' } });
+    handleJoinClass,
   };
 
   return (

@@ -1,24 +1,23 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
-  IconButton,
-  Theme,
-  Link as MuiLink,
-  Container,
-  Toolbar,
+  Avatar,
   Box,
+  Button,
+  Container,
+  IconButton,
   Menu,
   MenuItem,
-  Typography,
-  Button,
+  Theme,
+  Toolbar,
   Tooltip,
-  Avatar,
+  Typography,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import React from 'react';
 import logo from '../../assets/img/logo.png';
-import { useRouter } from 'next/router';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     textAlign: 'center',
@@ -68,7 +67,13 @@ const DashboardHeader = () => {
           >
             <Image src={logo} alt="logo" width={150} height={50} />
           </IconButton>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              justifyContent: 'flex-end',
+              display: { xs: 'flex', md: 'none' },
+            }}
+          >
             <IconButton
               size="large"
               aria-label="account of current user"

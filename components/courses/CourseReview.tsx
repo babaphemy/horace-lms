@@ -172,7 +172,7 @@ const CourseReview = (props: Props) => {
       </Box>
       <Box>
         {posts?.map((post, index, array) => (
-          <Box>
+          <Box key={index}>
             <Box display={'flex'} my={1}>
               <Avatar
                 alt="instructor"
