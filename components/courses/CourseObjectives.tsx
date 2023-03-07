@@ -39,7 +39,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
   const [tabValue, setTabValue] = useState(0);
   return (
     <>
-      <Paper className="flex flex-col p-10 w-full shadow rounded-2xl overflow-hidden border-2 border-t-red-500">
+      <Paper className="flex flex-col py-10 px-4 md:p-10 w-full shadow rounded-2xl overflow-hidden border-2 border-t-red-500">
         <div className="flex sm:flex-row items-start justify-between">
           <Tabs
             value={tabValue}
@@ -63,7 +63,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
           >
             {Object.entries(ranges).map(([key, label]) => (
               <Tab
-                className="text-14 font-semibold min-h-40 min-w-64 mx-4 px-12"
+                className="font-semibold px-6 mx-4 md:px-12"
                 disableRipple
                 key={key}
                 label={label}
@@ -150,7 +150,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
         </Paper>
       )}
 
-      <Paper className="p-10 mt-8 rounded-2xl border-2 border-t-red-500">
+      <Paper className="py-10 px-4 md:p-10 mt-8 rounded-2xl border-2 border-t-red-500">
         <Typography variant="h6" className="mb-4">
           Syllabus
         </Typography>

@@ -88,7 +88,12 @@ const Detailb = () => {
   return (
     <>
       <DashboardHeader />
-      <Container maxWidth="xl" className="px-32">
+      <Container
+        maxWidth="xl"
+        sx={{
+          px: { xs: 0, sm: 2, md: 4 },
+        }}
+      >
         <CourseHeader courseProps={headerProps} />
         <div role="presentation" onClick={handleClick} className="my-4">
           <Breadcrumbs aria-label="breadcrumb">
@@ -120,12 +125,12 @@ const Detailb = () => {
             </Typography>
           </Breadcrumbs>
         </div>
-        <div className="flex">
-          <div className="w-2/3">
+        <div className="flex flex-col px-2 md:px-0 md:flex-row space-y-5 md:space-y-0">
+          <div className="w-full  md:w-2/3">
             <CourseObjectives {...objProps} />
           </div>
-          <div className="w-1/3 ml-6">
-            <Paper className="p-8 rounded border-2 border-t-red-500">
+          <div className="w-full  md:w-1/3 md:ml-6">
+            <Paper className="py-10 px-3 md:p-8 border-2 rounded-2xl md:rounded border-t-red-500">
               <Typography variant="h6" className="mb-4">
                 ${(data?.price || 0) - (data?.tax || 0)}
               </Typography>

@@ -54,8 +54,8 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
     setSel((v) => (v === id ? '' : id));
   };
   return (
-    <Box className="flex w-fit">
-      <Paper elevation={0} className="w-96">
+    <Box className="flex w-full">
+      <Paper elevation={0} className="w-full md:w-2/3 mr-5">
         <FireNav disablePadding>
           <Divider />
           <ListItem component="div" disablePadding>
@@ -91,7 +91,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                   pt: 2.5,
                   pb: selected === item.id ? 0 : 2.5,
                   '&:hover, &:focus': {
-                    '& svg': { opacity: selected === item.id ? 1 : 0 },
+                    '& svg': { opacity: selected === item.id ? 1 : 1 },
                   },
                 }}
               >
@@ -118,7 +118,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                 <KeyboardArrowDown
                   sx={{
                     mr: -1,
-                    opacity: 0,
+                    opacity: 1,
                     transform:
                       selected === item.id ? 'rotate(-180deg)' : 'rotate(0)',
                     transition: '0.2s',
