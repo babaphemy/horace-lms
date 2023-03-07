@@ -24,7 +24,7 @@ import { useMutation } from 'react-query';
 import * as yup from 'yup';
 import { registerUser, verifyEmail } from '../../api/rest';
 import thumb from '../../assets/img/thumb.png';
-import { USER_ADD } from '../../context/Action';
+import { MODAL_SET, USER_ADD } from '../../context/Action';
 import { AppDpx } from '../../context/AppContext';
 import { loginStyles } from '../../styles/loginStyles';
 import { Allcountries } from '../../utils/countries';
@@ -56,7 +56,12 @@ const defaultValues = {
   type: 'STUDENT',
 };
 
-const SignUpComponent = () => {
+type Props = {
+  modal?: boolean;
+};
+
+const SignUpComponent = (props: Props) => {
+  const { modal = false } = props;
   const router = useRouter();
   const dispatch = React.useContext(AppDpx);
   const [checked, setChecked] = React.useState(false);
@@ -79,7 +84,11 @@ const SignUpComponent = () => {
     onSuccess: (data) => {
       localStorage.setItem('horaceUser', JSON.stringify(data));
       dispatch({ type: USER_ADD, payload: data });
-      router.push('/');
+      if (modal) {
+        dispatch({ type: MODAL_SET, data: { open: false, type: 'signup' } });
+      } else {
+        router.push('/');
+      }
       reset(defaultValues);
     },
     onError: (error) => {
@@ -106,6 +115,14 @@ const SignUpComponent = () => {
 
   const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
+  };
+
+  const handleChangeTab = () => {
+    if (modal) {
+      dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });
+      return;
+    }
+    router.push('/login');
   };
   return (
     <Box sx={loginStyles.right}>
@@ -343,6 +360,15 @@ const SignUpComponent = () => {
           Register
         </Button>
       </Box>
+      <Typography
+        component={'button'}
+        onClick={handleChangeTab}
+        variant="body1"
+        color="primary"
+        sx={loginStyles.changeTab}
+      >
+        Already have an account? Login
+      </Typography>
     </Box>
   );
 };

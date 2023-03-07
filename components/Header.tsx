@@ -98,6 +98,8 @@ const Header = () => {
   React.useEffect(() => {
     if (user?.id) {
       setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
     }
   }, [user]);
 

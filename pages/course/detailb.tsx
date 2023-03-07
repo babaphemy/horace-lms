@@ -33,14 +33,20 @@ import FooterLte from '../../components/layout/FooterLte';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 import { fetchCourse } from '../../api/rest';
+import { MODAL_SET } from '../../context/Action';
+import { AppDpx } from '../../context/AppContext';
+import ModalLogin from '../../components/auth/ModalLogin';
+import SignUpLogin from '../../components/auth/SignUpLogin';
 
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
     //console.info('You clicked a breadcrumb.');
   }
+  const dispatch = React.useContext(AppDpx);
   const router = useRouter();
   const cid = router.query.cid as string;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data, isLoading, isError } = useQuery(
     ['acourse', cid],
     () => fetchCourse(cid),
@@ -98,6 +104,10 @@ const Detailb = () => {
     ratings: calculatedRating(),
   };
 
+  const handleJoinClass = () => {
+    dispatch({ type: MODAL_SET, data: { open: true, type: 'signup' } });
+  };
+
   return (
     <>
       <DashboardHeader />
@@ -147,7 +157,12 @@ const Detailb = () => {
               <Typography variant="h6" className="mb-4">
                 ${(data?.price || 0) - (data?.tax || 0)}
               </Typography>
-              <Button variant="outlined" fullWidth endIcon={<ShoppingCart />}>
+              <Button
+                variant="outlined"
+                fullWidth
+                endIcon={<ShoppingCart />}
+                onClick={handleJoinClass}
+              >
                 Join Class
               </Button>
               <Divider />
@@ -232,6 +247,8 @@ const Detailb = () => {
           </div>
         </div>
       </Container>
+      <ModalLogin />
+      <SignUpLogin />
       <FooterLte />
     </>
   );

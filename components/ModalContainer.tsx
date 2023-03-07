@@ -6,7 +6,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  minWidth: 400,
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -14,9 +14,10 @@ const style = {
 
 interface Props {
   children: ReactElement;
+  type: string;
 }
 
-const ModalContainer = ({ children }: Props) => {
+const ModalContainer = ({ type, children }: Props) => {
   const { modal } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
 
@@ -32,7 +33,7 @@ const ModalContainer = ({ children }: Props) => {
   return (
     <Box>
       <Modal
-        open={modal.type === 'login' && modal.open}
+        open={modal.type === type && modal.open}
         onClose={handleClose}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
@@ -42,7 +43,7 @@ const ModalContainer = ({ children }: Props) => {
           },
         }}
       >
-        <Fade in={modal.type === 'login' && modal.open}>
+        <Fade in={modal.type === type && modal.open}>
           <Box sx={style}>{children}</Box>
         </Fade>
       </Modal>

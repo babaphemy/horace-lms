@@ -2,7 +2,7 @@ import { Box, Container, Typography } from '@mui/material';
 import Image from 'next/image';
 import man from '../../assets/img/man.png';
 import subtract from '../../assets/img/subtract.png';
-import LoginComponent from '../../components/auth/Login';
+import LoginComponent from '../../components/auth/LoginComponent';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { loginStyles } from '../../styles/loginStyles';

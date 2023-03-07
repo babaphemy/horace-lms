@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useState } from 'react';
+import { Check, TextSnippet } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -11,20 +11,22 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
+import { ReactElement, useContext, useState } from 'react';
+import { MODAL_SET } from '../../context/Action';
+import { AppDpx } from '../../context/AppContext';
+import { tCurriculum } from '../../types/types';
 import CourseReview from './CourseReview';
 import Curriculumb from './Curriculumb';
-import { tCurriculum } from '../../types/types';
-import { Check, TextSnippet } from '@mui/icons-material';
-import { Appcontext, AppDpx } from '../../context/AppContext';
-import { MODAL_SET } from '../../context/Action';
-import ModalLogin from '../auth/ModalLogin';
 
-const goals = [
-  'Great course',
-  'Content is well paced',
-  'Clear & conscice explanations',
-  'nice, I love it',
-];
+const styles = {
+  button: {
+    border: '1px solid',
+    borderColor: 'primary',
+    px: 4,
+    my: 2,
+  },
+};
+
 const ranges = {
   content: 'Content',
   reviews: 'Reviews',
@@ -40,7 +42,6 @@ interface Props {
   ratings?: number | null;
 }
 const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
-  const { modal } = useContext(Appcontext);
   const dispatch = useContext(AppDpx);
   const {
     target,
@@ -54,7 +55,6 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
   } = props;
   const [tabValue, setTabValue] = useState(0);
   const handleJoinClass = () => {
-    console.log('join class');
     dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });
   };
 
@@ -108,24 +108,14 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
               <Typography variant="subtitle1" gutterBottom>
                 Last Updated: {modified || 'N/A'}
               </Typography>
-              <Button onClick={handleJoinClass}>Join Class</Button>
+              <Button onClick={handleJoinClass} sx={styles.button}>
+                Join Class
+              </Button>
             </div>
           )}
           {tabValue === 1 && (
             <div className="flex flex-col">
               <CourseReview posts={posts} ratings={ratings} />
-              {/* <div className="flex-auto grid grid-cols-4 gap-16 *mt-24">
-                {goals.map((goal, index) => (
-                  <div
-                    key={index}
-                    className="col-span-2 flex flex-col items-center justify-center py-8 px-2 rounded-2xl bg-indigo-50 text-indigo-800"
-                  >
-                    <Typography className="mt-4 text-sm sm:text-lg font-medium">
-                      {goal}
-                    </Typography>
-                  </div>
-                ))}
-              </div> */}
             </div>
           )}
         </div>
@@ -177,7 +167,6 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
         </Typography>
         <Curriculumb courseName={courseName} curriculum={curriculum} />
       </Paper>
-      <ModalLogin />
     </>
   );
 };

@@ -15,7 +15,7 @@ import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { loginUser } from '../../api/rest';
-import { USER_ADD } from '../../context/Action';
+import { MODAL_SET, USER_ADD } from '../../context/Action';
 import { AppDpx } from '../../context/AppContext';
 import { loginStyles } from '../../styles/loginStyles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -50,7 +50,11 @@ type loginProps = {
   type?: any;
 };
 
-const LoginComponent = () => {
+type Props = {
+  modal?: boolean;
+};
+const LoginComponent = (props: Props) => {
+  const { modal = false } = props;
   const dispatch = React.useContext(AppDpx);
   const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -74,7 +78,11 @@ const LoginComponent = () => {
     onSuccess: (data: any) => {
       localStorage.setItem('horaceUser', JSON.stringify(data));
       dispatch({ type: USER_ADD, payload: data });
-      router.push('/');
+      if (modal) {
+        dispatch({ type: MODAL_SET, data: { open: false, type: 'login' } });
+      } else {
+        router.push('/');
+      }
       reset(defaultValues);
     },
     onError: (error: any) => {
@@ -86,13 +94,28 @@ const LoginComponent = () => {
     data.type = 'USER';
     mutate(data);
   };
+
+  const handleChangeTab = () => {
+    if (modal) {
+      dispatch({ type: MODAL_SET, data: { open: true, type: 'signup' } });
+      return;
+    }
+    router.push('/sign-up');
+  };
+
+  const styles = {
+    socials: {
+      minWidth: modal ? '100%' : '70%',
+    },
+  };
+
   return (
     <Box sx={loginStyles.right}>
       <Typography variant="h4" sx={[loginStyles.center, loginStyles.title]}>
         Login <Image src={yeah} alt="yeah" width={30} height={30} />
       </Typography>
 
-      <Box sx={loginStyles.socials}>
+      <Box sx={{ ...loginStyles.socials, ...styles.socials }}>
         <Button
           variant="outlined"
           sx={[loginStyles.center, loginStyles.button]}
@@ -221,6 +244,15 @@ const LoginComponent = () => {
           Login
         </Button>
       </Box>
+      <Typography
+        component={'button'}
+        onClick={handleChangeTab}
+        variant="body1"
+        color="primary"
+        sx={loginStyles.changeTab}
+      >
+        Don't have an account? Sign Up
+      </Typography>
     </Box>
   );
 };
