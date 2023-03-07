@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useContext, useState } from 'react';
 import {
   Box,
   Button,
@@ -15,6 +15,9 @@ import CourseReview from './CourseReview';
 import Curriculumb from './Curriculumb';
 import { tCurriculum } from '../../types/types';
 import { Check, TextSnippet } from '@mui/icons-material';
+import { Appcontext, AppDpx } from '../../context/AppContext';
+import { MODAL_SET } from '../../context/Action';
+import ModalLogin from '../auth/ModalLogin';
 
 const goals = [
   'Great course',
@@ -37,6 +40,8 @@ interface Props {
   ratings?: number | null;
 }
 const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
+  const { modal } = useContext(Appcontext);
+  const dispatch = useContext(AppDpx);
   const {
     target,
     category,
@@ -48,6 +53,11 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     ratings,
   } = props;
   const [tabValue, setTabValue] = useState(0);
+  const handleJoinClass = () => {
+    console.log('join class');
+    dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });
+  };
+
   return (
     <>
       <Paper className="flex flex-col py-10 px-4 md:p-10 w-full shadow rounded-2xl overflow-hidden border-2 border-t-red-500">
@@ -98,7 +108,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
               <Typography variant="subtitle1" gutterBottom>
                 Last Updated: {modified || 'N/A'}
               </Typography>
-              <Button>Join Class</Button>
+              <Button onClick={handleJoinClass}>Join Class</Button>
             </div>
           )}
           {tabValue === 1 && (
@@ -167,6 +177,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
         </Typography>
         <Curriculumb courseName={courseName} curriculum={curriculum} />
       </Paper>
+      <ModalLogin />
     </>
   );
 };

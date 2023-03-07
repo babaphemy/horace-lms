@@ -28,6 +28,7 @@ const AppProvider = ({ children }: Props) => {
           return { ...state, courses: action.data };
         case LECTURE_SET:
           return { ...state, lecture: action.data };
+
         default:
           return state;
       }
