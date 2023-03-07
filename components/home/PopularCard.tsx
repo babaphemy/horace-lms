@@ -115,7 +115,7 @@ const PopularCard = ({ data, img }: any) => {
                 readOnly
               />
               <Typography variant="body2" sx={{ ml: 1 }}>
-                5.0
+                {calculatedRating() || 5}
               </Typography>
             </Box>
             <Typography

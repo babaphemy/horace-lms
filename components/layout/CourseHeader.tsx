@@ -15,11 +15,20 @@ interface Props {
     ratings?: number | null;
     reviews?: number | null;
     preview?: string;
+    posts?: any[];
   };
 }
 const CourseHeader = (props: Props) => {
-  const { name, brief, category, lessonCount, ratings, author, preview } =
-    props?.courseProps || {};
+  const {
+    name,
+    brief,
+    category,
+    lessonCount,
+    ratings,
+    author,
+    preview,
+    posts,
+  } = props?.courseProps || {};
   const isRegd = false;
   return (
     <div className="flex flex-col w-full *px-24 *sm:px-20">
@@ -64,7 +73,7 @@ const CourseHeader = (props: Props) => {
             />
           </Box>
 
-          <Badge badgeContent={4} color="secondary">
+          <Badge badgeContent={posts?.length || 4} color="secondary">
             <ReviewsIcon color="action" />
           </Badge>
         </div>

@@ -57,8 +57,17 @@ const Detailb = () => {
     target,
     courseName,
     category,
+    posts,
     updatedOn,
   } = data || {};
+
+  const calculatedRating = () => {
+    let total = 0;
+    posts?.forEach((post: any) => {
+      total += post.rating;
+    });
+    return total / posts?.length;
+  };
   const author = `${data?.author?.firstname || 'Horace'} ${
     data?.author?.lastname || 'Instructor'
   }`;
@@ -71,11 +80,12 @@ const Detailb = () => {
     lessonCount,
     category,
     brief: data?.brief || '',
-    ratings: data?.ratings,
+    ratings: calculatedRating(),
     reviews: data?.reviews,
     author,
     preview,
     updatedOn,
+    posts,
   };
   const objProps = {
     target,
@@ -84,7 +94,10 @@ const Detailb = () => {
     category,
     modified: updatedOn,
     brief,
+    posts,
+    ratings: calculatedRating(),
   };
+
   return (
     <>
       <DashboardHeader />

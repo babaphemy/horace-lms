@@ -33,9 +33,20 @@ interface Props {
   courseName?: string;
   curriculum?: tCurriculum;
   brief: string;
+  posts?: any[];
+  ratings?: number | null;
 }
 const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
-  const { target, category, modified, courseName, curriculum, brief } = props;
+  const {
+    target,
+    category,
+    modified,
+    courseName,
+    curriculum,
+    brief,
+    posts,
+    ratings,
+  } = props;
   const [tabValue, setTabValue] = useState(0);
   return (
     <>
@@ -48,9 +59,9 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
             textColor="inherit"
             variant="scrollable"
             scrollButtons={false}
-            className="-mx-4 min-h-40"
+            className="-mx-4 min-h-40 "
             classes={{
-              indicator: 'flex justify-center bg-transparent w-full h-full',
+              indicator: 'flex justify-center bg-transparent  w-full h-full',
             }}
             TabIndicatorProps={{
               children: (
@@ -63,7 +74,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
           >
             {Object.entries(ranges).map(([key, label]) => (
               <Tab
-                className="font-semibold px-6 mx-4 md:px-12"
+                className="font-semibold px-6 mx-4  md:px-12"
                 disableRipple
                 key={key}
                 label={label}
@@ -71,7 +82,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
             ))}
           </Tabs>
         </div>
-        <div className="w-full sm:mt-5">
+        <div className="w-full mt-5">
           {tabValue === 0 && (
             <div>
               <Typography variant="h6" className="mb-4">
@@ -92,8 +103,8 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
           )}
           {tabValue === 1 && (
             <div className="flex flex-col">
-              <CourseReview />
-              <div className="flex-auto grid grid-cols-4 gap-16 *mt-24">
+              <CourseReview posts={posts} ratings={ratings} />
+              {/* <div className="flex-auto grid grid-cols-4 gap-16 *mt-24">
                 {goals.map((goal, index) => (
                   <div
                     key={index}
@@ -104,7 +115,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
                     </Typography>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </div>
           )}
         </div>
