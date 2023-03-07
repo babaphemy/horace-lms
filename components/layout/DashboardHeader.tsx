@@ -57,7 +57,7 @@ const DashboardHeader = () => {
     setAnchorElUser(event.currentTarget);
   };
   return (
-    <AppBar position="static" className="mb-8">
+    <AppBar position="static" className="mb-4 md:mb-8">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <IconButton
