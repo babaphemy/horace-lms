@@ -151,4 +151,15 @@ export const loginStyles = {
     maxWidth: '200px',
     textTransform: 'capitalize',
   },
+  changeTab: {
+    textAlign: 'center',
+    width: '100%',
+    my: 1,
+
+    cursor: 'pointer',
+
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
 };

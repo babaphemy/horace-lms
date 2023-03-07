@@ -1,24 +1,23 @@
 import MenuIcon from '@mui/icons-material/Menu';
 import {
-	AppBar,
-	IconButton,
-	Theme,
-	Link as MuiLink,
-	Container,
-	Toolbar,
-	Box,
-	Menu,
-	MenuItem,
-	Typography,
-	Button,
-	Tooltip,
-	Avatar,
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Menu,
+  MenuItem,
+  Theme,
+  Toolbar,
+  Tooltip,
+  Typography,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import React from 'react';
 import logo from '../../assets/img/logo.png';
-import { useRouter } from 'next/router';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     textAlign: 'center',
@@ -34,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const pages = ['Home', 'About', 'Courses', 'Contact'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const isAuth = false;
 const DashboardHeader = () => {
   const router = useRouter();
   const classes = useStyles();
@@ -57,7 +57,7 @@ const DashboardHeader = () => {
     setAnchorElUser(event.currentTarget);
   };
   return (
-    <AppBar position="static" className="mb-8">
+    <AppBar position="static" className="mb-4 md:mb-8">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <IconButton
@@ -67,7 +67,13 @@ const DashboardHeader = () => {
           >
             <Image src={logo} alt="logo" width={150} height={50} />
           </IconButton>
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              justifyContent: 'flex-end',
+              display: { xs: 'flex', md: 'none' },
+            }}
+          >
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -113,35 +119,37 @@ const DashboardHeader = () => {
               </Button>
             ))}
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          {isAuth && (
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
 
           {/* <List>
 						<NextLink href="/" passHref>

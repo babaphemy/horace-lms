@@ -14,6 +14,7 @@ import Home from '@mui/icons-material/Home';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import QuizIcon from '@mui/icons-material/Quiz';
 import NoteIcon from '@mui/icons-material/Note';
+import DataObjectIcon from '@mui/icons-material/DataObject';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import { AppDpx } from '../../context/AllProvider';
 import { LECTURE_SET } from '../../context/actions';
@@ -23,7 +24,8 @@ const data = [
   { icon: <PlayCircleIcon />, label: 'lecture' },
   { icon: <QuizIcon />, label: 'quiz' },
   { icon: <NoteIcon />, label: 'note' },
-  { icon: <SlideshowIcon />, label: 'slide' },
+  { icon: <SlideshowIcon />, label: 'download' },
+  { icon: <DataObjectIcon />, label: 'handson' },
 ];
 
 const FireNav = styled(List)<{ component?: React.ElementType }>({
@@ -52,8 +54,8 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
     setSel((v) => (v === id ? '' : id));
   };
   return (
-    <Box className="flex w-fit">
-      <Paper elevation={0}>
+    <Box className="flex w-full">
+      <Paper elevation={0} className="w-full xl:w-2/3 mr-5">
         <FireNav disablePadding>
           <Divider />
           <ListItem component="div" disablePadding>
@@ -76,7 +78,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
             <Box
               key={item.id}
               sx={{
-                bgcolor: selected === item.id ? 'rgba(71, 98, 130, 0.2)' : null,
+                bgcolor: selected === item.id ? 'rgba(108, 122, 137, 1)' : null,
                 pb: selected === item.id ? 2 : 0,
               }}
             >
@@ -84,11 +86,12 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                 alignItems="flex-start"
                 onClick={() => doSel(item.id)}
                 sx={{
+                  width: '100%',
                   px: 3,
                   pt: 2.5,
                   pb: selected === item.id ? 0 : 2.5,
                   '&:hover, &:focus': {
-                    '& svg': { opacity: selected === item.id ? 1 : 0 },
+                    '& svg': { opacity: selected === item.id ? 1 : 1 },
                   },
                 }}
               >
@@ -115,7 +118,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                 <KeyboardArrowDown
                   sx={{
                     mr: -1,
-                    opacity: 0,
+                    opacity: 1,
                     transform:
                       selected === item.id ? 'rotate(-180deg)' : 'rotate(0)',
                     transition: '0.2s',
@@ -136,11 +139,8 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                       {data.find((i) => i.label === item.type)?.icon}
                     </ListItemIcon>
                     <ListItemText
+                      className="capitalize font-medium "
                       primary={item.title}
-                      primaryTypographyProps={{
-                        fontSize: 14,
-                        fontWeight: 'medium',
-                      }}
                       onClick={() =>
                         dispatch({ type: LECTURE_SET, data: item })
                       }

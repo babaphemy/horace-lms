@@ -69,6 +69,13 @@ export interface State {
     updatedOn: string;
     totalSteps: number;
     draft: boolean;
+    assetCount: {
+      lessonCount: number,
+        labCount: number,
+        quizCount: number,
+        downloadCount: number,
+        noteCount: number,
+    }
   }
 
   export type tStatus = { isPlaying: boolean };

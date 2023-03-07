@@ -8,6 +8,7 @@ import img3 from '../../assets/img/3.png';
 import img4 from '../../assets/img/4.png';
 import img5 from '../../assets/img/5.png';
 import img6 from '../../assets/img/6.png';
+import { tCourse } from '../../types/types';
 
 const cardImage = [img1, img2, img3, img4, img5, img6];
 
@@ -19,17 +20,21 @@ const PopularCourses = ({ data, isLoading }: any) => {
     if (active === 'all') {
       setFilteredData(data);
     } else {
-      const filtered = data?.filter((course: any) => {
-        if (course.category === active) {
-          return course;
-        } else {
-          return course.courseName.toLowerCase().includes(active.toLowerCase());
-        }
-      });
+      const filtered = data?.filter(
+        (course: tCourse) =>
+          course?.category?.split(',').includes(active.toLowerCase()) ||
+          course?.courseName?.toLowerCase().includes(active.toLowerCase())
+      );
+      // const filtered = data?.filter((course: tCourse) => {
+      //   if (course.category === active) {
+      //     return course;
+      //   } else {
+      //     return course.category?.split(',').includes(active.toLowerCase());
+      //   }
+      // });
       setFilteredData(filtered);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active]);
+  }, [active, data]);
 
   if (isLoading) return <CircularProgress />;
 
@@ -38,8 +43,9 @@ const PopularCourses = ({ data, isLoading }: any) => {
       <Box sx={popularStyles.top}>
         <Typography variant="h4">Popular Courses</Typography>
         <Box>
-          {filters.map((filter) => (
+          {filters.map((filter, i) => (
             <Batch
+              key={i}
               label={filter.label}
               onClick={() => {
                 setActive(filter.value);
@@ -89,8 +95,8 @@ const filters = [
     value: 'all',
   },
   {
-    label: 'Kotlin',
-    value: 'kotlin',
+    label: 'Programming',
+    value: 'programming',
   },
   {
     label: 'Javascript',
@@ -103,5 +109,17 @@ const filters = [
   {
     label: 'Civic',
     value: 'civic',
+  },
+  {
+    label: 'Mobile',
+    value: 'mobile',
+  },
+  {
+    label: 'Devops',
+    value: 'devops',
+  },
+  {
+    label: 'web',
+    value: 'web',
   },
 ];

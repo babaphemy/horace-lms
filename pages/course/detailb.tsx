@@ -1,17 +1,17 @@
 import {
-	Avatar,
-	Breadcrumbs,
-	Button,
-	Container,
-	Divider,
-	Link as MuiLink,
-	List,
-	ListItem,
-	ListItemIcon,
-	ListItemText,
-	Paper,
-	Rating,
-	Typography,
+  Avatar,
+  Breadcrumbs,
+  Button,
+  Container,
+  Divider,
+  Link as MuiLink,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Rating,
+  Typography,
 } from '@mui/material';
 import React from 'react';
 import HomeIcon from '@mui/icons-material/Home';
@@ -31,171 +31,252 @@ import {
 import Link from 'next/link';
 import FooterLte from '../../components/layout/FooterLte';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
-import { fetchCourse } from '../../api/rest';
-import { tSection } from '../../types/types';
+import { useQuery, useMutation } from 'react-query';
+import { addUserCourse, fetchCourse } from '../../api/rest';
+import { MODAL_SET } from '../../context/Action';
+import { Appcontext, AppDpx } from '../../context/AppContext';
+import ModalLogin from '../../components/auth/ModalLogin';
+import SignUpLogin from '../../components/auth/SignUpLogin';
 
 const Detailb = () => {
-	function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-		event.preventDefault();
-		console.info('You clicked a breadcrumb.');
-	}
-	const router = useRouter();
-	const cid = router.query.cid as string;
-	const { data, isLoading, isError } = useQuery(
-		['acourse', cid],
-		() => fetchCourse(cid),
-		{
-			staleTime: 5000,
-			cacheTime: 10,
-			enabled: !!cid,
-		}
-	);
-	let lessonCount = 0;
-	const { course } = data || {};
-	const author = `${course?.author?.firstname} ${course?.author?.lastname}`;
-	const preview = course?.curriculum?.section[0]?.lecture[0]?.video;
-	course?.curriculum.section.forEach((section: tSection) => {
-		lessonCount += section.lecture.length;
-	});
-	const headerProps = {
-		id: course?.id,
-		name: course?.courseName,
-		lessonCount,
-		category: course?.category,
-		brief: course?.brief || '',
-		ratings: course?.ratings,
-		reviews: course?.reviews,
-		author,
-		preview,
-		updatedOn: course?.updatedOn,
-	};
-	const objProps = {
-		target: course?.target,
-		courseName: course?.courseName,
-		curriculum: course?.curriculum,
-		category: course?.category,
-		modified: course?.updatedOn,
-		brief: course?.brief || '',
-	};
-	return (
-		<>
-			<DashboardHeader />
-			<Container maxWidth="xl" className="px-32">
-				<CourseHeader courseProps={headerProps} />
-				<div role="presentation" onClick={handleClick} className="my-4">
-					<Breadcrumbs aria-label="breadcrumb">
-						<Link href={'/'} shallow>
-							<MuiLink
-								underline="hover"
-								sx={{ display: 'flex', alignItems: 'center' }}
-								color="inherit"
-							>
-								<HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-								Home
-							</MuiLink>
-						</Link>
-						<MuiLink
-							underline="hover"
-							sx={{ display: 'flex', alignItems: 'center' }}
-							color="inherit"
-							href="/courses"
-						>
-							<School sx={{ mr: 0.5 }} fontSize="inherit" />
-							Courses
-						</MuiLink>
-						<Typography
-							sx={{ display: 'flex', alignItems: 'center' }}
-							color="text.primary"
-						>
-							<GrainIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-							Course
-						</Typography>
-					</Breadcrumbs>
-				</div>
-				<div className="flex">
-					<div className="w-2/3">
-						<CourseObjectives {...objProps} />
-					</div>
-					<div className="w-1/3 ml-6">
-						<Paper className="p-8 rounded border-2 border-t-red-500">
-							<Typography variant="h6" className="mb-4">
-								${(course?.price || 0) - (course?.tax || 0)}
-							</Typography>
-							<Button variant="outlined" fullWidth endIcon={<ShoppingCart />}>
-								Join Class
-							</Button>
-							<Divider />
-							<Typography variant="h6" className="mt-4">
-								This course contains
-							</Typography>
-							<nav>
-								<List>
-									<ListItem>
-										<ListItemIcon>
-											<PlayCircle />
-										</ListItemIcon>
-										<ListItemText primary={`${lessonCount} Lessons`} />
-									</ListItem>
-									<ListItem>
-										<ListItemIcon>
-											<QuizRounded />
-										</ListItemIcon>
-										<ListItemText primary="5 Quizes" />
-									</ListItem>
-									<ListItem>
-										<ListItemIcon>
-											<Code />
-										</ListItemIcon>
-										<ListItemText primary="4 Handson Labs" />
-									</ListItem>
-									<ListItem>
-										<ListItemIcon>
-											<Download />
-										</ListItemIcon>
-										<ListItemText primary="40 Downloads" />
-									</ListItem>
-									<ListItem>
-										<ListItemIcon>
-											<NoteAddRounded />
-										</ListItemIcon>
-										<ListItemText primary="12 Notes" />
-									</ListItem>
-								</List>
-							</nav>
-							<Divider />
-							<Typography variant="h6" className="mt-4">
-								Meet the Instructor
-							</Typography>
-							<div className="flex mt-4">
-								<Avatar
-									alt="instructor"
-									src={
-										course?.author?.dp ||
-										'https://material-ui.com/static/images/avatar/1.jpg'
-									}
-									sx={{ width: 56, height: 56 }}
-								/>
-								<div className="ml-4">
-									<Typography variant="subtitle1">Femi Adigun</Typography>
-									<Typography variant="caption">
-										Senior Software Engineer
-									</Typography>
-								</div>
-							</div>
-							<div className="flex justify-between mt-4">
-								<Typography variant="body2">5.0</Typography>
-								<Rating name="author-rating" value={5} readOnly />
-								<Typography variant="body2">12 Courses</Typography>
-								<Typography variant="body2">12 Reviews</Typography>
-							</div>
-						</Paper>
-					</div>
-				</div>
-			</Container>
-			<FooterLte />
-		</>
-	);
+  function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    event.preventDefault();
+    //console.info('You clicked a breadcrumb.');
+  }
+  const { user } = React.useContext(Appcontext);
+  const dispatch = React.useContext(AppDpx);
+  const router = useRouter();
+  const cid = router.query.cid as string;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data, isLoading, isError } = useQuery(
+    ['acourse', cid],
+    () => fetchCourse(cid),
+    {
+      staleTime: 5000,
+      cacheTime: 10,
+      enabled: !!cid,
+    }
+  );
+  const {
+    assetCount,
+    curriculum,
+    brief,
+    target,
+    courseName,
+    category,
+    posts,
+    updatedOn,
+  } = data || {};
+
+  const calculatedRating = () => {
+    let total = 0;
+    posts?.forEach((post: any) => {
+      total += post.rating;
+    });
+    return total / posts?.length;
+  };
+  const author = `${data?.author?.firstname || 'Horace'} ${
+    data?.author?.lastname || 'Instructor'
+  }`;
+  const preview = curriculum?.section[0]?.lecture[0]?.video;
+  const { lessonCount, downloadCount, quizCount, labCount, noteCount } =
+    assetCount || {};
+
+  const addCourseToUser = useMutation(addUserCourse, {
+    onSuccess: (data) => {
+      console.log('data', data);
+    },
+    onError: (error) => {
+      console.log('error', error);
+    },
+  });
+
+  const handleJoinClass = () => {
+    if (user?.id) {
+      if (data?.price === 0) {
+        const payload = {
+          id: data?.id,
+          user: user?.id,
+        };
+        addCourseToUser.mutate(payload);
+        return;
+      } else {
+        console.log('Proceed to payment');
+      }
+    } else {
+      dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });
+    }
+  };
+
+  const headerProps = {
+    id: data?.id,
+    name: courseName,
+    lessonCount,
+    category,
+    brief: data?.brief || '',
+    ratings: calculatedRating(),
+    reviews: data?.reviews,
+    author,
+    preview,
+    updatedOn,
+    posts,
+  };
+  const objProps = {
+    target,
+    courseName,
+    curriculum,
+    category,
+    modified: updatedOn,
+    brief,
+    posts,
+    ratings: calculatedRating(),
+    handleJoinClass,
+  };
+
+  return (
+    <>
+      <DashboardHeader />
+      <Container
+        maxWidth="xl"
+        sx={{
+          px: { xs: 0, sm: 2, md: 4 },
+        }}
+      >
+        <CourseHeader courseProps={headerProps} />
+        <div role="presentation" onClick={handleClick} className="my-4">
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link href={'/'} shallow>
+              <MuiLink
+                underline="hover"
+                sx={{ display: 'flex', alignItems: 'center' }}
+                color="inherit"
+              >
+                <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                Home
+              </MuiLink>
+            </Link>
+            <MuiLink
+              underline="hover"
+              sx={{ display: 'flex', alignItems: 'center' }}
+              color="inherit"
+              href="/courses"
+            >
+              <School sx={{ mr: 0.5 }} fontSize="inherit" />
+              Courses
+            </MuiLink>
+            <Typography
+              sx={{ display: 'flex', alignItems: 'center' }}
+              color="text.primary"
+            >
+              <GrainIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+              Course
+            </Typography>
+          </Breadcrumbs>
+        </div>
+        <div className="flex flex-col px-2 md:px-0 md:flex-row space-y-5 md:space-y-0">
+          <div className="w-full  md:w-2/3">
+            <CourseObjectives {...objProps} />
+          </div>
+          <div className="w-full  md:w-1/3 md:ml-6">
+            <Paper className="py-10 px-3 md:p-8 border-2 rounded-2xl md:rounded border-t-red-500">
+              <Typography variant="h6" className="mb-4">
+                ${(data?.price || 0) - (data?.tax || 0)}
+              </Typography>
+              <Button
+                variant="outlined"
+                fullWidth
+                endIcon={<ShoppingCart />}
+                onClick={handleJoinClass}
+              >
+                Join Class
+              </Button>
+              <Divider />
+              <Typography variant="h6" className="mt-4">
+                This course contains
+              </Typography>
+              <nav>
+                <List>
+                  <ListItem>
+                    <ListItemIcon>
+                      <PlayCircle />
+                    </ListItemIcon>
+                    <ListItemText primary={`${lessonCount || ''} Lessons`} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <QuizRounded />
+                    </ListItemIcon>
+                    <ListItemText primary={`${quizCount || ''} Quizes`} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemIcon>
+                      <Code />
+                    </ListItemIcon>
+                    <ListItemText primary={`${labCount || ''} Hands-on Labs`} />
+                  </ListItem>
+                  {downloadCount > 0 && (
+                    <ListItem>
+                      <ListItemIcon>
+                        <Download />
+                      </ListItemIcon>
+                      <ListItemText primary={`${downloadCount} Downloads`} />
+                    </ListItem>
+                  )}
+
+                  {noteCount > 0 && (
+                    <ListItem>
+                      <ListItemIcon>
+                        <NoteAddRounded />
+                      </ListItemIcon>
+                      <ListItemText primary={`${noteCount} Notes`} />
+                    </ListItem>
+                  )}
+                </List>
+              </nav>
+              <Divider />
+              <Typography variant="h6" className="mt-4">
+                Meet the Instructor
+              </Typography>
+              <div className="flex mt-4">
+                <Avatar
+                  alt="instructor"
+                  src={
+                    data?.author?.dp ||
+                    'https://material-ui.com/static/images/avatar/1.jpg'
+                  }
+                  sx={{ width: 56, height: 56 }}
+                />
+                <div className="ml-4">
+                  <Typography variant="subtitle1" className="capitalize">
+                    {author}
+                  </Typography>
+                  <Typography variant="caption">
+                    {data?.author?.title || 'Instructor'}
+                  </Typography>
+                </div>
+              </div>
+              <div className="flex justify-between mt-4">
+                <Rating
+                  name="author-rating"
+                  value={data?.author?.rating || 5}
+                  readOnly
+                />
+                <Typography variant="body2">
+                  {data?.author?.courses?.length} Courses
+                </Typography>
+                <Typography variant="body2">
+                  {data?.author?.reviews?.length} Review(s)
+                </Typography>
+              </div>
+            </Paper>
+          </div>
+        </div>
+      </Container>
+      <ModalLogin />
+      <SignUpLogin />
+      <FooterLte />
+    </>
+  );
 };
 
 export default Detailb;

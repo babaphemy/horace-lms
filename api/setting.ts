@@ -1,5 +1,5 @@
 const basePath = 'https://horacelearning.com/api/v1/';
-// const basePath = 'http://localhost:5071/api/v1/';
+//const basePath = 'http://localhost:5071/api/v1/';
 
 const authKey = process.env.NEXT_PUBLIC_APIKEY;
 export const auth = {

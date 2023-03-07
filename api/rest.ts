@@ -70,6 +70,14 @@ const fetchCourse = async (id: string) => {
   }
   return response.json();
 };
+const addUserCourse = async (data: { id: string; user: string }) => {
+  const response = await fetch(`${basePath}reg/add`, PostSettings(data));
+  if (!response.ok) {
+    return { error: response.status };
+  }
+  return response.json();
+};
+
 export {
   getUsers,
   loginUser,
@@ -79,4 +87,5 @@ export {
   fetchCourse,
   doToken,
   resetPass,
+  addUserCourse,
 };
