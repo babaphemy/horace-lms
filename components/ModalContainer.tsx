@@ -14,7 +14,7 @@ const style = {
 
 interface Props {
   children: ReactElement;
-  type: string;
+  type: 'login' | 'signup' | 'payment';
 }
 
 const ModalContainer = ({ type, children }: Props) => {
