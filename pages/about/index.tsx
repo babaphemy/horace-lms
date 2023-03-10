@@ -1,9 +1,12 @@
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
   Container,
+  Divider,
   Grid,
+  Rating,
   Typography,
 } from '@mui/material';
 import React from 'react';
@@ -13,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import boy from '../../assets/img/illustrate-2.png';
+import logo from '../../assets/img/logo.png';
 const AboutUs = () => {
   const router = useRouter();
   return (
@@ -180,7 +184,44 @@ const AboutUs = () => {
             What Our Students Say
           </Typography>
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} md={4}></Grid>
+            {whatOurStudentsSay.map((item) => (
+              <Grid item xs={12} sm={6} md={4}>
+                <Box sx={aboutStyles.card}>
+                  <Box className="flex justify-between items-center my-2">
+                    <Rating
+                      name="read-only"
+                      value={item.rating || 4}
+                      readOnly
+                    />
+                    <Image
+                      src={logo}
+                      alt="Horace Logo"
+                      width={100}
+                      height={30}
+                    />
+                  </Box>
+                  <Divider />
+                  <Typography variant="body2" my={2} sx={{ minHeight: '8rem' }}>
+                    {item.comment}
+                  </Typography>
+                  <Box display={'flex'} my={1}>
+                    <Avatar
+                      alt="instructor"
+                      src="https://material-ui.com/static/images/avatar/1.jpg"
+                      sx={{ width: 50, height: 50 }}
+                    />
+                    <Box ml={1}>
+                      <Typography variant="body1" margin={0}>
+                        {item.name}
+                      </Typography>
+                      <Typography variant="caption" margin={0} color="primary">
+                        {item.role}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
           </Grid>
         </Box>
       </Container>
@@ -249,7 +290,7 @@ const aboutStyles = {
 
 const statistics = [
   {
-    number: 99,
+    number: 10,
     name: 'Courses',
     color: '#F9AD56',
     icon: require('../../assets/img/icon-1.png'),
@@ -277,4 +318,31 @@ const exampleCourses = [
   'Machine Learning',
   'Artificial Intelligence',
   'Java',
+];
+
+const whatOurStudentsSay = [
+  {
+    name: 'John Doe',
+    role: 'Student',
+    image: 'https://material-ui.com/static/images/avatar/1.jpg',
+    rating: 4,
+    comment:
+      'I have been using Horace Learning for a while now and I can say that it has been a great experience. The courses are very interesting and the instructors are very knowledgeable. I would recommend this platform to anyone who wants to learn more about computers.',
+  },
+  {
+    name: 'Jane Doe',
+    role: 'Student',
+    image: 'https://material-ui.com/static/images/avatar/2.jpg',
+    rating: 5,
+    comment:
+      'Horace Learning has been a game changer for our school. Their solutions have helped us overcome the challenges of traditional education and allow us to truly empower our students to succeed.',
+  },
+  {
+    name: 'John Doe',
+    role: 'Student',
+    image: 'https://material-ui.com/static/images/avatar/3.jpg',
+    rating: 5,
+    comment:
+      'Horace Learning has completely transformed the way I teach and my students learn. The virtual classrooms, personalized learning paths, and advanced analytics have made my job so much easier and more fulfilling.',
+  },
 ];
