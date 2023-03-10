@@ -75,7 +75,19 @@ const Curriculum = () => {
             <ListItem
               button
               onClick={() => handleClick(course)}
-              className={classes.navBox__navItem}
+              sx={{
+                '&__navItem': {
+                  display: 'flex',
+                  alignItems: 'center',
+                  alignSelf: 'stretch',
+                  '&__navText': {
+                    marginLeft: '0.5rem',
+                  },
+                  '&__icon': {
+                    fontsize: '1.5rem',
+                  },
+                },
+              }}
             >
               <ListItemIcon>
                 {course.courseName === selected?.courseName ? (

@@ -3,9 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useQuery } from 'react-query';
 import { fetchCourse } from '../../api/rest';
-import CourseObjectives from '../../components/courses/CourseObjectives';
 import DashboardHoc from '../../components/DashboardHoc';
-import CourseHeader from '../../components/layout/CourseHeader';
 import { tSection } from '../../types/types';
 
 const Detail = () => {
@@ -31,7 +29,7 @@ const Detail = () => {
       curriculum={course?.curriculum}
       courseName={course?.courseName}
     >
-      <CourseHeader
+      {/* <CourseHeader
         id={cid}
         name={course?.courseName}
         lessonCount={lessonCount}
@@ -40,14 +38,14 @@ const Detail = () => {
         ratings={course?.ratings}
         reviews={course?.reviews}
         author={author}
-      />
+      /> */}
       {isLoading && <CircularProgress />}
       {isError && (
         <Alert severity="error">
           Something went wrong {JSON.stringify(isError)}
         </Alert>
       )}
-      <CourseObjectives />
+      {/* <CourseObjectives brief='' handleJoinClass={() => void} /> */}
 
       <p>similar courses</p>
     </DashboardHoc>

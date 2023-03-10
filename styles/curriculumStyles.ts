@@ -2,10 +2,10 @@ const curriculumStyles = {
   root: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'lightgrey',
   },
   nested: {
-    paddingLeft: theme.spacing(4),
+    paddingLeft: 2,
   },
 };
 export { curriculumStyles };

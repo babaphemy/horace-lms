@@ -35,12 +35,12 @@ const Footer = () => {
             />
             <Box sx={footerStyles.section}>
               <Typography variant="body2">
-                This is a mobile and web-based application that aims to increase
-                kids’ interest
+                At Horace Online Learning, we are passionate about empowering
+                individuals to achieve their full potential through education.
               </Typography>
               <Typography variant="body2">
-                in technology and get them to love tech-related courses early in
-                life
+                We are dedicated to making high-quality learning accessible to
+                all, regardless of their background or location.
               </Typography>
             </Box>
             <Box>
