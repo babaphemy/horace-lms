@@ -33,16 +33,20 @@ const AboutUs = () => {
             We Grow Your Skills From A Young Age
           </Typography>
           <Typography variant="body1" className="text-center max-w-4xl">
-            This is a mobile and web-based application that aims to increase
-            kids’ interest in technology and get them to love tech-related
-            courses early in life. This is a mobile and web-based application
-            that aims to increase kids’ interest in technology and get them to
-            love tech-related courses early in life. This is a mobile and
-            web-based application that aims to increase kids’ interest in
-            technology and get them to love tech-related courses early in life.
-            This is a mobile and web-based application that aims to increase
-            kids’ interest in technology and get them to love tech-related
-            courses early in life.
+            Horace Learning is an innovative edtech start-up aimed at providing
+            comprehensive solutions for both teachers and students. Our mission
+            is to bridge the gap between education and technology, making
+            learning more efficient, effective, and enjoyable. Our team
+            comprises experienced professionals with a deep understanding of the
+            education landscape and a passion for utilizing technology to drive
+            change. From interactive virtual classrooms and personalized
+            learning paths, to advanced data analytics and reporting, our
+            solutions cater to the needs of educators and learners alike. We are
+            committed to delivering cutting-edge products and services that
+            empower teachers and students to achieve their full potential. At
+            Horace Learning, we believe in the transformative power of
+            education, and we are excited to be at the forefront of disrupting
+            the traditional education system with our innovative solutions.
           </Typography>
           <Box sx={aboutStyles.cardContainer}>
             <Grid container rowSpacing={2} columnSpacing={5}>
@@ -151,7 +155,7 @@ const AboutUs = () => {
           </Grid>
         </Box>
 
-        <Box>
+        <Box className="mb-12">
           <Typography variant="h3" mb={2}>
             Our Team
           </Typography>
@@ -162,6 +166,22 @@ const AboutUs = () => {
             development and design, to marketing and sales, our team brings a
             wealth of knowledge and expertise to every project we undertake.{' '}
           </Typography>
+        </Box>
+
+        <Box className="mb-12">
+          <Typography
+            variant="h5"
+            sx={{
+              color: '#FF6854',
+              mb: 2,
+            }}
+          ></Typography>
+          <Typography variant="h3" mb={2}>
+            What Our Students Say
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} md={4}></Grid>
+          </Grid>
         </Box>
       </Container>
       <Footer />
