@@ -50,6 +50,7 @@ const PopularCard = ({ data, img }: any) => {
             alt="a man smiling"
             width={'400rem'}
             height={'250rem'}
+            style={{ borderRadius: '15px' }}
           />
         </Box>
         <Box padding={'20px'}>

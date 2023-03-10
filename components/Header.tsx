@@ -145,7 +145,7 @@ const Header = () => {
                   <NextLink href="/" passHref>
                     <MuiLink>Home</MuiLink>
                   </NextLink>
-                  <NextLink href="/" passHref>
+                  <NextLink href="/about" passHref>
                     <MuiLink>About</MuiLink>
                   </NextLink>
                   <NextLink href="/" passHref>
@@ -200,7 +200,7 @@ const Header = () => {
                 <NextLink href="/" passHref>
                   <MuiLink>Home</MuiLink>
                 </NextLink>
-                <NextLink href="/" passHref>
+                <NextLink href="/about" passHref>
                   <MuiLink>About</MuiLink>
                 </NextLink>
                 <NextLink href="/" passHref>
@@ -329,6 +329,10 @@ const headerStyles = {
     marginRight: 5,
     marginTop: '-.3rem',
     marginLeft: '-10px',
+
+    '@media (max-width: 600px)': {
+      marginLeft: '-50px',
+    },
   },
   language: {
     display: 'flex',
