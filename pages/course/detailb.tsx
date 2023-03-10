@@ -36,8 +36,8 @@ import { addUserCourse, fetchCourse } from '../../api/rest';
 import { MODAL_SET } from '../../context/Action';
 import { Appcontext, AppDpx } from '../../context/AppContext';
 import ModalLogin from '../../components/auth/ModalLogin';
-import SignUpLogin from '../../components/auth/ModalSignUp';
-import PaymentModal from '../../components/payment/PaymentModal';
+import SignUpLogin from '../../components/auth/SignUpLogin';
+import { COURSE_SET } from '../../context/actions';
 
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
