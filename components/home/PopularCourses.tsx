@@ -2,11 +2,11 @@ import { Box, Typography, Grid, CircularProgress } from '@mui/material';
 import Batch from './Batch';
 import { useState, useEffect } from 'react';
 import PopularCard from './PopularCard';
-import img1 from '../../assets/img/1.png';
+import img1 from '../../assets/img/1.jpg';
 import img2 from '../../assets/img/2.png';
-import img3 from '../../assets/img/3.png';
-import img4 from '../../assets/img/4.png';
-import img5 from '../../assets/img/5.png';
+import img3 from '../../assets/img/3.jpg';
+import img4 from '../../assets/img/4.jpg';
+import img5 from '../../assets/img/5.jpg';
 import img6 from '../../assets/img/6.png';
 import { tCourse } from '../../types/types';
 

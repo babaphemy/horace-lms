@@ -329,6 +329,10 @@ const headerStyles = {
     marginRight: 5,
     marginTop: '-.3rem',
     marginLeft: '-10px',
+
+    '@media (max-width: 600px)': {
+      marginLeft: '-50px',
+    },
   },
   language: {
     display: 'flex',

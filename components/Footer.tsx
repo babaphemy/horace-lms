@@ -24,7 +24,13 @@ const Footer = () => {
   return (
     <Box sx={footerStyles.container}>
       <Container maxWidth="lg">
-        <Grid container columnSpacing={2}>
+        <Grid
+          container
+          columnSpacing={{
+            xs: 8,
+            md: 3,
+          }}
+        >
           <Grid item sm={12} md={3}>
             <Image
               src={logo}
