@@ -148,7 +148,7 @@ const Header = () => {
                   <NextLink href="/about" passHref>
                     <MuiLink>About</MuiLink>
                   </NextLink>
-                  <NextLink href="/" passHref>
+                  <NextLink href="/courses" passHref>
                     <MuiLink>Courses</MuiLink>
                   </NextLink>
                   <NextLink href="/" passHref>
@@ -203,7 +203,7 @@ const Header = () => {
                 <NextLink href="/about" passHref>
                   <MuiLink>About</MuiLink>
                 </NextLink>
-                <NextLink href="/" passHref>
+                <NextLink href="/courses" passHref>
                   <MuiLink>Courses</MuiLink>
                 </NextLink>
                 <NextLink href="/" passHref>
