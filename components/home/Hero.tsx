@@ -15,12 +15,11 @@ const Hero = () => {
             Skills
           </Typography>{' '}
           <br />
-          With Horace Learning
+          Unlock Your Potential
         </Typography>
         <Typography variant="body2" mb={'20px'}>
-          At Horace Learning, we are committed to building the best global
-          education network, one that connects students, educators and
-          professionals from all over the world.
+          Transform Your Career with Horace: Gain Job-Ready Skills through Our
+          Immersive Courses and Hands-On Labs.
         </Typography>
         <Button
           variant="contained"

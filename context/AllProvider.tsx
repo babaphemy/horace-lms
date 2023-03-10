@@ -26,8 +26,6 @@ const AppProvider = ({ children }: Props) => {
       switch (action.type) {
         case COURSES_SET:
           return { ...state, courses: action.data };
-        case LECTURE_SET:
-          return { ...state, lecture: action.data };
 
         default:
           return state;

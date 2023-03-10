@@ -35,6 +35,7 @@ export interface State {
     answer: string;
   };
   export type tLecture = {
+    id: number;
     title: string;
     video: string;
     type: string;
@@ -84,5 +85,5 @@ export interface State {
         type: "USER_ADD";
         data: [tUser];
       }
-    | { type: "COURSE_SET"; data: tCourse | null } | { type: "COURSES_SET"; data: [tCourse] } | { type: "LECTURE_SET"; data: tLecture } 
+    | { type: "COURSE_SET"; data: tCourse | null } | { type: "COURSES_SET"; data: [tCourse] } 
   

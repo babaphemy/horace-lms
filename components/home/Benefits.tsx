@@ -15,16 +15,17 @@ const Benefits = () => {
           Benefits
         </Typography>
         <Typography variant="h3" mb={2}>
-          Learn From The Best Teachers
+          Learn From Industry Experts
         </Typography>
         <Typography variant="body2" mb={2}>
-          We believe that education should be accessible to all and strive to
-          provide equal opportunities to those looking to learn, grow and make a
-          positive impact in the world. With our platform, you can gain
-          knowledge and skills from industry experts, working professionals and
-          experienced teachers, no matter your background or location. Join us
-          in our mission to revolutionize education and empower learners
-          everywhere!
+          At Horace, we're on a mission to democratize education and create a
+          level playing field for all. Our platform offers unparalleled access
+          to world-class instructors, industry experts, and working
+          professionals, enabling you to gain the knowledge and skills needed to
+          make a positive impact on the world. Whether you're from a small town
+          or a big city, we believe that anyone can achieve their dreams with
+          the right education and support. Join us today and take the first step
+          towards unlocking your true potential!
         </Typography>
       </Box>
       <Box sx={benefitsStyles.cardContainer}>
@@ -56,21 +57,21 @@ const cards = [
     icon: require('../../assets/img/plus.png'),
     title: 'Learn New Skills',
     description:
-      'Get access to top-notch educational resources to learn new skills from leaders in your field, working professionals, and experienced teachers',
+      'Gain access to premier educational resources and learn new skills from industry leaders, working professionals, and experienced educators.',
     color: '#F9AD56',
   },
   {
     icon: require('../../assets/img/book.png'),
-    title: "Free Trial's Available",
+    title: 'Change Careers',
     description:
-      "Our platform offers the chance to explore our courses, try them out, and only pay once you're sure you want to continue. Get a feel for our courses and start learning from the best",
+      "Unlock New Opportunities and Achieve Your financial Goals Today! With our curated hands-on labs that guarantees on-the-job skills, you'll be ready to take on the world.",
     color: '#16C79A',
   },
   {
     icon: require('../../assets/img/group.png'),
-    title: "Expert Tutor's",
+    title: 'Expert & Experienced Instructors',
     description:
-      'Horace Learning provides expert tutors to help students reach their full potential. Our tutors come from all backgrounds and specializations, and are committed to providing personalized instruction to each learner.',
+      'Learn from the Best: Expert and Experienced Instructors Ready to Guide You to Success! Our Instructors are Industry Leaders, Working Professionals, and Experienced Educators.',
     color: '#FF5E78',
   },
 ];
