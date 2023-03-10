@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import logo from '../assets/img/logo.png';
+import Link from 'next/link';
 
 type SocialProps = {
   name: string;
@@ -74,10 +75,18 @@ const Footer = () => {
             <Typography variant="h6">Quick Links</Typography>
             <Box>
               <List sx={footerStyles.noLeftPadding}>
-                <ListItem>Home</ListItem>
-                <ListItem>About</ListItem>
-                <ListItem>Courses</ListItem>
-                <ListItem>Contact</ListItem>
+                <ListItem>
+                  <Link href="/">Home</Link>
+                </ListItem>
+                <ListItem>
+                  <Link href="/about">About</Link>
+                </ListItem>
+                <ListItem>
+                  <Link href="/courses">Courses</Link>
+                </ListItem>
+                <ListItem>
+                  <Link href="/contact">Contact</Link>
+                </ListItem>
               </List>
             </Box>
           </Grid>
