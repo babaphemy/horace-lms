@@ -277,6 +277,7 @@ const Detailb = () => {
       </Container>
       <ModalLogin />
       <SignUpLogin />
+      <PaymentModal />
       <FooterLte />
     </>
   );

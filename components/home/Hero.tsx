@@ -57,6 +57,7 @@ const heroStyles = {
     maxWidth: '600px',
   },
   right: {
+    display: { xs: 'none', sm: 'block' },
     maxWidth: '500px',
   },
 };
