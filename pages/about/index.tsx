@@ -1,9 +1,12 @@
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
   Container,
+  Divider,
   Grid,
+  Rating,
   Typography,
 } from '@mui/material';
 import React from 'react';
@@ -13,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import boy from '../../assets/img/illustrate-2.png';
+import logo from '../../assets/img/logo.png';
 const AboutUs = () => {
   const router = useRouter();
   return (
@@ -33,16 +37,20 @@ const AboutUs = () => {
             We Grow Your Skills From A Young Age
           </Typography>
           <Typography variant="body1" className="text-center max-w-4xl">
-            This is a mobile and web-based application that aims to increase
-            kids’ interest in technology and get them to love tech-related
-            courses early in life. This is a mobile and web-based application
-            that aims to increase kids’ interest in technology and get them to
-            love tech-related courses early in life. This is a mobile and
-            web-based application that aims to increase kids’ interest in
-            technology and get them to love tech-related courses early in life.
-            This is a mobile and web-based application that aims to increase
-            kids’ interest in technology and get them to love tech-related
-            courses early in life.
+            Horace Learning is an innovative edtech start-up aimed at providing
+            comprehensive solutions for both teachers and students. Our mission
+            is to bridge the gap between education and technology, making
+            learning more efficient, effective, and enjoyable. Our team
+            comprises experienced professionals with a deep understanding of the
+            education landscape and a passion for utilizing technology to drive
+            change. From interactive virtual classrooms and personalized
+            learning paths, to advanced data analytics and reporting, our
+            solutions cater to the needs of educators and learners alike. We are
+            committed to delivering cutting-edge products and services that
+            empower teachers and students to achieve their full potential. At
+            Horace Learning, we believe in the transformative power of
+            education, and we are excited to be at the forefront of disrupting
+            the traditional education system with our innovative solutions.
           </Typography>
           <Box sx={aboutStyles.cardContainer}>
             <Grid container rowSpacing={2} columnSpacing={5}>
@@ -151,7 +159,7 @@ const AboutUs = () => {
           </Grid>
         </Box>
 
-        <Box>
+        <Box className="mb-12">
           <Typography variant="h3" mb={2}>
             Our Team
           </Typography>
@@ -162,6 +170,59 @@ const AboutUs = () => {
             development and design, to marketing and sales, our team brings a
             wealth of knowledge and expertise to every project we undertake.{' '}
           </Typography>
+        </Box>
+
+        <Box className="mb-12">
+          <Typography
+            variant="h5"
+            sx={{
+              color: '#FF6854',
+              mb: 2,
+            }}
+          ></Typography>
+          <Typography variant="h3" mb={2}>
+            What Our Students Say
+          </Typography>
+          <Grid container spacing={3}>
+            {whatOurStudentsSay.map((item) => (
+              <Grid item xs={12} sm={6} md={4}>
+                <Box sx={aboutStyles.card}>
+                  <Box className="flex justify-between items-center my-2">
+                    <Rating
+                      name="read-only"
+                      value={item.rating || 4}
+                      readOnly
+                    />
+                    <Image
+                      src={logo}
+                      alt="Horace Logo"
+                      width={100}
+                      height={30}
+                    />
+                  </Box>
+                  <Divider />
+                  <Typography variant="body2" my={2} sx={{ minHeight: '8rem' }}>
+                    {item.comment}
+                  </Typography>
+                  <Box display={'flex'} my={1}>
+                    <Avatar
+                      alt="instructor"
+                      src="https://material-ui.com/static/images/avatar/1.jpg"
+                      sx={{ width: 50, height: 50 }}
+                    />
+                    <Box ml={1}>
+                      <Typography variant="body1" margin={0}>
+                        {item.name}
+                      </Typography>
+                      <Typography variant="caption" margin={0} color="primary">
+                        {item.role}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
         </Box>
       </Container>
       <Footer />
@@ -229,7 +290,7 @@ const aboutStyles = {
 
 const statistics = [
   {
-    number: 99,
+    number: 10,
     name: 'Courses',
     color: '#F9AD56',
     icon: require('../../assets/img/icon-1.png'),
@@ -257,4 +318,31 @@ const exampleCourses = [
   'Machine Learning',
   'Artificial Intelligence',
   'Java',
+];
+
+const whatOurStudentsSay = [
+  {
+    name: 'John Doe',
+    role: 'Student',
+    image: 'https://material-ui.com/static/images/avatar/1.jpg',
+    rating: 4,
+    comment:
+      'I have been using Horace Learning for a while now and I can say that it has been a great experience. The courses are very interesting and the instructors are very knowledgeable. I would recommend this platform to anyone who wants to learn more about computers.',
+  },
+  {
+    name: 'Jane Doe',
+    role: 'Student',
+    image: 'https://material-ui.com/static/images/avatar/2.jpg',
+    rating: 5,
+    comment:
+      'Horace Learning has been a game changer for our school. Their solutions have helped us overcome the challenges of traditional education and allow us to truly empower our students to succeed.',
+  },
+  {
+    name: 'John Doe',
+    role: 'Student',
+    image: 'https://material-ui.com/static/images/avatar/3.jpg',
+    rating: 5,
+    comment:
+      'Horace Learning has completely transformed the way I teach and my students learn. The virtual classrooms, personalized learning paths, and advanced analytics have made my job so much easier and more fulfilling.',
+  },
 ];

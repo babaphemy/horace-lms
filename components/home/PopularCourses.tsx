@@ -1,7 +1,8 @@
-import { Box, Typography, Grid, CircularProgress } from '@mui/material';
+import { Box, Typography, Grid, CircularProgress, Button } from '@mui/material';
 import Batch from './Batch';
 import { useState, useEffect } from 'react';
 import PopularCard from './PopularCard';
+import { useRouter } from 'next/router';
 import img1 from '../../assets/img/1.jpg';
 import img2 from '../../assets/img/2.png';
 import img3 from '../../assets/img/3.jpg';
@@ -13,6 +14,7 @@ import { tCourse } from '../../types/types';
 const cardImage = [img1, img2, img3, img4, img5, img6];
 
 const PopularCourses = ({ data, isLoading }: any) => {
+  const router = useRouter();
   const [active, setActive] = useState('all');
   const [filteredData, setFilteredData] = useState(data);
 
@@ -56,7 +58,14 @@ const PopularCourses = ({ data, isLoading }: any) => {
           ))}
         </Box>
       </Box>
-      <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <Grid container spacing={5}>
           {filteredData?.map((course: any, index: number) => {
             return (
@@ -66,6 +75,14 @@ const PopularCourses = ({ data, isLoading }: any) => {
             );
           })}
         </Grid>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={popularStyles.button}
+          onClick={() => router.push('/courses')}
+        >
+          View All Courses
+        </Button>
       </Box>
     </Box>
   );
@@ -86,6 +103,15 @@ const popularStyles = {
         my: '5px',
       },
     },
+  },
+  button: {
+    backgroundColor: '#FF6854 !important',
+    color: '#fff',
+    px: 3,
+    mt: 3,
+    borderRadius: 5,
+    textTransform: 'capitalize',
+    mb: '20px',
   },
 };
 
