@@ -56,6 +56,10 @@ const DashboardHeader = () => {
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
+  const goToPage = (page: string) => {
+    router.push(`/${page.toLowerCase()}`);
+    handleCloseNavMenu();
+  };
   return (
     <AppBar position="static" className="mb-4 md:mb-8">
       <Container maxWidth="xl">
@@ -102,7 +106,7 @@ const DashboardHeader = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => goToPage(page)}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -112,7 +116,7 @@ const DashboardHeader = () => {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => goToPage(page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
