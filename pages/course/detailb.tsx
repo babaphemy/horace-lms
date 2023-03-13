@@ -36,8 +36,8 @@ import { addUserCourse, fetchCourse } from '../../api/rest';
 import { MODAL_SET } from '../../context/Action';
 import { Appcontext, AppDpx } from '../../context/AppContext';
 import ModalLogin from '../../components/auth/ModalLogin';
-import SignUpLogin from '../../components/auth/ModalSignUp';
-import PaymentModal from '../../components/payment/PaymentModal';
+import SignUpLogin from '../../components/auth/SignUpLogin';
+import { COURSE_SET } from '../../context/actions';
 
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -103,6 +103,8 @@ const Detailb = () => {
         return;
       } else {
         console.log('Proceed to payment');
+        dispatch({ type: COURSE_SET, data });
+        router.push('/course/classroom');
       }
     } else {
       dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });

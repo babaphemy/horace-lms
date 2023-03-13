@@ -16,9 +16,9 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import NoteIcon from '@mui/icons-material/Note';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
-import { AppDpx } from '../../context/AllProvider';
-import { LECTURE_SET } from '../../context/actions';
-import { tCurriculum } from '../../types/types';
+import { SET_PLAY_ID } from '../../context/actions';
+import { tCurriculum, tLecture } from '../../types/types';
+import { AppDpx } from '../../context/AppContext';
 
 const data = [
   { icon: <PlayCircleIcon />, label: 'lecture' },
@@ -52,6 +52,10 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
   const dispatch = useContext(AppDpx);
   const doSel = (id: string) => {
     setSel((v) => (v === id ? '' : id));
+  };
+  const _next = (id: tLecture) => {
+    // fetch video file
+    dispatch({ type: SET_PLAY_ID, data: id });
   };
   return (
     <Box className="flex w-full">
@@ -141,9 +145,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                     <ListItemText
                       className="capitalize font-medium "
                       primary={item.title}
-                      onClick={() =>
-                        dispatch({ type: LECTURE_SET, data: item })
-                      }
+                      onClick={() => _next(item)}
                     />
                   </ListItemButton>
                 ))}
