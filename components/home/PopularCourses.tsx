@@ -20,7 +20,7 @@ const PopularCourses = ({ data, isLoading }: any) => {
 
   useEffect(() => {
     if (active === 'all') {
-      setFilteredData(data);
+      setFilteredData(data.slice(0, 6));
     } else {
       const filtered = data?.filter(
         (course: tCourse) =>
@@ -34,7 +34,7 @@ const PopularCourses = ({ data, isLoading }: any) => {
       //     return course.category?.split(',').includes(active.toLowerCase());
       //   }
       // });
-      setFilteredData(filtered);
+      setFilteredData(filtered.slice(0, 6));
     }
   }, [active, data]);
 
