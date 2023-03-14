@@ -22,6 +22,8 @@ import Map from '../../components/Map';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import { useRouter } from 'next/router';
+import { useMutation } from 'react-query';
+import { contactUs } from '../../api/rest';
 
 const schema = yup.object().shape({
   firstname: yup.string().required('First name is required'),
@@ -39,6 +41,7 @@ const defaultValues = {
   lastname: '',
   email: '',
   phone: '',
+  type: 'PMP',
   message: '',
 };
 
@@ -47,6 +50,7 @@ const ContactUs = () => {
   const [al, setAlert] = React.useState<{
     show: boolean;
     msg: string;
+    type: 'success' | 'error';
   } | null>(null);
   const {
     control,
@@ -58,9 +62,26 @@ const ContactUs = () => {
     defaultValues,
   });
 
+  const { mutate, isLoading } = useMutation(contactUs, {
+    onSuccess: (data) => {
+      setAlert({
+        show: true,
+        msg: 'Your message has been sent successfully',
+        type: 'success',
+      });
+      reset(defaultValues);
+    },
+    onError: (error) => {
+      setAlert({
+        show: true,
+        msg: 'Something went wrong, please try again',
+        type: 'error',
+      });
+    },
+  });
+
   const onSubmit = (data: any) => {
-    console.log(data);
-    reset(defaultValues);
+    mutate(data);
   };
   return (
     <Box>
@@ -82,7 +103,7 @@ const ContactUs = () => {
           >
             {al?.show && (
               <Alert
-                severity="error"
+                severity={al?.type}
                 onClose={() => setAlert(null)}
                 sx={contactStyles.alert}
               >
@@ -304,6 +325,7 @@ const ContactUs = () => {
                     sx={contactStyles.otherButton}
                     className="bg-orange-500 text-white cursor-pointer"
                     onClick={() => router.push('/sign-up')}
+                    disabled={isLoading}
                   >
                     Get Started
                   </Button>
