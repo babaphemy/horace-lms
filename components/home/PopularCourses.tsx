@@ -20,7 +20,11 @@ const PopularCourses = ({ data, isLoading }: any) => {
 
   useEffect(() => {
     if (active === 'all') {
-      setFilteredData(data.slice(0, 6));
+      if (data?.length > 6) {
+        setFilteredData(data?.slice(0, 6));
+        return;
+      }
+      setFilteredData(data);
     } else {
       const filtered = data?.filter(
         (course: tCourse) =>
@@ -34,7 +38,11 @@ const PopularCourses = ({ data, isLoading }: any) => {
       //     return course.category?.split(',').includes(active.toLowerCase());
       //   }
       // });
-      setFilteredData(filtered.slice(0, 6));
+      if (filtered?.length > 6) {
+        setFilteredData(filtered?.slice(0, 6));
+        return;
+      }
+      setFilteredData(filtered);
     }
   }, [active, data]);
 
