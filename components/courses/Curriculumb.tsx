@@ -54,7 +54,6 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
     setSel((v) => (v === id ? -1 : id));
   };
   const _next = (id: tLecture) => {
-    // fetch video file
     dispatch({ type: SET_PLAY_ID, data: id });
   };
   return (
