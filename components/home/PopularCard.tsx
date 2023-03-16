@@ -78,7 +78,12 @@ const PopularCard = ({ data, img }: any) => {
           >
             {courseName}
           </Typography>
-          <Typography variant="body2" color="text.secondary" my={1}>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            my={1}
+            minHeight={'50px'}
+          >
             {formattedBrief(brief) || ''}
           </Typography>
           <Box sx={cardStyles.between}>

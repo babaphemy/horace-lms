@@ -38,7 +38,7 @@ const Hero = () => {
 
 export default Hero;
 
-const heroStyles = {
+export const heroStyles = {
   container: {
     display: 'flex',
     justifyContent: 'space-between',

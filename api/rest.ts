@@ -77,6 +77,23 @@ const addUserCourse = async (data: { id: string; user: string }) => {
   }
   return response.json();
 };
+const contactUs = async (data: {
+  firstname: string;
+  lastname: string;
+  email: string;
+  message: string;
+  type: string;
+  phone?: string;
+}) => {
+  const response = await fetch(
+    `${basePath}contact/essl/new`,
+    PostSettings(data)
+  );
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return response.text();
+};
 
 export {
   getUsers,
@@ -88,4 +105,5 @@ export {
   doToken,
   resetPass,
   addUserCourse,
+  contactUs,
 };
