@@ -57,7 +57,8 @@ const DashboardHeader = () => {
     setAnchorElUser(event.currentTarget);
   };
   const goToPage = (page: string) => {
-    router.push(`/${page.toLowerCase()}`);
+    const destination = page?.toLowerCase() || 'home';
+    destination === 'home' ? router.push('/') : router.push(`/${destination}`);
     handleCloseNavMenu();
   };
   return (
@@ -154,21 +155,6 @@ const DashboardHeader = () => {
               </Menu>
             </Box>
           )}
-
-          {/* <List>
-						<NextLink href="/" passHref>
-							<MuiLink>Home</MuiLink>
-						</NextLink>
-						<NextLink href="/" passHref>
-							<MuiLink>About</MuiLink>
-						</NextLink>
-						<NextLink href="/" passHref>
-							<MuiLink>Courses</MuiLink>
-						</NextLink>
-						<NextLink href="/" passHref>
-							<MuiLink>Contact</MuiLink>
-						</NextLink>
-					</List> */}
         </Toolbar>
       </Container>
     </AppBar>

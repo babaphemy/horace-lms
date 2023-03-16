@@ -1,4 +1,10 @@
-import { Box, Container, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  Typography,
+} from '@mui/material';
 import React from 'react';
 import PopularCard from '../../components/home/PopularCard';
 import { useQuery } from 'react-query';
@@ -10,7 +16,6 @@ import img3 from '../../assets/img/3.jpg';
 import img4 from '../../assets/img/4.jpg';
 import img5 from '../../assets/img/5.jpg';
 import img6 from '../../assets/img/6.png';
-import { tCourse } from '../../types/types';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -29,6 +34,7 @@ const Courses = () => {
           <Typography variant="h3" sx={{ fontWeight: 'bold', my: 4 }}>
             All Courses
           </Typography>
+          {isLoading && <CircularProgress />}
           <Grid container spacing={5}>
             {data?.map((course: any, index: number) => {
               return (

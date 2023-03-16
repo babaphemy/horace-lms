@@ -1,4 +1,4 @@
-import { Paper } from '@mui/material';
+import { Box, Button, Paper } from '@mui/material';
 import React, { useContext } from 'react';
 import ReactPlayer from 'react-player';
 import DashboardHoc from '../../components/DashboardHoc';
@@ -18,7 +18,7 @@ const Classroom = () => {
       courseName={course?.courseName}
     >
       <Coursebar />
-      <Paper className="w-9/12">
+      <Paper className="w-full">
         {current?.type === 'lecture' && (
           <div className="w-fit">
             <ReactPlayer
@@ -29,6 +29,10 @@ const Classroom = () => {
             />
           </div>
         )}
+        <Box display={'flex'} justifyContent="space-between">
+          <Button>Next</Button>
+          <Button>Previous</Button>
+        </Box>
       </Paper>
     </DashboardHoc>
   );
