@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Box, Container, Grid, IconButton, Typography } from '@mui/material';
+import {
+  Box,
+  Container,
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import PopularCard from '../../components/home/PopularCard';
 import { useQuery } from 'react-query';
@@ -36,6 +44,16 @@ const Courses = () => {
   const [allCourses, setAllCourses] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [currentFilter, setCurrentFilter] = useState(filter[0]);
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const dropDown = Boolean(anchorEl);
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const { data, isLoading } = useQuery('usersAdddoc', fetchCourses, {
     staleTime: 5000,
@@ -83,12 +101,59 @@ const Courses = () => {
             />
           </Box>
           <Box>
-            <IconButton sx={courseStyles.filterButton}>
+            <IconButton
+              id="native-button"
+              aria-controls={dropDown ? 'native-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={dropDown ? 'true' : undefined}
+              onClick={handleClick}
+              sx={courseStyles.filterButton}
+            >
               <Typography variant="h6" sx={courseStyles.filterText}>
                 Filters
               </Typography>
               <FilterListIcon />
             </IconButton>
+            <Menu
+              id="native-menu"
+              MenuListProps={{
+                'aria-labelledby': 'native-button',
+              }}
+              anchorEl={anchorEl}
+              elevation={0}
+              open={dropDown}
+              onClose={handleClose}
+            >
+              {filter.map((item: any, index: number) => {
+                return (
+                  <MenuItem
+                    key={index}
+                    onClick={() => {
+                      setCurrentFilter(item);
+                      if (item.value === 'all') {
+                        setFilteredData(allCourses);
+                        handleClose();
+                        return;
+                      }
+                      setFilteredData(
+                        allCourses.filter(
+                          (course: tCourse) =>
+                            course?.category
+                              ?.split(',')
+                              .includes(item.value.toLowerCase()) ||
+                            course?.courseName
+                              ?.toLowerCase()
+                              .includes(item.value.toLowerCase())
+                        )
+                      );
+                      handleClose();
+                    }}
+                  >
+                    {item.label}
+                  </MenuItem>
+                );
+              })}
+            </Menu>
           </Box>
         </Box>
         <Box>
