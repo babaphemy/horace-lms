@@ -118,6 +118,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                   }}
                   sx={{ my: 0 }}
                 />
+
                 <KeyboardArrowDown
                   sx={{
                     mr: -1,
