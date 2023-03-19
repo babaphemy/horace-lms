@@ -94,11 +94,21 @@ const Footer = () => {
             <Typography variant="h6">Quick Links</Typography>
             <Box>
               <List sx={footerStyles.noLeftPadding}>
-                <ListItem>Help Center</ListItem>
-                <ListItem>Ask Questions</ListItem>
-                <ListItem>Send Feedback</ListItem>
-                <ListItem>Terms of Use</ListItem>
-                <ListItem>Privacy Policy</ListItem>
+                <ListItem>
+                  <Link href="/help-center">Help Center</Link>
+                </ListItem>
+                <ListItem>
+                  <Link href="/ask-question">Ask Questions</Link>
+                </ListItem>
+                <ListItem>
+                  <Link href="/feedback">Send Feedback</Link>
+                </ListItem>
+                <ListItem>
+                  <Link href="/terms-of-use">Terms of Use</Link>
+                </ListItem>
+                <ListItem>
+                  <Link href="/privacy-policy">Privacy Policy</Link>
+                </ListItem>
               </List>
             </Box>
           </Grid>
