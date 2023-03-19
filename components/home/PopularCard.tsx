@@ -20,7 +20,7 @@ const Tag = ({ label }: { label: string }) => {
 
 const PopularCard = ({ data, img }: any) => {
   const router = useRouter();
-  const { id, courseName, author, category, brief, posts } = data;
+  const { id, courseName, author, category, brief, posts, thumbnail } = data;
 
   const handleCardClick = () => {
     router.push(`/course/detailb?cid=${id}`);
@@ -46,7 +46,11 @@ const PopularCard = ({ data, img }: any) => {
       <Box sx={cardStyles.card}>
         <Box sx={cardStyles.image}>
           <Image
-            src={img}
+            src={
+              (thumbnail && require(`../../assets/img/${thumbnail}`)) ||
+              img ||
+              'https://material-ui.com/static/images/cards/contemplative-reptile.jpg'
+            }
             alt="a man smiling"
             width={'400rem'}
             height={'250rem'}

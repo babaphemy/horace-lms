@@ -16,6 +16,8 @@
     "@types/node": "^16.18.11",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "fuse.js": "^6.6.2",
+    "lodash": "^4.17.21",
     "mobile-detect": "^1.4.5",
     "next": "12.2.0",
     "perfect-scrollbar": "^1.5.5",
@@ -61,6 +63,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.191",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.34.0",
     "eslint-config-airbnb": "^19.0.4",

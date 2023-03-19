@@ -54,7 +54,6 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
     setSel((v) => (v === id ? '' : id));
   };
   const _next = (id: tLecture) => {
-    // fetch video file
     dispatch({ type: SET_PLAY_ID, data: id });
   };
   return (
@@ -119,6 +118,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                   }}
                   sx={{ my: 0 }}
                 />
+
                 <KeyboardArrowDown
                   sx={{
                     mr: -1,
