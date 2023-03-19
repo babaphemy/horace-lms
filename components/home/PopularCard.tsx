@@ -18,7 +18,7 @@ const Tag = ({ label }: { label: string }) => {
   );
 };
 
-const PopularCard = ({ data, img }: any) => {
+const PopularCard = ({ data }: any) => {
   const router = useRouter();
   const { id, courseName, author, category, brief, posts } = data;
 
@@ -46,8 +46,8 @@ const PopularCard = ({ data, img }: any) => {
       <Box sx={cardStyles.card}>
         <Box sx={cardStyles.image}>
           <Image
-            src={img}
-            alt="a man smiling"
+            src={`/img/${data?.thumbnail || '1.jpg'}`}
+            alt="course thumbnail"
             width={'400rem'}
             height={'250rem'}
             style={{ borderRadius: '15px' }}

@@ -3,15 +3,7 @@ import Batch from './Batch';
 import { useState, useEffect } from 'react';
 import PopularCard from './PopularCard';
 import { useRouter } from 'next/router';
-import img1 from '../../assets/img/1.jpg';
-import img2 from '../../assets/img/2.png';
-import img3 from '../../assets/img/3.jpg';
-import img4 from '../../assets/img/4.jpg';
-import img5 from '../../assets/img/5.jpg';
-import img6 from '../../assets/img/6.png';
 import { tCourse } from '../../types/types';
-
-const cardImage = [img1, img2, img3, img4, img5, img6];
 
 const PopularCourses = ({ data, isLoading }: any) => {
   const router = useRouter();
@@ -27,13 +19,6 @@ const PopularCourses = ({ data, isLoading }: any) => {
           course?.category?.split(',').includes(active.toLowerCase()) ||
           course?.courseName?.toLowerCase().includes(active.toLowerCase())
       );
-      // const filtered = data?.filter((course: tCourse) => {
-      //   if (course.category === active) {
-      //     return course;
-      //   } else {
-      //     return course.category?.split(',').includes(active.toLowerCase());
-      //   }
-      // });
       setFilteredData(filtered);
     }
   }, [active, data]);
@@ -47,11 +32,10 @@ const PopularCourses = ({ data, isLoading }: any) => {
         <Box>
           {filters.map((filter, i) => (
             <Batch
-              key={i}
+              key={i + filter.value}
               label={filter.label}
               onClick={() => {
                 setActive(filter.value);
-                console.log(filter.value);
               }}
               active={active === filter.value ? true : false}
             />
@@ -69,8 +53,8 @@ const PopularCourses = ({ data, isLoading }: any) => {
         <Grid container spacing={5}>
           {filteredData?.map((course: any, index: number) => {
             return (
-              <Grid item xs={12} sm={6} md={4}>
-                <PopularCard data={course} img={cardImage[index]} />
+              <Grid key={index + course.id} item xs={12} sm={6} md={4}>
+                <PopularCard data={course} />
               </Grid>
             );
           })}

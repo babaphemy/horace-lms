@@ -10,16 +10,8 @@ import PopularCard from '../../components/home/PopularCard';
 import { useQuery } from 'react-query';
 import { fetchCourses } from '../../api/rest';
 
-import img1 from '../../assets/img/1.jpg';
-import img2 from '../../assets/img/2.png';
-import img3 from '../../assets/img/3.jpg';
-import img4 from '../../assets/img/4.jpg';
-import img5 from '../../assets/img/5.jpg';
-import img6 from '../../assets/img/6.png';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
-
-const cardImage = [img1, img2, img3, img4, img5, img6];
 
 const Courses = () => {
   const { data, isLoading } = useQuery('usersAdddoc', fetchCourses, {
@@ -39,7 +31,7 @@ const Courses = () => {
             {data?.map((course: any, index: number) => {
               return (
                 <Grid item xs={12} sm={6} md={4}>
-                  <PopularCard data={course} img={cardImage[index]} />
+                  <PopularCard data={course} />
                 </Grid>
               );
             })}
