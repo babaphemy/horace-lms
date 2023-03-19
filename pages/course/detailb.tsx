@@ -37,8 +37,8 @@ import { MODAL_SET } from '../../context/Action';
 import { Appcontext, AppDpx } from '../../context/AppContext';
 import ModalLogin from '../../components/auth/ModalLogin';
 import { COURSE_SET } from '../../context/actions';
-import PaymentModal from '../../components/payment/PaymentModal';
 import SignUpLogin from '../../components/auth/ModalSignUp';
+import PaymentModal from '../../components/payment/PaymentModal';
 
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {

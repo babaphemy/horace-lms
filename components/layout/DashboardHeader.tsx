@@ -57,8 +57,8 @@ const DashboardHeader = () => {
     setAnchorElUser(event.currentTarget);
   };
   const goToPage = (page: string) => {
-    const destination = page?.toLowerCase() || 'home';
-    destination === 'home' ? router.push('/') : router.push(`/${destination}`);
+    if (page.toLowerCase() === 'home') return router.push('/');
+    router.push(`/${page.toLowerCase()}`);
     handleCloseNavMenu();
   };
   return (

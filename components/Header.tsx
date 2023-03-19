@@ -423,6 +423,7 @@ const headerStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: 'transparent !important',
 
     '&:hover': {
       cursor: 'pointer',

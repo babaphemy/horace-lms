@@ -12,6 +12,10 @@ const PopularCourses = ({ data, isLoading }: any) => {
 
   useEffect(() => {
     if (active === 'all') {
+      if (data?.length > 6) {
+        setFilteredData(data?.slice(0, 6));
+        return;
+      }
       setFilteredData(data);
     } else {
       const filtered = data?.filter(
@@ -19,6 +23,17 @@ const PopularCourses = ({ data, isLoading }: any) => {
           course?.category?.split(',').includes(active.toLowerCase()) ||
           course?.courseName?.toLowerCase().includes(active.toLowerCase())
       );
+      // const filtered = data?.filter((course: tCourse) => {
+      //   if (course.category === active) {
+      //     return course;
+      //   } else {
+      //     return course.category?.split(',').includes(active.toLowerCase());
+      //   }
+      // });
+      if (filtered?.length > 6) {
+        setFilteredData(filtered?.slice(0, 6));
+        return;
+      }
       setFilteredData(filtered);
     }
   }, [active, data]);
