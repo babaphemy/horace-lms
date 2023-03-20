@@ -20,7 +20,7 @@ const Detail = () => {
   );
   let lessonCount = 0;
   const { course } = data || {};
-  const author = `${course?.author?.firstname} ${course?.author?.lastname}`;
+  //const author = `${course?.author?.firstname} ${course?.author?.lastname}`;
   course?.curriculum.section.forEach((section: tSection) => {
     lessonCount += section.lecture.length;
   });
@@ -47,7 +47,7 @@ const Detail = () => {
       )}
       {/* <CourseObjectives brief='' handleJoinClass={() => void} /> */}
 
-      <p>similar courses</p>
+      <p>similar courses ({lessonCount})</p>
     </DashboardHoc>
   );
 };
