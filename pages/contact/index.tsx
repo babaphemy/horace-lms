@@ -92,7 +92,7 @@ const ContactUs = () => {
             Contact Us
           </Typography>
           <Typography variant="body1">
-            Our Friendly Customer Service Team would to hear from you.
+            Our Friendly Customer Service Team would like to hear from you.
           </Typography>
         </Box>
         <Paper sx={contactStyles.container}>
