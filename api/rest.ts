@@ -77,6 +77,13 @@ const addUserCourse = async (data: { id: string; user: string }) => {
   }
   return response.json();
 };
+const isCourseReg = async (id: string) => {
+  const response = await fetch(`${basePath}reg/my/${id}`, auth);
+  if (!response.ok) {
+    return { error: response.status };
+  }
+  return response.json();
+};
 const contactUs = async (data: {
   firstname: string;
   lastname: string;
@@ -94,6 +101,17 @@ const contactUs = async (data: {
   }
   return response.text();
 };
+const getCourseLecture = async (data: {
+  id: string;
+  user: string;
+  count: number | null;
+}) => {
+  const response = await fetch(`${basePath}course/lecture`, PostSettings(data));
+  if (!response.ok) {
+    return { error: response.status };
+  }
+  return response.json();
+};
 
 export {
   getUsers,
@@ -106,4 +124,6 @@ export {
   resetPass,
   addUserCourse,
   contactUs,
+  getCourseLecture,
+  isCourseReg,
 };

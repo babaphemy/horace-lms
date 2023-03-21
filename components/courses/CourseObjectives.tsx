@@ -39,6 +39,7 @@ interface Props {
   posts?: any[];
   ratings?: number | null;
   handleJoinClass: () => void;
+  regCourse?: boolean;
 }
 const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
   const {
@@ -51,6 +52,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     posts,
     ratings,
     handleJoinClass,
+    regCourse,
   } = props;
   const [tabValue, setTabValue] = useState(0);
 
@@ -105,7 +107,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
                 Last Updated: {modified || 'N/A'}
               </Typography>
               <Button onClick={handleJoinClass} sx={styles.button}>
-                Join Class
+                {regCourse ? 'Continue Class' : 'Join Class'}
               </Button>
             </div>
           )}
