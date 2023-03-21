@@ -16,13 +16,20 @@ const DashboardHoc = ({ isClass, children, courseName, curriculum }: Props) => {
     <div>
       <DashboardHeader />
 
-      <Box display="flex" mx={8}>
-        <Curriculumb
-          isClass={isClass}
-          courseName={courseName}
-          curriculum={curriculum}
-        />
-        <div className="w-2/3 ml-4">{children}</div>
+      <Box
+        sx={{
+          display: 'flex',
+          margin: '2px 5px 0 2px',
+        }}
+      >
+        <div className="">
+          <Curriculumb
+            isClass={isClass}
+            courseName={courseName}
+            curriculum={curriculum}
+          />
+        </div>
+        <div className="flex-1 ml-4">{children}</div>
       </Box>
 
       <FooterLte />

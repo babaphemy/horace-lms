@@ -17,23 +17,32 @@ const Classroom = () => {
       curriculum={course?.curriculum}
       courseName={course?.courseName}
     >
-      <Coursebar />
-      <Paper className="w-full">
-        {current?.type === 'lecture' && (
-          <div className="w-fit">
-            <ReactPlayer
-              url={`https://essl.b-cdn.net/${current?.video}`}
-              width="640"
-              height="360"
-              controls
-            />
-          </div>
-        )}
-        <Box display={'flex'} justifyContent="space-between">
-          <Button>Next</Button>
-          <Button>Previous</Button>
-        </Box>
-      </Paper>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Coursebar />
+        <Paper className="w-full md:w-2/3">
+          {current?.type === 'lecture' && (
+            <div className="w-fit">
+              <ReactPlayer
+                url={`https://essl.b-cdn.net/${current?.video}`}
+                width="640"
+                height="360"
+                controls
+              />
+            </div>
+          )}
+          <Box display={'flex'} justifyContent="space-between">
+            <Button>Next</Button>
+            <Button>Previous</Button>
+          </Box>
+        </Paper>
+      </Box>
     </DashboardHoc>
   );
 };

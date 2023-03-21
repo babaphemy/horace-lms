@@ -47,7 +47,7 @@ interface Props {
   courseName?: string;
 }
 const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
-  const { curriculum, courseName } = props;
+  const { curriculum, courseName, isClass } = props;
   const [selected, setSel] = React.useState<number>(0);
   const dispatch = useContext(AppDpx);
   const doSel = (id: number) => {
@@ -58,7 +58,10 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
   };
   return (
     <Box className="flex w-full">
-      <Paper elevation={0} className="w-full xl:w-2/3 mr-5">
+      <Paper
+        elevation={0}
+        className={`w-full  ${isClass ? 'mr-1' : 'mr-5 xl:w-2/3'}`}
+      >
         <FireNav disablePadding>
           <Divider />
           <ListItem component="div" disablePadding>
