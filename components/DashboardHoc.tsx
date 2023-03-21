@@ -19,7 +19,7 @@ const DashboardHoc = ({ isClass, children, courseName, curriculum }: Props) => {
       <Box
         sx={{
           display: 'flex',
-          margin: '2px 5px 0 2px',
+          margin: '2px 0 0 2px',
         }}
       >
         <div className="">

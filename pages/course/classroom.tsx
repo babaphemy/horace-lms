@@ -38,8 +38,8 @@ const Classroom = () => {
             </div>
           )}
           <Box display={'flex'} justifyContent="space-between">
-            <Button>Next</Button>
             <Button>Previous</Button>
+            <Button>Next</Button>
           </Box>
         </Paper>
       </Box>
