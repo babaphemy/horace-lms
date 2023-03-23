@@ -264,7 +264,7 @@ export const ReviewModal = () => {
           onClick={() => {
             dispatch({
               type: MODAL_SET,
-              data: { open: false, view: 'review' },
+              data: { open: false, type: 'review' },
             });
 
             console.log('submit');
