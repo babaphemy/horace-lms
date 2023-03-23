@@ -9,7 +9,7 @@ type State = {
   playId: tLecture | null;
   modal: {
     open: boolean;
-    type: 'login' | 'signup' | 'payment';
+    type: 'login' | 'signup' | 'payment' | 'review';
   };
 };
 

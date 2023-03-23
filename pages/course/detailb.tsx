@@ -39,6 +39,7 @@ import ModalLogin from '../../components/auth/ModalLogin';
 import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
 import SignUpLogin from '../../components/auth/ModalSignUp';
 import PaymentModal from '../../components/payment/PaymentModal';
+import { ReviewModal } from '../../components/courses/CourseReview';
 
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -321,6 +322,7 @@ const Detailb = () => {
       <ModalLogin />
       <SignUpLogin />
       <PaymentModal course={data} />
+      <ReviewModal />
       <FooterLte />
     </>
   );
