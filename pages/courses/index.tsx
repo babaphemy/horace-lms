@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
+  CircularProgress,
   Container,
   Grid,
   IconButton,
@@ -16,18 +17,10 @@ import { debounce } from 'lodash';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import Fuse from 'fuse.js';
 
-import img1 from '../../assets/img/1.jpg';
-import img2 from '../../assets/img/2.png';
-import img3 from '../../assets/img/3.jpg';
-import img4 from '../../assets/img/4.jpg';
-import img5 from '../../assets/img/5.jpg';
-import img6 from '../../assets/img/6.png';
-import { tCourse } from '../../types/types';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-
-const cardImage = [img1, img2, img3, img4, img5, img6];
+import { tCourse } from '../../types/types';
 
 const filter = [
   { label: 'All Courses', value: 'all' },
@@ -160,11 +153,12 @@ const Courses = () => {
           <Typography variant="h3" sx={courseStyles.title}>
             {currentFilter.label}
           </Typography>
+          {isLoading && <CircularProgress />}
           <Grid container spacing={5}>
             {filteredData?.map((course: any, index: number) => {
               return (
-                <Grid key={index} item xs={12} sm={6} md={4}>
-                  <PopularCard data={course} img={cardImage[index]} />
+                <Grid item xs={12} sm={6} md={4}>
+                  <PopularCard data={course} />
                 </Grid>
               );
             })}

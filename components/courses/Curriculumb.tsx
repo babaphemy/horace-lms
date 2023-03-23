@@ -47,18 +47,21 @@ interface Props {
   courseName?: string;
 }
 const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
-  const { curriculum, courseName } = props;
-  const [selected, setSel] = React.useState<string>('1');
+  const { curriculum, courseName, isClass } = props;
+  const [selected, setSel] = React.useState<number>(0);
   const dispatch = useContext(AppDpx);
-  const doSel = (id: string) => {
-    setSel((v) => (v === id ? '' : id));
+  const doSel = (id: number) => {
+    setSel((v) => (v === id ? -1 : id));
   };
   const _next = (id: tLecture) => {
     dispatch({ type: SET_PLAY_ID, data: id });
   };
   return (
     <Box className="flex w-full">
-      <Paper elevation={0} className="w-full xl:w-2/3 mr-5">
+      <Paper
+        elevation={0}
+        className={`w-full  ${isClass ? 'mr-1' : 'mr-5 xl:w-2/3'}`}
+      >
         <FireNav disablePadding>
           <Divider />
           <ListItem component="div" disablePadding>
@@ -77,24 +80,24 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
             </ListItemButton>
           </ListItem>
           <Divider />
-          {curriculum?.section.map((item) => (
+          {curriculum?.section.map((item, index) => (
             <Box
-              key={item.id}
+              key={item.title + index}
               sx={{
-                bgcolor: selected === item.id ? 'rgba(108, 122, 137, 1)' : null,
-                pb: selected === item.id ? 2 : 0,
+                bgcolor: selected === index ? 'rgba(108, 122, 137, 1)' : null,
+                pb: selected === index ? 2 : 0,
               }}
             >
               <ListItemButton
                 alignItems="flex-start"
-                onClick={() => doSel(item.id)}
+                onClick={() => doSel(index)}
                 sx={{
                   width: '100%',
                   px: 3,
                   pt: 2.5,
-                  pb: selected === item.id ? 0 : 2.5,
+                  pb: selected === index ? 0 : 2.5,
                   '&:hover, &:focus': {
-                    '& svg': { opacity: selected === item.id ? 1 : 1 },
+                    '& svg': { opacity: selected === index ? 1 : 1 },
                   },
                 }}
               >
@@ -112,7 +115,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                     fontSize: 12,
                     lineHeight: '16px',
                     color:
-                      selected === item.id
+                      selected === index
                         ? 'rgba(0,0,0,0)'
                         : 'rgba(255,255,255,0.5)',
                   }}
@@ -124,12 +127,12 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                     mr: -1,
                     opacity: 1,
                     transform:
-                      selected === item.id ? 'rotate(-180deg)' : 'rotate(0)',
+                      selected === index ? 'rotate(-180deg)' : 'rotate(0)',
                     transition: '0.2s',
                   }}
                 />
               </ListItemButton>
-              {selected === item.id &&
+              {selected === index &&
                 item?.lecture?.map((item) => (
                   <ListItemButton
                     key={item.title}

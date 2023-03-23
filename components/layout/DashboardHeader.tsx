@@ -62,7 +62,7 @@ const DashboardHeader = () => {
     handleCloseNavMenu();
   };
   return (
-    <AppBar position="static" className="mb-4 md:mb-8">
+    <AppBar position="static" className="mb-4">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <IconButton
@@ -155,21 +155,6 @@ const DashboardHeader = () => {
               </Menu>
             </Box>
           )}
-
-          {/* <List>
-						<NextLink href="/" passHref>
-							<MuiLink>Home</MuiLink>
-						</NextLink>
-						<NextLink href="/" passHref>
-							<MuiLink>About</MuiLink>
-						</NextLink>
-						<NextLink href="/" passHref>
-							<MuiLink>Courses</MuiLink>
-						</NextLink>
-						<NextLink href="/" passHref>
-							<MuiLink>Contact</MuiLink>
-						</NextLink>
-					</List> */}
         </Toolbar>
       </Container>
     </AppBar>

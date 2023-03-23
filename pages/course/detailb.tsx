@@ -32,13 +32,14 @@ import Link from 'next/link';
 import FooterLte from '../../components/layout/FooterLte';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation } from 'react-query';
-import { addUserCourse, fetchCourse } from '../../api/rest';
+import { addUserCourse, fetchCourse, isCourseReg } from '../../api/rest';
 import { MODAL_SET } from '../../context/Action';
 import { Appcontext, AppDpx } from '../../context/AppContext';
 import ModalLogin from '../../components/auth/ModalLogin';
-import { COURSE_SET } from '../../context/actions';
+import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
 import SignUpLogin from '../../components/auth/ModalSignUp';
 import PaymentModal from '../../components/payment/PaymentModal';
+import { ReviewModal } from '../../components/courses/CourseReview';
 
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -47,6 +48,7 @@ const Detailb = () => {
   }
   const { user } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
+  const [regCourse, setRegCourse] = React.useState<boolean>(false);
   const router = useRouter();
   const cid = router.query.cid as string;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -59,7 +61,21 @@ const Detailb = () => {
       enabled: !!cid,
     }
   );
+
+  const { mutate } = useMutation(isCourseReg, {
+    onSuccess: (data) => {
+      if (cid) {
+        setRegCourse(data.includes(cid));
+      }
+    },
+    onError: (error) => {
+      console.log('error', error);
+      setRegCourse(false);
+    },
+  });
+
   const {
+    courseId,
     assetCount,
     curriculum,
     brief,
@@ -84,29 +100,55 @@ const Detailb = () => {
   const { lessonCount, downloadCount, quizCount, labCount, noteCount } =
     assetCount || {};
 
+  React.useEffect(() => {
+    if (user?.id && cid) {
+      mutate(user?.id);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, regCourse]);
+
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: (data) => {
-      console.log('data', data);
+      addCourseToContext();
     },
     onError: (error) => {
       console.log('error', error);
     },
   });
 
+  const addCourseToContext = () => {
+    dispatch({
+      type: COURSE_SET,
+      data: {
+        ...data,
+        id: data?.courseId,
+      },
+    });
+    dispatch({
+      type: SET_PLAY_ID,
+      data: {
+        ...data.curriculum.section[0].lecture[0],
+      },
+    });
+    router.push('/course/classroom');
+    return;
+  };
+
   const handleJoinClass = () => {
+    const payload = {
+      id: courseId,
+      user: user?.id,
+    };
+
     if (user?.id) {
-      if (data?.price === 0) {
-        const payload = {
-          id: data?.id,
-          user: user?.id,
-        };
-        addCourseToUser.mutate(payload);
-        return;
-      } else {
-        console.log('Proceed to payment');
-        dispatch({ type: COURSE_SET, data });
-        router.push('/course/classroom');
-      }
+      regCourse
+        ? addCourseToContext()
+        : data?.price === 0
+        ? addCourseToUser.mutate(payload)
+        : dispatch({ type: MODAL_SET, data: { open: true, type: 'payment' } });
+
+      // addCourseToUser.mutate(payload);
     } else {
       dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });
     }
@@ -135,6 +177,7 @@ const Detailb = () => {
     posts,
     ratings: calculatedRating(),
     handleJoinClass,
+    regCourse,
   };
 
   return (
@@ -192,7 +235,7 @@ const Detailb = () => {
                 endIcon={<ShoppingCart />}
                 onClick={handleJoinClass}
               >
-                Join Class
+                {regCourse ? 'Continue Class' : 'Join Class'}
               </Button>
               <Divider />
               <Typography variant="h6" className="mt-4">
@@ -278,7 +321,8 @@ const Detailb = () => {
       </Container>
       <ModalLogin />
       <SignUpLogin />
-      <PaymentModal />
+      <PaymentModal course={data} />
+      <ReviewModal />
       <FooterLte />
     </>
   );

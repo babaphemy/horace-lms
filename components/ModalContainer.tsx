@@ -14,7 +14,7 @@ const style = {
 
 interface Props {
   children: ReactElement;
-  type: 'login' | 'signup' | 'payment';
+  type: 'login' | 'signup' | 'payment' | 'review';
 }
 
 const ModalContainer = ({ type, children }: Props) => {
@@ -44,7 +44,12 @@ const ModalContainer = ({ type, children }: Props) => {
         }}
       >
         <Fade in={modal.type === type && modal.open}>
-          <Box sx={style}>{children}</Box>
+          <Box
+            className="py-10 px-3 md:p-8 border-2 rounded-2xl md:rounded border-t-red-500"
+            sx={style}
+          >
+            {children}
+          </Box>
         </Fade>
       </Modal>
     </Box>

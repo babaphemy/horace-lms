@@ -1,13 +1,18 @@
 import {
   Avatar,
   Box,
+  Button,
   Divider,
   LinearProgress,
   LinearProgressProps,
   Rating,
+  TextField,
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { MODAL_SET } from '../../context/Action';
+import { AppDpx } from '../../context/AppContext';
+import ModalContainer from '../ModalContainer';
 
 type Props = {
   posts?: any[];
@@ -54,7 +59,13 @@ function LinearProgressWithLabel(
 }
 
 const CourseReview = (props: Props) => {
+  const dispatch = React.useContext(AppDpx);
+
   const { posts, ratings } = props;
+
+  const handleOpenReviewModal = () => {
+    dispatch({ type: MODAL_SET, data: { open: true, type: 'review' } });
+  };
 
   return (
     <div>
@@ -170,6 +181,9 @@ const CourseReview = (props: Props) => {
           </Box>
         </Box>
       </Box>
+      <Button sx={styles.button} onClick={handleOpenReviewModal}>
+        Add Review & Rating
+      </Button>
       <Box>
         {posts?.map((post, index, array) => (
           <Box key={index}>
@@ -212,3 +226,62 @@ const CourseReview = (props: Props) => {
 };
 
 export default CourseReview;
+
+export const ReviewModal = () => {
+  const dispatch = React.useContext(AppDpx);
+
+  return (
+    <ModalContainer type="review">
+      <Box
+        sx={{
+          minWidth: '500px',
+        }}
+      >
+        <Typography variant="h4">Add Review & Rating</Typography>
+        <Divider sx={{ my: 2 }} />
+        <Box>
+          <Typography variant="h5">Your Rating</Typography>
+          <Rating
+            name="customized-10"
+            defaultValue={1}
+            max={5}
+            onChange={(event, newValue) => {
+              console.log(newValue);
+            }}
+          />
+          <Typography variant="h5" ml={1}>
+            Your Review
+          </Typography>
+          <TextField
+            multiline
+            rows={4}
+            variant="outlined"
+            sx={{ width: '100%', ml: 1 }}
+          />
+        </Box>
+        <Button
+          sx={styles.button}
+          onClick={() => {
+            dispatch({
+              type: MODAL_SET,
+              data: { open: false, type: 'review' },
+            });
+
+            console.log('submit');
+          }}
+        >
+          Submit
+        </Button>
+      </Box>
+    </ModalContainer>
+  );
+};
+
+const styles = {
+  button: {
+    border: '1px solid',
+    borderColor: 'primary',
+    px: 4,
+    my: 2,
+  },
+};

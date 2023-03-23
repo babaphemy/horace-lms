@@ -3,6 +3,7 @@ import Curriculumb from './courses/Curriculumb';
 import { tCurriculum } from '../types/types';
 import FooterLte from './layout/FooterLte';
 import DashboardHeader from './layout/DashboardHeader';
+import { Box } from '@mui/material';
 interface Props {
   children: ReactNode;
   isClass?: boolean;
@@ -14,14 +15,22 @@ const DashboardHoc = ({ isClass, children, courseName, curriculum }: Props) => {
   return (
     <div>
       <DashboardHeader />
-      <div className="flex">
-        <Curriculumb
-          isClass={isClass}
-          courseName={courseName}
-          curriculum={curriculum}
-        />
-        <div className="w-2/3 ml-4">{children}</div>
-      </div>
+
+      <Box
+        sx={{
+          display: 'flex',
+          margin: '2px 0 0 2px',
+        }}
+      >
+        <div className="">
+          <Curriculumb
+            isClass={isClass}
+            courseName={courseName}
+            curriculum={curriculum}
+          />
+        </div>
+        <div className="flex-1 ml-4">{children}</div>
+      </Box>
 
       <FooterLte />
     </div>

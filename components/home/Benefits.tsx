@@ -69,9 +69,9 @@ const cards = [
   },
   {
     icon: require('../../assets/img/group.png'),
-    title: 'Expert & Experienced Instructors',
+    title: 'Experienced Instructors',
     description:
-      'Learn from the Best: Expert and Experienced Instructors Ready to Guide You to Success! Our Instructors are Industry Leaders, Working Professionals, and Experienced Educators.',
+      'Expert and Experienced Instructors Ready to Guide You to Success! Our Instructors are Industry Leaders, Working Professionals, and Experienced Educators.',
     color: '#FF5E78',
   },
 ];

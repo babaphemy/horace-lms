@@ -13,7 +13,7 @@ export type Action =
       type: 'MODAL_SET';
       data: {
         open: boolean;
-        type: 'login' | 'signup' | 'payment';
+        type: 'login' | 'signup' | 'payment' | 'review';
       };
     }
   | { type: 'LECTURE_SET'; data: tLecture }
