@@ -27,7 +27,6 @@ const Classroom = () => {
         type: SET_PLAY_ID,
         data: data as tLecture,
       });
-      console.log(data, 'data');
     },
     onError(error) {
       console.log(error);
@@ -47,7 +46,18 @@ const Classroom = () => {
     mutate(payload);
   };
 
-  const handlePrevious = () => {};
+  const handlePrev = () => {
+    if (course === null) return;
+    if (!course.id || !user.id) return;
+
+    const payload = {
+      id: course.id,
+      user: user.id,
+      count: playId && playId?.id - 1,
+    };
+
+    mutate(payload);
+  };
 
   // const current = course?.curriculum.section
   //   .flatMap((section) => section.lecture)
@@ -71,7 +81,7 @@ const Classroom = () => {
           <Skeleton variant="rectangular" width={640} height={360} />
         ) : (
           <>
-            <Coursebar />
+            <Coursebar title={course?.courseName} subtitle={playId?.title} />
             <Paper className="w-full md:w-2/3">
               {current?.type === 'lecture' && (
                 <div className="w-fit">
@@ -84,7 +94,7 @@ const Classroom = () => {
                 </div>
               )}
               <Box display={'flex'} justifyContent="space-between">
-                <Button>Previous</Button>
+                <Button onClick={handlePrev}>Previous</Button>
                 <Button onClick={handleNext}>Next</Button>
               </Box>
             </Paper>
