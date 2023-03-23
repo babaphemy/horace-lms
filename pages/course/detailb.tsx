@@ -144,8 +144,10 @@ const Detailb = () => {
       regCourse
         ? addCourseToContext()
         : data?.price === 0
-        ? addCourseToContext()
-        : addCourseToUser.mutate(payload);
+        ? addCourseToUser.mutate(payload)
+        : dispatch({ type: MODAL_SET, data: { open: true, type: 'payment' } });
+
+      // addCourseToUser.mutate(payload);
     } else {
       dispatch({ type: MODAL_SET, data: { open: true, type: 'login' } });
     }
@@ -318,7 +320,7 @@ const Detailb = () => {
       </Container>
       <ModalLogin />
       <SignUpLogin />
-      <PaymentModal />
+      <PaymentModal course={data} />
       <FooterLte />
     </>
   );

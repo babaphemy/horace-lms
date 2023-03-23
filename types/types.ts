@@ -54,7 +54,7 @@ export interface State {
   };
   export type tCourse = {
     id: string;
-    authhor: tUser;
+    author: tUser;
     courseName: string;
     category: string;
     target: string;
