@@ -40,7 +40,7 @@ const Classroom = () => {
     const payload = {
       id: course.id,
       user: user.id,
-      count: playId && playId?.id + 1,
+      count: playId && playId?.id,
     };
 
     mutate(payload);
@@ -53,15 +53,11 @@ const Classroom = () => {
     const payload = {
       id: course.id,
       user: user.id,
-      count: playId && playId?.id - 1,
+      count: null,
     };
 
     mutate(payload);
   };
-
-  // const current = course?.curriculum.section
-  //   .flatMap((section) => section.lecture)
-  //   .find((lecture) => lecture.id === playId?.id || 1);
 
   return (
     <DashboardHoc
@@ -81,7 +77,10 @@ const Classroom = () => {
           <Skeleton variant="rectangular" width={640} height={360} />
         ) : (
           <>
-            <Coursebar title={course?.courseName} subtitle={playId?.title} />
+            <Coursebar
+              title={course?.courseName}
+              subtitle={`${playId?.id}.${playId?.title}`}
+            />
             <Paper className="w-full md:w-2/3">
               {current?.type === 'lecture' && (
                 <div className="w-fit">
@@ -94,8 +93,15 @@ const Classroom = () => {
                 </div>
               )}
               <Box display={'flex'} justifyContent="space-between">
-                <Button onClick={handlePrev}>Previous</Button>
-                <Button onClick={handleNext}>Next</Button>
+                <Button onClick={handlePrev} disabled={playId?.id === 1}>
+                  Previous
+                </Button>
+                <Button
+                  onClick={handleNext}
+                  disabled={playId?.id === course?.assetCount?.lessonCount}
+                >
+                  Next
+                </Button>
               </Box>
             </Paper>
           </>

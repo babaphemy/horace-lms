@@ -6,8 +6,7 @@ const Coursebar = ({ title, subtitle }: any) => {
     <Box className="flex flex-auto w-full text-center rounded-2xl overflow-hidden">
       <Toolbar className="w-full mb-1">
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {`${title}: ${subtitle}` ||
-            'Build Native Android & iOS App Using EXPO'}
+          {`${title}: ${subtitle}` || 'NA'}
         </Typography>
       </Toolbar>
     </Box>
