@@ -16,7 +16,7 @@ import { AppDpx } from '../../context/AppContext';
 import ModalContainer from '../ModalContainer';
 import { useMutation, useQueryClient } from 'react-query';
 import { addReview } from '../../api/rest';
-import moment from 'moment';
+import { fromNow } from '../../utils/fromNow';
 
 type Props = {
   posts?: any[];
@@ -245,7 +245,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
                     </Typography>
                     <Typography variant="body2" color="text.secondary" ml={1}>
                       {post.createdOn
-                        ? moment.utc(post.createdOn).fromNow()
+                        ? fromNow(new Date(post.createdOn))
                         : '1 day ago'}
                     </Typography>
                   </Box>
