@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -13,6 +14,8 @@ import React from 'react';
 import { MODAL_SET } from '../../context/Action';
 import { AppDpx } from '../../context/AppContext';
 import ModalContainer from '../ModalContainer';
+import { useMutation } from 'react-query';
+import { addReview } from '../../api/rest';
 
 type Props = {
   posts?: any[];
@@ -62,6 +65,8 @@ const CourseReview = (props: Props) => {
   const dispatch = React.useContext(AppDpx);
 
   const { posts, ratings } = props;
+
+  console.log('posts', posts);
 
   const handleOpenReviewModal = () => {
     dispatch({ type: MODAL_SET, data: { open: true, type: 'review' } });
@@ -196,7 +201,7 @@ const CourseReview = (props: Props) => {
               <Box ml={2}>
                 <Box display="flex" alignItems="center">
                   <Typography variant="body1" margin={0}>
-                    {post.user.firstname + ' ' + post.user.lastname}
+                    {post.user}
                   </Typography>
                   <Typography variant="body2" color="text.secondary" ml={1}>
                     2 days ago
@@ -211,7 +216,7 @@ const CourseReview = (props: Props) => {
               </Box>
             </Box>
             <Typography variant="body1" color="text.secondary" ml={3}>
-              {post.comment ||
+              {post.message ||
                 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam a iure quod voluptas quia quae voluptates quibusdam, voluptatibus, quos.'}
             </Typography>
 
@@ -227,8 +232,56 @@ const CourseReview = (props: Props) => {
 
 export default CourseReview;
 
-export const ReviewModal = () => {
+type ReviewModalProps = {
+  userId: string;
+  courseId: string;
+};
+
+export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
+  const [rating, setRating] = React.useState(1);
+  const [comment, setComment] = React.useState('');
+  const [error, setError] = React.useState('');
+
   const dispatch = React.useContext(AppDpx);
+
+  const handleRatingChange = (event: any, newValue: any) => {
+    setRating(newValue);
+  };
+
+  const { mutate, isLoading: loading } = useMutation(addReview, {
+    onSuccess: () => {
+      dispatch({ type: MODAL_SET, data: { open: false, type: 'review' } });
+    },
+    onError: (error: any) => {
+      console.log(error);
+    },
+  });
+
+  const handleSubmit = () => {
+    setError('');
+    if (!rating) {
+      setError('Please select a rating');
+      return;
+    }
+    if (!comment) {
+      setError('Please add a comment');
+      return;
+    }
+
+    const payload = {
+      user: {
+        id: userId,
+      },
+      course: {
+        id: courseId,
+      },
+      rating: rating,
+      type: 'REVIEW',
+      message: comment,
+    };
+
+    mutate(payload);
+  };
 
   return (
     <ModalContainer type="review">
@@ -239,37 +292,39 @@ export const ReviewModal = () => {
       >
         <Typography variant="h4">Add Review & Rating</Typography>
         <Divider sx={{ my: 2 }} />
+        {error && (
+          <Alert
+            severity="error"
+            sx={{
+              my: 2,
+            }}
+            onClose={() => setError('')}
+          >
+            {error}
+          </Alert>
+        )}
         <Box>
           <Typography variant="h5">Your Rating</Typography>
+
           <Rating
             name="customized-10"
-            defaultValue={1}
+            sx={{ mb: 2 }}
+            value={rating}
             max={5}
-            onChange={(event, newValue) => {
-              console.log(newValue);
-            }}
+            onChange={handleRatingChange}
           />
-          <Typography variant="h5" ml={1}>
-            Your Review
-          </Typography>
+
+          <Typography variant="h5">Your Review</Typography>
           <TextField
             multiline
             rows={4}
             variant="outlined"
-            sx={{ width: '100%', ml: 1 }}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            sx={{ width: '100%' }}
           />
         </Box>
-        <Button
-          sx={styles.button}
-          onClick={() => {
-            dispatch({
-              type: MODAL_SET,
-              data: { open: false, type: 'review' },
-            });
-
-            console.log('submit');
-          }}
-        >
+        <Button sx={styles.button} disabled={loading} onClick={handleSubmit}>
           Submit
         </Button>
       </Box>

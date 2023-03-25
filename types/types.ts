@@ -79,6 +79,17 @@ export interface State {
     }
   }
 
+  export type tReview = {
+    user: {
+      id: string;
+    },
+     course: {
+      id: string;
+    },
+    rating: number;
+    type: string;
+    message: string;
+  }
   export type tStatus = { isPlaying: boolean };
     export type Action =
     | {

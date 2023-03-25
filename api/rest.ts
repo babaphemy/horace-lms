@@ -112,6 +112,13 @@ const getCourseLecture = async (data: {
   }
   return response.json();
 };
+const addReview = async (data: any) => {
+  const response = await fetch(`${basePath}post/addmeta`, PostSettings(data));
+  if (!response.ok) {
+    return { error: response.status };
+  }
+  return response.json();
+};
 
 export {
   getUsers,
@@ -126,4 +133,5 @@ export {
   contactUs,
   getCourseLecture,
   isCourseReg,
+  addReview,
 };

@@ -322,7 +322,7 @@ const Detailb = () => {
       <ModalLogin />
       <SignUpLogin />
       <PaymentModal course={data} />
-      <ReviewModal />
+      <ReviewModal userId={user.id} courseId={courseId} />
       <FooterLte />
     </>
   );
