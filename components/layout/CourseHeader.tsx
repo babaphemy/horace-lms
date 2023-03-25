@@ -71,7 +71,7 @@ const CourseHeader = (props: Props) => {
           <Box width={'100%'} display="flex">
             <Rating
               name="read-only"
-              value={ratings || 5}
+              value={Number(ratings?.toFixed(1)) || 5}
               readOnly
               color="primary"
             />

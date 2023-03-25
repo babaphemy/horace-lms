@@ -305,7 +305,7 @@ const Detailb = () => {
               <div className="flex justify-between mt-4">
                 <Rating
                   name="author-rating"
-                  value={data?.author?.rating || 5}
+                  value={Number(data?.author?.rating?.toFixed(1)) || 5}
                   readOnly
                 />
                 <Typography variant="body2">

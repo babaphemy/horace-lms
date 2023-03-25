@@ -14,7 +14,7 @@ import React from 'react';
 import { MODAL_SET } from '../../context/Action';
 import { AppDpx } from '../../context/AppContext';
 import ModalContainer from '../ModalContainer';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { addReview } from '../../api/rest';
 import moment from 'moment';
 
@@ -83,7 +83,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewMore]);
+  }, [viewMore, posts]);
 
   const handleOpenReviewModal = () => {
     dispatch({ type: MODAL_SET, data: { open: true, type: 'review' } });
@@ -146,10 +146,12 @@ const CourseReview = ({ posts, ratings }: Props) => {
               },
             }}
           >
-            <Typography variant="h2">{ratings || 5}</Typography>
+            <Typography variant="h2">
+              {Number(ratings?.toFixed(1)) || 5}
+            </Typography>
             <Rating
               name="read-only"
-              value={ratings || 5}
+              value={Number(ratings?.toFixed(1)) || 5}
               readOnly
               sx={{
                 my: 1,
@@ -247,16 +249,18 @@ const CourseReview = ({ posts, ratings }: Props) => {
           );
         })}
       </Box>
-      <Button
-        sx={{
-          ...styles.button,
-          alignSelf: 'center',
-          justifySelf: 'center',
-        }}
-        onClick={() => setViewMore(!viewMore)}
-      >
-        {viewMore ? 'View Less' : 'View More'}
-      </Button>
+      {reviewOrder?.length! > 3 && (
+        <Button
+          sx={{
+            ...styles.button,
+            alignSelf: 'center',
+            justifySelf: 'center',
+          }}
+          onClick={() => setViewMore(!viewMore)}
+        >
+          {viewMore ? 'View Less' : 'View More'}
+        </Button>
+      )}
     </div>
   );
 };
@@ -269,6 +273,7 @@ type ReviewModalProps = {
 };
 
 export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
+  const queryClient = useQueryClient();
   const [rating, setRating] = React.useState(1);
   const [comment, setComment] = React.useState('');
   const [error, setError] = React.useState('');
@@ -281,7 +286,10 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
 
   const { mutate, isLoading: loading } = useMutation(addReview, {
     onSuccess: () => {
+      queryClient.invalidateQueries('acourse');
       dispatch({ type: MODAL_SET, data: { open: false, type: 'review' } });
+      setComment('');
+      setRating(1);
     },
     onError: (error: any) => {
       console.log(error);

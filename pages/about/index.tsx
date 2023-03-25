@@ -190,7 +190,7 @@ const AboutUs = () => {
                   <Box className="flex justify-between items-center my-2">
                     <Rating
                       name="read-only"
-                      value={item.rating || 4}
+                      value={Number(item.rating?.toFixed(1)) || 4}
                       readOnly
                     />
                     <Image
