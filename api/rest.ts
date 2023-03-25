@@ -1,3 +1,4 @@
+import { tReview } from '../types/types';
 import { auth, basePath, PostSettings } from './setting';
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal });
@@ -112,7 +113,7 @@ const getCourseLecture = async (data: {
   }
   return response.json();
 };
-const addReview = async (data: any) => {
+const addReview = async (data: tReview) => {
   const response = await fetch(`${basePath}post/addmeta`, PostSettings(data));
   if (!response.ok) {
     return { error: response.status };

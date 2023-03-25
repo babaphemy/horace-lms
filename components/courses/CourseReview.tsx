@@ -62,17 +62,35 @@ function LinearProgressWithLabel(
   );
 }
 
-const CourseReview = (props: Props) => {
+const CourseReview = ({ posts, ratings }: Props) => {
+  const [viewMore, setViewMore] = React.useState(false);
+  const [conditionalReview, setConditionalReview] = React.useState<any[]>([]);
   const dispatch = React.useContext(AppDpx);
 
-  const { posts, ratings } = props;
+  const reviewOrder = posts
+    ?.sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    })
+    .sort((a, b) => {
+      return b.rating - a.rating;
+    });
+
+  React.useEffect(() => {
+    if (reviewOrder && reviewOrder.length > 3 && !viewMore) {
+      setConditionalReview(reviewOrder.slice(0, 3));
+    } else {
+      setConditionalReview(reviewOrder || []);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewMore]);
 
   const handleOpenReviewModal = () => {
     dispatch({ type: MODAL_SET, data: { open: true, type: 'review' } });
   };
 
   return (
-    <div>
+    <div className="flex flex-col">
       <Typography
         variant="h4"
         sx={{
@@ -189,7 +207,7 @@ const CourseReview = (props: Props) => {
         Add Review & Rating
       </Button>
       <Box>
-        {posts?.map((post, index, array) => {
+        {conditionalReview?.map((post, index, array) => {
           return (
             <Box key={index}>
               <Box display={'flex'} my={1}>
@@ -229,6 +247,16 @@ const CourseReview = (props: Props) => {
           );
         })}
       </Box>
+      <Button
+        sx={{
+          ...styles.button,
+          alignSelf: 'center',
+          justifySelf: 'center',
+        }}
+        onClick={() => setViewMore(!viewMore)}
+      >
+        {viewMore ? 'View Less' : 'View More'}
+      </Button>
     </div>
   );
 };
@@ -271,10 +299,14 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
       return;
     }
 
-    const payload = {
+    const user = {
       user: {
         id: userId,
       },
+    };
+
+    const payload = {
+      ...(userId && user),
       course: {
         id: courseId,
       },

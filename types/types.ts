@@ -80,7 +80,7 @@ export interface State {
   }
 
   export type tReview = {
-    user: {
+    user?: {
       id: string;
     },
      course: {
