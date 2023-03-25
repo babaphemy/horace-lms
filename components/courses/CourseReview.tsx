@@ -16,6 +16,7 @@ import { AppDpx } from '../../context/AppContext';
 import ModalContainer from '../ModalContainer';
 import { useMutation } from 'react-query';
 import { addReview } from '../../api/rest';
+import moment from 'moment';
 
 type Props = {
   posts?: any[];
@@ -65,8 +66,6 @@ const CourseReview = (props: Props) => {
   const dispatch = React.useContext(AppDpx);
 
   const { posts, ratings } = props;
-
-  console.log('posts', posts);
 
   const handleOpenReviewModal = () => {
     dispatch({ type: MODAL_SET, data: { open: true, type: 'review' } });
@@ -132,7 +131,7 @@ const CourseReview = (props: Props) => {
             <Typography variant="h2">{ratings || 5}</Typography>
             <Rating
               name="read-only"
-              value={ratings || 1}
+              value={ratings || 5}
               readOnly
               sx={{
                 my: 1,
@@ -190,41 +189,45 @@ const CourseReview = (props: Props) => {
         Add Review & Rating
       </Button>
       <Box>
-        {posts?.map((post, index, array) => (
-          <Box key={index}>
-            <Box display={'flex'} my={1}>
-              <Avatar
-                alt="instructor"
-                src="https://material-ui.com/static/images/avatar/1.jpg"
-                sx={{ width: 50, height: 50 }}
-              />
-              <Box ml={2}>
-                <Box display="flex" alignItems="center">
-                  <Typography variant="body1" margin={0}>
-                    {post.user}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" ml={1}>
-                    2 days ago
-                  </Typography>
-                </Box>
-                <Rating
-                  name="read-only"
-                  value={post.rating}
-                  readOnly
-                  size="small"
+        {posts?.map((post, index, array) => {
+          return (
+            <Box key={index}>
+              <Box display={'flex'} my={1}>
+                <Avatar
+                  alt="instructor"
+                  src="https://material-ui.com/static/images/avatar/1.jpg"
+                  sx={{ width: 50, height: 50 }}
                 />
+                <Box ml={2}>
+                  <Box display="flex" alignItems="center">
+                    <Typography variant="body1" margin={0}>
+                      {post.user}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" ml={1}>
+                      {post.createdOn
+                        ? moment.utc(post.createdOn).fromNow()
+                        : '1 day ago'}
+                    </Typography>
+                  </Box>
+                  <Rating
+                    name="read-only"
+                    value={post.rating}
+                    readOnly
+                    size="small"
+                  />
+                </Box>
               </Box>
-            </Box>
-            <Typography variant="body1" color="text.secondary" ml={3}>
-              {post.message ||
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam a iure quod voluptas quia quae voluptates quibusdam, voluptatibus, quos.'}
-            </Typography>
+              <Typography variant="body1" color="text.secondary" ml={3}>
+                {post.message ||
+                  'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam a iure quod voluptas quia quae voluptates quibusdam, voluptatibus, quos.'}
+              </Typography>
 
-            {array.length - 1 !== index && array.length > 1 && (
-              <Divider sx={{ my: 2 }} />
-            )}
-          </Box>
-        ))}
+              {array.length - 1 !== index && array.length > 1 && (
+                <Divider sx={{ my: 2 }} />
+              )}
+            </Box>
+          );
+        })}
       </Box>
     </div>
   );
