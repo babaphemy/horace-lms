@@ -60,7 +60,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
     <Box className="flex w-full">
       <Paper
         elevation={0}
-        className={`w-full  ${isClass ? 'mr-1' : 'mr-5 xl:w-2/3'}`}
+        className={`w-full  ${isClass ? 'mr-1 px-2' : 'mr-5 xl:w-2/3'}`}
       >
         <FireNav disablePadding>
           <Divider />

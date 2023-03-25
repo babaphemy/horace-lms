@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -13,6 +14,9 @@ import React from 'react';
 import { MODAL_SET } from '../../context/Action';
 import { AppDpx } from '../../context/AppContext';
 import ModalContainer from '../ModalContainer';
+import { useMutation, useQueryClient } from 'react-query';
+import { addReview } from '../../api/rest';
+import { fromNow } from '../../utils/fromNow';
 
 type Props = {
   posts?: any[];
@@ -58,17 +62,35 @@ function LinearProgressWithLabel(
   );
 }
 
-const CourseReview = (props: Props) => {
+const CourseReview = ({ posts, ratings }: Props) => {
+  const [viewMore, setViewMore] = React.useState(false);
+  const [conditionalReview, setConditionalReview] = React.useState<any[]>([]);
   const dispatch = React.useContext(AppDpx);
 
-  const { posts, ratings } = props;
+  const reviewOrder = posts
+    ?.sort((a, b) => {
+      return b.rating - a.rating;
+    })
+    .sort((a, b) => {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+
+  React.useEffect(() => {
+    if (reviewOrder && reviewOrder.length > 3 && !viewMore) {
+      setConditionalReview(reviewOrder.slice(0, 3));
+    } else {
+      setConditionalReview(reviewOrder || []);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewMore, posts]);
 
   const handleOpenReviewModal = () => {
     dispatch({ type: MODAL_SET, data: { open: true, type: 'review' } });
   };
 
   return (
-    <div>
+    <div className="flex flex-col">
       <Typography
         variant="h4"
         sx={{
@@ -124,10 +146,12 @@ const CourseReview = (props: Props) => {
               },
             }}
           >
-            <Typography variant="h2">{ratings || 5}</Typography>
+            <Typography variant="h2">
+              {Number(ratings?.toFixed(1)) || 5}
+            </Typography>
             <Rating
               name="read-only"
-              value={ratings || 1}
+              value={Number(ratings?.toFixed(1)) || 5}
               readOnly
               sx={{
                 my: 1,
@@ -155,27 +179,47 @@ const CourseReview = (props: Props) => {
               <LinearProgressWithLabel
                 label="Excellent"
                 variant="determinate"
-                value={100}
+                value={
+                  ((posts?.filter((post) => post.rating === 5).length || 0) /
+                    posts?.length!) *
+                    100 || 100
+                }
               />
               <LinearProgressWithLabel
                 label="Very Good"
                 variant="determinate"
-                value={80}
+                value={
+                  ((posts?.filter((post) => post.rating === 4).length || 0) /
+                    posts?.length!) *
+                    100 || 0
+                }
               />
               <LinearProgressWithLabel
                 label="Average"
                 variant="determinate"
-                value={60}
+                value={
+                  ((posts?.filter((post) => post.rating === 3).length || 0) /
+                    posts?.length!) *
+                    100 || 0
+                }
               />
               <LinearProgressWithLabel
                 label="Poor"
                 variant="determinate"
-                value={40}
+                value={
+                  ((posts?.filter((post) => post.rating === 2).length || 0) /
+                    posts?.length!) *
+                    100 || 0
+                }
               />
               <LinearProgressWithLabel
                 label="Terrible"
                 variant="determinate"
-                value={20}
+                value={
+                  ((posts?.filter((post) => post.rating === 1).length || 0) /
+                    posts?.length!) *
+                    100 || 0
+                }
               />
             </Box>
           </Box>
@@ -185,50 +229,121 @@ const CourseReview = (props: Props) => {
         Add Review & Rating
       </Button>
       <Box>
-        {posts?.map((post, index, array) => (
-          <Box key={index}>
-            <Box display={'flex'} my={1}>
-              <Avatar
-                alt="instructor"
-                src="https://material-ui.com/static/images/avatar/1.jpg"
-                sx={{ width: 50, height: 50 }}
-              />
-              <Box ml={2}>
-                <Box display="flex" alignItems="center">
-                  <Typography variant="body1" margin={0}>
-                    {post.user.firstname + ' ' + post.user.lastname}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" ml={1}>
-                    2 days ago
-                  </Typography>
-                </Box>
-                <Rating
-                  name="read-only"
-                  value={post.rating}
-                  readOnly
-                  size="small"
+        {conditionalReview?.map((post, index, array) => {
+          return (
+            <Box key={index}>
+              <Box display={'flex'} my={1}>
+                <Avatar
+                  alt="instructor"
+                  src="https://material-ui.com/static/images/avatar/1.jpg"
+                  sx={{ width: 50, height: 50 }}
                 />
+                <Box ml={2}>
+                  <Box display="flex" alignItems="center">
+                    <Typography variant="body1" margin={0}>
+                      {post.user}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" ml={1}>
+                      {post.createdOn
+                        ? fromNow(new Date(post.createdOn))
+                        : '1 day ago'}
+                    </Typography>
+                  </Box>
+                  <Rating
+                    name="read-only"
+                    value={post.rating}
+                    readOnly
+                    size="small"
+                  />
+                </Box>
               </Box>
-            </Box>
-            <Typography variant="body1" color="text.secondary" ml={3}>
-              {post.comment ||
-                'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam a iure quod voluptas quia quae voluptates quibusdam, voluptatibus, quos.'}
-            </Typography>
+              <Typography variant="body1" color="text.secondary" ml={3}>
+                {post.message || "I'm loving this course!"}
+              </Typography>
 
-            {array.length - 1 !== index && array.length > 1 && (
-              <Divider sx={{ my: 2 }} />
-            )}
-          </Box>
-        ))}
+              {array.length - 1 !== index && array.length > 1 && (
+                <Divider sx={{ my: 2 }} />
+              )}
+            </Box>
+          );
+        })}
       </Box>
+      {reviewOrder?.length! > 3 && (
+        <Button
+          sx={{
+            ...styles.button,
+            alignSelf: 'center',
+            justifySelf: 'center',
+          }}
+          onClick={() => setViewMore(!viewMore)}
+        >
+          {viewMore ? 'View Less' : 'View More'}
+        </Button>
+      )}
     </div>
   );
 };
 
 export default CourseReview;
 
-export const ReviewModal = () => {
+type ReviewModalProps = {
+  userId: string;
+  courseId: string;
+};
+
+export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
+  const queryClient = useQueryClient();
+  const [rating, setRating] = React.useState(1);
+  const [comment, setComment] = React.useState('');
+  const [error, setError] = React.useState('');
+
   const dispatch = React.useContext(AppDpx);
+
+  const handleRatingChange = (event: any, newValue: any) => {
+    setRating(newValue);
+  };
+
+  const { mutate, isLoading: loading } = useMutation(addReview, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('acourse');
+      dispatch({ type: MODAL_SET, data: { open: false, type: 'review' } });
+      setComment('');
+      setRating(1);
+    },
+    onError: (error: any) => {
+      console.log(error);
+    },
+  });
+
+  const handleSubmit = () => {
+    setError('');
+    if (!rating) {
+      setError('Please select a rating');
+      return;
+    }
+    if (!comment) {
+      setError('Please add a comment');
+      return;
+    }
+
+    const user = {
+      user: {
+        id: userId,
+      },
+    };
+
+    const payload = {
+      ...(userId && user),
+      course: {
+        id: courseId,
+      },
+      rating: rating,
+      type: 'REVIEW',
+      message: comment,
+    };
+
+    mutate(payload);
+  };
 
   return (
     <ModalContainer type="review">
@@ -239,37 +354,39 @@ export const ReviewModal = () => {
       >
         <Typography variant="h4">Add Review & Rating</Typography>
         <Divider sx={{ my: 2 }} />
+        {error && (
+          <Alert
+            severity="error"
+            sx={{
+              my: 2,
+            }}
+            onClose={() => setError('')}
+          >
+            {error}
+          </Alert>
+        )}
         <Box>
           <Typography variant="h5">Your Rating</Typography>
+
           <Rating
             name="customized-10"
-            defaultValue={1}
+            sx={{ mb: 2 }}
+            value={rating}
             max={5}
-            onChange={(event, newValue) => {
-              console.log(newValue);
-            }}
+            onChange={handleRatingChange}
           />
-          <Typography variant="h5" ml={1}>
-            Your Review
-          </Typography>
+
+          <Typography variant="h5">Your Review</Typography>
           <TextField
             multiline
             rows={4}
             variant="outlined"
-            sx={{ width: '100%', ml: 1 }}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            sx={{ width: '100%' }}
           />
         </Box>
-        <Button
-          sx={styles.button}
-          onClick={() => {
-            dispatch({
-              type: MODAL_SET,
-              data: { open: false, type: 'review' },
-            });
-
-            console.log('submit');
-          }}
-        >
+        <Button sx={styles.button} disabled={loading} onClick={handleSubmit}>
           Submit
         </Button>
       </Box>
