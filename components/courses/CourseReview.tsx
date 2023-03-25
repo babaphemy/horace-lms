@@ -258,8 +258,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
                 </Box>
               </Box>
               <Typography variant="body1" color="text.secondary" ml={3}>
-                {post.message ||
-                  'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam a iure quod voluptas quia quae voluptates quibusdam, voluptatibus, quos.'}
+                {post.message || "I'm loving this course!"}
               </Typography>
 
               {array.length - 1 !== index && array.length > 1 && (
