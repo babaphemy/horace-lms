@@ -69,10 +69,10 @@ const CourseReview = ({ posts, ratings }: Props) => {
 
   const reviewOrder = posts
     ?.sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return b.rating - a.rating;
     })
     .sort((a, b) => {
-      return b.rating - a.rating;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     });
 
   React.useEffect(() => {
@@ -179,27 +179,47 @@ const CourseReview = ({ posts, ratings }: Props) => {
               <LinearProgressWithLabel
                 label="Excellent"
                 variant="determinate"
-                value={100}
+                value={
+                  ((posts?.filter((post) => post.rating === 5).length || 0) /
+                    posts?.length!) *
+                    100 || 100
+                }
               />
               <LinearProgressWithLabel
                 label="Very Good"
                 variant="determinate"
-                value={80}
+                value={
+                  ((posts?.filter((post) => post.rating === 4).length || 0) /
+                    posts?.length!) *
+                    100 || 0
+                }
               />
               <LinearProgressWithLabel
                 label="Average"
                 variant="determinate"
-                value={60}
+                value={
+                  ((posts?.filter((post) => post.rating === 3).length || 0) /
+                    posts?.length!) *
+                    100 || 0
+                }
               />
               <LinearProgressWithLabel
                 label="Poor"
                 variant="determinate"
-                value={40}
+                value={
+                  ((posts?.filter((post) => post.rating === 2).length || 0) /
+                    posts?.length!) *
+                    100 || 0
+                }
               />
               <LinearProgressWithLabel
                 label="Terrible"
                 variant="determinate"
-                value={20}
+                value={
+                  ((posts?.filter((post) => post.rating === 1).length || 0) /
+                    posts?.length!) *
+                    100 || 0
+                }
               />
             </Box>
           </Box>

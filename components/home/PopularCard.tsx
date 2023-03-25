@@ -117,11 +117,11 @@ const PopularCard = ({ data }: any) => {
             <Box sx={cardStyles.between}>
               <Rating
                 name="author-rating"
-                value={calculatedRating() || 1}
+                value={Number(calculatedRating().toFixed(1)) || 1}
                 readOnly
               />
               <Typography variant="body2" sx={{ ml: 1 }}>
-                {calculatedRating() || 5}
+                {Number(calculatedRating().toFixed(1)) || 5}
               </Typography>
             </Box>
             <Typography
