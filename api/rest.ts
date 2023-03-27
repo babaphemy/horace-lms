@@ -1,3 +1,4 @@
+import { loadStripe } from '@stripe/stripe-js';
 import { tReview } from '../types/types';
 import { auth, basePath, PostSettings } from './setting';
 const getUsers = async (signal: AbortSignal) => {
@@ -120,6 +121,21 @@ const addReview = async (data: tReview) => {
   }
   return response.json();
 };
+const handlePay = async (obj: any) => {
+  const apikey = process.env.NEXT_PUBLIC_stripe_pub || '';
+  const stripeInit = loadStripe(apikey);
+  const str = await stripeInit;
+  const resp = await fetch(`${basePath}pay/session`, PostSettings(obj));
+  const session = await resp.json();
+  if (!session.id) return;
+  const res = await str?.redirectToCheckout({
+    sessionId: session.id,
+  });
+  if (res?.error) {
+    console.error(res.error, ' what happened to stripe? ');
+  }
+  return res;
+};
 
 export {
   getUsers,
@@ -135,4 +151,5 @@ export {
   getCourseLecture,
   isCourseReg,
   addReview,
+  handlePay,
 };
