@@ -78,6 +78,40 @@ export interface State {
         noteCount: number,
     }
   }
+  export type tCourseLte = {
+      "author": string;
+      "id": string;
+      "courseName": string;
+      "brief": string;
+      "createdOn": string;
+      "updatedOn": string;
+      "thumbnail": string;
+      "category": string;
+      "totalSteps": number;
+      "activeStep": number | null;
+      "students": number;
+      "curriculum": null;
+      "draft": boolean;
+      "cost": number;
+      "posts": tPost[]
+  
+    }
+  export type tPost = {
+      id: string;
+      user: string;
+      message: string;
+      type: string;
+      course: string;
+      createdOn: string;
+      modifiedOn: string;
+      like: number;
+      share: number;
+      rating: number;
+    
+  }
+  export type tLike = {
+    likes: number[];
+  }
 
   export type tReview = {
     user?: {
