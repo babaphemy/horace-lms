@@ -4,7 +4,10 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useRouter } from 'next/router';
-
+import { tCourseLte, tPost } from '../../types/types';
+interface courseProp {
+  data: tCourseLte;
+}
 const Tag = ({ label }: { label: string }) => {
   const reduceLabelLength = (label: string) => {
     if (label?.length > 10) {
@@ -18,9 +21,26 @@ const Tag = ({ label }: { label: string }) => {
   );
 };
 
-const PopularCard = ({ data }: any) => {
+const PopularCard = ({ data }: courseProp) => {
   const router = useRouter();
-  const { id, courseName, author, category, brief, posts, thumbnail } = data;
+  const {
+    id,
+    courseName,
+    author,
+    category,
+    brief,
+    posts,
+    thumbnail,
+    students,
+    totalSteps,
+  } = data;
+  const countStudent = () => {
+    const likes = data.posts.reduce((acc: number, post: tPost) => {
+      acc += post.like;
+      return acc;
+    }, 0);
+    return likes + totalSteps + students;
+  };
 
   const handleCardClick = () => {
     router.push(`/course/detailb?cid=${id}`);
@@ -107,9 +127,8 @@ const PopularCard = ({ data }: any) => {
               <FavoriteIcon color="primary" />
               <Typography variant="body2" sx={cardStyles.between}>
                 <Typography variant="body2" sx={{ ml: 1 }}>
-                  500+
+                  {`${countStudent()} students`}
                 </Typography>
-                Students
               </Typography>
             </Box>
           </Box>
