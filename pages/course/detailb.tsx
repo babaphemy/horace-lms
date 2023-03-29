@@ -44,23 +44,17 @@ import { ReviewModal } from '../../components/courses/CourseReview';
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     event.preventDefault();
-    //console.info('You clicked a breadcrumb.');
   }
   const { user } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
   const [regCourse, setRegCourse] = React.useState<boolean>(false);
   const router = useRouter();
   const cid = router.query.cid as string;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data, isLoading, isError } = useQuery(
-    ['acourse', cid],
-    () => fetchCourse(cid),
-    {
-      staleTime: 5000,
-      cacheTime: 10,
-      enabled: !!cid,
-    }
-  );
+  const { data } = useQuery(['acourse', cid], () => fetchCourse(cid), {
+    staleTime: 5000,
+    cacheTime: 10,
+    enabled: !!cid,
+  });
 
   const { mutate } = useMutation(isCourseReg, {
     onSuccess: (data) => {

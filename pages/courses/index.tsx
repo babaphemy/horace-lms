@@ -151,7 +151,7 @@ const Courses = () => {
         </Box>
         <Box>
           <Typography variant="h3" sx={courseStyles.title}>
-            {currentFilter.label}
+            {currentFilter.label} ({filteredData?.length})
           </Typography>
           {isLoading && <CircularProgress />}
           <Grid container spacing={5}>
