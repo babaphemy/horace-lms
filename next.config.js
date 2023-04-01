@@ -2,7 +2,7 @@
 
 const fetchCourses = async () => {
   const response = await fetch(
-    `https://horacelearning.com/api/v1/course/courses`,
+    `https://horacelearning.com/api/v1/course/ids`,
     {
       headers: { Authorization: `Basic ${process.env.NEXT_PUBLIC_APIKEY}` },
     }
@@ -21,23 +21,8 @@ const nextConfig = {
       unoptimized: true,
     },
   },
-  exportPathMap: async function (
-    defaultPathMap,
-    { dev, dir, outDir, distDir, buildId }
-  ) {
-    const coursesData = await fetchCourses();
-    const courses = coursesData;
-    const courseDetailPathMap = courses?.reduce((acc, course) => {
-      acc[`/course/detailb`] = {
-        page: '/courses/detailb',
-        query: { cid: course.id },
-      };
-
-      return acc;
-    }, {});
-
-    return {
-      ...courseDetailPathMap,
+  exportPathMap: async function () {
+    const paths = {
       '/': { page: '/' },
       '/home': { page: '/' },
       '/sign-up': { page: '/sign-up' },
@@ -50,6 +35,15 @@ const nextConfig = {
       '/course/classroom': { page: '/course/classroom' },
       '/user/confirmed': { page: '/user/confirmed' },
     };
+    const courseIds = await fetchCourses();
+    courseIds.forEach((courseId) => {
+      paths[`/course/detailb/${courseId}`] = {
+        page: '/course/detailb/[cid]',
+        query: { cid: courseId },
+      };
+    });
+
+    return paths;
   },
   trailingSlash: true,
 };

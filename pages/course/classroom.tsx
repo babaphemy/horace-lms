@@ -71,7 +71,7 @@ const Classroom = () => {
           <>
             <Coursebar
               title={course?.courseName}
-              subtitle={`${playing?.id}.${playing?.title} - ${playing?.video}`}
+              subtitle={`${playing?.id}.${playing?.title}`}
             />
             <Paper className="w-full md:w-2/3">
               {playing?.type === 'lecture' && (
