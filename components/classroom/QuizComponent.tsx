@@ -93,7 +93,6 @@ const QuizComponent = ({ quizzes, handleNext, playId, handlePrev }: Props) => {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setShowScore(true);
-      handleSubmit();
     }
   };
 
@@ -124,15 +123,6 @@ const QuizComponent = ({ quizzes, handleNext, playId, handlePrev }: Props) => {
     setCurrentQuiz(0);
     setCorrectAnswers(0);
     setMissedAnswers([]);
-  };
-
-  const handleSubmit = () => {
-    quizzes.forEach((quiz, index) => {
-      if (studentAnswers[index] === quiz.answer) {
-        console.log('correct');
-      } else {
-      }
-    });
   };
 
   return (
