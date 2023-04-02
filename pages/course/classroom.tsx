@@ -59,6 +59,8 @@ const Classroom = () => {
     mutate(payload);
   };
 
+  console.log('current lecture', playId);
+
   return (
     <DashboardHoc
       isClass={true}
