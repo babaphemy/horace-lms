@@ -39,6 +39,7 @@ export interface State {
     title: string;
     video: string;
     type: string;
+    content?: any;
     open: boolean;
   };
   export type tSection = {
@@ -96,6 +97,15 @@ export interface State {
       "posts": tPost[]
   
     }
+
+    
+export type tNextPrev = {
+  handlePrev: () => void;
+  playId: any;
+  course: any;
+  handleNext: (id: number | undefined) => void;
+};
+
   export type tPost = {
       id: string;
       user: string;
@@ -131,4 +141,5 @@ export interface State {
         data: [tUser];
       }
     | { type: "COURSE_SET"; data: tCourse | null } | { type: "COURSES_SET"; data: [tCourse] } 
+  
   
