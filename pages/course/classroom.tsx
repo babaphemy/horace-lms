@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/iframe-has-title */
 import { Box, Button, Paper, Skeleton } from '@mui/material';
 import React, { useContext } from 'react';
 import DashboardHoc from '../../components/DashboardHoc';
