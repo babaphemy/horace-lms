@@ -1,5 +1,5 @@
 export function fromNow(date: any) {
-  var seconds = Math.floor((new Date() - date) / 1000);
+  var seconds = Math.floor((new Date().getTime() - date) / 1000);
   var years = Math.floor(seconds / 31536000);
   var months = Math.floor(seconds / 2592000);
   var days = Math.floor(seconds / 86400);

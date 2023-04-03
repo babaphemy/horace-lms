@@ -48,11 +48,15 @@ const CourseHeader = (props: Props) => {
                 <Chip key={x} label={x} variant="outlined" color="primary" />
               ))}
             </Stack>
-            <Typography className="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">
+            <Typography
+              variant="h2"
+              gutterBottom
+              className="text-2xl md:text-5xl font-bold tracking-tight leading-7 md:leading-snug truncate"
+            >
               {name}
             </Typography>
             <Typography variant="caption" color="graytext">
-              by {author}. | {lessonCount} Lessons
+              by {author}. | {lessonCount} Lesson(s)
             </Typography>
 
             <div className="flex items-center mt-4">
