@@ -40,6 +40,7 @@ import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
 import SignUpLogin from '../../components/auth/ModalSignUp';
 import PaymentModal from '../../components/payment/PaymentModal';
 import { ReviewModal } from '../../components/courses/CourseReview';
+import Header from '../../components/Header';
 
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -176,14 +177,16 @@ const Detailb = () => {
 
   return (
     <>
-      <DashboardHeader />
+      {/* <DashboardHeader /> */}
+      <Header />
+
+      <CourseHeader courseProps={headerProps} />
       <Container
-        maxWidth="xl"
+        maxWidth="lg"
         sx={{
           px: { xs: 0, sm: 2, md: 4 },
         }}
       >
-        <CourseHeader courseProps={headerProps} />
         <div role="presentation" onClick={handleClick} className="my-4">
           <Breadcrumbs aria-label="breadcrumb">
             <Link href={'/'} shallow>
