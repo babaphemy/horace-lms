@@ -17,19 +17,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 import logo from '../../assets/img/logo.png';
-// const useStyles = makeStyles((theme: Theme) => ({ this was not used
-//   root: {
-//     textAlign: 'center',
-//     paddingTop: theme.spacing(20),
-//   },
-//   grow: {
-//     flexGrow: 1,
-//   },
-//   menuButton: {
-//     marginLeft: -12,
-//     marginRight: 20,
-//   },
-// }));
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   marginLeft: -12,
   marginRight: 20,

@@ -54,21 +54,21 @@ const benefitsStyles = {
 
 const cards = [
   {
-    icon: require('../../assets/img/plus.png'),
+    icon: '/img/plus.png',
     title: 'Learn New Skills',
     description:
       'Gain access to premier educational resources and learn new skills from industry leaders, working professionals, and experienced educators.',
     color: '#F9AD56',
   },
   {
-    icon: require('../../assets/img/book.png'),
+    icon: '/img/book.png',
     title: 'Change Careers',
     description:
       "Unlock New Opportunities and Achieve Your financial Goals Today! With our curated hands-on labs that guarantees on-the-job skills, you'll be ready to take on the world.",
     color: '#16C79A',
   },
   {
-    icon: require('../../assets/img/group.png'),
+    icon: '/img/group.png',
     title: 'Experienced Instructors',
     description:
       'Expert and Experienced Instructors Ready to Guide You to Success! Our Instructors are Industry Leaders, Working Professionals, and Experienced Educators.',

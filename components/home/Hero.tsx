@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
-import boy from '../../assets/img/boy.png';
 import { useRouter } from 'next/router';
 
 const Hero = () => {
@@ -30,7 +29,7 @@ const Hero = () => {
         </Button>
       </Box>
       <Box sx={heroStyles.right}>
-        <Image src={boy} alt="hero" width={400} height={400} />
+        <Image src={'/img/boy.png'} alt="hero" width={400} height={400} />
       </Box>
     </Box>
   );

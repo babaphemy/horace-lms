@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import NextLink from 'next/link';
-import logo from '../assets/img/logo.png';
 import LanguageIcon from '@mui/icons-material/Language';
 import TopBg from './TopBg';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -110,7 +109,7 @@ const Header = () => {
         <Container maxWidth="lg">
           <Box sx={headerStyles.drawerContainer}>
             <Image
-              src={logo}
+              src={`/images/logo.png`}
               alt="logo"
               width={150}
               height={50}
@@ -135,7 +134,7 @@ const Header = () => {
             >
               <Box>
                 <Image
-                  src={logo}
+                  src={`/images/logo.png`}
                   alt="logo"
                   width={150}
                   height={50}
@@ -190,7 +189,7 @@ const Header = () => {
           <Box sx={headerStyles.flexHeader}>
             <Box sx={headerStyles.flexHeader}>
               <Image
-                src={logo}
+                src={`/images/logo.png`}
                 alt="logo"
                 width={150}
                 height={50}

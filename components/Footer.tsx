@@ -12,7 +12,6 @@ import {
   Divider,
 } from '@mui/material';
 import Image from 'next/image';
-import logo from '../assets/img/logo.png';
 import Link from 'next/link';
 
 type SocialProps = {
@@ -34,7 +33,7 @@ const Footer = () => {
         >
           <Grid item sm={12} md={3}>
             <Image
-              src={logo}
+              src={'/img/logo.png'}
               alt="logo"
               width={150}
               height={50}
@@ -60,7 +59,7 @@ const Footer = () => {
                     rel="noreferer noopener"
                   >
                     <Image
-                      src={social.icon}
+                      src={`/img/${social.icon}`}
                       alt={social.name}
                       width={30}
                       height={30}
@@ -199,21 +198,21 @@ const socials = [
   {
     name: 'facebook',
     link: 'https://www.facebook.com/',
-    icon: require('../assets/img/facebook.png'),
+    icon: 'facebook.png',
   },
   {
     name: 'twitter',
     link: 'https://www.twitter.com/',
-    icon: require('../assets/img/twitter.png'),
+    icon: 'twitter.png',
   },
   {
     name: 'instagram',
     link: 'https://www.instagram.com/',
-    icon: require('../assets/img/instagram.png'),
+    icon: 'instagram.png',
   },
   {
     name: 'linkedin',
     link: 'https://www.linkedin.com/',
-    icon: require('../assets/img/linkedin.png'),
+    icon: 'linkedin.png',
   },
 ];

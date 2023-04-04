@@ -19,14 +19,20 @@ const nextConfig = {
       unoptimized: true,
     },
   },
-  exportPathMap: async function () {
-    const mapPath = {};
-    courseIds.forEach((courseId) => {
-      mapPath[`/course/detailb?cid=${courseId}`] = {
-        page: '/course/detailb'
+  exportPathMap: async function (
+    defaultPathMap,
+    { dev, dir, outDir, distDir, buildId }
+  ) {
+    const courseDetailPathMap = courseIds?.reduce((acc, course) => {
+      acc[`/course/detailb`] = {
+        page: '/courses/detailb',
+        query: { cid: course },
       };
-    });
+
+      return acc;
+    }, {});
     return {
+      ...courseDetailPathMap,
       '/': { page: '/' },
       '/home': { page: '/' },
       '/sign-up': { page: '/sign-up' },
@@ -37,8 +43,7 @@ const nextConfig = {
       '/contact': { page: '/contact' },
       '/courses': { page: '/courses' },
       '/course/classroom': { page: '/course/classroom' },
-      '/user/confirmed': { page: '/user/confirmed' },
-      ...mapPath
+      '/user/confirmed': { page: '/user/confirmed' }
     };
   },
   trailingSlash: true,
