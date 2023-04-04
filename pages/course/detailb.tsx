@@ -8,6 +8,7 @@ import {
 } from '@mui/icons-material';
 import {
   Avatar,
+  Box,
   Button,
   Container,
   Divider,
@@ -181,9 +182,102 @@ const Detailb = () => {
           <div className="w-full  md:w-2/3">
             <CourseObjectives {...objProps} />
           </div>
-          <div className="w-full  md:w-1/3 md:ml-6">
-            <Paper className="py-10 px-3 md:p-8 border-2 rounded-2xl md:rounded border-red-500">
-              <Typography variant="h6" className="mb-4">
+          <div className="w-full md:w-1/3 md:ml-6 relative md:-top-48 md:-mb-48">
+            <Box className="flex flex-col rounded-2xl drop-shadow-md min-h-[50vh] ">
+              <Box className="flex-1 bg-[#0F5E76] rounded-t-2xl py-[4.5rem]" />
+              <Box className="flex-1 bg-white rounded-b-2xl px-10">
+                <Box className="flex flex-col items-center justify-center relative -top-[6rem] -mb-[6rem]">
+                  <Typography variant="h6" className="mb-4 text-white">
+                    Meet your instructor
+                  </Typography>
+                  <Avatar
+                    alt="instructor"
+                    src={
+                      data?.author?.dp ||
+                      'https://material-ui.com/static/images/avatar/1.jpg'
+                    }
+                    sx={{ width: 120, height: 120 }}
+                  />
+                  <Typography
+                    variant="subtitle1"
+                    className="mt-4 text-xl font-normal text-black"
+                  >
+                    {author}
+                  </Typography>
+                  <Typography variant="subtitle1" className="text-black">
+                    Instructor
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant="subtitle1"
+                    className="mt-4 text-lg font-normal text-black"
+                  >
+                    This Course Includes
+                  </Typography>
+                  <nav>
+                    <List>
+                      <ListItem>
+                        <ListItemIcon>
+                          <PlayCircle fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`${lessonCount || ''} Lessons`}
+                        />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <QuizRounded fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText primary={`${quizCount || ''} Quizes`} />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemIcon>
+                          <Code fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`${labCount || ''} Hands-on Labs`}
+                        />
+                      </ListItem>
+                      {downloadCount > 0 && (
+                        <ListItem>
+                          <ListItemIcon>
+                            <Download fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={`${downloadCount} Downloads`}
+                          />
+                        </ListItem>
+                      )}
+
+                      {noteCount > 0 && (
+                        <ListItem>
+                          <ListItemIcon>
+                            <NoteAddRounded fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText primary={`${noteCount} Notes`} />
+                        </ListItem>
+                      )}
+                    </List>
+                  </nav>
+                  <Box className="flex justify-between items-center mb-10">
+                    <Button
+                      variant="contained"
+                      className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
+                    >
+                      Join Class
+                    </Button>
+                    <Typography variant="h6" className="text-[#00A9C1]">
+                      ${data?.price || 0}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+            {/* <Paper className="flex flex-col rounded-2xl drop-shadow-lg min-h-[300px]">
+              <Box className="bg-[#0F5E76] h-[30%] w-full">hmm</Box>
+              <Box className="h-[70%]"></Box> */}
+            {/* <Typography variant="h6" className="mb-4">
                 ${(data?.price || 0) - (data?.tax || 0)}
               </Typography>
               <Button
@@ -271,8 +365,8 @@ const Detailb = () => {
                 <Typography variant="body2">
                   {data?.author?.reviews?.length} Review(s)
                 </Typography>
-              </div>
-            </Paper>
+              </div> */}
+            {/* </Paper> */}
           </div>
         </div>
       </Container>
