@@ -94,23 +94,16 @@ const Classroom = () => {
                       />
                     </>
                   ) : (
-                    <>
-                      <Box sx={playerStyles.frameContainer}>
-                        <iframe
-                          src={`https://iframe.mediadelivery.net/embed/59546/${playing?.video}?autoplay=true`}
-                          loading="lazy"
-                          className={css.framePlayer}
-                          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                          allowFullScreen
-                        ></iframe>
-                      </Box>
-                      <NextPrev
-                        handlePrev={handlePrev}
-                        playId={playId}
-                        course={course}
-                        handleNext={handleNext}
-                      />
-                    </>
+                    <Box sx={playerStyles.frameContainer}>
+                      <iframe
+                        title="player"
+                        src={`https://iframe.mediadelivery.net/embed/59546/${playing?.video}?autoplay=true`}
+                        loading="lazy"
+                        className={css.framePlayer}
+                        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                        allowFullScreen
+                      ></iframe>
+                    </Box>
                   )}
                 </div>
               </Paper>
