@@ -86,6 +86,7 @@ const Classroom = () => {
                   ) : (
                     <Box sx={playerStyles.frameContainer}>
                       <iframe
+                        title="player"
                         src={`https://iframe.mediadelivery.net/embed/59546/${playing?.video}?autoplay=true`}
                         loading="lazy"
                         className={css.framePlayer}
