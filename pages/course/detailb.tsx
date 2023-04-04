@@ -219,19 +219,19 @@ const Detailb = () => {
             <CourseObjectives {...objProps} />
           </div>
           <div className="w-full  md:w-1/3 md:ml-6">
-            <Paper className="py-10 px-3 md:p-8 border-2 rounded-2xl md:rounded border-t-red-500">
+            <Paper className="py-10 px-3 md:p-8 border-2 rounded-2xl md:rounded border-red-500">
               <Typography variant="h6" className="mb-4">
                 ${(data?.price || 0) - (data?.tax || 0)}
               </Typography>
               <Button
-                variant="outlined"
+                variant="contained"
+                className="bg-[#00A9C1] text-white py-2 rounded-full hover:bg-[#00A9C1]"
                 fullWidth
                 endIcon={<ShoppingCart />}
                 onClick={handleJoinClass}
               >
-                {regCourse ? 'Continue Class' : 'Join Class'}
+                Join Class
               </Button>
-              <Divider />
               <Typography variant="h6" className="mt-4">
                 This course contains
               </Typography>
