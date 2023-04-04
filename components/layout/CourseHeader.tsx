@@ -86,16 +86,14 @@ const CourseHeader = (props: Props) => {
               {brief}
             </Typography>
             <Stack direction={'row'} spacing={1}>
-              {ratings && (
-                <Typography variant="caption" className="text-white">
-                  {Number(ratings?.toFixed(1) || 5)}
-                </Typography>
-              )}
+              <Typography variant="caption" className="text-white">
+                {Number(ratings?.toFixed(1)) || 5}
+              </Typography>
               <Rating
                 size="small"
                 className="text-white "
                 name="read-only"
-                value={Number(ratings?.toFixed(1) || 5)}
+                value={Number(ratings?.toFixed(1)) || 5}
                 readOnly
               />
               <Typography variant="caption" className="text-white">

@@ -72,7 +72,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
           </Button>
         )}
       </Box>
-      <Paper className="flex flex-col py-10 px-4 md:p-10 w-full shadow rounded-2xl overflow-hidden border-2 border-[#F9AD56]">
+      <Paper className="flex flex-col p-10 w-full shadow rounded-2xl overflow-hidden border-2 border-[#F9AD56]">
         <div className="flex sm:flex-row items-start justify-between">
           <Tabs
             value={tabValue}
