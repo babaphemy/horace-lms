@@ -8,35 +8,37 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Theme,
+  styled,
   Toolbar,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
 import logo from '../../assets/img/logo.png';
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    textAlign: 'center',
-    paddingTop: theme.spacing(20),
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
+// const useStyles = makeStyles((theme: Theme) => ({ this was not used
+//   root: {
+//     textAlign: 'center',
+//     paddingTop: theme.spacing(20),
+//   },
+//   grow: {
+//     flexGrow: 1,
+//   },
+//   menuButton: {
+//     marginLeft: -12,
+//     marginRight: 20,
+//   },
+// }));
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  marginLeft: -12,
+  marginRight: 20,
 }));
 const pages = ['Home', 'About', 'Courses', 'Contact'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const isAuth = false;
 const DashboardHeader = () => {
   const router = useRouter();
-  const classes = useStyles();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -65,13 +67,10 @@ const DashboardHeader = () => {
     <AppBar position="static" className="mb-4">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <IconButton
-            className={classes.menuButton}
-            aria-label="Menu"
-            onClick={() => router.push('/')}
-          >
+          <StyledIconButton aria-label="Menu" onClick={() => router.push('/')}>
             <Image src={logo} alt="logo" width={150} height={50} />
-          </IconButton>
+          </StyledIconButton>
+
           <Box
             sx={{
               flexGrow: 1,
