@@ -205,13 +205,30 @@ const Detailb = () => {
                     {author}
                   </Typography>
                   <Typography variant="subtitle1" className="text-black">
-                    Instructor
+                    {data?.author?.title || 'Instructor'}
                   </Typography>
+                  <Box className="border border-gray-400 flex items-center justify-between w-full p-2 rounded-xl my-2">
+                    <Rating
+                      name="author-rating"
+                      value={Number(data?.author?.rating?.toFixed(1)) || 5}
+                      readOnly
+                      size="small"
+                    />
+                    <Divider orientation="vertical" flexItem />
+                    <Typography variant="body2" className="text-black">
+                      {data?.author?.courses?.length} Courses
+                    </Typography>
+                    <Divider orientation="vertical" flexItem />
+                    <Typography variant="body2" className="text-black">
+                      {data?.author?.reviews?.length} Review(s)
+                    </Typography>
+                  </Box>
                 </Box>
+
                 <Box>
                   <Typography
                     variant="subtitle1"
-                    className="mt-4 text-lg font-normal text-black"
+                    className="mt-4 text-md font-normal text-black"
                   >
                     This Course Includes
                   </Typography>
@@ -264,6 +281,7 @@ const Detailb = () => {
                     <Button
                       variant="contained"
                       className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
+                      onClick={handleJoinClass}
                     >
                       Join Class
                     </Button>
