@@ -41,6 +41,7 @@ import SignUpLogin from '../../components/auth/ModalSignUp';
 import PaymentModal from '../../components/payment/PaymentModal';
 import { ReviewModal } from '../../components/courses/CourseReview';
 import Header from '../../components/Header';
+import { tPost } from '../../types/types';
 
 const Detailb = () => {
   function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
@@ -187,7 +188,7 @@ const Detailb = () => {
           px: { xs: 0, sm: 2, md: 4 },
         }}
       >
-        <div role="presentation" onClick={handleClick} className="my-4">
+        {/* <div role="presentation" onClick={handleClick} className="my-4">
           <Breadcrumbs aria-label="breadcrumb">
             <Link href={'/'} shallow>
               <MuiLink
@@ -216,7 +217,7 @@ const Detailb = () => {
               Course
             </Typography>
           </Breadcrumbs>
-        </div>
+        </div> */}
         <div className="flex flex-col px-2 md:px-0 md:flex-row space-y-5 md:space-y-0">
           <div className="w-full  md:w-2/3">
             <CourseObjectives {...objProps} />
