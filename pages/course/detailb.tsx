@@ -1,10 +1,16 @@
 import {
+  Code,
+  Download,
+  NoteAddRounded,
+  PlayCircle,
+  QuizRounded,
+  ShoppingCart,
+} from '@mui/icons-material';
+import {
   Avatar,
-  Breadcrumbs,
   Button,
   Container,
   Divider,
-  Link as MuiLink,
   List,
   ListItem,
   ListItemIcon,
@@ -13,40 +19,23 @@ import {
   Rating,
   Typography,
 } from '@mui/material';
-import React from 'react';
-import HomeIcon from '@mui/icons-material/Home';
-import GrainIcon from '@mui/icons-material/Grain';
-import DashboardHeader from '../../components/layout/DashboardHeader';
-import CourseHeader from '../../components/layout/CourseHeader';
-import CourseObjectives from '../../components/courses/CourseObjectives';
-import {
-  Code,
-  Download,
-  NoteAddRounded,
-  PlayCircle,
-  QuizRounded,
-  School,
-  ShoppingCart,
-} from '@mui/icons-material';
-import Link from 'next/link';
-import FooterLte from '../../components/layout/FooterLte';
 import { useRouter } from 'next/router';
-import { useQuery, useMutation } from 'react-query';
+import React from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { addUserCourse, fetchCourse, isCourseReg } from '../../api/rest';
-import { MODAL_SET } from '../../context/Action';
-import { Appcontext, AppDpx } from '../../context/AppContext';
-import ModalLogin from '../../components/auth/ModalLogin';
-import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
-import SignUpLogin from '../../components/auth/ModalSignUp';
-import PaymentModal from '../../components/payment/PaymentModal';
-import { ReviewModal } from '../../components/courses/CourseReview';
 import Header from '../../components/Header';
-import { tPost } from '../../types/types';
+import ModalLogin from '../../components/auth/ModalLogin';
+import SignUpLogin from '../../components/auth/ModalSignUp';
+import CourseObjectives from '../../components/courses/CourseObjectives';
+import { ReviewModal } from '../../components/courses/CourseReview';
+import CourseHeader from '../../components/layout/CourseHeader';
+import FooterLte from '../../components/layout/FooterLte';
+import PaymentModal from '../../components/payment/PaymentModal';
+import { MODAL_SET } from '../../context/Action';
+import { AppDpx, Appcontext } from '../../context/AppContext';
+import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
 
 const Detailb = () => {
-  function handleClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
-    event.preventDefault();
-  }
   const { user } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
   const [regCourse, setRegCourse] = React.useState<boolean>(false);
@@ -188,36 +177,6 @@ const Detailb = () => {
           px: { xs: 0, sm: 2, md: 4 },
         }}
       >
-        {/* <div role="presentation" onClick={handleClick} className="my-4">
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link href={'/'} shallow>
-              <MuiLink
-                underline="hover"
-                sx={{ display: 'flex', alignItems: 'center' }}
-                color="inherit"
-              >
-                <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-                Home
-              </MuiLink>
-            </Link>
-            <MuiLink
-              underline="hover"
-              sx={{ display: 'flex', alignItems: 'center' }}
-              color="inherit"
-              href="/courses"
-            >
-              <School sx={{ mr: 0.5 }} fontSize="inherit" />
-              Courses
-            </MuiLink>
-            <Typography
-              sx={{ display: 'flex', alignItems: 'center' }}
-              color="text.primary"
-            >
-              <GrainIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-              Course
-            </Typography>
-          </Breadcrumbs>
-        </div> */}
         <div className="flex flex-col px-2 md:px-0 md:flex-row space-y-5 md:space-y-0">
           <div className="w-full  md:w-2/3">
             <CourseObjectives {...objProps} />

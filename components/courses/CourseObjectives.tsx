@@ -16,15 +16,6 @@ import { tCurriculum } from '../../types/types';
 import CourseReview from './CourseReview';
 import Curriculumb from './Curriculumb';
 
-const styles = {
-  button: {
-    border: '1px solid',
-    borderColor: 'primary',
-    px: 4,
-    my: 2,
-  },
-};
-
 const ranges = {
   content: 'Content',
   reviews: 'Reviews',
