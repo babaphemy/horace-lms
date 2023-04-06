@@ -34,6 +34,7 @@ import FooterLte from '../../components/layout/FooterLte';
 import PaymentModal from '../../components/payment/PaymentModal';
 import { MODAL_SET } from '../../context/Action';
 import { AppDpx, Appcontext } from '../../context/AppContext';
+import ReactPlayer from 'react-player';
 import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
 
 const Detailb = () => {
@@ -180,6 +181,15 @@ const Detailb = () => {
       >
         <div className="flex flex-col px-2 md:px-0 md:flex-row space-y-5 md:space-y-0">
           <div className="w-full  md:w-2/3">
+            <Box className="my-4 px-2 block md:hidden">
+              <ReactPlayer
+                url={`https://essl.b-cdn.net/${preview}`}
+                controls={true}
+                loop={true}
+                width="100%"
+                height="100%"
+              />
+            </Box>
             <CourseObjectives {...objProps} />
           </div>
           <div className="w-full md:w-1/3 md:ml-6 relative md:-top-48 md:-mb-48">
@@ -291,6 +301,15 @@ const Detailb = () => {
                   </Box>
                 </Box>
               </Box>
+            </Box>
+            <Box className="mt-8 px-2 hidden md:block">
+              <ReactPlayer
+                url={`https://essl.b-cdn.net/${preview}`}
+                controls={true}
+                loop={true}
+                width="100%"
+                height="100%"
+              />
             </Box>
           </div>
         </div>
