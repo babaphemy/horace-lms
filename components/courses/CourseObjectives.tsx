@@ -173,13 +173,6 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
           </List>
         </Paper>
       )}
-
-      <Paper className="py-10 px-4 md:p-10 mt-8 rounded-2xl border-2 border-t-red-500">
-        <Typography variant="h6" className="mb-4">
-          Syllabus
-        </Typography>
-        <Curriculumb courseName={courseName} curriculum={curriculum} />
-      </Paper>
     </>
   );
 };

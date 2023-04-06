@@ -4,7 +4,6 @@ import {
   NoteAddRounded,
   PlayCircle,
   QuizRounded,
-  ShoppingCart,
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -21,8 +20,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import React from 'react';
-import { useMutation, useQuery } from 'react-query';
+import React, { useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { addUserCourse, fetchCourse, isCourseReg } from '../../api/rest';
 import Header from '../../components/Header';
 import ModalLogin from '../../components/auth/ModalLogin';
@@ -36,11 +35,13 @@ import { MODAL_SET } from '../../context/Action';
 import { AppDpx, Appcontext } from '../../context/AppContext';
 import ReactPlayer from 'react-player';
 import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
+import Curriculumb from '../../components/courses/Curriculumb';
 
 const Detailb = () => {
   const { user } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
   const [regCourse, setRegCourse] = React.useState<boolean>(false);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const cid = router.query.cid as string;
   const { data } = useQuery(['acourse', cid], () => fetchCourse(cid), {
@@ -48,6 +49,11 @@ const Detailb = () => {
     cacheTime: 10,
     enabled: !!cid,
   });
+
+  useEffect(() => {
+    queryClient.invalidateQueries('acourse');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cid]);
 
   const { mutate } = useMutation(isCourseReg, {
     onSuccess: (data) => {
@@ -310,6 +316,18 @@ const Detailb = () => {
                 width="100%"
                 height="100%"
               />
+            </Box>
+            <Box className="mt-8 block ">
+              <Paper className="py-7 p-3 mt-8 rounded-2xl border-2 border-[#FF869A] bg-gray-100">
+                <Typography variant="h6" className="mt-4 mx-4">
+                  Syllabus
+                </Typography>
+                <Curriculumb
+                  courseName={courseName}
+                  curriculum={curriculum}
+                  isShort={true}
+                />
+              </Paper>
             </Box>
           </div>
         </div>

@@ -11,7 +11,7 @@ interface Props {
   curriculum?: tCurriculum;
 }
 
-const DashboardHoc = ({ isClass, children, courseName, curriculum }: Props) => {
+const DashboardHoc = ({ children, courseName, curriculum }: Props) => {
   return (
     <div>
       <DashboardHeader />
@@ -23,11 +23,7 @@ const DashboardHoc = ({ isClass, children, courseName, curriculum }: Props) => {
         }}
       >
         <div className="">
-          <Curriculumb
-            isClass={isClass}
-            courseName={courseName}
-            curriculum={curriculum}
-          />
+          <Curriculumb courseName={courseName} curriculum={curriculum} />
         </div>
         <div className="flex-1 ml-4">{children}</div>
       </Box>

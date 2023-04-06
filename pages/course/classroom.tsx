@@ -62,7 +62,6 @@ const Classroom = () => {
 
   return (
     <DashboardHoc
-      isClass={true}
       curriculum={course?.curriculum}
       courseName={course?.courseName}
     >
