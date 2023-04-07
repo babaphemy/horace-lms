@@ -194,6 +194,7 @@ const Detailb = () => {
                 loop={true}
                 width="100%"
                 height="100%"
+                light={true}
               />
             </Box>
             <CourseObjectives {...objProps} />
@@ -330,6 +331,11 @@ const Detailb = () => {
               </Paper>
             </Box>
           </div>
+        </div>
+        <div className="mt-8 mb-4">
+          <Typography variant="h4" className="my-3">
+            Similar Courses
+          </Typography>
         </div>
       </Container>
       <ModalLogin />

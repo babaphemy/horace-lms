@@ -84,6 +84,7 @@ const Classroom = () => {
                         width="640"
                         height="360"
                         controls
+                        light={true}
                       />
                       <NextPrev
                         handlePrev={handlePrev}
