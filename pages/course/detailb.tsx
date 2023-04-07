@@ -36,6 +36,7 @@ import { AppDpx, Appcontext } from '../../context/AppContext';
 import ReactPlayer from 'react-player';
 import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
 import Curriculumb from '../../components/courses/Curriculumb';
+import SimilarCard from '../../components/SimilarCard';
 
 const Detailb = () => {
   const { user } = React.useContext(Appcontext);
