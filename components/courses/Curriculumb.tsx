@@ -2,7 +2,6 @@ import React, { ReactElement, useContext } from 'react';
 
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
-import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -42,12 +41,12 @@ const FireNav = styled(List)<{ component?: React.ElementType }>({
   },
 });
 interface Props {
-  isClass?: boolean;
   curriculum?: tCurriculum;
   courseName?: string;
+  isShort?: boolean;
 }
 const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
-  const { curriculum, courseName, isClass } = props;
+  const { curriculum, courseName, isShort } = props;
   const [selected, setSel] = React.useState<number>(0);
   const dispatch = useContext(AppDpx);
   const doSel = (id: number) => {
@@ -58,34 +57,31 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
   };
   return (
     <Box className="flex w-full">
-      <Paper
-        elevation={0}
-        className={`w-full  ${isClass ? 'mr-1 px-2' : 'mr-5 xl:w-2/3'}`}
-      >
+      <Paper elevation={0} className={`w-full mr-1 px-2 bg-transparent`}>
         <FireNav disablePadding>
-          <Divider />
           <ListItem component="div" disablePadding>
-            <ListItemButton className="h-18">
+            <ListItemButton className="h-18 mb-2">
               <ListItemIcon>
-                <Home color="primary" />
+                <Home sx={{ color: 'black' }} />
               </ListItemIcon>
               <ListItemText
                 primary={courseName || ''}
                 primaryTypographyProps={{
-                  color: 'primary',
+                  color: 'black',
                   fontWeight: 'medium',
                   variant: 'body2',
                 }}
               />
             </ListItemButton>
           </ListItem>
-          <Divider />
           {curriculum?.section.map((item, index) => (
             <Box
               key={item.title + index}
               sx={{
                 bgcolor: selected === index ? 'rgba(108, 122, 137, 1)' : null,
                 pb: selected === index ? 2 : 0,
+                mb: isShort && selected === index ? 2 : 0,
+                borderRadius: isShort ? 2.5 : 0,
               }}
             >
               <ListItemButton
@@ -93,9 +89,13 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                 onClick={() => doSel(index)}
                 sx={{
                   width: '100%',
+                  bgcolor: isShort && selected !== index ? '#fff' : 'inherit',
+                  color: isShort && selected === index ? '#fff' : 'inherit',
+                  mb: isShort ? 1 : 0,
                   px: 3,
-                  pt: 2.5,
-                  pb: selected === index ? 0 : 2.5,
+                  pt: isShort ? 1 : 2.5,
+                  borderRadius: isShort ? 2.5 : 0,
+                  pb: isShort ? 1 : selected === index ? 0 : 2.5,
                   '&:hover, &:focus': {
                     '& svg': { opacity: selected === index ? 1 : 1 },
                   },
@@ -111,6 +111,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
                   }}
                   secondary={item.description}
                   secondaryTypographyProps={{
+                    display: isShort ? 'none' : 'block',
                     noWrap: true,
                     fontSize: 12,
                     lineHeight: '16px',

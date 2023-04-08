@@ -1,13 +1,15 @@
+/* eslint-disable jsx-a11y/iframe-has-title */
 import { Box, Button, Paper, Skeleton } from '@mui/material';
 import React, { useContext } from 'react';
-import DashboardHoc from '../../components/DashboardHoc';
-import Coursebar from '../../components/layout/Coursebar';
-import { SET_PLAY_ID } from '../../context/actions';
-import { Appcontext, AppDpx } from '../../context/AppContext';
-import { tLecture } from '../../types/types';
+import ReactPlayer from 'react-player';
 import { useMutation } from 'react-query';
 import { getCourseLecture } from '../../api/rest';
-import ReactPlayer from 'react-player';
+import DashboardHoc from '../../components/DashboardHoc';
+import QuizComponent from '../../components/classroom/QuizComponent';
+import Coursebar from '../../components/layout/Coursebar';
+import { AppDpx, Appcontext } from '../../context/AppContext';
+import { SET_PLAY_ID } from '../../context/actions';
+import { tLecture, tNextPrev } from '../../types/types';
 import css from './classroom.module.css';
 
 const Classroom = () => {
@@ -18,6 +20,7 @@ const Classroom = () => {
   React.useEffect(() => {
     if (playId?.video === '' && playId?.id && playId.id > 1)
       handleNext(playId?.id - 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [course, playId]);
 
   const { mutate, isLoading } = useMutation(getCourseLecture, {
@@ -60,7 +63,6 @@ const Classroom = () => {
 
   return (
     <DashboardHoc
-      isClass={true}
       curriculum={course?.curriculum}
       courseName={course?.courseName}
     >
@@ -73,16 +75,25 @@ const Classroom = () => {
               title={course?.courseName}
               subtitle={`${playing?.id}.${playing?.title}`}
             />
-            <Paper className="w-full md:w-2/3">
-              {playing?.type === 'lecture' && (
+            {playing?.type === 'lecture' ? (
+              <Paper className="w-full md:w-2/3">
                 <div>
                   {playing.id === 1 ? (
-                    <ReactPlayer
-                      url={`https://essl.b-cdn.net/${playing?.video}`}
-                      width="640"
-                      height="360"
-                      controls
-                    />
+                    <>
+                      <ReactPlayer
+                        url={`https://essl.b-cdn.net/${playing?.video}`}
+                        width="640"
+                        height="360"
+                        controls
+                        light={true}
+                      />
+                      <NextPrev
+                        handlePrev={handlePrev}
+                        playId={playId}
+                        course={course}
+                        handleNext={handleNext}
+                      />
+                    </>
                   ) : (
                     <Box sx={playerStyles.frameContainer}>
                       <iframe
@@ -96,23 +107,45 @@ const Classroom = () => {
                     </Box>
                   )}
                 </div>
-              )}
-              <Box display={'flex'} justifyContent="space-between">
-                <Button onClick={handlePrev} disabled={playId?.id === 1}>
-                  Previous
-                </Button>
-                <Button
-                  onClick={() => handleNext(playId?.id)}
-                  disabled={playId?.id === course?.assetCount?.lessonCount}
-                >
-                  Next
-                </Button>
-              </Box>
-            </Paper>
+              </Paper>
+            ) : playing?.type === 'quiz' ? (
+              <QuizComponent
+                quizzes={playing?.content?.questions}
+                handleNext={handleNext}
+                playId={playId}
+                handlePrev={handlePrev}
+              />
+            ) : (
+              <>
+                <div>Not supported</div>
+                <NextPrev
+                  handlePrev={handlePrev}
+                  playId={playId}
+                  course={course}
+                  handleNext={handleNext}
+                />
+              </>
+            )}
           </>
         )}
       </Box>
     </DashboardHoc>
+  );
+};
+
+const NextPrev = ({ handlePrev, playId, course, handleNext }: tNextPrev) => {
+  return (
+    <Box display={'flex'} justifyContent="space-between">
+      <Button onClick={handlePrev} disabled={playId?.id === 1}>
+        Previous
+      </Button>
+      <Button
+        onClick={() => handleNext(playId?.id)}
+        disabled={playId?.id === course?.assetCount?.lessonCount}
+      >
+        Next
+      </Button>
+    </Box>
   );
 };
 
