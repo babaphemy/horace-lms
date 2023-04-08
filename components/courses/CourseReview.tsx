@@ -50,6 +50,12 @@ function LinearProgressWithLabel(
           {...props}
           sx={{
             borderRadius: '10px',
+            backgroundColor: '#F9AD5655',
+
+            '& .MuiLinearProgress-bar': {
+              borderRadius: '10px',
+              backgroundColor: '#F9AD56',
+            },
           }}
         />
       </Box>
@@ -122,6 +128,8 @@ const CourseReview = ({ posts, ratings }: Props) => {
             p: 2,
             flex: 1,
             maxWidth: '700px',
+            borderRadius: '30px',
+            border: '1px solid #000000',
 
             '@media (max-width: 1000px)': {
               width: '100%',
@@ -130,7 +138,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
         >
           <Box
             sx={{
-              backgroundColor: '#FF534F11',
+              // backgroundColor: '#F9AD5611',
               color: 'black',
               p: 3,
               mr: 1,
@@ -159,9 +167,18 @@ const CourseReview = ({ posts, ratings }: Props) => {
             />
             <Typography variant="body1">{posts?.length} Review(s)</Typography>
           </Box>
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{
+              '@media (max-width: 1000px)': {
+                display: 'none',
+              },
+            }}
+          />
           <Box
             sx={{
-              backgroundColor: '#FF534F11',
+              // backgroundColor: '#F9AD5611',
               color: 'black',
               p: 3,
               flex: 1,
@@ -225,7 +242,10 @@ const CourseReview = ({ posts, ratings }: Props) => {
           </Box>
         </Box>
       </Box>
-      <Button sx={styles.button} onClick={handleOpenReviewModal}>
+      <Button
+        className="bg-[#00A9C1] text-white rounded-full px-10 py-2 my-5 hover:bg-[#00A9C1] flex justify-start w-fit"
+        onClick={handleOpenReviewModal}
+      >
         Add Review & Rating
       </Button>
       <Box>

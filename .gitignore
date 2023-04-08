@@ -9,3 +9,4 @@ yarn.lock
 .env
 _static/*
 *.lock
+package-lock.json

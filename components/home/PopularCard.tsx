@@ -8,7 +8,7 @@ import { tCourseLte, tPost } from '../../types/types';
 interface courseProp {
   data: tCourseLte;
 }
-const Tag = ({ label }: { label: string }) => {
+export const Tag = ({ label }: { label: string }) => {
   const reduceLabelLength = (label: string) => {
     if (label?.length > 10) {
       return label.slice(0, 10) + '...';
@@ -159,7 +159,7 @@ const PopularCard = ({ data }: courseProp) => {
 };
 
 export default PopularCard;
-const cardStyles = {
+export const cardStyles = {
   container: {},
   card: {
     borderRadius: '15px',

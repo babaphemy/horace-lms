@@ -15,6 +15,7 @@ coverage/*
 /assets
 tsconfig.json
 **/*.test.ts
+**/*.test.tsx
 **.json
 .gitignore
 README.md

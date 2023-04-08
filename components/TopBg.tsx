@@ -1,6 +1,4 @@
 import React from 'react';
-import blue from '../assets/img/blue.png';
-import red from '../assets/img/red.png';
 import Image from 'next/image';
 import { Box } from '@mui/material';
 
@@ -24,10 +22,10 @@ const TopBg = () => {
   return (
     <Box>
       <Box sx={bgStyles.blue}>
-        <Image src={blue} alt="blue" width={1920} height={1080} />
+        <Image src={'/img/blue.png'} alt="blue" width={1920} height={1080} />
       </Box>
       <Box sx={bgStyles.red}>
-        <Image src={red} alt="red" width={1920} height={1080} />
+        <Image src={'/img/red.png'} alt="red" width={1920} height={1080} />
       </Box>
     </Box>
   );

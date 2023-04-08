@@ -1,16 +1,16 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
 import { Box, Button, Paper, Skeleton } from '@mui/material';
 import React, { useContext } from 'react';
-import DashboardHoc from '../../components/DashboardHoc';
-import Coursebar from '../../components/layout/Coursebar';
-import { SET_PLAY_ID } from '../../context/actions';
-import { Appcontext, AppDpx } from '../../context/AppContext';
-import { tLecture, tNextPrev, tQuiz } from '../../types/types';
+import ReactPlayer from 'react-player';
 import { useMutation } from 'react-query';
 import { getCourseLecture } from '../../api/rest';
-import ReactPlayer from 'react-player';
-import css from './classroom.module.css';
+import DashboardHoc from '../../components/DashboardHoc';
 import QuizComponent from '../../components/classroom/QuizComponent';
+import Coursebar from '../../components/layout/Coursebar';
+import { AppDpx, Appcontext } from '../../context/AppContext';
+import { SET_PLAY_ID } from '../../context/actions';
+import { tLecture, tNextPrev } from '../../types/types';
+import css from './classroom.module.css';
 
 const Classroom = () => {
   const { course, playId, user } = useContext(Appcontext);
@@ -20,6 +20,7 @@ const Classroom = () => {
   React.useEffect(() => {
     if (playId?.video === '' && playId?.id && playId.id > 1)
       handleNext(playId?.id - 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [course, playId]);
 
   const { mutate, isLoading } = useMutation(getCourseLecture, {
@@ -62,7 +63,6 @@ const Classroom = () => {
 
   return (
     <DashboardHoc
-      isClass={true}
       curriculum={course?.curriculum}
       courseName={course?.courseName}
     >
@@ -85,6 +85,7 @@ const Classroom = () => {
                         width="640"
                         height="360"
                         controls
+                        light={true}
                       />
                       <NextPrev
                         handlePrev={handlePrev}
@@ -94,23 +95,16 @@ const Classroom = () => {
                       />
                     </>
                   ) : (
-                    <>
-                      <Box sx={playerStyles.frameContainer}>
-                        <iframe
-                          src={`https://iframe.mediadelivery.net/embed/59546/${playing?.video}?autoplay=true`}
-                          loading="lazy"
-                          className={css.framePlayer}
-                          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                          allowFullScreen
-                        ></iframe>
-                      </Box>
-                      <NextPrev
-                        handlePrev={handlePrev}
-                        playId={playId}
-                        course={course}
-                        handleNext={handleNext}
-                      />
-                    </>
+                    <Box sx={playerStyles.frameContainer}>
+                      <iframe
+                        title="player"
+                        src={`https://iframe.mediadelivery.net/embed/59546/${playing?.video}?autoplay=true`}
+                        loading="lazy"
+                        className={css.framePlayer}
+                        allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                        allowFullScreen
+                      ></iframe>
+                    </Box>
                   )}
                 </div>
               </Paper>
