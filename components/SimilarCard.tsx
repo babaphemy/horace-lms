@@ -31,7 +31,7 @@ const SimilarCard = () => {
               />
               Horace
             </Typography>
-            <Tag label="Programming" />
+            <Tag label="Web" />
           </Box>
           <Typography variant="h6" my={1} sx={similarStyles.pointer}>
             React Course
