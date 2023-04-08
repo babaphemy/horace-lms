@@ -11,6 +11,7 @@ import {
   Button,
   Container,
   Divider,
+  Grid,
   List,
   ListItem,
   ListItemIcon,
@@ -334,10 +335,18 @@ const Detailb = () => {
           </div>
         </div>
         <div className="mt-8 mb-4">
-          <Typography variant="h4" className="my-3">
+          <Typography variant="h4" className="my-5">
             Similar Courses
           </Typography>
         </div>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <SimilarCard />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <SimilarCard />
+          </Grid>
+        </Grid>
       </Container>
       <ModalLogin />
       <SignUpLogin />
