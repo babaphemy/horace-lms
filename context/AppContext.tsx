@@ -1,12 +1,12 @@
 import React, { createContext, ReactElement, useReducer } from 'react';
-import { tCourse, tLecture } from '../types/types';
+import { tCourse, tCourseLte, tLecture } from '../types/types';
 import { Action, MODAL_SET, USER_ADD, USER_RESET } from './Action';
 import { COURSE_SET, COURSES_SET, SET_PLAY_ID } from './actions';
 
 type State = {
   user: any;
   course: tCourse | null;
-  courses: tCourse[] | [];
+  courses: tCourseLte[] | [];
   playId: tLecture | null;
   modal: {
     open: boolean;

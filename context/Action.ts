@@ -1,4 +1,4 @@
-import { tCourse, tLecture } from '../types/types';
+import { tCourse, tCourseLte, tLecture } from '../types/types';
 
 export type Action =
   | {
@@ -18,7 +18,7 @@ export type Action =
     }
   | { type: 'LECTURE_SET'; data: tLecture }
   | { type: 'COURSE_SET'; data: tCourse }
-  | { type: 'COURSES_SET'; data: tCourse[] }
+  | { type: 'COURSES_SET'; data: tCourseLte[] }
   | { type: 'SET_PLAY_ID'; data: tLecture };
 
 export const USER_ADD = 'USER_ADD';

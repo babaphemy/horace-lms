@@ -5,13 +5,49 @@ import Image from 'next/image';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { tCourseLte, tPost } from '../types/types';
+import { useRouter } from 'next/router';
 
-const SimilarCard = () => {
+type SimilarCardProps = {
+  course: tCourseLte;
+};
+
+const SimilarCard = ({ course }: SimilarCardProps) => {
+  const router = useRouter();
+  const {
+    id,
+    courseName,
+    author,
+    category,
+    posts,
+    thumbnail,
+    students,
+    totalSteps,
+  } = course;
+  const countStudent = () => {
+    const likes = course.posts.reduce((acc: number, post: tPost) => {
+      acc += post.like;
+      return acc;
+    }, 0);
+    return likes + totalSteps + students;
+  };
+
+  const handleCardClick = () => {
+    router.push(`/course/detailb?cid=${id}`);
+  };
+
+  const calculatedRating = () => {
+    let total = 0;
+    posts?.forEach((post: any) => {
+      total += post.rating;
+    });
+    return total / posts?.length;
+  };
   return (
     <Box>
       <Box sx={similarStyles.card}>
         <Image
-          src={`/img/${'1.jpg'}`}
+          src={`/img/${thumbnail || '1.jpg'}`}
           alt="a man smiling"
           width={'170rem'}
           height={'200rem'}
@@ -22,6 +58,7 @@ const SimilarCard = () => {
             <Typography
               variant="subtitle1"
               sx={{ ...similarStyles.between, cursor: 'pointer' }}
+              onClick={handleCardClick}
             >
               <PlayCircleIcon
                 color="primary"
@@ -31,10 +68,15 @@ const SimilarCard = () => {
               />
               Horace
             </Typography>
-            <Tag label="Web" />
+            <Tag label={category} />
           </Box>
-          <Typography variant="h6" my={1} sx={similarStyles.pointer}>
-            React Course
+          <Typography
+            variant="h6"
+            my={1}
+            sx={similarStyles.pointer}
+            onClick={handleCardClick}
+          >
+            {courseName}
           </Typography>
 
           <Box sx={similarStyles.between}>
@@ -46,7 +88,7 @@ const SimilarCard = () => {
               />
               <Box ml={1}>
                 <Typography variant="body1" margin={0}>
-                  Isah Ibrahim
+                  {author}
                 </Typography>
                 <Typography variant="caption" margin={0} color="primary">
                   Software Engineer
@@ -58,22 +100,27 @@ const SimilarCard = () => {
               <FavoriteIcon color="primary" />
               <Typography variant="body2" sx={similarStyles.between}>
                 <Typography variant="body2" sx={{ ml: 1 }}>
-                  100 students
+                  {`${countStudent()} students`}
                 </Typography>
               </Typography>
             </Box>
           </Box>
           <Box sx={similarStyles.between} my={1}>
             <Box sx={similarStyles.between}>
-              <Rating name="author-rating" value={5} readOnly />
+              <Rating
+                name="author-rating"
+                value={Number(calculatedRating().toFixed(1)) || 5}
+                readOnly
+              />
               <Typography variant="body2" sx={{ ml: 1 }}>
-                5
+                {Number(calculatedRating().toFixed(1)) || 5}
               </Typography>
             </Box>
             <Typography
               variant="body2"
               component="span"
               sx={similarStyles.pointer}
+              onClick={handleCardClick}
             >
               Learn More <AddCircleIcon sx={{ ml: 1 }} />
             </Typography>
