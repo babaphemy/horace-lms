@@ -40,7 +40,7 @@ import Curriculumb from '../../components/courses/Curriculumb';
 import SimilarCard from '../../components/SimilarCard';
 
 const Detailb = () => {
-  const { user } = React.useContext(Appcontext);
+  const { user, courses } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
   const [regCourse, setRegCourse] = React.useState<boolean>(false);
   const queryClient = useQueryClient();

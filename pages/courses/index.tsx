@@ -9,7 +9,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PopularCard from '../../components/home/PopularCard';
 import { useQuery } from 'react-query';
 import { fetchCourses } from '../../api/rest';
@@ -21,6 +21,8 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { tCourse } from '../../types/types';
+import { AppDpx } from '../../context/AppContext';
+import { COURSES_SET } from '../../context/actions';
 
 const filter = [
   { label: 'All Courses', value: 'all' },
@@ -39,6 +41,8 @@ const Courses = () => {
   const [currentFilter, setCurrentFilter] = useState(filter[0]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const dispatch = useContext(AppDpx);
+
   const dropDown = Boolean(anchorEl);
 
   const handleClose = () => {
@@ -73,8 +77,10 @@ const Courses = () => {
     if (data?.length > 0) {
       setFilteredData(data);
       setAllCourses(data);
+      dispatch({ type: COURSES_SET, data });
       return;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return (

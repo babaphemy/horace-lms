@@ -18,6 +18,7 @@ export type Action =
     }
   | { type: 'LECTURE_SET'; data: tLecture }
   | { type: 'COURSE_SET'; data: tCourse }
+  | { type: 'COURSES_SET'; data: tCourse[] }
   | { type: 'SET_PLAY_ID'; data: tLecture };
 
 export const USER_ADD = 'USER_ADD';
