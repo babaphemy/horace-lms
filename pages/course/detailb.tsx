@@ -11,6 +11,7 @@ import {
   Button,
   Container,
   Divider,
+  Grid,
   List,
   ListItem,
   ListItemIcon,
@@ -37,11 +38,14 @@ import ReactPlayer from 'react-player';
 import { COURSE_SET, SET_PLAY_ID } from '../../context/actions';
 import Curriculumb from '../../components/courses/Curriculumb';
 import SimilarCard from '../../components/SimilarCard';
+import Fuse from 'fuse.js';
+import { tCourseLte } from '../../types/types';
 
 const Detailb = () => {
-  const { user } = React.useContext(Appcontext);
+  const { user, courses } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
   const [regCourse, setRegCourse] = React.useState<boolean>(false);
+  const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([]);
   const queryClient = useQueryClient();
   const router = useRouter();
   const cid = router.query.cid as string;
@@ -54,7 +58,26 @@ const Detailb = () => {
   useEffect(() => {
     queryClient.invalidateQueries('acourse');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cid]);
+    const fuse: any = new Fuse(courses, {
+      keys: ['category', 'courseName', 'brief'],
+      includeScore: false,
+      includeMatches: true,
+      minMatchCharLength: 3,
+    });
+
+    if (courseName || category) {
+      const result = fuse
+        .search(`${courseName} | ${category}`)
+        .map((item: any) => item.item);
+      if (result.length > 1) {
+        setSimilarCourses(result.slice(0, 2));
+      } else {
+        setSimilarCourses(courses.slice(0, 2));
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cid, data]);
 
   const { mutate } = useMutation(isCourseReg, {
     onSuccess: (data) => {
@@ -334,10 +357,21 @@ const Detailb = () => {
           </div>
         </div>
         <div className="mt-8 mb-4">
-          <Typography variant="h4" className="my-3">
+          <Typography variant="h4" className="my-5">
             Similar Courses
           </Typography>
         </div>
+        <Grid container spacing={2}>
+          {/* <Grid item xs={12} md={6}>
+            <SimilarCard />
+          </Grid> */}
+
+          {similarCourses?.map((course) => (
+            <Grid item xs={12} md={6} key={course.id}>
+              <SimilarCard course={course} />
+            </Grid>
+          ))}
+        </Grid>
       </Container>
       <ModalLogin />
       <SignUpLogin />

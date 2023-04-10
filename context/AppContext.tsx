@@ -1,11 +1,12 @@
 import React, { createContext, ReactElement, useReducer } from 'react';
-import { tCourse, tLecture } from '../types/types';
+import { tCourse, tCourseLte, tLecture } from '../types/types';
 import { Action, MODAL_SET, USER_ADD, USER_RESET } from './Action';
-import { COURSE_SET, SET_PLAY_ID } from './actions';
+import { COURSE_SET, COURSES_SET, SET_PLAY_ID } from './actions';
 
 type State = {
   user: any;
   course: tCourse | null;
+  courses: tCourseLte[] | [];
   playId: tLecture | null;
   modal: {
     open: boolean;
@@ -31,6 +32,7 @@ const getuser = () => {
 const initialState: State = {
   user: getuser(),
   course: null,
+  courses: [],
   playId: null,
   modal: {
     open: false,
@@ -56,6 +58,11 @@ const reducer = (state: State, action: Action) => {
       return {
         ...state,
         course: action.data,
+      };
+    case COURSES_SET:
+      return {
+        ...state,
+        courses: action.data,
       };
     case SET_PLAY_ID:
       return {
