@@ -1,10 +1,12 @@
 import { Box, Button, Typography } from '@mui/material';
 import Image from 'next/image';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRouter } from 'next/router';
+import { Appcontext } from '../../context/AppContext';
 
 const Hero = () => {
   const router = useRouter();
+  const { user } = useContext(Appcontext);
   return (
     <Box sx={heroStyles.container}>
       <Box sx={heroStyles.left}>
@@ -23,7 +25,9 @@ const Hero = () => {
         <Button
           variant="contained"
           sx={heroStyles.button}
-          onClick={() => router.push('/login')}
+          onClick={() =>
+            !user ? router.push('/login') : router.push('/courses')
+          }
         >
           Get Started
         </Button>
