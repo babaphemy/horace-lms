@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import LockIcon from '@mui/icons-material/Lock';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   Collapse,
   Divider,
@@ -6,25 +7,22 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Theme,
   Typography,
 } from '@mui/material';
-import { makeStyles } from '@mui/styles';
-import LockIcon from '@mui/icons-material/Lock';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useState } from 'react';
 
-import { tCourse, tLecture } from '../../types/types';
 import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
 import { sample } from '../../api/data';
+import { tCourse, tLecture } from '../../types/types';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const styles = {
   root: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'white',
   },
   nested: {
-    paddingLeft: theme.spacing(4),
+    paddingLeft: 4,
   },
   navBox: {
     '& > *': {
@@ -50,9 +48,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       },
     },
   },
-}));
+};
+
 const Curriculum = () => {
-  const classes = useStyles();
   const sidebar = true;
   const [open, setOpen] = useState(true);
   const [selected, setSel] = useState({
@@ -68,7 +66,7 @@ const Curriculum = () => {
         component="nav"
         aria-labelledby="nested-list-subheader"
         // className={classes.root}
-        className={classes.navBox}
+        sx={styles.navBox}
       >
         {sample.map((course: any, index: number) => (
           <div key={index + course.courseName}>
@@ -133,11 +131,7 @@ const Curriculum = () => {
               <List component="div" disablePadding>
                 {course?.curriculum?.section?.map(
                   (lec: tLecture, idx: number) => (
-                    <ListItem
-                      key={lec.title + idx}
-                      button
-                      className={classes.nested}
-                    >
+                    <ListItem key={lec.title + idx} button sx={styles.nested}>
                       <ListItemIcon>
                         <StarBorder />
                       </ListItemIcon>

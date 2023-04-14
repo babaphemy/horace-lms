@@ -136,7 +136,7 @@ const PopularCard = ({ data }: courseProp) => {
             <Box sx={cardStyles.between}>
               <Rating
                 name="author-rating"
-                value={Number(calculatedRating().toFixed(1)) || 1}
+                value={Number(calculatedRating().toFixed(1)) || 5}
                 readOnly
               />
               <Typography variant="body2" sx={{ ml: 1 }}>
