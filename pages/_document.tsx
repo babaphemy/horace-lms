@@ -30,6 +30,22 @@ export default function Document() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-2MBS3Z1BDF"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'GA_MEASUREMENT_ID', {
+                  page_path: window.location.pathname,
+                });
+              `,
+          }}
+        />
       </Head>
       <body>
         <Main />
