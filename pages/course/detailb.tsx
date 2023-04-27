@@ -148,7 +148,7 @@ const Detailb = () => {
         ...data.curriculum.section[0].lecture[0],
       },
     });
-    router.push('/course/classroom');
+    router.push('/course/classroomb');
     return;
   };
 
@@ -219,6 +219,13 @@ const Detailb = () => {
                 width="100%"
                 height="100%"
                 light={true}
+                config={{
+                  file: {
+                    attributes: {
+                      controlsList: 'nodownload',
+                    },
+                  },
+                }}
               />
             </Box>
             <CourseObjectives {...objProps} />
