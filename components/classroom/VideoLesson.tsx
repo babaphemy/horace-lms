@@ -32,7 +32,7 @@ const VideoLesson = ({ handleNext, handlePrev }: VideoLessonProps) => {
   const { assetCount, curriculum, brief, courseName, category, posts, author } =
     course;
 
-  const { lessonCount } = assetCount;
+  const { lessonCount } = assetCount || {};
 
   useEffect(() => {
     if (!course) {
