@@ -10,3 +10,4 @@ yarn.lock
 _static/*
 *.lock
 package-lock.json
+store.js

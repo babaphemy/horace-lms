@@ -14,8 +14,6 @@ import {
 import { ReactElement, useState } from 'react';
 import { tCurriculum } from '../../types/types';
 import CourseReview from './CourseReview';
-import Curriculumb from './Curriculumb';
-
 const ranges = {
   content: 'Content',
   reviews: 'Reviews',
@@ -37,7 +35,6 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     target,
     category,
     modified,
-    courseName,
     curriculum,
     brief,
     posts,
