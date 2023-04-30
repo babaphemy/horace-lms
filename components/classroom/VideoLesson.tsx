@@ -1,10 +1,4 @@
-/* eslint-disable jsx-a11y/iframe-has-title */
-import {
-  DownloadOutlined,
-  ShareOutlined,
-  ThumbDownAltOutlined,
-  ThumbUpAltOutlined,
-} from '@mui/icons-material';
+import { ThumbDownAltOutlined, ThumbUpAltOutlined } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -20,24 +14,23 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
 import ReactPlayer from 'react-player';
-import { useMutation } from 'react-query';
-import { getCourseLecture } from '../../api/rest';
 import Curriculumb from '../../components/courses/Curriculumb';
 import ClassLayout from '../../components/layout/ClassLayout';
-import { AppDpx, Appcontext } from '../../context/AppContext';
-import { SET_PLAY_ID } from '../../context/actions';
-import { tLecture, tNextPrev } from '../../types/types';
+import { Appcontext } from '../../context/AppContext';
+import NextPrev from './NextPrev';
 
-const ClassroomB = () => {
-  const { course, playId, user }: any = useContext(Appcontext);
+type VideoLessonProps = {
+  handleNext: (id: number | undefined) => void;
+  handlePrev: () => void;
+};
+
+const VideoLesson = ({ handleNext, handlePrev }: VideoLessonProps) => {
+  const { course, playId }: any = useContext(Appcontext);
   const router = useRouter();
-  const dispatch = useContext(AppDpx);
   const playing = playId || course?.curriculum.section[0].lecture[0];
 
   const { assetCount, curriculum, brief, courseName, category, posts, author } =
     course;
-
-  console.log('the complete course, do what you can with this', course);
 
   const { lessonCount } = assetCount;
 
@@ -45,6 +38,7 @@ const ClassroomB = () => {
     if (!course) {
       router.push('/courses');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
@@ -61,43 +55,7 @@ const ClassroomB = () => {
     return total / posts?.length;
   };
 
-  const { mutate, isLoading } = useMutation(getCourseLecture, {
-    onSuccess(data) {
-      dispatch({
-        type: SET_PLAY_ID,
-        data: data as tLecture,
-      });
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
-
-  const handleNext = (id: number | undefined = playId?.id) => {
-    if (course === null || id == null) return;
-    if (!course.id || !user.id) return;
-
-    const payload = {
-      id: course.id,
-      user: user.id,
-      count: id,
-    };
-
-    mutate(payload);
-  };
-
-  const handlePrev = () => {
-    if (course === null) return;
-    if (!course.id || !user.id) return;
-
-    const payload = {
-      id: course.id,
-      user: user.id,
-      count: null,
-    };
-
-    mutate(payload);
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   return (
     <ClassLayout>
@@ -130,27 +88,44 @@ const ClassroomB = () => {
               Exercise
             </Button>
           </Box>
-          <Box my={'10px'} className="min-h-[25rem]">
-            {playing?.video ? (
-              <ReactPlayer
-                url={`https://essl.b-cdn.net/${playing?.video}`}
-                width="100%"
-                height="100%"
-                controls={true}
-                loop={true}
-                config={{
-                  file: {
-                    attributes: {
-                      controlsList: 'nodownload',
-                      defer: true,
-                    },
-                  },
-                }}
-              />
-            ) : (
-              <Skeleton variant="rectangular" width={'100%'} height={'100%'} />
-            )}
-          </Box>
+          {playing?.video && (
+            <>
+              <Box my={'10px'} className="min-h-[25rem]">
+                {playing?.video ? (
+                  <ReactPlayer
+                    url={`https://essl.b-cdn.net/${playing?.video}`}
+                    width="100%"
+                    height="100%"
+                    controls={true}
+                    loop={true}
+                    config={{
+                      file: {
+                        attributes: {
+                          controlsList: 'nodownload',
+                          defer: true,
+                        },
+                      },
+                    }}
+                  />
+                ) : (
+                  <Skeleton
+                    variant="rectangular"
+                    width={'100%'}
+                    height={'100%'}
+                  />
+                )}
+              </Box>
+              <Box className="my-2">
+                <NextPrev
+                  handlePrev={handlePrev}
+                  playId={playId}
+                  course={course}
+                  handleNext={handleNext}
+                />
+              </Box>
+            </>
+          )}
+
           <Paper className="flex flex-col p-10 w-full shadow rounded-2xl mt-3 lg:mt-8 overflow-hidden border-2 border-[#F9AD56]">
             <Box>
               <Stack
@@ -218,6 +193,16 @@ const ClassroomB = () => {
               </Stack>
             </Box>
           </Paper>
+          {!playing?.video && (
+            <Box className="my-2">
+              <NextPrev
+                handlePrev={handlePrev}
+                playId={playId}
+                course={course}
+                handleNext={handleNext}
+              />
+            </Box>
+          )}
           <Box className="mt-3 md:mt-8">
             <Box className="flex justify-between items-center mr-3 ml-6">
               <Typography variant="h5">Materials</Typography>
@@ -274,36 +259,4 @@ const ClassroomB = () => {
   );
 };
 
-const NextPrev = ({ handlePrev, playId, course, handleNext }: tNextPrev) => {
-  return (
-    <Box display={'flex'} justifyContent="space-between">
-      <Button onClick={handlePrev} disabled={playId?.id === 1}>
-        Previous
-      </Button>
-      <Button
-        onClick={() => handleNext(playId?.id)}
-        disabled={playId?.id === course?.assetCount?.lessonCount}
-      >
-        Next
-      </Button>
-    </Box>
-  );
-};
-
-export default ClassroomB;
-const playerStyles = {
-  boxWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  frameContainer: { position: 'relative', paddingTop: '56.25%' },
-  framePlayer: {
-    border: 'none',
-    position: 'absolute',
-    top: 0,
-    height: '100%',
-    width: '100%',
-  },
-};
+export default VideoLesson;
