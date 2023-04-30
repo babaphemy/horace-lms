@@ -200,10 +200,20 @@ const ClassroomB = () => {
                   <ThumbDownAltOutlined />
                 </IconButton>
                 <IconButton>
-                  <ShareOutlined />
+                  <Image
+                    src={'/img/shareLight.png'}
+                    alt="download icon"
+                    width={20}
+                    height={20}
+                  />
                 </IconButton>
                 <IconButton>
-                  <DownloadOutlined />
+                  <Image
+                    src={'/img/downloadLight.png'}
+                    alt="download icon"
+                    width={20}
+                    height={20}
+                  />
                 </IconButton>
               </Stack>
             </Box>
