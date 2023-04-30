@@ -30,7 +30,7 @@ const SkipLecture = ({
 }: SkipLectureProps) => {
   const { assetCount, brief, courseName, category, posts, author } = course;
 
-  const { lessonCount } = assetCount;
+  const { lessonCount } = assetCount || {};
   const calculatedRating = () => {
     let total = 0;
     posts?.forEach((post: any) => {
@@ -99,8 +99,8 @@ const SkipLecture = ({
 
                 <Typography variant="caption" className=" text-[14px]">
                   Taught by: {author?.firstname || 'Horace'}
-                  {author?.lastname || 'Instructor'}, Instructor | {lessonCount}{' '}
-                  Lesson(s)
+                  {author?.lastname || 'Instructor'}, Instructor |{' '}
+                  {lessonCount || ''} Lesson(s)
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1} mt={3}>
