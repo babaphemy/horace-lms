@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 import Curriculumb from '../../components/courses/Curriculumb';
 import ClassLayout from '../../components/layout/ClassLayout';
@@ -25,14 +25,19 @@ type VideoLessonProps = {
 };
 
 const VideoLesson = ({ handleNext, handlePrev }: VideoLessonProps) => {
+  const [lessonCount, setLessonCount] = useState(1);
   const { course, playId }: any = useContext(Appcontext);
   const router = useRouter();
   const playing = playId || course?.curriculum.section[0].lecture[0];
 
   const { assetCount, curriculum, brief, courseName, category, posts, author } =
-    course;
+    course || {};
 
-  const { lessonCount } = assetCount || {};
+  useEffect(() => {
+    if (assetCount) {
+      setLessonCount(assetCount.lessonCount);
+    }
+  }, [assetCount]);
 
   useEffect(() => {
     if (!course) {
@@ -163,8 +168,8 @@ const VideoLesson = ({ handleNext, handlePrev }: VideoLessonProps) => {
 
                 <Typography variant="caption" className=" text-[14px]">
                   Taught by: {author?.firstname || 'Horace'}
-                  {author?.lastname || 'Instructor'}, Instructor |{' '}
-                  {lessonCount || ''} Lesson(s)
+                  {author?.lastname || 'Instructor'}, Instructor | {lessonCount}{' '}
+                  Lesson(s)
                 </Typography>
               </Stack>
               <Stack direction={'row'} spacing={1} mt={3}>

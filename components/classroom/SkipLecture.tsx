@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ClassLayout from '../layout/ClassLayout';
 import {
   Box,
@@ -28,9 +28,15 @@ const SkipLecture = ({
   playId,
   course,
 }: SkipLectureProps) => {
-  const { assetCount, brief, courseName, category, posts, author } = course;
+  const [lessonCount, setLessonCount] = useState(1);
+  const { assetCount, brief, courseName, category, posts, author } =
+    course || {};
 
-  const { lessonCount } = assetCount || {};
+  useEffect(() => {
+    if (assetCount) {
+      setLessonCount(assetCount.lessonCount);
+    }
+  }, [assetCount]);
   const calculatedRating = () => {
     let total = 0;
     posts?.forEach((post: any) => {
