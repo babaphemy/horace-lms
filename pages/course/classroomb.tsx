@@ -16,6 +16,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect } from 'react';
 import ReactPlayer from 'react-player';
@@ -33,16 +34,10 @@ const ClassroomB = () => {
   const dispatch = useContext(AppDpx);
   const playing = playId || course?.curriculum.section[0].lecture[0];
 
-  const {
-    assetCount,
-    curriculum,
-    brief,
-    courseName,
-    category,
-    posts,
-    author,
-    preview,
-  } = course;
+  const { assetCount, curriculum, brief, courseName, category, posts, author } =
+    course;
+
+  console.log('the complete course, do what you can with this', course);
 
   const { lessonCount } = assetCount;
 
@@ -111,7 +106,7 @@ const ClassroomB = () => {
           width: '100%',
           borderRadius: 7,
           padding: { xs: '15px', md: '40px' },
-          display: 'flex',
+          display: { xs: 'block', md: 'flex' },
         }}
       >
         <div className="w-full md:w-4/6">
@@ -156,7 +151,7 @@ const ClassroomB = () => {
               <Skeleton variant="rectangular" width={'100%'} height={'100%'} />
             )}
           </Box>
-          <Paper className="flex flex-col p-10 w-full shadow rounded-2xl mt-8 overflow-hidden border-2 border-[#F9AD56]">
+          <Paper className="flex flex-col p-10 w-full shadow rounded-2xl mt-3 lg:mt-8 overflow-hidden border-2 border-[#F9AD56]">
             <Box>
               <Stack
                 spacing={2}
@@ -213,6 +208,42 @@ const ClassroomB = () => {
               </Stack>
             </Box>
           </Paper>
+          <Box className="mt-3 md:mt-8">
+            <Box className="flex justify-between items-center mr-3 ml-6">
+              <Typography variant="h5">Materials</Typography>
+
+              <Typography variant="subtitle1">
+                Download All{' '}
+                <IconButton>
+                  <Image
+                    src={'/img/downloadLight.png'}
+                    alt="download icon"
+                    width={20}
+                    height={20}
+                  />
+                </IconButton>{' '}
+              </Typography>
+            </Box>
+            <Box className="my-5">
+              {curriculum?.section?.map((curriculum: any) => {
+                return (
+                  <Box className="rounded-xl my-2 bg-[#E9E7E6] flex items-center justify-between pl-4 md:pl-14 pr-3  py-1">
+                    <Typography variant="subtitle1">
+                      {curriculum.title}.zip
+                    </Typography>
+                    <IconButton>
+                      <Image
+                        src={'/img/downloadDark.png'}
+                        alt="download icon"
+                        width={20}
+                        height={20}
+                      />
+                    </IconButton>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
         </div>
         <div className="w-full md:w-2/6 md:ml-6">
           <Box className="md:mt-24 block ">
