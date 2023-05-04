@@ -22,9 +22,14 @@ import NextPrev from './NextPrev';
 type VideoLessonProps = {
   handleNext: (id: number | undefined) => void;
   handlePrev: () => void;
+  handleOpenExercise: () => void;
 };
 
-const VideoLesson = ({ handleNext, handlePrev }: VideoLessonProps) => {
+const VideoLesson = ({
+  handleNext,
+  handlePrev,
+  handleOpenExercise,
+}: VideoLessonProps) => {
   const [lessonCount, setLessonCount] = useState(1);
   const { course, playId }: any = useContext(Appcontext);
   const router = useRouter();
@@ -88,7 +93,7 @@ const VideoLesson = ({ handleNext, handlePrev }: VideoLessonProps) => {
             <Button
               variant="contained"
               className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
-              //   onClick={handleJoinClass}
+              onClick={handleOpenExercise}
             >
               Exercise
             </Button>

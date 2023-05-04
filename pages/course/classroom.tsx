@@ -55,10 +55,35 @@ const Classroom = () => {
     mutate(payload);
   };
 
+  const handleOpenExercise = () => {
+    if (course === null) return;
+    if (!course.id || !user.id) return;
+
+    const allLectures = course.curriculum.section.map((section: any) => {
+      return section.lecture;
+    });
+
+    const flattened = [].concat(...allLectures);
+
+    const playIdIndex = flattened.findIndex(
+      (lecture: any) => lecture.id === playId?.id
+    );
+    const newAllLectures: tLecture[] = flattened.slice(playIdIndex);
+    const nextQuiz = newAllLectures.findIndex((lecture: any) => {
+      return lecture.type === 'quiz';
+    });
+
+    handleNext(newAllLectures[nextQuiz - 1].id);
+  };
+
   return (
     <Box>
       {playing?.type === 'lecture' ? (
-        <VideoLesson handleNext={handleNext} handlePrev={handlePrev} />
+        <VideoLesson
+          handleNext={handleNext}
+          handlePrev={handlePrev}
+          handleOpenExercise={handleOpenExercise}
+        />
       ) : playing?.type === 'quiz' ? (
         <QuizComponent
           quizzes={playing?.content?.questions}
