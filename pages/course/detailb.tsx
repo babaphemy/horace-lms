@@ -92,8 +92,16 @@ const Detailb = () => {
   });
 
   const { course, posts } = data || {};
-  const { courseName, target, curriculum, brief, category, updatedOn, price } =
-    course || {};
+  const {
+    courseName,
+    target,
+    curriculum,
+    brief,
+    category,
+    updatedOn,
+    price,
+    assetCount,
+  } = course || {};
 
   const courseId = course?.id;
 
@@ -168,7 +176,7 @@ const Detailb = () => {
   const headerProps = {
     id: courseId,
     name: courseName,
-    lessonCount,
+    lessonCount: 0,
     category,
     brief,
     ratings: calculatedRating(),

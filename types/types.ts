@@ -104,6 +104,7 @@ export type tNextPrev = {
   playId: any;
   course: any;
   handleNext: (id: number | undefined) => void;
+  lessonCount: number
 };
 
   export type tPost = {

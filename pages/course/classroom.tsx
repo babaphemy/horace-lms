@@ -11,11 +11,13 @@ import { AppDpx, Appcontext } from '../../context/AppContext';
 import { SET_PLAY_ID } from '../../context/actions';
 import { tLecture, tNextPrev } from '../../types/types';
 import css from './classroom.module.css';
+import { countLectureItems } from './classroomb';
 
 const Classroom = () => {
   const { course, playId, user } = useContext(Appcontext);
   const dispatch = useContext(AppDpx);
-  const playing = playId || course?.curriculum.section[0].lecture[0];
+  const { curriculum } = course || {};
+  const playing = playId || curriculum?.section[0].lecture[0];
 
   React.useEffect(() => {
     if (playId?.video === '' && playId?.id && playId.id > 1)
@@ -92,6 +94,9 @@ const Classroom = () => {
                         playId={playId}
                         course={course}
                         handleNext={handleNext}
+                        lessonCount={
+                          curriculum ? countLectureItems(curriculum) : 0
+                        }
                       />
                     </>
                   ) : (
@@ -123,6 +128,7 @@ const Classroom = () => {
                   playId={playId}
                   course={course}
                   handleNext={handleNext}
+                  lessonCount={curriculum ? countLectureItems(curriculum) : 0}
                 />
               </>
             )}

@@ -25,26 +25,27 @@ import Curriculumb from '../../components/courses/Curriculumb';
 import ClassLayout from '../../components/layout/ClassLayout';
 import { AppDpx, Appcontext } from '../../context/AppContext';
 import { SET_PLAY_ID } from '../../context/actions';
-import { tLecture, tNextPrev } from '../../types/types';
+import { tCurriculum, tLecture, tNextPrev } from '../../types/types';
+export function countLectureItems(curriculum: tCurriculum): number {
+  let lectureCount = 0;
 
+  for (const section of curriculum.section) {
+    lectureCount += section.lecture.length;
+  }
+
+  return lectureCount;
+}
 const ClassroomB = () => {
   const { course, playId, user }: any = useContext(Appcontext);
   const router = useRouter();
   const dispatch = useContext(AppDpx);
-  const playing = playId || course?.curriculum.section[0].lecture[0];
 
-  const {
-    assetCount,
-    curriculum,
-    brief,
-    courseName,
-    category,
-    posts,
-    author,
-    preview,
-  } = course;
+  const { curriculum, brief, courseName, category, posts, author } =
+    course || {};
+  const playing = playId || curriculum?.section[0]?.lecture[0];
 
-  const { lessonCount } = assetCount;
+  const lessonCount =
+    curriculum?.section?.length > 0 ? countLectureItems(curriculum) : 0;
 
   useEffect(() => {
     if (!course) {
@@ -233,7 +234,13 @@ const ClassroomB = () => {
   );
 };
 
-const NextPrev = ({ handlePrev, playId, course, handleNext }: tNextPrev) => {
+const NextPrev = ({
+  handlePrev,
+  playId,
+  course,
+  handleNext,
+  lessonCount,
+}: tNextPrev) => {
   return (
     <Box display={'flex'} justifyContent="space-between">
       <Button onClick={handlePrev} disabled={playId?.id === 1}>
@@ -241,7 +248,7 @@ const NextPrev = ({ handlePrev, playId, course, handleNext }: tNextPrev) => {
       </Button>
       <Button
         onClick={() => handleNext(playId?.id)}
-        disabled={playId?.id === course?.assetCount?.lessonCount}
+        disabled={playId?.id === lessonCount}
       >
         Next
       </Button>
