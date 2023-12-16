@@ -86,22 +86,16 @@ const Detailb = () => {
       }
     },
     onError: (error) => {
-      console.log('error', error);
       setRegCourse(false);
+      throw error;
     },
   });
 
-  const {
-    courseId,
-    assetCount,
-    curriculum,
-    brief,
-    target,
-    courseName,
-    category,
-    posts,
-    updatedOn,
-  } = data || {};
+  const { course, assetCount, posts } = data || {};
+  const { courseName, target, curriculum, brief, category, updatedOn, price } =
+    course || {};
+
+  const courseId = course?.id;
 
   const calculatedRating = () => {
     let total = 0;
@@ -110,7 +104,7 @@ const Detailb = () => {
     });
     return total / posts?.length;
   };
-  const author = `${data?.author?.firstname || 'Horace'} ${
+  const author = `${data?.course?.author?.firstname || 'Horace'} ${
     data?.author?.lastname || 'Instructor'
   }`;
   const preview = curriculum?.section[0]?.lecture[0]?.video;
@@ -130,7 +124,7 @@ const Detailb = () => {
       addCourseToContext();
     },
     onError: (error) => {
-      console.log('error', error);
+      throw error;
     },
   });
 
@@ -139,13 +133,13 @@ const Detailb = () => {
       type: COURSE_SET,
       data: {
         ...data,
-        id: data?.courseId,
+        id: courseId,
       },
     });
     dispatch({
       type: SET_PLAY_ID,
       data: {
-        ...data.curriculum.section[0].lecture[0],
+        ...curriculum.section[0].lecture[0],
       },
     });
     router.push('/course/classroomb');
@@ -161,7 +155,7 @@ const Detailb = () => {
     if (user?.id) {
       regCourse
         ? addCourseToContext()
-        : data?.price === 0
+        : price === 0
         ? addCourseToUser.mutate(payload)
         : dispatch({ type: MODAL_SET, data: { open: true, type: 'payment' } });
 
@@ -172,11 +166,11 @@ const Detailb = () => {
   };
 
   const headerProps = {
-    id: data?.id,
+    id: courseId,
     name: courseName,
     lessonCount,
     category,
-    brief: data?.brief || '',
+    brief,
     ratings: calculatedRating(),
     reviews: data?.reviews,
     author,
@@ -334,7 +328,7 @@ const Detailb = () => {
                       Join Class
                     </Button>
                     <Typography variant="h6" className="text-[#00A9C1]">
-                      ${data?.price || 0}
+                      ${price || 0}
                     </Typography>
                   </Box>
                 </Box>
