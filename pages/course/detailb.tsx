@@ -91,7 +91,7 @@ const Detailb = () => {
     },
   });
 
-  const { course, assetCount, posts } = data || {};
+  const { course, posts } = data || {};
   const { courseName, target, curriculum, brief, category, updatedOn, price } =
     course || {};
 
