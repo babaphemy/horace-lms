@@ -91,9 +91,17 @@ const Detailb = () => {
     },
   });
 
-  const { course, assetCount, posts } = data || {};
-  const { courseName, target, curriculum, brief, category, updatedOn, price } =
-    course || {};
+  const { course, posts } = data || {};
+  const {
+    courseName,
+    target,
+    curriculum,
+    brief,
+    category,
+    updatedOn,
+    price,
+    assetCount,
+  } = course || {};
 
   const courseId = course?.id;
 
@@ -168,7 +176,7 @@ const Detailb = () => {
   const headerProps = {
     id: courseId,
     name: courseName,
-    lessonCount,
+    lessonCount: 0,
     category,
     brief,
     ratings: calculatedRating(),
@@ -382,5 +390,10 @@ const Detailb = () => {
     </>
   );
 };
+Detailb.getInitialProps = async ({ query }: { query: any }) => {
+  // Fetch data based on the query parameters
+  const cid = query.cid; // Access the course ID from the query parameters
 
+  return { cid };
+};
 export default Detailb;
