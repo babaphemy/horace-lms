@@ -390,5 +390,10 @@ const Detailb = () => {
     </>
   );
 };
+Detailb.getInitialProps = async ({ query }: { query: any }) => {
+  // Fetch data based on the query parameters
+  const cid = query.cid; // Access the course ID from the query parameters
 
+  return { cid };
+};
 export default Detailb;

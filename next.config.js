@@ -1,18 +1,17 @@
 /** @type {import('next').NextConfig} */
 
 const courseIds = [
-  "625beae7d4b3d163a5815639",
-  "6266f9316bffde18912c3d87",
-  "6285aed1097cff07b6a35dd5",
-  "6287c046e8e4a635121b2c95",
-  "6287c221e8e4a635121b2c96",
-  "63ea9695f452fa6b117fc259",
-  "63efc71ef1320354973713e5",
-  "640e41ce5c17f2405a1721f7",
-  "64128ebb4441e53dfbbe8fa8"
+  "657d3543437cba483c41e07c",
+  "657d3585437cba483c41e07d",
+  "657d35a8437cba483c41e07e",
+  "657d35ce437cba483c41e07f",
+  "657d35f2437cba483c41e080",
+  "657d3613437cba483c41e081",
+  "657d364f437cba483c41e082",
 ]
 
 const nextConfig = {
+  output: 'export',
   reactStrictMode: true,
   experimental: {
     images: {
@@ -25,7 +24,7 @@ const nextConfig = {
   ) {
     const courseDetailPathMap = courseIds?.reduce((acc, course) => {
       acc[`/course/detailb`] = {
-        page: '/courses/detailb',
+        page: '/course/detailb',
         query: { cid: course },
       };
 

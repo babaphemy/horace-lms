@@ -39,7 +39,8 @@ const PopularCard = ({ data }: courseProp) => {
       acc += post.like;
       return acc;
     }, 0);
-    return likes + totalSteps + students;
+    const st = students ?? 10;
+    return likes + totalSteps + st;
   };
 
   const handleCardClick = () => {
