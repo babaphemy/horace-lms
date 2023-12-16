@@ -1,5 +1,5 @@
 import React from 'react';
-import { tQuiz } from '../../types/types';
+import { tCourse, tQuiz } from '../../types/types';
 import { useState } from 'react';
 import {
   Container,
@@ -11,12 +11,15 @@ import {
   Button,
   Box,
 } from '@mui/material';
+import ClassLayout from '../layout/ClassLayout';
+import NextPrev from './NextPrev';
 
 type Props = {
   quizzes: tQuiz[];
   playId: any;
   handleNext: (id: number | undefined) => void;
   handlePrev: () => void;
+  course?: tCourse;
 };
 
 const quizStyles = {
@@ -60,7 +63,13 @@ const quizStyles = {
   },
 };
 
-const QuizComponent = ({ quizzes, handleNext, playId, handlePrev }: Props) => {
+const QuizComponent = ({
+  quizzes,
+  handleNext,
+  playId,
+  handlePrev,
+  course,
+}: Props) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [showScore, setShowScore] = useState(false);
@@ -126,57 +135,71 @@ const QuizComponent = ({ quizzes, handleNext, playId, handlePrev }: Props) => {
   };
 
   return (
-    <Box sx={quizStyles.frameContainer}>
-      <Container maxWidth="md">
-        {showScore ? (
-          <Paper sx={quizStyles.paper}>
-            <Typography variant="h5" gutterBottom>
-              You got {correctAnswers} out of {quizzes.length} answers correct.
-            </Typography>
-            <Box>
-              {missedAnswers.length > 0 ? (
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="h5" gutterBottom>
-                    You missed the following questions:
-                  </Typography>
-                  <Box sx={{ pl: 2 }}>
-                    {missedAnswers.map((index) => {
-                      const quiz = quizzes[index];
-                      return (
-                        <Box key={quiz.id} sx={{ mb: 1 }}>
-                          <Typography variant="body1" gutterBottom>
-                            - {quiz.title}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{
-                              color: '#FF6854 !important',
-                            }}
-                            gutterBottom
-                          >
-                            Correct answer: {quiz.answer}
-                          </Typography>
-                        </Box>
-                      );
-                    })}
-                  </Box>
-                </Box>
-              ) : (
+    <ClassLayout>
+      <Paper
+        sx={{
+          width: '100%',
+          borderRadius: 7,
+          padding: { xs: '15px', md: '40px' },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '30rem',
+        }}
+      >
+        <Box sx={quizStyles.frameContainer}>
+          <Container maxWidth="md">
+            {showScore ? (
+              <Box>
                 <Typography variant="h5" gutterBottom>
-                  You got all the answers correct!
+                  You got {correctAnswers} out of {quizzes.length} answers
+                  correct.
                 </Typography>
-              )}
-            </Box>
-            <Box sx={quizStyles.flexButtons}>
-              <Button
-                sx={quizStyles.button}
-                variant="contained"
-                color="primary"
-                onClick={handleResetQuiz}
-              >
-                Try Again
-              </Button>
-              {/* {correctAnswers < quizzes.length / 2 ? (
+                <Box>
+                  {missedAnswers.length > 0 ? (
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="h5" gutterBottom>
+                        You missed the following questions:
+                      </Typography>
+                      <Box sx={{ pl: 2 }}>
+                        {missedAnswers.map((index) => {
+                          const quiz = quizzes[index];
+                          return (
+                            <Box key={quiz.id} sx={{ mb: 1 }}>
+                              <Typography variant="body1" gutterBottom>
+                                - {quiz.title}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: '#FF6854 !important',
+                                }}
+                                gutterBottom
+                              >
+                                Correct answer: {quiz.answer}
+                              </Typography>
+                            </Box>
+                          );
+                        })}
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Typography variant="h5" gutterBottom>
+                      You got all the answers correct!
+                    </Typography>
+                  )}
+                </Box>
+                <Box sx={quizStyles.flexButtons}>
+                  <Button
+                    sx={quizStyles.button}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleResetQuiz}
+                  >
+                    Try Again
+                  </Button>
+                  {/* {correctAnswers < quizzes.length / 2 ? (
                 <Button
                   sx={quizStyles.button}
                   variant="contained"
@@ -195,62 +218,72 @@ const QuizComponent = ({ quizzes, handleNext, playId, handlePrev }: Props) => {
                   Next Lesson
                 </Button>
               )} */}
-              <Button
-                sx={quizStyles.button}
-                variant="contained"
-                color="primary"
-                onClick={() => handleNext(playId?.id)}
-              >
-                Next Lesson
-              </Button>
-            </Box>
-          </Paper>
-        ) : (
-          <Paper sx={quizStyles.paper}>
-            <Typography variant="h5" sx={quizStyles.title} gutterBottom>
-              {quizzes[currentQuestion].title}
-            </Typography>
-            <RadioGroup
-              aria-label="quiz"
-              name="quiz"
-              value={selectedAnswer}
-              onChange={handleOptionChange}
-            >
-              {quizzes[currentQuestion].options.map((option) => (
-                <FormControlLabel
-                  key={option}
-                  value={option}
-                  control={<Radio />}
-                  label={option}
-                />
-              ))}
-            </RadioGroup>
-
-            <Box sx={quizStyles.flexButtons}>
-              {currentQuiz > 0 && (
-                <Button
-                  sx={quizStyles.button}
-                  variant="contained"
-                  color="primary"
-                  onClick={handlePrevQuestion}
+                  <Button
+                    sx={quizStyles.button}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleNext(playId?.id)}
+                  >
+                    Next Lesson
+                  </Button>
+                </Box>
+              </Box>
+            ) : (
+              <Box>
+                <Typography variant="h5" sx={quizStyles.title} gutterBottom>
+                  {quizzes[currentQuestion].title}
+                </Typography>
+                <RadioGroup
+                  aria-label="quiz"
+                  name="quiz"
+                  value={selectedAnswer}
+                  onChange={handleOptionChange}
                 >
-                  Previous
-                </Button>
-              )}
-              <Button
-                sx={quizStyles.button}
-                variant="contained"
-                color="primary"
-                disabled={!selectedAnswer}
-                onClick={handleNextQuestion}
-              >
-                {currentQuestion + 1 === quizzes.length ? 'Submit' : 'Next'}
-              </Button>
+                  {quizzes[currentQuestion].options.map((option) => (
+                    <FormControlLabel
+                      key={option}
+                      value={option}
+                      control={<Radio />}
+                      label={option}
+                    />
+                  ))}
+                </RadioGroup>
+
+                <Box sx={quizStyles.flexButtons}>
+                  {currentQuiz > 0 && (
+                    <Button
+                      sx={quizStyles.button}
+                      variant="contained"
+                      color="primary"
+                      onClick={handlePrevQuestion}
+                    >
+                      Previous
+                    </Button>
+                  )}
+                  <Button
+                    sx={quizStyles.button}
+                    variant="contained"
+                    color="primary"
+                    disabled={!selectedAnswer}
+                    onClick={handleNextQuestion}
+                  >
+                    {currentQuestion + 1 === quizzes.length ? 'Submit' : 'Next'}
+                  </Button>
+                </Box>
+              </Box>
+            )}
+            <Box className="mt-8">
+              <NextPrev
+                handlePrev={handlePrev}
+                playId={playId}
+                course={course}
+                handleNext={handleNext}
+              />
             </Box>
-          </Paper>
-        )}
-      </Container>
-    </Box>
+          </Container>
+        </Box>
+      </Paper>
+    </ClassLayout>
   );
 };
 

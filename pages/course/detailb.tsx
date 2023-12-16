@@ -150,7 +150,7 @@ const Detailb = () => {
         ...data.curriculum.section[0].lecture[0],
       },
     });
-    router.push('/course/classroomb');
+    router.push('/course/classroom');
     return;
   };
 
