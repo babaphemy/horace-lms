@@ -120,7 +120,7 @@ const Detailb = () => {
   }, [user, regCourse]);
 
   const addCourseToUser = useMutation(addUserCourse, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       addCourseToContext();
     },
     onError: (error) => {
