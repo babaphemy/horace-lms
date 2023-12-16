@@ -31,8 +31,8 @@ const Benefits = () => {
       <Box sx={benefitsStyles.cardContainer}>
         <Grid container spacing={2}>
           {cards.map((card, idx) => (
-            <Grid item xs={12} sm={6} md={4}>
-              <BenefitCard key={idx} {...card} />
+            <Grid key={idx} item xs={12} sm={6} md={4}>
+              <BenefitCard {...card} />
             </Grid>
           ))}
         </Grid>

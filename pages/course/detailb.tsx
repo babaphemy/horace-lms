@@ -92,16 +92,18 @@ const Detailb = () => {
   });
 
   const {
+    course,
     courseId,
     assetCount,
-    curriculum,
     brief,
     target,
-    courseName,
     category,
     posts,
     updatedOn,
   } = data || {};
+  const { courseName, curriculum } = course || {};
+
+  console.log(data, cid, courseName, curriculum);
 
   const calculatedRating = () => {
     let total = 0;
