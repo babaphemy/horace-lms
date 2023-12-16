@@ -23,16 +23,16 @@ const nextConfig = {
     defaultPathMap,
     { dev, dir, outDir, distDir, buildId }
   ) {
-    const courseDetailPathMap = courseIds?.reduce((acc, course) => {
-      acc[`/course/detailb`] = {
-        page: '/courses/detailb',
-        query: { cid: course },
-      };
+    // const courseDetailPathMap = courseIds?.reduce((acc, course) => {
+    //   acc[`/course/detailb`] = {
+    //     page: '/courses/detailb',
+    //     query: { cid: course },
+    //   };
 
-      return acc;
-    }, {});
+    //   return acc;
+    // }, {});
     return {
-      ...courseDetailPathMap,
+      // ...courseDetailPathMap,
       '/': { page: '/' },
       '/home': { page: '/' },
       '/sign-up': { page: '/sign-up' },

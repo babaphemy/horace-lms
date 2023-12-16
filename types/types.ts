@@ -71,6 +71,7 @@ export interface State {
     updatedOn: string;
     totalSteps: number;
     draft: boolean;
+    posts?: any;
     assetCount: {
       lessonCount: number,
         labCount: number,
