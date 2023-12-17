@@ -12,13 +12,18 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import Curriculumb from '../../components/courses/Curriculumb';
 import ClassLayout from '../../components/layout/ClassLayout';
 import { AppDpx, Appcontext } from '../../context/AppContext';
-import { SET_PLAY_ID } from '../../context/actions';
-import { tCurriculum, tLecture, tNextPrev } from '../../types/types';
+import { tCurriculum, tNextPrev } from '../../types/types';
+interface Props {
+  handleNext: (id: number | undefined) => void;
+  handlePrev: () => void;
+  handleOpenExercise: () => void;
+}
+
 export function countLectureItems(curriculum: tCurriculum): number {
   let lectureCount = 0;
 
@@ -28,7 +33,7 @@ export function countLectureItems(curriculum: tCurriculum): number {
 
   return lectureCount;
 }
-const ClassroomB = () => {
+const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
   const { course, playId, user }: any = useContext(Appcontext);
   const router = useRouter();
   const dispatch = useContext(AppDpx);
@@ -60,8 +65,6 @@ const ClassroomB = () => {
     });
     return total / posts?.length;
   };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   return (
     <ClassLayout>
@@ -127,6 +130,7 @@ const ClassroomB = () => {
                   playId={playId}
                   course={course}
                   handleNext={handleNext}
+                  lessonCount={0} // to do
                 />
               </Box>
             </>
@@ -206,6 +210,7 @@ const ClassroomB = () => {
                 playId={playId}
                 course={course}
                 handleNext={handleNext}
+                lessonCount={0} // to do
               />
             </Box>
           )}
@@ -268,7 +273,6 @@ const ClassroomB = () => {
 const NextPrev = ({
   handlePrev,
   playId,
-  course,
   handleNext,
   lessonCount,
 }: tNextPrev) => {

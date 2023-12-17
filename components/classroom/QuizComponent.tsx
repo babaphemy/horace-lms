@@ -278,6 +278,7 @@ const QuizComponent = ({
                 playId={playId}
                 course={course}
                 handleNext={handleNext}
+                lessonCount={0} // to do
               />
             </Box>
           </Container>

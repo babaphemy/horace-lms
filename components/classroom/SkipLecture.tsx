@@ -67,6 +67,7 @@ const SkipLecture = ({
             playId={playId}
             course={course}
             handleNext={handleNext}
+            lessonCount={0} // to do
           />
           <Paper className="flex flex-col p-10 w-full shadow rounded-2xl mt-3 lg:mt-8 overflow-hidden border-2 border-[#F9AD56]">
             <Box>

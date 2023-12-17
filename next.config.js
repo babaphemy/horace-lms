@@ -28,10 +28,10 @@ const nextConfig = {
         query: { cid: course },
       };
 
-    //   return acc;
-    // }, {});
+      return acc;
+    }, {});
     return {
-      // ...courseDetailPathMap,
+       ...courseDetailPathMap,
       '/': { page: '/' },
       '/home': { page: '/' },
       '/sign-up': { page: '/sign-up' },
