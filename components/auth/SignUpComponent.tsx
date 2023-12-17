@@ -28,6 +28,7 @@ import { MODAL_SET, USER_ADD } from '../../context/Action';
 import { AppDpx } from '../../context/AppContext';
 import { loginStyles } from '../../styles/loginStyles';
 import { Allcountries } from '../../utils/countries';
+import { notifySuccess } from '../../utils/notification';
 
 const schema = yup.object().shape({
   firstname: yup.string().required('First name is required'),
@@ -79,11 +80,11 @@ const SignUpComponent = (props: Props) => {
     defaultValues,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { mutate, isLoading } = useMutation(registerUser, {
+  const { mutate } = useMutation(registerUser, {
     onSuccess: (data) => {
       localStorage.setItem('horaceUser', JSON.stringify(data));
       dispatch({ type: USER_ADD, payload: data });
+      notifySuccess('Registration succesful! check your email for more info.');
       if (modal) {
         dispatch({ type: MODAL_SET, data: { open: false, type: 'signup' } });
       } else {
@@ -91,7 +92,7 @@ const SignUpComponent = (props: Props) => {
       }
       reset(defaultValues);
     },
-    onError: (error) => {
+    onError: () => {
       setAlert({
         show: true,
         msg: 'Registration Failed, Please try again.',
@@ -292,6 +293,7 @@ const SignUpComponent = (props: Props) => {
               >
                 <MenuItem value="STUDENT">Student</MenuItem>
                 <MenuItem value="INSTRUCTOR">Instructor</MenuItem>
+                <MenuItem value="SCHOOL">School</MenuItem>
               </Select>
             )}
           />
@@ -314,7 +316,14 @@ const SignUpComponent = (props: Props) => {
                 size="small"
                 fullWidth
               >
-                {Allcountries.map((a) => (
+                {Allcountries.sort((a, b) => {
+                  if (a.code === 'NG' || a.code === 'US') {
+                    return -1;
+                  } else if (b.code === 'NG' || b.code === 'US') {
+                    return 1;
+                  }
+                  return a.name.localeCompare(b.name);
+                }).map((a) => (
                   <MenuItem key={a.code} value={a.code}>
                     {a.name}
                   </MenuItem>
