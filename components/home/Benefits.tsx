@@ -17,7 +17,7 @@ const Benefits = () => {
         <Typography variant="h3" mb={2}>
           Learn From Industry Experts
         </Typography>
-        <Typography variant="body2" mb={2}>
+        <Typography variant="body2" align="justify" mb={2}>
           At Horace, we're on a mission to democratize education and create a
           level playing field for all. Our platform offers unparalleled access
           to world-class instructors, industry experts, and working
