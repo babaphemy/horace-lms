@@ -1,9 +1,20 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
+  const title = 'Horace Learning: The Best Global Education Network';
+  const description =
+    'In Horace Learning, we build the best global education network, fostering innovation in programming education, offering high-quality online courses,skills, and creating a collaborative community for tech and coding excellence. Founded by Femi Adigun';
+  const keywords =
+    'Horace Learning, Tech Skills, Programming Ed, Online Learning, Tech Ed, EdTech Platform, Best Coding Courses, Software Dev Training, Web Dev Courses, Learn Code, Femi Adigun';
+  const url = 'https://horacelearning.com';
+  const imageUrl = 'https://horacelearning.com/img/logo.png';
   return (
     <Html>
       <Head>
+        <title>{title}</title>
+        <meta name="keywords" content={keywords} />
+        <meta name="description" content={description} />
+        <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="stylesheet"
@@ -46,6 +57,19 @@ export default function Document() {
               `,
           }}
         />
+
+        {/* Open Graph meta tags (Facebook) */}
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:url" content={url} />
+        <meta property="og:type" content="website" />
+
+        {/* Twitter Card meta tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={imageUrl} />
       </Head>
       <body>
         <Main />
