@@ -16,7 +16,21 @@ const nextConfig = {
   experimental: {
     images: {
       unoptimized: true,
+      caches: true 
     },
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*).(js|css|jpg|jpeg|png|gif|ico|svg|webp|woff|woff2|eot|ttf|otf)$', 
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=2592000', 
+          },
+        ],
+      },
+    ];
   },
   exportPathMap: async function (
     defaultPathMap,
