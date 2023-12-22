@@ -8,6 +8,16 @@ export default function Document() {
     'Horace Learning, Tech Skills, Programming Ed, Online Learning, Tech Ed, EdTech Platform, Best Coding Courses, Software Dev Training, Web Dev Courses, Learn Code, Femi Adigun';
   const url = 'https://horacelearning.com';
   const imageUrl = 'https://horacelearning.com/img/logo.png';
+
+  const jsonLdData = {
+    '@context': 'https://schema.org/',
+    '@type': 'Horace Learning',
+    name: 'Femi Adigun',
+    company: 'ESSL',
+    url: url,
+    logo: imageUrl,
+  };
+
   return (
     <Html>
       <Head>
@@ -57,15 +67,14 @@ export default function Document() {
               `,
           }}
         />
+        <script type="application/ld+json">{JSON.stringify(jsonLdData)}</script>
 
-        {/* Open Graph meta tags (Facebook) */}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={imageUrl} />
         <meta property="og:url" content={url} />
         <meta property="og:type" content="website" />
 
-        {/* Twitter Card meta tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
