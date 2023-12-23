@@ -23,7 +23,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import * as yup from 'yup';
 import { registerUser, verifyEmail } from '../../api/rest';
-import thumb from '../../assets/img/thumb.png';
+import thumb from '../../assets/img/thumb.webp';
 import { MODAL_SET, USER_ADD } from '../../context/Action';
 import { AppDpx } from '../../context/AppContext';
 import { loginStyles } from '../../styles/loginStyles';

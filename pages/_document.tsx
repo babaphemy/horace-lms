@@ -7,7 +7,7 @@ export default function Document() {
   const keywords =
     'Horace Learning, Tech Skills, Programming Ed, Online Learning, Tech Ed, EdTech Platform, Best Coding Courses, Software Dev Training, Web Dev Courses, Learn Code, Femi Adigun';
   const url = 'https://horacelearning.com';
-  const imageUrl = 'https://horacelearning.com/img/logo.png';
+  const imageUrl = 'https://horacelearning.com/img/logo.webp';
 
   const jsonLdData = {
     '@context': 'https://schema.org/',

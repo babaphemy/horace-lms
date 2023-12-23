@@ -119,7 +119,7 @@ const SkipLecture = ({
                 </IconButton>
                 <IconButton>
                   <Image
-                    src={'/img/shareLight.png'}
+                    src={'/img/shareLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}
@@ -127,7 +127,7 @@ const SkipLecture = ({
                 </IconButton>
                 <IconButton>
                   <Image
-                    src={'/img/downloadLight.png'}
+                    src={'/img/downloadLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}

@@ -33,7 +33,12 @@ const Footer = () => {
         >
           <Grid item sm={12} md={3}>
             <Box sx={{ float: 'left' }}>
-              <Image src={'/img/logo.png'} alt="logo" width={150} height={50} />
+              <Image
+                src={'/img/logo.webp'}
+                alt="logo"
+                width={150}
+                height={50}
+              />
             </Box>
 
             <Box sx={footerStyles.section}>
@@ -191,21 +196,21 @@ const socials = [
   {
     name: 'facebook',
     link: 'https://www.facebook.com/horacelms',
-    icon: 'facebook.png',
+    icon: 'facebook.webp',
   },
   {
     name: 'twitter',
     link: 'https://www.twitter.com/essloffice',
-    icon: 'twitter.png',
+    icon: 'twitter.webp',
   },
   {
     name: 'instagram',
     link: 'https://www.instagram.com/',
-    icon: 'instagram.png',
+    icon: 'instagram.webp',
   },
   {
     name: 'linkedin',
     link: 'https://www.linkedin.com/company/10654256/',
-    icon: 'linkedin.png',
+    icon: 'linkedin.webp',
   },
 ];

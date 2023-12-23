@@ -15,8 +15,8 @@ import Header from '../../components/Header';
 import AddIcon from '@mui/icons-material/Add';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import boy from '../../assets/img/illustrate-2.png';
-import logo from '../../assets/img/logo.png';
+import boy from '../../assets/img/illustrate-2.webp';
+import logo from '../../assets/img/logo.webp';
 const AboutUs = () => {
   const router = useRouter();
   return (
@@ -293,19 +293,19 @@ const statistics = [
     number: 10,
     name: 'Courses',
     color: '#F9AD56',
-    icon: require('../../assets/img/icon-1.png'),
+    icon: require('../../assets/img/icon-1.webp'),
   },
   {
     number: 12,
     name: 'Awards',
     color: '#16C79A',
-    icon: require('../../assets/img/icon-2.png'),
+    icon: require('../../assets/img/icon-2.webp'),
   },
   {
     number: 100,
     name: 'Students',
     color: '#FF5E78',
-    icon: require('../../assets/img/icon-3.png'),
+    icon: require('../../assets/img/icon-3.webp'),
   },
 ];
 
@@ -332,7 +332,7 @@ const whatOurStudentsSay = [
   {
     name: 'Trove High',
     role: 'School',
-    image: '/img/trove_logo_img.png',
+    image: '/img/trove_logo_img.webp',
     rating: 5,
     comment:
       'Horace Learning has been a game changer for our school. Their solutions have helped us overcome the challenges of traditional education and allow us to truly empower our students to succeed.',
@@ -340,7 +340,7 @@ const whatOurStudentsSay = [
   {
     name: 'Junaid A',
     role: 'Instructor',
-    image: '/img/junaid.png',
+    image: '/img/junaid.webp',
     rating: 5,
     comment:
       'Horace Learning has completely transformed the way I teach and my students learn. The virtual classrooms, personalized learning paths, and advanced analytics have made my job so much easier and more fulfilling.',

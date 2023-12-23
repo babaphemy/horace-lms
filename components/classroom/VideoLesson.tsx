@@ -186,7 +186,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
                 </IconButton>
                 <IconButton>
                   <Image
-                    src={'/img/shareLight.png'}
+                    src={'/img/shareLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}
@@ -194,7 +194,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
                 </IconButton>
                 <IconButton>
                   <Image
-                    src={'/img/downloadLight.png'}
+                    src={'/img/downloadLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}
@@ -222,7 +222,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
                 Download All{' '}
                 <IconButton>
                   <Image
-                    src={'/img/downloadLight.png'}
+                    src={'/img/downloadLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}
@@ -239,7 +239,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
                     </Typography>
                     <IconButton>
                       <Image
-                        src={'/img/downloadDark.png'}
+                        src={'/img/downloadDark.webp'}
                         alt="download icon"
                         width={20}
                         height={20}

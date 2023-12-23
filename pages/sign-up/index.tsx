@@ -1,8 +1,8 @@
 import { Box, Container, Typography } from '@mui/material';
 
 import Image from 'next/image';
-import subtract from '../../assets/img/subtract.png';
-import woman from '../../assets/img/woman.png';
+import subtract from '../../assets/img/subtract.webp';
+import woman from '../../assets/img/woman.webp';
 import SignUpComponent from '../../components/auth/SignUpComponent';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';

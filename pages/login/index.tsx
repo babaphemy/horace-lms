@@ -1,7 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
 import Image from 'next/image';
-import man from '../../assets/img/man.png';
-import subtract from '../../assets/img/subtract.png';
+import man from '../../assets/img/man.webp';
+import subtract from '../../assets/img/subtract.webp';
 import LoginComponent from '../../components/auth/LoginComponent';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';

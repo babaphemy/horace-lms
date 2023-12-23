@@ -33,7 +33,7 @@ const Hero = () => {
         </Button>
       </Box>
       <Box sx={heroStyles.right}>
-        <Image src={'/img/boy.png'} alt="hero" width={400} height={400} />
+        <Image src={'/img/boy.webp'} alt="hero" width={400} height={400} />
       </Box>
     </Box>
   );

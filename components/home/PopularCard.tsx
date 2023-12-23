@@ -67,7 +67,7 @@ const PopularCard = ({ data }: courseProp) => {
       <Box sx={cardStyles.card}>
         <Box sx={cardStyles.image}>
           <Image
-            src={`/img/${thumbnail || '3.jpg'}`}
+            src={`/img/${thumbnail || '3.webp'}`}
             alt="a man smiling"
             width={'400rem'}
             height={'250rem'}
@@ -111,7 +111,7 @@ const PopularCard = ({ data }: courseProp) => {
             <Box display={'flex'} my={1}>
               <Avatar
                 alt="instructor"
-                src="https://material-ui.com/static/images/avatar/1.jpg"
+                src="https://material-ui.com/static/images/avatar/1.webp"
                 sx={{ width: 50, height: 50 }}
               />
               <Box ml={1}>

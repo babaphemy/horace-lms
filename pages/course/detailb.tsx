@@ -244,7 +244,7 @@ const Detailb = () => {
                     alt="instructor"
                     src={
                       data?.author?.dp ||
-                      'https://material-ui.com/static/images/avatar/1.jpg'
+                      'https://material-ui.com/static/images/avatar/1.webp'
                     }
                     sx={{ width: 120, height: 120 }}
                   />
