@@ -152,6 +152,7 @@ const LoginComponent = (props: Props) => {
       )}
       <Box
         component="form"
+        id="login-form"
         sx={loginStyles.form}
         onSubmit={handleSubmit(onSubmit)}
       >

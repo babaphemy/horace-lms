@@ -24,6 +24,7 @@ import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
 import { contactUs } from '../../api/rest';
+import Head from 'next/head';
 
 const schema = yup.object().shape({
   firstname: yup.string().required('First name is required'),
@@ -86,6 +87,25 @@ const ContactUs = () => {
   const emailAddress = 'office@horacelearning.com';
   return (
     <Box>
+      <Head>
+        <title>Horace Contact</title>
+        <meta
+          property="og:title"
+          content="Horace Online Learning Contact"
+          key="title"
+        />
+        <meta
+          title="description"
+          name="description"
+          key="desc"
+          content="Horace Online Learning, Contact"
+        />
+        <meta
+          property="og:description"
+          key="desc"
+          content="Horace Online Learning, Contact"
+        />
+      </Head>
       <Header />
       <Container>
         <Box>

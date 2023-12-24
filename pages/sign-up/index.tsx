@@ -1,5 +1,5 @@
 import { Box, Container, Typography } from '@mui/material';
-
+import TagManager from 'react-gtm-module';
 import Image from 'next/image';
 import subtract from '../../assets/img/subtract.png';
 import woman from '../../assets/img/woman.png';
@@ -7,10 +7,22 @@ import SignUpComponent from '../../components/auth/SignUpComponent';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { loginStyles } from '../../styles/loginStyles';
-
+import Head from 'next/head';
+TagManager.dataLayer({
+  dataLayer: {
+    event: 'pageview',
+    pagePath: '/sign-up',
+    pageTitle: 'signup',
+  },
+});
 const SignUp = () => {
   return (
     <Box>
+      <Head>
+        <title>New User Signup</title>
+        <meta name="description" content="Horace learning, new user signup" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Header />
       <Box sx={loginStyles.body}>
         <Container maxWidth="lg">

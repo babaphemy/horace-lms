@@ -143,6 +143,7 @@ const SignUpComponent = (props: Props) => {
 
       <Box
         component="form"
+        id="sign-up-form"
         sx={loginStyles.form}
         onSubmit={handleSubmit(onSubmit)}
       >

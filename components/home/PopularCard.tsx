@@ -77,6 +77,7 @@ const PopularCard = ({ data }: courseProp) => {
         <Box padding={'20px'}>
           <Box sx={cardStyles.between}>
             <Typography
+              id="author"
               variant="subtitle1"
               sx={{ ...cardStyles.between, cursor: 'pointer' }}
               onClick={handleCardClick}
@@ -96,6 +97,7 @@ const PopularCard = ({ data }: courseProp) => {
             my={1}
             sx={cardStyles.pointer}
             onClick={handleCardClick}
+            id="goto-class"
           >
             {courseName}
           </Typography>

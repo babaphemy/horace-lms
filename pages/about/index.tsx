@@ -17,10 +17,19 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import boy from '../../assets/img/illustrate-2.png';
 import logo from '../../assets/img/logo.png';
+import Head from 'next/head';
 const AboutUs = () => {
   const router = useRouter();
   return (
     <Box>
+      <Head>
+        <title>About Horace Learning</title>
+        <meta
+          name="description"
+          content="In Horace learning, We are building the best global education network"
+        />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Header />
       <Container>
         <Box className="flex flex-col items-center justify-center space-y-[20px] mb-5">
