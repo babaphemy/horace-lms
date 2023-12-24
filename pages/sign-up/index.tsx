@@ -1,5 +1,6 @@
+'use client';
 import { Box, Container, Typography } from '@mui/material';
-import TagManager from 'react-gtm-module';
+
 import Image from 'next/image';
 import subtract from '../../assets/img/subtract.png';
 import woman from '../../assets/img/woman.png';
@@ -8,14 +9,11 @@ import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { loginStyles } from '../../styles/loginStyles';
 import Head from 'next/head';
-TagManager.dataLayer({
-  dataLayer: {
-    event: 'pageview',
-    pagePath: '/sign-up',
-    pageTitle: 'signup',
-  },
-});
+import useTag from '../../hooks/useTag';
+
 const SignUp = () => {
+  useTag({ pageTitle: 'signup', pagePath: '/sign-up' });
+
   return (
     <Box>
       <Head>

@@ -1,5 +1,6 @@
 import { Html, Head, Main, NextScript } from 'next/document';
-
+const gid = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+const gt = process.env.NEXT_PUBLIC_GTM;
 export default function Document() {
   return (
     <Html>
@@ -32,7 +33,7 @@ export default function Document() {
         />
         <script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=G-2MBS3Z1BDF"
+          src={`https://www.googletagmanager.com/gtag/js?id=${gid}`}
         ></script>
         <script
           dangerouslySetInnerHTML={{
@@ -40,7 +41,7 @@ export default function Document() {
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', 'GA_MEASUREMENT_ID', {
+                gtag('config', ${gt}, {
                   page_path: window.location.pathname,
                 });
               `,

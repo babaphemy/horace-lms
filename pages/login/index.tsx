@@ -1,6 +1,5 @@
 import { Box, Container, Typography } from '@mui/material';
 import Image from 'next/image';
-import TagManager from 'react-gtm-module';
 import man from '../../assets/img/man.png';
 import subtract from '../../assets/img/subtract.png';
 import LoginComponent from '../../components/auth/LoginComponent';
@@ -8,15 +7,11 @@ import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { loginStyles } from '../../styles/loginStyles';
 import Head from 'next/head';
-TagManager.dataLayer({
-  dataLayer: {
-    event: 'pageview',
-    pagePath: '/login',
-    pageTitle: 'login',
-  },
-});
+import React from 'react';
+import useTag from '../../hooks/useTag';
 
 const Login = () => {
+  useTag({ pageTitle: 'login', pagePath: '/login' });
   return (
     <Box component={'div'} id="login-component">
       <Head>
