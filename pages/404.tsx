@@ -1,6 +1,6 @@
 import { Box, Button, Container, Typography } from '@mui/material';
 import Image from 'next/image';
-import errorImg from '../assets/img/404.png';
+import errorImg from '../assets/img/404.webp';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 

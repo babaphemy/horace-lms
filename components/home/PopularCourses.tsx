@@ -120,6 +120,10 @@ const filters = [
     value: 'all',
   },
   {
+    label: 'STEM',
+    value: 'STEM',
+  },
+  {
     label: 'Programming',
     value: 'programming',
   },

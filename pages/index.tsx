@@ -26,15 +26,6 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Horace Learning</title>
-        <meta
-          name="description"
-          content="In Horace learning, We are building the best global education network"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <Box>
         <Header />
         <Container>

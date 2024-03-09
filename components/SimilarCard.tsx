@@ -29,7 +29,8 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
       acc += post.like;
       return acc;
     }, 0);
-    return likes + totalSteps + students;
+    const st = students ?? 10;
+    return likes + totalSteps + st;
   };
 
   const handleCardClick = () => {
@@ -47,7 +48,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
     <Box>
       <Box sx={similarStyles.card}>
         <Image
-          src={`/img/${thumbnail || '1.jpg'}`}
+          src={`/img/${thumbnail || '1.webp'}`}
           alt="a man smiling"
           width={'170rem'}
           height={'200rem'}
@@ -83,7 +84,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
             <Box display={'flex'} my={1}>
               <Avatar
                 alt="instructor"
-                src="https://material-ui.com/static/images/avatar/1.jpg"
+                src="https://material-ui.com/static/images/avatar/1.webp"
                 sx={{ width: 50, height: 50 }}
               />
               <Box ml={1}>

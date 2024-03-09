@@ -86,22 +86,24 @@ const Detailb = () => {
       }
     },
     onError: (error) => {
-      console.log('error', error);
       setRegCourse(false);
+      throw error;
     },
   });
 
+  const { course, posts } = data || {};
   const {
-    course,
-    courseId,
-    assetCount,
-    brief,
+    courseName,
     target,
+    curriculum,
+    brief,
     category,
-    posts,
     updatedOn,
-  } = data || {};
-  const { courseName, curriculum } = course || {};
+    price,
+    assetCount,
+  } = course || {};
+
+  const courseId = course?.id;
 
   const calculatedRating = () => {
     let total = 0;
@@ -110,7 +112,7 @@ const Detailb = () => {
     });
     return total / posts?.length;
   };
-  const author = `${data?.author?.firstname || 'Horace'} ${
+  const author = `${data?.course?.author?.firstname || 'Horace'} ${
     data?.author?.lastname || 'Instructor'
   }`;
   const preview = curriculum?.section[0]?.lecture[0]?.video;
@@ -126,11 +128,11 @@ const Detailb = () => {
   }, [user, regCourse]);
 
   const addCourseToUser = useMutation(addUserCourse, {
-    onSuccess: (data) => {
+    onSuccess: () => {
       addCourseToContext();
     },
     onError: (error) => {
-      console.log('error', error);
+      throw error;
     },
   });
 
@@ -139,13 +141,13 @@ const Detailb = () => {
       type: COURSE_SET,
       data: {
         ...data,
-        id: data?.courseId,
+        id: courseId,
       },
     });
     dispatch({
       type: SET_PLAY_ID,
       data: {
-        ...data.curriculum.section[0].lecture[0],
+        ...curriculum.section[0].lecture[0],
       },
     });
     router.push('/course/classroom');
@@ -161,7 +163,7 @@ const Detailb = () => {
     if (user?.id) {
       regCourse
         ? addCourseToContext()
-        : data?.price === 0
+        : price === 0
         ? addCourseToUser.mutate(payload)
         : dispatch({ type: MODAL_SET, data: { open: true, type: 'payment' } });
 
@@ -172,11 +174,11 @@ const Detailb = () => {
   };
 
   const headerProps = {
-    id: data?.id,
+    id: courseId,
     name: courseName,
-    lessonCount,
+    lessonCount: 0,
     category,
-    brief: data?.brief || '',
+    brief,
     ratings: calculatedRating(),
     reviews: data?.reviews,
     author,
@@ -242,7 +244,7 @@ const Detailb = () => {
                     alt="instructor"
                     src={
                       data?.author?.dp ||
-                      'https://material-ui.com/static/images/avatar/1.jpg'
+                      'https://material-ui.com/static/images/avatar/1.webp'
                     }
                     sx={{ width: 120, height: 120 }}
                   />
@@ -334,7 +336,7 @@ const Detailb = () => {
                       Join Class
                     </Button>
                     <Typography variant="h6" className="text-[#00A9C1]">
-                      ${data?.price || 0}
+                      ${price || 0}
                     </Typography>
                   </Box>
                 </Box>
@@ -388,5 +390,10 @@ const Detailb = () => {
     </>
   );
 };
+Detailb.getInitialProps = async ({ query }: { query: any }) => {
+  // Fetch data based on the query parameters
+  const cid = query.cid; // Access the course ID from the query parameters
 
+  return { cid };
+};
 export default Detailb;

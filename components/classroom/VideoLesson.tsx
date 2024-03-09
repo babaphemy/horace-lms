@@ -12,37 +12,38 @@ import {
 } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 import Curriculumb from '../../components/courses/Curriculumb';
 import ClassLayout from '../../components/layout/ClassLayout';
-import { Appcontext } from '../../context/AppContext';
-import NextPrev from './NextPrev';
-
-type VideoLessonProps = {
+import { AppDpx, Appcontext } from '../../context/AppContext';
+import { tCurriculum, tNextPrev } from '../../types/types';
+interface Props {
   handleNext: (id: number | undefined) => void;
   handlePrev: () => void;
   handleOpenExercise: () => void;
-};
+}
 
-const VideoLesson = ({
-  handleNext,
-  handlePrev,
-  handleOpenExercise,
-}: VideoLessonProps) => {
-  const [lessonCount, setLessonCount] = useState(1);
-  const { course, playId }: any = useContext(Appcontext);
+export function countLectureItems(curriculum: tCurriculum): number {
+  let lectureCount = 0;
+
+  for (const section of curriculum.section) {
+    lectureCount += section.lecture.length;
+  }
+
+  return lectureCount;
+}
+const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
+  const { course, playId, user }: any = useContext(Appcontext);
   const router = useRouter();
-  const playing = playId || course?.curriculum.section[0].lecture[0];
+  const dispatch = useContext(AppDpx);
 
-  const { assetCount, curriculum, brief, courseName, category, posts, author } =
+  const { curriculum, brief, courseName, category, posts, author } =
     course || {};
+  const playing = playId || curriculum?.section[0]?.lecture[0];
 
-  useEffect(() => {
-    if (assetCount) {
-      setLessonCount(assetCount.lessonCount);
-    }
-  }, [assetCount]);
+  const lessonCount =
+    curriculum?.section?.length > 0 ? countLectureItems(curriculum) : 0;
 
   useEffect(() => {
     if (!course) {
@@ -64,8 +65,6 @@ const VideoLesson = ({
     });
     return total / posts?.length;
   };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   return (
     <ClassLayout>
@@ -131,6 +130,7 @@ const VideoLesson = ({
                   playId={playId}
                   course={course}
                   handleNext={handleNext}
+                  lessonCount={0} // to do
                 />
               </Box>
             </>
@@ -186,7 +186,7 @@ const VideoLesson = ({
                 </IconButton>
                 <IconButton>
                   <Image
-                    src={'/img/shareLight.png'}
+                    src={'/img/shareLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}
@@ -194,7 +194,7 @@ const VideoLesson = ({
                 </IconButton>
                 <IconButton>
                   <Image
-                    src={'/img/downloadLight.png'}
+                    src={'/img/downloadLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}
@@ -210,6 +210,7 @@ const VideoLesson = ({
                 playId={playId}
                 course={course}
                 handleNext={handleNext}
+                lessonCount={0} // to do
               />
             </Box>
           )}
@@ -221,7 +222,7 @@ const VideoLesson = ({
                 Download All{' '}
                 <IconButton>
                   <Image
-                    src={'/img/downloadLight.png'}
+                    src={'/img/downloadLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}
@@ -238,7 +239,7 @@ const VideoLesson = ({
                     </Typography>
                     <IconButton>
                       <Image
-                        src={'/img/downloadDark.png'}
+                        src={'/img/downloadDark.webp'}
                         alt="download icon"
                         width={20}
                         height={20}
@@ -269,4 +270,41 @@ const VideoLesson = ({
   );
 };
 
-export default VideoLesson;
+const NextPrev = ({
+  handlePrev,
+  playId,
+  handleNext,
+  lessonCount,
+}: tNextPrev) => {
+  return (
+    <Box display={'flex'} justifyContent="space-between">
+      <Button onClick={handlePrev} disabled={playId?.id === 1}>
+        Previous
+      </Button>
+      <Button
+        onClick={() => handleNext(playId?.id)}
+        disabled={playId?.id === lessonCount}
+      >
+        Next
+      </Button>
+    </Box>
+  );
+};
+
+export default ClassroomB;
+const playerStyles = {
+  boxWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  frameContainer: { position: 'relative', paddingTop: '56.25%' },
+  framePlayer: {
+    border: 'none',
+    position: 'absolute',
+    top: 0,
+    height: '100%',
+    width: '100%',
+  },
+};

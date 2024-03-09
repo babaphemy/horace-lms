@@ -32,19 +32,21 @@ const Footer = () => {
           }}
         >
           <Grid item sm={12} md={3}>
-            <Image
-              src={'/img/logo.png'}
-              alt="logo"
-              width={150}
-              height={50}
-              style={footerStyles.logo}
-            />
+            <Box sx={{ float: 'left' }}>
+              <Image
+                src={'/img/logo.webp'}
+                alt="logo"
+                width={150}
+                height={50}
+              />
+            </Box>
+
             <Box sx={footerStyles.section}>
-              <Typography variant="body2">
+              <Typography variant="body2" align="justify">
                 At Horace Online Learning, we are passionate about empowering
                 individuals to achieve their full potential through education.
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" align="justify">
                 We are dedicated to making high-quality learning accessible to
                 all, regardless of their background or location.
               </Typography>
@@ -93,20 +95,20 @@ const Footer = () => {
             <Typography variant="h6">Quick Links</Typography>
             <Box>
               <List sx={footerStyles.noLeftPadding}>
-                <ListItem>
+                {/* <ListItem>
                   <Link href="/help-center">Help Center</Link>
-                </ListItem>
-                <ListItem>
+                </ListItem> */}
+                {/* <ListItem>
                   <Link href="/ask-question">Ask Questions</Link>
+                </ListItem> */}
+                <ListItem>
+                  <Link href="/contact">Send Feedback</Link>
                 </ListItem>
                 <ListItem>
-                  <Link href="/feedback">Send Feedback</Link>
+                  <Link href="/terms">Terms of Use</Link>
                 </ListItem>
                 <ListItem>
-                  <Link href="/terms-of-use">Terms of Use</Link>
-                </ListItem>
-                <ListItem>
-                  <Link href="/privacy-policy">Privacy Policy</Link>
+                  <Link href="/privacy">Privacy Policy</Link>
                 </ListItem>
               </List>
             </Box>
@@ -146,7 +148,7 @@ export default Footer;
 
 const footerStyles = {
   container: {
-    marginTop: 5,
+    marginTop: 16,
   },
   socialLogo: {
     aspectRatio: 1,
@@ -166,7 +168,7 @@ const footerStyles = {
   divider: {
     background: '#1A055F',
     height: '3px',
-    my: 2,
+    my: 4,
   },
   section: {
     '& > :not(style)': {
@@ -188,31 +190,27 @@ const footerStyles = {
       background: '#000',
     },
   },
-  logo: {
-    marginTop: '-10px',
-    marginLeft: '-10px',
-  },
 };
 
 const socials = [
   {
     name: 'facebook',
-    link: 'https://www.facebook.com/',
-    icon: 'facebook.png',
+    link: 'https://www.facebook.com/horacelms',
+    icon: 'facebook.webp',
   },
   {
     name: 'twitter',
-    link: 'https://www.twitter.com/',
-    icon: 'twitter.png',
+    link: 'https://www.twitter.com/essloffice',
+    icon: 'twitter.webp',
   },
   {
     name: 'instagram',
     link: 'https://www.instagram.com/',
-    icon: 'instagram.png',
+    icon: 'instagram.webp',
   },
   {
     name: 'linkedin',
-    link: 'https://www.linkedin.com/',
-    icon: 'linkedin.png',
+    link: 'https://www.linkedin.com/company/10654256/',
+    icon: 'linkedin.webp',
   },
 ];

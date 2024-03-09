@@ -67,6 +67,7 @@ const SkipLecture = ({
             playId={playId}
             course={course}
             handleNext={handleNext}
+            lessonCount={0} // to do
           />
           <Paper className="flex flex-col p-10 w-full shadow rounded-2xl mt-3 lg:mt-8 overflow-hidden border-2 border-[#F9AD56]">
             <Box>
@@ -118,7 +119,7 @@ const SkipLecture = ({
                 </IconButton>
                 <IconButton>
                   <Image
-                    src={'/img/shareLight.png'}
+                    src={'/img/shareLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}
@@ -126,7 +127,7 @@ const SkipLecture = ({
                 </IconButton>
                 <IconButton>
                   <Image
-                    src={'/img/downloadLight.png'}
+                    src={'/img/downloadLight.webp'}
                     alt="download icon"
                     width={20}
                     height={20}

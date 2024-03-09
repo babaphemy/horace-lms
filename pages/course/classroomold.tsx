@@ -92,6 +92,7 @@ const ClassroomOld = () => {
                         playId={playId}
                         course={course}
                         handleNext={handleNext}
+                        lessonCount={0} // to do
                       />
                     </>
                   ) : (
@@ -123,6 +124,7 @@ const ClassroomOld = () => {
                   playId={playId}
                   course={course}
                   handleNext={handleNext}
+                  lessonCount={0} // to do
                 />
               </>
             )}

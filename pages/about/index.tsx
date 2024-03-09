@@ -15,8 +15,8 @@ import Header from '../../components/Header';
 import AddIcon from '@mui/icons-material/Add';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import boy from '../../assets/img/illustrate-2.png';
-import logo from '../../assets/img/logo.png';
+import boy from '../../assets/img/illustrate-2.webp';
+import logo from '../../assets/img/logo.webp';
 const AboutUs = () => {
   const router = useRouter();
   return (
@@ -143,7 +143,7 @@ const AboutUs = () => {
 
         <Box className="flex flex-col items-center justify-center mb-12">
           <Typography variant="h3" mb={2}>
-            Courses We Offer
+            Courses We Support
           </Typography>
           <Grid container spacing={3}>
             {exampleCourses.map((item) => (
@@ -164,11 +164,11 @@ const AboutUs = () => {
             Our Team
           </Typography>
           <Typography variant="body1" mb={2} className="max-w-3xl">
-            Our team is comprised of experienced professionals with a passion
-            for education and a commitment to creating cutting-edge solutions
-            that empower learners of all ages and backgrounds. From product
-            development and design, to marketing and sales, our team brings a
-            wealth of knowledge and expertise to every project we undertake.{' '}
+            Our team comprises of experienced professionals with a passion for
+            education and a commitment to creating cutting-edge solutions that
+            empower learners of all ages and backgrounds. We use machine
+            learning and Artificial Inteliggence to transform every student into
+            academic rockstars.
           </Typography>
         </Box>
 
@@ -181,7 +181,7 @@ const AboutUs = () => {
             }}
           ></Typography>
           <Typography variant="h3" mb={2}>
-            What Our Students Say
+            What Our Partners Say
           </Typography>
           <Grid container spacing={3}>
             {whatOurStudentsSay.map((item) => (
@@ -207,7 +207,7 @@ const AboutUs = () => {
                   <Box display={'flex'} my={1}>
                     <Avatar
                       alt="instructor"
-                      src="https://material-ui.com/static/images/avatar/1.jpg"
+                      src={item.image}
                       sx={{ width: 50, height: 50 }}
                     />
                     <Box ml={1}>
@@ -293,54 +293,54 @@ const statistics = [
     number: 10,
     name: 'Courses',
     color: '#F9AD56',
-    icon: require('../../assets/img/icon-1.png'),
+    icon: require('../../assets/img/icon-1.webp'),
   },
   {
     number: 12,
     name: 'Awards',
     color: '#16C79A',
-    icon: require('../../assets/img/icon-2.png'),
+    icon: require('../../assets/img/icon-2.webp'),
   },
   {
     number: 100,
     name: 'Students',
     color: '#FF5E78',
-    icon: require('../../assets/img/icon-3.png'),
+    icon: require('../../assets/img/icon-3.webp'),
   },
 ];
 
 const exampleCourses = [
-  'Javascript',
-  'Python',
+  'Software Development',
+  'STEM',
   'Web Development',
   'CyberSecurity',
   'Data Science',
-  'Machine Learning',
-  'Artificial Intelligence',
-  'Java',
+  'Machine Learning & AI',
+  'UI/UX',
+  'Project Management',
 ];
 
 const whatOurStudentsSay = [
   {
-    name: 'John Doe',
-    role: 'Student',
-    image: 'https://material-ui.com/static/images/avatar/1.jpg',
-    rating: 4,
+    name: 'Lasisi Sidikat',
+    role: 'School Owner',
+    image: '/img/champion.webp',
+    rating: 5,
     comment:
       'I have been using Horace Learning for a while now and I can say that it has been a great experience. The courses are very interesting and the instructors are very knowledgeable. I would recommend this platform to anyone who wants to learn more about computers.',
   },
   {
-    name: 'Jane Doe',
-    role: 'Student',
-    image: 'https://material-ui.com/static/images/avatar/2.jpg',
+    name: 'Trove High',
+    role: 'School',
+    image: '/img/trove_logo_img.webp',
     rating: 5,
     comment:
       'Horace Learning has been a game changer for our school. Their solutions have helped us overcome the challenges of traditional education and allow us to truly empower our students to succeed.',
   },
   {
-    name: 'John Doe',
-    role: 'Student',
-    image: 'https://material-ui.com/static/images/avatar/3.jpg',
+    name: 'Junaid A',
+    role: 'Instructor',
+    image: '/img/junaid.webp',
     rating: 5,
     comment:
       'Horace Learning has completely transformed the way I teach and my students learn. The virtual classrooms, personalized learning paths, and advanced analytics have made my job so much easier and more fulfilling.',

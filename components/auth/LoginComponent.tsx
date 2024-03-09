@@ -21,9 +21,9 @@ import { loginStyles } from '../../styles/loginStyles';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import fb from '../../assets/img/fbcolor.png';
-import google from '../../assets/img/ggcolor.png';
-import yeah from '../../assets/img/yeah.png';
+import fb from '../../assets/img/fbcolor.webp';
+import google from '../../assets/img/ggcolor.webp';
+import yeah from '../../assets/img/yeah.webp';
 import * as yup from 'yup';
 import Image from 'next/image';
 

@@ -4,7 +4,7 @@ const reviews = {
       id: '3',
       user: {
         name: 'Carl Hend',
-        avatar: 'assets/images/avatars/carl.jpg',
+        avatar: 'assets/images/avatars/carl.webp',
       },
       message:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat. Aenean lorem ex, ultrices sit amet ligula sed...',
@@ -17,7 +17,7 @@ const reviews = {
       id: 1,
       user: {
         name: 'Carl Henderson',
-        avatar: 'assets/images/avatars/carl.jpg',
+        avatar: 'assets/images/avatars/carl.webp',
       },
       message:
         'ipsum Lorem dolor sit amet, consectetur adipiscing elit. Fusce et eleifend ligula. Fusce posuere in sapien ac facilisis. Etiam sit amet justo non felis ornare feugiat. Aenean lorem ex, ultrices sit amet ligula sed...',
@@ -32,7 +32,7 @@ const reviews = {
           message: 'nice one keep it up, you were absolutely right',
           user: {
             name: 'Carl Henderson',
-            avatar: 'assets/images/avatars/carl.jpg',
+            avatar: 'assets/images/avatars/carl.webp',
           },
           time: 'June 10, 2015',
         },
@@ -129,7 +129,7 @@ const sample = [
     price: 105.0,
     tax: 5.0,
     createdOn: null,
-    thumbnail: 'react-logo.png',
+    thumbnail: 'react-logo.webp',
     updatedOn: null,
     totalSteps: 4,
     draft: false,

@@ -10,7 +10,7 @@ const Hero = () => {
   return (
     <Box sx={heroStyles.container}>
       <Box sx={heroStyles.left}>
-        <Typography variant="h2" mb={'20px'}>
+        <Typography variant="h1" mb={'20px'}>
           Grow Your{' '}
           <Typography component="span" variant="h2" color={'#FF6854'}>
             Skills
@@ -18,7 +18,7 @@ const Hero = () => {
           <br />
           Unlock Your Potential
         </Typography>
-        <Typography variant="body2" mb={'20px'}>
+        <Typography variant="h5" mb={'20px'}>
           Transform Your Career with Horace: Gain Job-Ready Skills through Our
           Immersive Courses and Hands-On Labs.
         </Typography>
@@ -33,7 +33,7 @@ const Hero = () => {
         </Button>
       </Box>
       <Box sx={heroStyles.right}>
-        <Image src={'/img/boy.png'} alt="hero" width={400} height={400} />
+        <Image src={'/img/boy.webp'} alt="hero" width={400} height={400} />
       </Box>
     </Box>
   );

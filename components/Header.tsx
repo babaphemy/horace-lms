@@ -109,7 +109,7 @@ const Header = () => {
         <Container maxWidth="lg">
           <Box sx={headerStyles.drawerContainer}>
             <Image
-              src={`/img/logo.png`}
+              src={`/img/logo.webp`}
               alt="logo"
               width={150}
               height={50}
@@ -134,7 +134,7 @@ const Header = () => {
             >
               <Box>
                 <Image
-                  src={`/img/logo.png`}
+                  src={`/img/logo.webp`}
                   alt="logo"
                   width={150}
                   height={50}
@@ -189,7 +189,7 @@ const Header = () => {
           <Box sx={headerStyles.flexHeader}>
             <Box sx={headerStyles.flexHeader}>
               <Image
-                src={`/img/logo.png`}
+                src={`/img/logo.webp`}
                 alt="logo"
                 width={150}
                 height={50}

@@ -16,7 +16,7 @@ import {
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React from 'react';
-import logo from '../../assets/img/logo.png';
+import logo from '../../assets/img/logo.webp';
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   marginLeft: -12,
   marginRight: 20,
@@ -114,7 +114,7 @@ const DashboardHeader = () => {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.webp" />
                 </IconButton>
               </Tooltip>
               <Menu

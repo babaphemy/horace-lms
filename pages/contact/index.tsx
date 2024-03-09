@@ -83,6 +83,7 @@ const ContactUs = () => {
   const onSubmit = (data: any) => {
     mutate(data);
   };
+  const emailAddress = 'office@horacelearning.com';
   return (
     <Box>
       <Header />
@@ -271,10 +272,21 @@ const ContactUs = () => {
                   Email Us Now
                 </Typography>
                 <Typography variant="body2" mb={2}>
-                  Email our friendly team
+                  Our team wants to hear from you
                 </Typography>
-                <Typography variant="body2" mb={2} sx={{ fontWeight: 'bold' }}>
-                  horacelearning@gmail.com
+                <Typography
+                  variant="body2"
+                  mb={2}
+                  sx={{
+                    fontWeight: 'bold',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() =>
+                    (window.location.href = `mailto:${emailAddress}`)
+                  }
+                >
+                  {emailAddress}
                 </Typography>
               </Box>
             </Grid>
@@ -290,7 +302,7 @@ const ContactUs = () => {
                   Visit our head office
                 </Typography>
                 <Typography variant="body2" mb={2} sx={{ fontWeight: 'bold' }}>
-                  Houston, Texas, USA
+                  Barrone Drive, Cypress,TX, USA
                 </Typography>
               </Box>
             </Grid>
@@ -303,10 +315,10 @@ const ContactUs = () => {
                   Call Us
                 </Typography>
                 <Typography variant="body2" mb={2}>
-                  Mon - Fri 9am - 5pm
+                  Mon - Sat 9am - 5pm
                 </Typography>
                 <Typography variant="body2" mb={2} sx={{ fontWeight: 'bold' }}>
-                  +1 123 456 7890
+                  +1 346 580 9700
                 </Typography>
               </Box>
             </Grid>

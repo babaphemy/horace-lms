@@ -17,7 +17,7 @@ const Benefits = () => {
         <Typography variant="h3" mb={2}>
           Learn From Industry Experts
         </Typography>
-        <Typography variant="body2" mb={2}>
+        <Typography variant="body2" align="justify" mb={2}>
           At Horace, we're on a mission to democratize education and create a
           level playing field for all. Our platform offers unparalleled access
           to world-class instructors, industry experts, and working
@@ -54,21 +54,21 @@ const benefitsStyles = {
 
 const cards = [
   {
-    icon: '/img/plus.png',
+    icon: '/img/plus.webp',
     title: 'Learn New Skills',
     description:
       'Gain access to premier educational resources and learn new skills from industry leaders, working professionals, and experienced educators.',
     color: '#F9AD56',
   },
   {
-    icon: '/img/book.png',
+    icon: '/img/book.webp',
     title: 'Change Careers',
     description:
       "Unlock New Opportunities and Achieve Your financial Goals Today! With our curated hands-on labs that guarantees on-the-job skills, you'll be ready to take on the world.",
     color: '#16C79A',
   },
   {
-    icon: '/img/group.png',
+    icon: '/img/group.webp',
     title: 'Experienced Instructors',
     description:
       'Expert and Experienced Instructors Ready to Guide You to Success! Our Instructors are Industry Leaders, Working Professionals, and Experienced Educators.',

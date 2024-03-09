@@ -255,7 +255,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
               <Box display={'flex'} my={1}>
                 <Avatar
                   alt="instructor"
-                  src="https://material-ui.com/static/images/avatar/1.jpg"
+                  src="https://material-ui.com/static/images/avatar/1.webp"
                   sx={{ width: 50, height: 50 }}
                 />
                 <Box ml={2}>
