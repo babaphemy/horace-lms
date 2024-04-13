@@ -149,5 +149,10 @@ export type tNextPrev = {
   title: string;
   description: string;
 }
+export interface Plan {
+    name: string;
+    price: string;
+    description: string;
+}
   
   

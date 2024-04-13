@@ -1,3 +1,4 @@
+import { Plan } from '../../../types/types';
 import PricingPlan from './PricingPlan';
 
 const Pricing: React.FC = () => {
