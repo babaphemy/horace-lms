@@ -144,6 +144,9 @@ const Header = () => {
                   <NextLink href="/" passHref>
                     <MuiLink>Home</MuiLink>
                   </NextLink>
+                  <NextLink href="/lms" passHref>
+                    <MuiLink>LMS</MuiLink>
+                  </NextLink>
                   <NextLink href="/about" passHref>
                     <MuiLink>About</MuiLink>
                   </NextLink>
@@ -198,6 +201,9 @@ const Header = () => {
               <List sx={headerStyles.flexList}>
                 <NextLink href="/" passHref>
                   <MuiLink>Home</MuiLink>
+                </NextLink>
+                <NextLink href="/lms" passHref>
+                  <MuiLink>LMS</MuiLink>
                 </NextLink>
                 <NextLink href="/about" passHref>
                   <MuiLink>About</MuiLink>
@@ -329,7 +335,7 @@ const headerStyles = {
     marginTop: '-.3rem',
     marginLeft: '-10px',
 
-    '@media (max-width: 600px)': {
+    '@media (maxWidth: 600px)': {
       marginLeft: '-50px',
     },
   },
