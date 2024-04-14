@@ -4,17 +4,17 @@ import PricingPlan from './PricingPlan';
 const Pricing: React.FC = () => {
   const plans: Plan[] = [
     {
-      name: 'Basic',
+      name: 'Mars',
       price: '$10/month',
       description: 'Ideal for small schools or individual educators.',
     },
     {
-      name: 'Professional',
+      name: 'Saturn',
       price: '$30/month',
       description: 'Perfect for mid-sized schools with additional features.',
     },
     {
-      name: 'Enterprise',
+      name: 'Jupiter',
       price: 'Custom Pricing',
       description: 'Custom solutions for large institutions or districts.',
     },
@@ -32,7 +32,9 @@ const Pricing: React.FC = () => {
       </div>
       <div className="text-center mt-10">
         <a
-          href="/path_to_your_brochure/Horace_LMS_Brochure.pdf"
+          href="https://essluploads.s3.amazonaws.com/HoraceProposal.pdf"
+          target="_blank"
+          rel="nofollow"
           download="Horace_LMS_Brochure.pdf"
         >
           <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">

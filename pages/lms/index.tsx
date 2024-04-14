@@ -5,6 +5,9 @@ import SchoolLogos from '../../components/lms/SchoolLogos';
 import ContactLms from '../../components/lms/ContactLms';
 import Pricing from '../../components/lms/pricing/Pricing';
 import FeatureList from '../../components/lms/feature/FeatureList';
+import Footer from '../../components/Footer';
+import FooterLte from '../../components/layout/FooterLte';
+import HeaderBanner from '../../components/lms/Headerbanner';
 
 const Lms = () => {
   return (
@@ -29,6 +32,7 @@ const Lms = () => {
         />
       </Head>
       <Header />
+      <HeaderBanner />
       <Container>
         <Box>
           <FeatureList />
@@ -37,6 +41,7 @@ const Lms = () => {
           <ContactLms />
         </Box>
       </Container>
+      <Footer />
     </Box>
   );
 };

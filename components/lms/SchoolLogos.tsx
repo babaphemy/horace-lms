@@ -6,21 +6,25 @@ interface SchoolLogo {
 
 const logos: SchoolLogo[] = [
   {
-    imageUrl: '/logos/school1.png',
-    websiteUrl: 'https://www.school1.edu',
-    altText: 'School 1 Logo',
+    imageUrl: '/img/champion.png',
+    websiteUrl: '/login',
+    altText: 'Champions Academy',
   },
   {
-    imageUrl: '/logos/school2.png',
-    websiteUrl: 'https://www.school2.edu',
-    altText: 'School 2 Logo',
+    imageUrl: '/img/topbrains.png',
+    websiteUrl: '/login',
+    altText: 'Top Brains Academy',
   },
   {
-    imageUrl: '/logos/school3.png',
-    websiteUrl: 'https://www.school3.edu',
-    altText: 'School 3 Logo',
+    imageUrl: '/img/trove.jpeg',
+    websiteUrl: '/login',
+    altText: 'Trove High School',
   },
-  // Add more logos as needed
+  {
+    imageUrl: '/img/forte.png',
+    websiteUrl: '/login',
+    altText: 'Forte Kids Texas',
+  },
 ];
 
 const SchoolLogos = () => {
