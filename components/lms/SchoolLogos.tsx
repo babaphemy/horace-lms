@@ -30,24 +30,26 @@ const logos: SchoolLogo[] = [
 const SchoolLogos = () => {
   return (
     <div className="bg-gray-100 p-8">
-      <h2 className="text-3xl font-semibold text-center mb-6">
-        Trusted by Leading Schools
-      </h2>
-      <div className="flex flex-wrap justify-center items-center gap-10">
-        {logos.map((logo, index) => (
-          <a
-            key={index}
-            href={logo.websiteUrl || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src={logo.imageUrl}
-              alt={logo.altText}
-              className="h-12 md:h-24"
-            />
-          </a>
-        ))}
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-3xl font-semibold text-center mb-6">
+          Trusted by Leading Schools
+        </h2>
+        <div className="flex flex-wrap justify-center items-center gap-10">
+          {logos.map((logo, index) => (
+            <a
+              key={index}
+              href={logo.websiteUrl || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={logo.imageUrl}
+                alt={logo.altText}
+                className="h-12 md:h-24"
+              />
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 import Head from 'next/head';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
@@ -32,14 +32,12 @@ const Lms = () => {
       </Head>
       <Header />
       <HeaderBanner />
-      <Container>
-        <Box>
-          <FeatureList />
-          <Pricing />
-          <SchoolLogos />
-          <ContactLms />
-        </Box>
-      </Container>
+      <Box>
+        <FeatureList />
+        <Pricing />
+        <SchoolLogos />
+        <ContactLms />
+      </Box>
       <Footer />
     </Box>
   );

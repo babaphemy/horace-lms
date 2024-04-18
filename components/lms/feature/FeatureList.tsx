@@ -1,22 +1,22 @@
-import { Feature } from '../../../types/types';
-import FeatureCard from './FeatureCard';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import SchoolIcon from '@mui/icons-material/School';
-import PersonIcon from '@mui/icons-material/Person';
-import CastForEducationIcon from '@mui/icons-material/CastForEducation';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import QuizIcon from '@mui/icons-material/Quiz';
-import BiotechIcon from '@mui/icons-material/Biotech';
-import SecurityIcon from '@mui/icons-material/Security';
 import {
   AccountTreeRounded,
   CardGiftcard,
   MobileFriendly,
   Payment,
 } from '@mui/icons-material';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import BiotechIcon from '@mui/icons-material/Biotech';
+import CastForEducationIcon from '@mui/icons-material/CastForEducation';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import MarkUnreadChatAltIcon from '@mui/icons-material/MarkUnreadChatAlt';
+import PersonIcon from '@mui/icons-material/Person';
+import QuizIcon from '@mui/icons-material/Quiz';
+import SchoolIcon from '@mui/icons-material/School';
+import SecurityIcon from '@mui/icons-material/Security';
+import { Feature } from '../../../types/types';
+import FeatureCard from './FeatureCard';
 
 const features: Feature[] = [
   {
@@ -111,9 +111,9 @@ const features: Feature[] = [
   },
 ];
 const FeatureList: React.FC = () => (
-  <div className="p-8 ">
-    <h2 className="text-3xl md:text-4xl font-semibold text-center mb-10">Key Features</h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div className="p-8 max-w-7xl mx-auto">
+    <h2 className="text-3xl md:text-4xl font-semibold text-center my-10">Key Features</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10 ">
       {features.map((feature, index) => (
         <FeatureCard key={index} feature={feature} />
       ))}
