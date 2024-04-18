@@ -1,13 +1,12 @@
 import { Box, Container } from '@mui/material';
 import Head from 'next/head';
-import Header from '../../components/Header';
-import SchoolLogos from '../../components/lms/SchoolLogos';
-import ContactLms from '../../components/lms/ContactLms';
-import Pricing from '../../components/lms/pricing/Pricing';
-import FeatureList from '../../components/lms/feature/FeatureList';
 import Footer from '../../components/Footer';
-import FooterLte from '../../components/layout/FooterLte';
+import Header from '../../components/Header';
+import ContactLms from '../../components/lms/ContactLms';
 import HeaderBanner from '../../components/lms/Headerbanner';
+import SchoolLogos from '../../components/lms/SchoolLogos';
+import FeatureList from '../../components/lms/feature/FeatureList';
+import Pricing from '../../components/lms/pricing/Pricing';
 
 const Lms = () => {
   return (

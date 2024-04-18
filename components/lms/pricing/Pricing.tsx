@@ -31,16 +31,17 @@ const Pricing: React.FC = () => {
         ))}
       </div>
       <div className="text-center mt-10">
-        <a
+        {/* <a
           href="https://essluploads.s3.amazonaws.com/HoraceProposal.pdf"
           target="_blank"
           rel="nofollow"
           download="Horace_LMS_Brochure.pdf"
+        
         >
           <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
             Download Our Brochure
           </button>
-        </a>
+        </a> */}
       </div>
     </div>
   );
