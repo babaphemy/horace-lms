@@ -40,6 +40,7 @@ import Curriculumb from '../../components/courses/Curriculumb';
 import SimilarCard from '../../components/SimilarCard';
 import Fuse from 'fuse.js';
 import { tCourseLte } from '../../types/types';
+import Head from 'next/head';
 
 const Detailb = () => {
   const { user, courses } = React.useContext(Appcontext);
@@ -202,6 +203,31 @@ const Detailb = () => {
   return (
     <>
       {/* <DashboardHeader /> */}
+      <Head>
+        <title>Horace LMS Classroom</title>
+        <meta property="og:title" content="Horace LMS Classroom" key="title" />
+        <meta
+          title="description"
+          name="description"
+          key="desc"
+          content="Learning Management Solution and a complete school management system for all schools"
+        />
+        <meta
+          property="og:description"
+          key="desc"
+          content="Learning Management Solution for all schools"
+        />
+        <meta
+          name="keywords"
+          title="keywords"
+          content="online learning, LMS, SMS, online school, online courses, STEM, learning management solution, school management solution, online classroom"
+        />
+        <meta
+          property="og:keywords"
+          key={'keywords'}
+          content="online learning, LMS, SMS, online school, online courses, STEM, learning management solution, school management solution, online classroom"
+        />
+      </Head>
       <Header />
 
       <CourseHeader courseProps={headerProps} />

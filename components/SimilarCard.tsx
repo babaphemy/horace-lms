@@ -60,6 +60,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
               variant="subtitle1"
               sx={{ ...similarStyles.between, cursor: 'pointer' }}
               onClick={handleCardClick}
+              id="author"
             >
               <PlayCircleIcon
                 color="primary"
@@ -76,6 +77,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
             my={1}
             sx={similarStyles.pointer}
             onClick={handleCardClick}
+            id="similar-course"
           >
             {courseName}
           </Typography>

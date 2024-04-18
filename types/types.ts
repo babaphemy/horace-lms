@@ -143,5 +143,16 @@ export type tNextPrev = {
         data: [tUser];
       }
     | { type: "COURSE_SET"; data: tCourse | null } | { type: "COURSES_SET"; data: [tCourse] } 
+
+  export interface Feature {
+  icon: any;
+  title: string;
+  description: string;
+}
+export interface Plan {
+    name: string;
+    price: string;
+    description: string;
+}
   
   

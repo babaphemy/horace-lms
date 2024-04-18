@@ -1,3 +1,4 @@
+'use client';
 import { Box, Container, Typography } from '@mui/material';
 
 import Image from 'next/image';
@@ -7,10 +8,19 @@ import SignUpComponent from '../../components/auth/SignUpComponent';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { loginStyles } from '../../styles/loginStyles';
+import Head from 'next/head';
+import useTag from '../../hooks/useTag';
 
 const SignUp = () => {
+  useTag({ pageTitle: 'signup', pagePath: '/sign-up' });
+
   return (
     <Box>
+      <Head>
+        <title>New User Signup</title>
+        <meta name="description" content="Horace learning, new user signup" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Header />
       <Box sx={loginStyles.body}>
         <Container maxWidth="lg">
