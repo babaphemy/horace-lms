@@ -64,7 +64,7 @@ const features: Feature[] = [
     icon: AnalyticsIcon,
     title: 'Reporting, AI & Analytics ',
     description:
-      'AI powered reports to monitor and measure students performance and advise for improvement.',
+      'AI powered reports and insightful vizualizations to monitor and measure performance and advise for improvement.',
   },
   {
     icon: QuizIcon,
