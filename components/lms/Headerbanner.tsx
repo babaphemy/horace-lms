@@ -9,7 +9,7 @@ const HeaderBanner = () => (
       justifyContent: 'center',
       alignItems: 'center',
       color: 'white',
-      textShadow: '1px 1px 2px black', // Enhances readability over varying backgrounds
+      textShadow: '1px 1px 2px black',
     }}
   ></div>
 );
