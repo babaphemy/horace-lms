@@ -1,12 +1,21 @@
-Horace LMS by www.myeverlasting.net
-
 ## Getting Started
 
-point your api to dev
-run yarn dev
+First, run the development server:
 
-## To deploy
-yarn build
-yarn export
-move the contents of _static folder to var/www/horacelearning.com/html 
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
+
+## Prettier
+
+- format all files:
+- yarn prettier . --write
+
+- for ci:
+- npx prettier . --check
