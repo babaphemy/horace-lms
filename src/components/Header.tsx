@@ -193,8 +193,8 @@ const Header = () => {
               <Image
                 src={`/img/logo.webp`}
                 alt="logo"
-                width={150}
-                height={50}
+                width={200}
+                height={80}
                 style={headerStyles.logo}
               />
               <List sx={headerStyles.flexList}>
@@ -321,6 +321,7 @@ const headerStyles = {
       marginRight: 2,
       textDecoration: "none",
       color: "black",
+      fontSize: "1.125rem",
 
       "&:hover": {
         fontWeight: "bolder",
