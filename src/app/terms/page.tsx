@@ -8,7 +8,7 @@ export const metadata = generateMetadata({
   description:
     "Horace Online Courses. STEM focused online courses for all ages",
 });
-const index = () => {
+const Page = () => {
   return (
     <Box>
       <Header />
@@ -96,4 +96,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Page;
