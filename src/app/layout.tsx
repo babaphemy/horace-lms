@@ -51,14 +51,16 @@ export default function RootLayout({
   }, []);
   return (
     <html lang="en">
-      <ThemeProvider theme={muiTheme}>
-        <AppProvider>
-          <QueryClientProvider client={queryClient}>
-            <body className={`${volkhov.variable}`}>{children}</body>
-          </QueryClientProvider>
-        </AppProvider>
-        <ToastContainer />
-      </ThemeProvider>
+      <body className={`${volkhov.variable}`}>
+        <ThemeProvider theme={muiTheme}>
+          <AppProvider>
+            <QueryClientProvider client={queryClient}>
+              {children}
+            </QueryClientProvider>
+          </AppProvider>
+          <ToastContainer />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

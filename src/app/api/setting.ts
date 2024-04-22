@@ -1,8 +1,8 @@
-let basePath = 'https://horacelearning.com/api/v1/';
+let basePath = "https://horacelearning.com/api/v1/";
 // let MONGO_URI = process.env.MONGO_URI!;
 
-if (process.env.NODE_ENV === 'development') {
-  basePath = 'http://localhost:5071/api/v1/';
+if (process.env.NODE_ENV !== "development") {
+  basePath = "http://localhost:5071/api/v1/";
 }
 // const basePath = 'http://localhost:5071/api/v1/';
 //const basePath = '/api/v1/';
@@ -12,10 +12,10 @@ export const auth = {
 };
 export const PostSettings = (obj: any) => {
   return {
-    method: 'POST',
+    method: "POST",
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Basic ${authKey}`,
     },
     body: JSON.stringify(obj),
@@ -23,10 +23,10 @@ export const PostSettings = (obj: any) => {
 };
 export const DeleteSettings = (obj: any) => {
   return {
-    method: 'DELETE',
+    method: "DELETE",
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Basic ${authKey}`,
     },
     body: JSON.stringify(obj),
@@ -34,10 +34,10 @@ export const DeleteSettings = (obj: any) => {
 };
 export const PutSettings = (obj: any) => {
   return {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Content-Type": "application/json",
       Authorization: `Basic ${authKey}`,
     },
     body: JSON.stringify(obj),

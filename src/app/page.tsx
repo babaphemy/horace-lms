@@ -1,4 +1,5 @@
 "use client";
+
 import { Box, Container } from "@mui/material";
 import type { NextPage } from "next";
 import { useQuery } from "react-query";
@@ -15,6 +16,7 @@ import { fetchCourses } from "./api/rest";
 
 const Home: NextPage = () => {
   const dispatch = useContext(AppDpx);
+
   const { data, isLoading } = useQuery("usersAdddoc", fetchCourses, {
     staleTime: 5000,
     cacheTime: 10,

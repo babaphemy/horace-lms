@@ -143,19 +143,19 @@ const Header = () => {
                 />
                 <List sx={headerStyles.mobileList}>
                   <NextLink href="/" passHref>
-                    <MuiLink>Home</MuiLink>
+                    Home
                   </NextLink>
                   <NextLink href="/lms" passHref>
-                    <MuiLink>LMS</MuiLink>
+                    LMS
                   </NextLink>
                   <NextLink href="/about" passHref>
-                    <MuiLink>About</MuiLink>
+                    About
                   </NextLink>
                   <NextLink href="/courses" passHref>
-                    <MuiLink>Courses</MuiLink>
+                    Courses
                   </NextLink>
                   <NextLink href="/contact" passHref>
-                    <MuiLink>Contact</MuiLink>
+                    Contact
                   </NextLink>
                 </List>
               </Box>
@@ -166,25 +166,23 @@ const Header = () => {
                   </Typography>
                   {!loggedIn && (
                     <NextLink href="/login" passHref>
-                      <MuiLink>Login</MuiLink>
+                      Login
                     </NextLink>
                   )}
                 </Box>
                 {!loggedIn && (
                   <NextLink href="/sign-up" passHref>
-                    <MuiLink>
-                      <Button
-                        variant="contained"
-                        sx={[
-                          headerStyles.authButton,
-                          {
-                            m: 4,
-                          },
-                        ]}
-                      >
-                        Sign Up
-                      </Button>
-                    </MuiLink>
+                    <Button
+                      variant="contained"
+                      sx={[
+                        headerStyles.authButton,
+                        {
+                          m: 4,
+                        },
+                      ]}
+                    >
+                      Sign Up
+                    </Button>
                   </NextLink>
                 )}
               </Box>
@@ -201,19 +199,19 @@ const Header = () => {
               />
               <List sx={headerStyles.flexList}>
                 <NextLink href="/" passHref>
-                  <MuiLink>Home</MuiLink>
+                  Home
                 </NextLink>
                 <NextLink href="/lms" passHref>
-                  <MuiLink>LMS</MuiLink>
+                  LMS
                 </NextLink>
                 <NextLink href="/about" passHref>
-                  <MuiLink>About</MuiLink>
+                  About
                 </NextLink>
                 <NextLink href="/courses" passHref>
-                  <MuiLink>Courses</MuiLink>
+                  Courses
                 </NextLink>
                 <NextLink href="/contact" passHref>
-                  <MuiLink>Contact</MuiLink>
+                  Contact
                 </NextLink>
               </List>
             </Box>
@@ -225,14 +223,12 @@ const Header = () => {
               {!loggedIn ? (
                 <>
                   <NextLink href="/login" passHref>
-                    <MuiLink>Login</MuiLink>
+                    Login
                   </NextLink>
                   <NextLink href="/sign-up" passHref>
-                    <MuiLink>
-                      <Button variant="contained" sx={headerStyles.authButton}>
-                        Sign Up
-                      </Button>
-                    </MuiLink>
+                    <Button variant="contained" sx={headerStyles.authButton}>
+                      Sign Up
+                    </Button>
                   </NextLink>
                 </>
               ) : (
@@ -303,7 +299,7 @@ const Header = () => {
 export default Header;
 const headerStyles = {
   container: {
-    marginTop: 1.5,
+    marginTop: 2,
     marginBottom: 2,
     position: "relative",
   },

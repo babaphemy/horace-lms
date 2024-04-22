@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
-import TagManager from 'react-gtm-module';
+"use client";
+
+import { useEffect } from "react";
+import TagManager from "react-gtm-module";
 const useTag = ({
   pageTitle,
   pagePath,
@@ -10,7 +12,7 @@ const useTag = ({
   useEffect(() => {
     TagManager.dataLayer({
       dataLayer: {
-        event: 'pageview',
+        event: "pageview",
         pagePath,
         pageTitle,
       },

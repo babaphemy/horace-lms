@@ -27,13 +27,10 @@ const Login = () => {
                 <Image
                   src={subtract}
                   alt="logo"
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                    width: "450rem",
-                    height: "550rem",
-                  }}
+                  width={0}
+                  height={0}
+                  sizes="100%"
+                  style={{ width: "27rem", height: "45rem" }}
                 />
                 <Box sx={loginStyles.glass}>
                   <Typography variant="h5" sx={loginStyles.note}>
@@ -42,10 +39,8 @@ const Login = () => {
                   <Image
                     src={man}
                     alt="man holding a laptop"
-                    style={{
-                      width: "420rem",
-                      height: "400rem",
-                    }}
+                    width={420}
+                    height={400}
                   />
                 </Box>
               </Box>
