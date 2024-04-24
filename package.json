@@ -39,6 +39,8 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@testing-library/react": "^15.0.2",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20",
