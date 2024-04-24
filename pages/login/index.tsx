@@ -6,10 +6,19 @@ import LoginComponent from '../../components/auth/LoginComponent';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { loginStyles } from '../../styles/loginStyles';
+import Head from 'next/head';
+import React from 'react';
+import useTag from '../../hooks/useTag';
 
 const Login = () => {
+  useTag({ pageTitle: 'login', pagePath: '/login' });
   return (
-    <Box>
+    <Box component={'div'} id="login-component">
+      <Head>
+        <title>Horace User Login</title>
+        <meta name="description" content="Horace learning, members login" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Header />
       <Box sx={loginStyles.body}>
         <Container maxWidth="lg">

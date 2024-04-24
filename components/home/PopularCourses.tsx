@@ -96,7 +96,7 @@ const popularStyles = {
     my: '50px',
     flexWrap: 'wrap',
 
-    '@media (max-width: 600px)': {
+    '@media (maxWidth: 600px)': {
       '& > *': {
         width: '100%',
         my: '5px',

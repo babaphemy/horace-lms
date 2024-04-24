@@ -22,10 +22,10 @@ const TopBg = () => {
   return (
     <Box>
       <Box sx={bgStyles.blue}>
-        <Image src={'/img/blue.webp'} alt="blue" width={1920} height={1080} />
+        <Image src={'/img/blue.webp'} alt="blue" width={1920} height={1080} loading='lazy' />
       </Box>
       <Box sx={bgStyles.red}>
-        <Image src={'/img/red.webp'} alt="red" width={1920} height={1080} />
+        <Image src={'/img/red.webp'} alt="red" width={1920} height={1080} loading='lazy' />
       </Box>
     </Box>
   );

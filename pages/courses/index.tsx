@@ -23,6 +23,7 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { tCourse } from '../../types/types';
 import { AppDpx } from '../../context/AppContext';
 import { COURSES_SET } from '../../context/actions';
+import Head from 'next/head';
 
 const filter = [
   { label: 'All Courses', value: 'all' },
@@ -85,6 +86,21 @@ const Courses = () => {
 
   return (
     <Box>
+      <Head>
+        <title>Horace Online Courses</title>
+        <meta property="og:title" content="Horace Online Courses" key="title" />
+        <meta
+          title="description"
+          name="description"
+          key="desc"
+          content="Horace Learning Management Solution, Online courses"
+        />
+        <meta
+          property="og:description"
+          key="desc"
+          content="Horace Learning Management Solution, Online courses"
+        />
+      </Head>
       <Header />
       <Container>
         <Box sx={courseStyles.searchContainer}>
