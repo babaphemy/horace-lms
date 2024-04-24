@@ -4,6 +4,18 @@
   "parser": "@typescript-eslint/parser",
   "rules": {
     "@typescript-eslint/no-explicit-any": "error",
+    "import/no-unresolved": [
+      "error",
+      { "commonjs": true, "caseSensitive": true }
+    ],
+
     "no-console": "error"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
   }
 }

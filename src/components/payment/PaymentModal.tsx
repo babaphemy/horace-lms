@@ -1,8 +1,8 @@
 import { Typography, Box, Divider, Button } from "@mui/material"
 import React, { useContext } from "react"
-import { handlePay } from "../../api/rest"
 import { Appcontext } from "../../context/AppContext"
 import ModalContainer from "../ModalContainer"
+import { handlePay } from "@/app/api/rest"
 
 const PaymentModal = ({ course }: any) => {
   const { user } = useContext(Appcontext)

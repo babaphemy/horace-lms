@@ -59,8 +59,8 @@ const AboutUs = () => {
           </Typography>
           <Box sx={aboutStyles.cardContainer}>
             <Grid container rowSpacing={2} columnSpacing={5}>
-              {statistics.map((item) => (
-                <Grid item xs={12} sm={4}>
+              {statistics.map((item, idx) => (
+                <Grid key={idx} item xs={12} sm={4}>
                   <Box sx={{ ...aboutStyles.card, borderColor: item.color }}>
                     <Box className="flex flex-col items-center justify-center">
                       <div className="flex flex-col items-center justify-center my-2">
