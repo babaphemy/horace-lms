@@ -32,3 +32,5 @@ jobs:
           npx eslint --fix .
           npx eslint --max-warnings=0 .
         if: ${{ failure() }}
+        env:
+          ESLINT_CONFIG_PATH: .eslintrc.json
