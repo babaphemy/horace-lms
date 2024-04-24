@@ -26,8 +26,6 @@ import React, { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import ReactPlayer from "react-player"
 import Fuse from "fuse.js"
-import Head from "next/head"
-import { generateMetadata } from "@/app/metadata"
 import { AppDpx, Appcontext } from "@/context/AppContext"
 import { tCourseLte } from "@/types/types"
 import { addUserCourse, fetchCourse, isCourseReg } from "@/app/api/rest"
@@ -44,11 +42,11 @@ import SignUpLogin from "@/components/auth/ModalSignUp"
 import PaymentModal from "@/components/payment/PaymentModal"
 import { ReviewModal } from "@/components/courses/CourseReview"
 import FooterLte from "@/components/layout/FooterLte"
-export const metadata = generateMetadata({
-  title: "Horace Learning Management Solution | Horace Courses",
-  description:
-    "Horace Online Courses. Learning Management Solution and a complete school management system for all schools",
-})
+// export const metadata = generateMetadata({
+//   title: "Horace Learning Management Solution | Horace Courses",
+//   description:
+//     "Horace Online Courses. Learning Management Solution and a complete school management system for all schools",
+// })
 const Detailb = () => {
   const { user, courses } = React.useContext(Appcontext)
   const dispatch = React.useContext(AppDpx)
