@@ -20,3 +20,4 @@ bun dev
 - for ci:
 - npx prettier . --check
 - npx eslint --fix .
+- npx eslint ./src
