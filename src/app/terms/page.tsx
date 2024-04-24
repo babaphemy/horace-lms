@@ -1,13 +1,13 @@
-import { Box, Container, Typography } from "@mui/material";
-import Link from "next/link";
-import { generateMetadata } from "../metadata";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Box, Container, Typography } from "@mui/material"
+import Link from "next/link"
+import { generateMetadata } from "../metadata"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 export const metadata = generateMetadata({
   title: "Horace Learning Management Solution | Terms and Conditions",
   description:
     "Horace Online Courses. STEM focused online courses for all ages",
-});
+})
 const Page = () => {
   return (
     <Box>
@@ -93,7 +93,7 @@ const Page = () => {
       </Container>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page

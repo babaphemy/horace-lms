@@ -1,4 +1,4 @@
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu"
 import {
   AppBar,
   Avatar,
@@ -12,57 +12,55 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from '@mui/material';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React from 'react';
-import logo from '../../assets/img/logo.webp';
+} from "@mui/material"
+import Image from "next/image"
+import { useRouter } from "next/router"
+import React from "react"
+import logo from "../../assets/img/logo.webp"
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   marginLeft: -12,
   marginRight: 20,
-}));
-const pages = ['Home', 'About', 'Courses', 'Contact'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-const isAuth = false;
+}))
+const pages = ["Home", "About", "Courses", "Contact"]
+const settings = ["Profile", "Account", "Dashboard", "Logout"]
+const isAuth = false
 const DashboardHeader = () => {
-  const router = useRouter();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
+  const router = useRouter()
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
-  );
+  )
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
+    setAnchorElNav(event.currentTarget)
+  }
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+    setAnchorElNav(null)
+  }
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+    setAnchorElUser(null)
+  }
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
+    setAnchorElUser(event.currentTarget)
+  }
   const goToPage = (page: string) => {
-    if (page.toLowerCase() === 'home') return router.push('/');
-    router.push(`/${page.toLowerCase()}`);
-    handleCloseNavMenu();
-  };
+    if (page.toLowerCase() === "home") return router.push("/")
+    router.push(`/${page.toLowerCase()}`)
+    handleCloseNavMenu()
+  }
   return (
     <AppBar position="static" className="mb-4">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <StyledIconButton aria-label="Menu" onClick={() => router.push('/')}>
+          <StyledIconButton aria-label="Menu" onClick={() => router.push("/")}>
             <Image src={logo} alt="logo" width={150} height={50} />
           </StyledIconButton>
 
           <Box
             sx={{
               flexGrow: 1,
-              justifyContent: 'flex-end',
-              display: { xs: 'flex', md: 'none' },
+              justifyContent: "flex-end",
+              display: { xs: "flex", md: "none" },
             }}
           >
             <IconButton
@@ -78,18 +76,18 @@ const DashboardHeader = () => {
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
+                vertical: "top",
+                horizontal: "left",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: "block", md: "none" },
               }}
             >
               {pages.map((page) => (
@@ -99,12 +97,12 @@ const DashboardHeader = () => {
               ))}
             </Menu>
           </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={() => goToPage(page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
               </Button>
@@ -118,17 +116,17 @@ const DashboardHeader = () => {
                 </IconButton>
               </Tooltip>
               <Menu
-                sx={{ mt: '45px' }}
+                sx={{ mt: "45px" }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
@@ -144,7 +142,7 @@ const DashboardHeader = () => {
         </Toolbar>
       </Container>
     </AppBar>
-  );
-};
+  )
+}
 
-export default DashboardHeader;
+export default DashboardHeader

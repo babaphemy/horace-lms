@@ -1,7 +1,7 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
-import { detailStyles } from '../styles/courseStyles';
-import Link from 'next/link';
+import React from "react"
+import { Box, Typography } from "@mui/material"
+import { detailStyles } from "../styles/courseStyles"
+import Link from "next/link"
 
 const Sidebar = () => {
   return (
@@ -14,7 +14,7 @@ const Sidebar = () => {
         <Link href="/course/classroom">Start | Continue | Buy</Link>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

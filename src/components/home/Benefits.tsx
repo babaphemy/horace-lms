@@ -1,5 +1,5 @@
-import { Box, Grid, Typography } from '@mui/material';
-import BenefitCard from './BenefitCard';
+import { Box, Grid, Typography } from "@mui/material"
+import BenefitCard from "./BenefitCard"
 
 const Benefits = () => {
   return (
@@ -8,7 +8,7 @@ const Benefits = () => {
         <Typography
           variant="h5"
           sx={{
-            color: '#FF6854',
+            color: "#FF6854",
             mb: 2,
           }}
         >
@@ -38,40 +38,40 @@ const Benefits = () => {
         </Grid>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Benefits;
+export default Benefits
 
 const benefitsStyles = {
   cardContainer: {
     my: 5,
   },
   top: {
-    maxWidth: '700px',
+    maxWidth: "700px",
   },
-};
+}
 
 const cards = [
   {
-    icon: '/img/plus.webp',
-    title: 'Learn New Skills',
+    icon: "/img/plus.webp",
+    title: "Learn New Skills",
     description:
-      'Gain access to premier educational resources and learn new skills from industry leaders, working professionals, and experienced educators.',
-    color: '#F9AD56',
+      "Gain access to premier educational resources and learn new skills from industry leaders, working professionals, and experienced educators.",
+    color: "#F9AD56",
   },
   {
-    icon: '/img/book.webp',
-    title: 'Change Careers',
+    icon: "/img/book.webp",
+    title: "Change Careers",
     description:
       "Unlock New Opportunities and Achieve Your financial Goals Today! With our curated hands-on labs that guarantees on-the-job skills, you'll be ready to take on the world.",
-    color: '#16C79A',
+    color: "#16C79A",
   },
   {
-    icon: '/img/group.webp',
-    title: 'Experienced Instructors',
+    icon: "/img/group.webp",
+    title: "Experienced Instructors",
     description:
-      'Expert and Experienced Instructors Ready to Guide You to Success! Our Instructors are Industry Leaders, Working Professionals, and Experienced Educators.',
-    color: '#FF5E78',
+      "Expert and Experienced Instructors Ready to Guide You to Success! Our Instructors are Industry Leaders, Working Professionals, and Experienced Educators.",
+    color: "#FF5E78",
   },
-];
+]

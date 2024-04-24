@@ -1,11 +1,11 @@
 const curriculumStyles = {
   root: {
-    width: '100%',
+    width: "100%",
     maxWidth: 360,
-    backgroundColor: 'lightgrey',
+    backgroundColor: "lightgrey",
   },
   nested: {
     paddingLeft: 2,
   },
-};
-export { curriculumStyles };
+}
+export { curriculumStyles }

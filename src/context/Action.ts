@@ -1,26 +1,26 @@
-import { tCourse, tCourseLte, tLecture } from "../types/types";
+import { tCourse, tCourseLte, tLecture } from "../types/types"
 
 export type Action =
   | {
-      type: "USER_ADD";
-      payload: any;
+      type: "USER_ADD"
+      payload: any
     }
   | {
-      type: "USER_RESET";
-      payload: null;
+      type: "USER_RESET"
+      payload: null
     }
   | {
-      type: "MODAL_SET";
+      type: "MODAL_SET"
       data: {
-        open: boolean;
-        type: "login" | "signup" | "payment" | "review" | "forgotPassword";
-      };
+        open: boolean
+        type: "login" | "signup" | "payment" | "review" | "forgotPassword"
+      }
     }
   | { type: "LECTURE_SET"; data: tLecture }
   | { type: "COURSE_SET"; data: tCourse }
   | { type: "COURSES_SET"; data: tCourseLte[] }
-  | { type: "SET_PLAY_ID"; data: tLecture };
+  | { type: "SET_PLAY_ID"; data: tLecture }
 
-export const USER_ADD = "USER_ADD";
-export const USER_RESET = "USER_RESET";
-export const MODAL_SET = "MODAL_SET";
+export const USER_ADD = "USER_ADD"
+export const USER_RESET = "USER_RESET"
+export const MODAL_SET = "MODAL_SET"

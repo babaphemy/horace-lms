@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import {
   Alert,
   Box,
@@ -9,22 +9,22 @@ import {
   Typography,
   Paper,
   Button,
-} from "@mui/material";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm } from "react-hook-form";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import PhoneIcon from "@mui/icons-material/Phone";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk";
-import { useMutation } from "react-query";
-import { useState } from "react";
-import { contactUs } from "../api/rest";
-import Header from "@/components/Header";
-import Map from "@/components/Map";
-import Footer from "@/components/Footer";
-import { useRouter } from "next/navigation";
+} from "@mui/material"
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { Controller, useForm } from "react-hook-form"
+import MailOutlineIcon from "@mui/icons-material/MailOutline"
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline"
+import PhoneIcon from "@mui/icons-material/Phone"
+import MapOutlinedIcon from "@mui/icons-material/MapOutlined"
+import PhoneInTalkIcon from "@mui/icons-material/PhoneInTalk"
+import { useMutation } from "react-query"
+import { useState } from "react"
+import { contactUs } from "../api/rest"
+import Header from "@/components/Header"
+import Map from "@/components/Map"
+import Footer from "@/components/Footer"
+import { useRouter } from "next/navigation"
 
 const schema = yup.object().shape({
   firstname: yup.string().required("First name is required"),
@@ -35,7 +35,7 @@ const schema = yup.object().shape({
     .required("You must enter a email"),
   phone: yup.string().required("Phone number is required"),
   message: yup.string().required("Message is required"),
-});
+})
 
 const defaultValues = {
   firstname: "",
@@ -44,7 +44,7 @@ const defaultValues = {
   phone: "",
   type: "PMP",
   message: "",
-};
+}
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Contact",
 //   description:
@@ -52,12 +52,12 @@ const defaultValues = {
 // });
 
 const ContactUs = () => {
-  const router = useRouter();
+  const router = useRouter()
   const [al, setAlert] = useState<{
-    show: boolean;
-    msg: string;
-    type: "success" | "error";
-  } | null>(null);
+    show: boolean
+    msg: string
+    type: "success" | "error"
+  } | null>(null)
   const {
     control,
     handleSubmit,
@@ -66,7 +66,7 @@ const ContactUs = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
-  });
+  })
 
   const { mutate, isLoading } = useMutation(contactUs, {
     onSuccess: (data) => {
@@ -74,22 +74,22 @@ const ContactUs = () => {
         show: true,
         msg: "Your message has been sent successfully",
         type: "success",
-      });
-      reset(defaultValues);
+      })
+      reset(defaultValues)
     },
     onError: (error) => {
       setAlert({
         show: true,
         msg: "Something went wrong, please try again",
         type: "error",
-      });
+      })
     },
-  });
+  })
 
   const onSubmit = (data: any) => {
-    mutate(data);
-  };
-  const emailAddress = "office@horacelearning.com";
+    mutate(data)
+  }
+  const emailAddress = "office@horacelearning.com"
   return (
     <Box>
       <Header />
@@ -362,10 +362,10 @@ const ContactUs = () => {
       </Container>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default ContactUs;
+export default ContactUs
 
 const contactStyles = {
   container: {
@@ -428,4 +428,4 @@ const contactStyles = {
       background: "#000000 !important",
     },
   },
-};
+}

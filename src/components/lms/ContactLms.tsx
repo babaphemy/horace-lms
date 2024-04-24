@@ -1,8 +1,8 @@
-import Link from 'next/link';
+import Link from "next/link"
 
 const ContactLms: React.FC = () => (
   <div className="bg-blue-600 text-white text-center p-8">
-    <div className='max-w-7xl mx-auto'>
+    <div className="max-w-7xl mx-auto">
       <h2 className="text-2xl font-semibold">
         Get Started with Horace LMS Today!
       </h2>
@@ -16,5 +16,5 @@ const ContactLms: React.FC = () => (
       </Link>
     </div>
   </div>
-);
-export default ContactLms;
+)
+export default ContactLms

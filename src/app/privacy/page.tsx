@@ -1,12 +1,12 @@
-import { Box, Container, List, ListItem, Typography } from "@mui/material";
-import { generateMetadata } from "../metadata";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Box, Container, List, ListItem, Typography } from "@mui/material"
+import { generateMetadata } from "../metadata"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 export const metadata = generateMetadata({
   title: "Horace Learning Management Solution | Privacy Policy",
   description:
     "Horace Online Courses. STEM focused online courses for all ages",
-});
+})
 const Page = () => {
   return (
     <Box>
@@ -67,7 +67,7 @@ const Page = () => {
       </Container>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page

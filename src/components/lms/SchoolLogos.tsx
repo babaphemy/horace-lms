@@ -1,31 +1,31 @@
 interface SchoolLogo {
-  imageUrl: string;
-  websiteUrl?: string; // Optional if you want to make the logos clickable
-  altText: string;
+  imageUrl: string
+  websiteUrl?: string // Optional if you want to make the logos clickable
+  altText: string
 }
 
 const logos: SchoolLogo[] = [
   {
-    imageUrl: '/img/champion.png',
-    websiteUrl: '/login',
-    altText: 'Champions Academy',
+    imageUrl: "/img/champion.png",
+    websiteUrl: "/login",
+    altText: "Champions Academy",
   },
   {
-    imageUrl: '/img/topbrains.png',
-    websiteUrl: '/login',
-    altText: 'Top Brains Academy',
+    imageUrl: "/img/topbrains.png",
+    websiteUrl: "/login",
+    altText: "Top Brains Academy",
   },
   {
-    imageUrl: '/img/trove.jpeg',
-    websiteUrl: '/login',
-    altText: 'Trove High School',
+    imageUrl: "/img/trove.jpeg",
+    websiteUrl: "/login",
+    altText: "Trove High School",
   },
   {
-    imageUrl: '/img/forte.png',
-    websiteUrl: '/login',
-    altText: 'Forte Kids Texas',
+    imageUrl: "/img/forte.png",
+    websiteUrl: "/login",
+    altText: "Forte Kids Texas",
   },
-];
+]
 
 const SchoolLogos = () => {
   return (
@@ -38,7 +38,7 @@ const SchoolLogos = () => {
           {logos.map((logo, index) => (
             <a
               key={index}
-              href={logo.websiteUrl || '#'}
+              href={logo.websiteUrl || "#"}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -52,6 +52,6 @@ const SchoolLogos = () => {
         </div>
       </div>
     </div>
-  );
-};
-export default SchoolLogos;
+  )
+}
+export default SchoolLogos

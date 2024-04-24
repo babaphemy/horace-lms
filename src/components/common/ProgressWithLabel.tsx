@@ -1,7 +1,7 @@
-import { Box, LinearProgress, Typography } from '@mui/material';
-import React from 'react';
+import { Box, LinearProgress, Typography } from "@mui/material"
+import React from "react"
 interface Props {
-  value: number;
+  value: number
 }
 const ProgressWithLabel = (props: Props) => {
   return (
@@ -18,6 +18,6 @@ const ProgressWithLabel = (props: Props) => {
         <Typography variant="body2">{`${Math.round(props.value)}%`}</Typography>
       </Box>
     </Box>
-  );
-};
-export default ProgressWithLabel;
+  )
+}
+export default ProgressWithLabel

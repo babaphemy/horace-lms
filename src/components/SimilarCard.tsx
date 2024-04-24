@@ -1,19 +1,19 @@
-import { Box, Typography, Avatar, Divider, Rating } from '@mui/material';
-import React from 'react';
-import { Tag } from './home/PopularCard';
-import Image from 'next/image';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { tCourseLte, tPost } from '../types/types';
-import { useRouter } from 'next/router';
+import { Box, Typography, Avatar, Divider, Rating } from "@mui/material"
+import React from "react"
+import { Tag } from "./home/PopularCard"
+import Image from "next/image"
+import PlayCircleIcon from "@mui/icons-material/PlayCircle"
+import FavoriteIcon from "@mui/icons-material/Favorite"
+import AddCircleIcon from "@mui/icons-material/AddCircle"
+import { tCourseLte, tPost } from "../types/types"
+import { useRouter } from "next/router"
 
 type SimilarCardProps = {
-  course: tCourseLte;
-};
+  course: tCourseLte
+}
 
 const SimilarCard = ({ course }: SimilarCardProps) => {
-  const router = useRouter();
+  const router = useRouter()
   const {
     id,
     courseName,
@@ -23,49 +23,49 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
     thumbnail,
     students,
     totalSteps,
-  } = course;
+  } = course
   const countStudent = () => {
     const likes = course.posts.reduce((acc: number, post: tPost) => {
-      acc += post.like;
-      return acc;
-    }, 0);
-    const st = students ?? 10;
-    return likes + totalSteps + st;
-  };
+      acc += post.like
+      return acc
+    }, 0)
+    const st = students ?? 10
+    return likes + totalSteps + st
+  }
 
   const handleCardClick = () => {
-    router.push(`/course/detailb?cid=${id}`);
-  };
+    router.push(`/course/detailb?cid=${id}`)
+  }
 
   const calculatedRating = () => {
-    let total = 0;
+    let total = 0
     posts?.forEach((post: any) => {
-      total += post.rating;
-    });
-    return total / posts?.length;
-  };
+      total += post.rating
+    })
+    return total / posts?.length
+  }
   return (
     <Box>
       <Box sx={similarStyles.card}>
         <Image
-          src={`/img/${thumbnail || '1.webp'}`}
+          src={`/img/${thumbnail || "1.webp"}`}
           alt="a man smiling"
-          width={'170rem'}
-          height={'200rem'}
-          style={{ borderRadius: '15px 0px 0px 15px' }}
+          width={"170rem"}
+          height={"200rem"}
+          style={{ borderRadius: "15px 0px 0px 15px" }}
         />
         <Box sx={similarStyles.right}>
           <Box sx={similarStyles.between}>
             <Typography
               variant="subtitle1"
-              sx={{ ...similarStyles.between, cursor: 'pointer' }}
+              sx={{ ...similarStyles.between, cursor: "pointer" }}
               onClick={handleCardClick}
               id="author"
             >
               <PlayCircleIcon
                 color="primary"
                 sx={{
-                  marginRight: '5px',
+                  marginRight: "5px",
                 }}
               />
               Horace
@@ -83,7 +83,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
           </Typography>
 
           <Box sx={similarStyles.between}>
-            <Box display={'flex'} my={1}>
+            <Box display={"flex"} my={1}>
               <Avatar
                 alt="instructor"
                 src="https://material-ui.com/static/images/avatar/1.webp"
@@ -131,17 +131,17 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default SimilarCard;
+export default SimilarCard
 
 const similarStyles = {
   card: {
-    display: 'flex',
-    alignItems: 'center',
-    boxShadow: '0px 7px 12px 3px rgba(0, 0, 0, 0.2)',
-    borderRadius: '15px',
+    display: "flex",
+    alignItems: "center",
+    boxShadow: "0px 7px 12px 3px rgba(0, 0, 0, 0.2)",
+    borderRadius: "15px",
   },
 
   right: {
@@ -149,17 +149,17 @@ const similarStyles = {
     flex: 6,
   },
   between: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   numbers: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
   },
   pointer: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
-};
+}

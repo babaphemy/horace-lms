@@ -1,20 +1,20 @@
-"use client";
-import { Box, Container, Typography } from "@mui/material";
-import Image from "next/image";
-import subtract from "@/assets/img/subtract.webp";
-import man from "@/assets/img/man.webp";
-import useTag from "@/hooks/useTag";
-import Header from "@/components/Header";
-import { loginStyles } from "@/styles/loginStyles";
-import LoginComponent from "@/components/auth/LoginComponent";
-import Footer from "@/components/Footer";
+"use client"
+import { Box, Container, Typography } from "@mui/material"
+import Image from "next/image"
+import subtract from "@/assets/img/subtract.webp"
+import man from "@/assets/img/man.webp"
+import useTag from "@/hooks/useTag"
+import Header from "@/components/Header"
+import { loginStyles } from "@/styles/loginStyles"
+import LoginComponent from "@/components/auth/LoginComponent"
+import Footer from "@/components/Footer"
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Courses",
 //   description:
 //     "Horace Online Courses. STEM focused online courses for all ages. Members login",
 // });
 const Login = () => {
-  useTag({ pageTitle: "login", pagePath: "/login" });
+  useTag({ pageTitle: "login", pagePath: "/login" })
   return (
     <Box component={"div"} id="login-component">
       <Header />
@@ -50,7 +50,7 @@ const Login = () => {
       </Box>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

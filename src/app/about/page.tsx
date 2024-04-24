@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import {
   Avatar,
   Box,
@@ -9,21 +9,21 @@ import {
   Grid,
   Rating,
   Typography,
-} from "@mui/material";
-import React from "react";
-import AddIcon from "@mui/icons-material/Add";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import boy from "@/assets/img/illustrate-2.webp";
-import logo from "@/assets/img/logo.webp";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+} from "@mui/material"
+import React from "react"
+import AddIcon from "@mui/icons-material/Add"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import boy from "@/assets/img/illustrate-2.webp"
+import logo from "@/assets/img/logo.webp"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution",
 //   description: "Welcome to Horace LMS",
 // });
 const AboutUs = () => {
-  const router = useRouter();
+  const router = useRouter()
   return (
     <Box>
       <Header />
@@ -232,10 +232,10 @@ const AboutUs = () => {
       </Container>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default AboutUs;
+export default AboutUs
 
 const aboutStyles = {
   cardContainer: {
@@ -291,7 +291,7 @@ const aboutStyles = {
     display: { xs: "none", sm: "block" },
     maxWidth: "500px",
   },
-};
+}
 
 const statistics = [
   {
@@ -312,7 +312,7 @@ const statistics = [
     color: "#FF5E78",
     icon: require("../../assets/img/icon-3.webp"),
   },
-];
+]
 
 const exampleCourses = [
   "Software Development",
@@ -323,7 +323,7 @@ const exampleCourses = [
   "Machine Learning & AI",
   "UI/UX",
   "Project Management",
-];
+]
 
 const whatOurStudentsSay = [
   {
@@ -350,4 +350,4 @@ const whatOurStudentsSay = [
     comment:
       "Horace Learning has completely transformed the way I teach and my students learn. The virtual classrooms, personalized learning paths, and advanced analytics have made my job so much easier and more fulfilling.",
   },
-];
+]

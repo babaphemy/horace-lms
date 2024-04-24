@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import {
   Box,
   CircularProgress,
@@ -8,22 +8,22 @@ import {
   Menu,
   MenuItem,
   Typography,
-} from "@mui/material";
-import React, { useState, useEffect, useContext } from "react";
-import { useQuery } from "react-query";
-import { debounce } from "lodash";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import Fuse from "fuse.js";
+} from "@mui/material"
+import React, { useState, useEffect, useContext } from "react"
+import { useQuery } from "react-query"
+import { debounce } from "lodash"
+import FilterListIcon from "@mui/icons-material/FilterList"
+import Fuse from "fuse.js"
 
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { fetchCourses } from "../api/rest";
-import { AppDpx } from "@/context/AppContext";
-import { COURSES_SET } from "@/context/actions";
-import { generateMetadata } from "../metadata";
-import Header from "@/components/Header";
-import { tCourse } from "@/types/types";
-import PopularCard from "@/components/home/PopularCard";
-import Footer from "@/components/Footer";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined"
+import { fetchCourses } from "../api/rest"
+import { AppDpx } from "@/context/AppContext"
+import { COURSES_SET } from "@/context/actions"
+import { generateMetadata } from "../metadata"
+import Header from "@/components/Header"
+import { tCourse } from "@/types/types"
+import PopularCard from "@/components/home/PopularCard"
+import Footer from "@/components/Footer"
 
 const filter = [
   { label: "All Courses", value: "all" },
@@ -34,33 +34,33 @@ const filter = [
   { label: "Digital Marketing", value: "digital marketing" },
   { label: "Business", value: "business" },
   { label: "Photography", value: "photography" },
-];
+]
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Courses",
 //   description:
 //     "Horace Online Courses. STEM focused online courses for all ages",
 // });
 const Courses = () => {
-  const [allCourses, setAllCourses] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [currentFilter, setCurrentFilter] = useState(filter[0]);
+  const [allCourses, setAllCourses] = useState([])
+  const [filteredData, setFilteredData] = useState([])
+  const [currentFilter, setCurrentFilter] = useState(filter[0])
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const dispatch = useContext(AppDpx);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const dispatch = useContext(AppDpx)
 
-  const dropDown = Boolean(anchorEl);
+  const dropDown = Boolean(anchorEl)
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const { data, isLoading } = useQuery("usersAdddoc", fetchCourses, {
     staleTime: 5000,
     cacheTime: 10,
-  });
+  })
 
   const handleSearch = debounce(async (query) => {
     const fuse: any = new Fuse(data, {
@@ -68,25 +68,25 @@ const Courses = () => {
       includeScore: false,
       includeMatches: true,
       minMatchCharLength: 3,
-    });
-    const result = fuse.search(query).map((item: any) => item.item);
+    })
+    const result = fuse.search(query).map((item: any) => item.item)
 
     if (result.length < 1) {
-      setFilteredData(allCourses);
-      return;
+      setFilteredData(allCourses)
+      return
     }
-    setFilteredData(result);
-  }, 700);
+    setFilteredData(result)
+  }, 700)
 
   useEffect(() => {
     if (data?.length > 0) {
-      setFilteredData(data);
-      setAllCourses(data);
-      dispatch({ type: COURSES_SET, data });
-      return;
+      setFilteredData(data)
+      setAllCourses(data)
+      dispatch({ type: COURSES_SET, data })
+      return
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data])
 
   return (
     <Box>
@@ -98,7 +98,7 @@ const Courses = () => {
             <input
               name="search"
               onChange={(e) => {
-                handleSearch(e.target.value);
+                handleSearch(e.target.value)
               }}
               placeholder="Search for courses"
               style={courseStyles.searchInput}
@@ -133,11 +133,11 @@ const Courses = () => {
                   <MenuItem
                     key={index}
                     onClick={() => {
-                      setCurrentFilter(item);
+                      setCurrentFilter(item)
                       if (item.value === "all") {
-                        setFilteredData(allCourses);
-                        handleClose();
-                        return;
+                        setFilteredData(allCourses)
+                        handleClose()
+                        return
                       }
                       setFilteredData(
                         allCourses.filter(
@@ -147,15 +147,15 @@ const Courses = () => {
                               .includes(item.value.toLowerCase()) ||
                             course?.courseName
                               ?.toLowerCase()
-                              .includes(item.value.toLowerCase()),
-                        ),
-                      );
-                      handleClose();
+                              .includes(item.value.toLowerCase())
+                        )
+                      )
+                      handleClose()
                     }}
                   >
                     {item.label}
                   </MenuItem>
-                );
+                )
               })}
             </Menu>
           </Box>
@@ -171,17 +171,17 @@ const Courses = () => {
                 <Grid item xs={12} sm={6} md={4}>
                   <PopularCard data={course} />
                 </Grid>
-              );
+              )
             })}
           </Grid>
         </Box>
       </Container>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default Courses;
+export default Courses
 
 const courseStyles = {
   title: { fontWeight: "bold", my: 4 },
@@ -236,4 +236,4 @@ const courseStyles = {
     fontWeight: "bold",
     mr: 2,
   },
-};
+}

@@ -1,28 +1,28 @@
-import { Avatar, Box, Divider, Rating, Typography } from "@mui/material";
-import Image from "next/image";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { useRouter } from "next/navigation";
-import { tCourseLte, tPost } from "@/types/types";
+import { Avatar, Box, Divider, Rating, Typography } from "@mui/material"
+import Image from "next/image"
+import PlayCircleIcon from "@mui/icons-material/PlayCircle"
+import FavoriteIcon from "@mui/icons-material/Favorite"
+import AddCircleIcon from "@mui/icons-material/AddCircle"
+import { useRouter } from "next/navigation"
+import { tCourseLte, tPost } from "@/types/types"
 interface courseProp {
-  data: tCourseLte;
+  data: tCourseLte
 }
 export const Tag = ({ label }: { label: string }) => {
   const reduceLabelLength = (label: string) => {
     if (label?.length > 10) {
-      return label.slice(0, 10) + "...";
+      return label.slice(0, 10) + "..."
     }
-    return label;
-  };
+    return label
+  }
 
   return (
     <Box sx={cardStyles.tag}>{reduceLabelLength(label) || "Programming"}</Box>
-  );
-};
+  )
+}
 
 const PopularCard = ({ data }: courseProp) => {
-  const router = useRouter();
+  const router = useRouter()
   const {
     id,
     courseName,
@@ -33,34 +33,34 @@ const PopularCard = ({ data }: courseProp) => {
     thumbnail,
     students,
     totalSteps,
-  } = data;
+  } = data
   const countStudent = () => {
     const likes = data.posts.reduce((acc: number, post: tPost) => {
-      acc += post.like;
-      return acc;
-    }, 0);
-    const st = students ?? 10;
-    return likes + totalSteps + st;
-  };
+      acc += post.like
+      return acc
+    }, 0)
+    const st = students ?? 10
+    return likes + totalSteps + st
+  }
 
   const handleCardClick = () => {
-    router.push(`/course/detailb?cid=${id}`);
-  };
+    router.push(`/course/detailb?cid=${id}`)
+  }
 
   const formattedBrief = (brief: string) => {
     if (brief?.length > 85) {
-      return brief.slice(0, 85) + "...";
+      return brief.slice(0, 85) + "..."
     }
-    return brief;
-  };
+    return brief
+  }
 
   const calculatedRating = () => {
-    let total = 0;
+    let total = 0
     posts?.forEach((post: any) => {
-      total += post.rating;
-    });
-    return total / posts?.length;
-  };
+      total += post.rating
+    })
+    return total / posts?.length
+  }
 
   return (
     <Box>
@@ -158,10 +158,10 @@ const PopularCard = ({ data }: courseProp) => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default PopularCard;
+export default PopularCard
 export const cardStyles = {
   container: {},
   card: {
@@ -200,4 +200,4 @@ export const cardStyles = {
   pointer: {
     cursor: "pointer",
   },
-};
+}

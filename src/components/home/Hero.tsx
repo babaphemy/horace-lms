@@ -1,13 +1,13 @@
-"use client";
-import { Box, Button, Typography } from "@mui/material";
-import Image from "next/image";
-import React, { useContext } from "react";
-import { useRouter } from "next/navigation";
-import { Appcontext } from "@/context/AppContext";
+"use client"
+import { Box, Button, Typography } from "@mui/material"
+import Image from "next/image"
+import React, { useContext } from "react"
+import { useRouter } from "next/navigation"
+import { Appcontext } from "@/context/AppContext"
 
 const Hero = () => {
-  const router = useRouter();
-  const { user } = useContext(Appcontext);
+  const router = useRouter()
+  const { user } = useContext(Appcontext)
   return (
     <Box sx={heroStyles.container}>
       <Box sx={heroStyles.left}>
@@ -37,10 +37,10 @@ const Hero = () => {
         <Image src={"/img/boy.webp"} alt="hero" width={400} height={400} />
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Hero;
+export default Hero
 
 export const heroStyles = {
   container: {
@@ -64,4 +64,4 @@ export const heroStyles = {
     display: { xs: "none", sm: "block" },
     maxWidth: "500px",
   },
-};
+}

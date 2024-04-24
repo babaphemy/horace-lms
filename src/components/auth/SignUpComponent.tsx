@@ -10,25 +10,25 @@ import {
   Select,
   TextField,
   Typography,
-} from "@mui/material";
-import React from "react";
+} from "@mui/material"
+import React from "react"
 
-import { yupResolver } from "@hookform/resolvers/yup";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "react-query";
-import * as yup from "yup";
-import thumb from "@/assets/img/thumb.webp";
-import { AppDpx } from "@/context/AppContext";
-import { registerUser, verifyEmail } from "@/app/api/rest";
-import { MODAL_SET, USER_ADD } from "@/context/Action";
-import { notifySuccess } from "@/utils/notification";
-import { loginStyles } from "@/styles/loginStyles";
-import { Allcountries } from "@/utils/countries";
+import { yupResolver } from "@hookform/resolvers/yup"
+import MailOutlineIcon from "@mui/icons-material/MailOutline"
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline"
+import VpnKeyIcon from "@mui/icons-material/VpnKey"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { Controller, useForm } from "react-hook-form"
+import { useMutation } from "react-query"
+import * as yup from "yup"
+import thumb from "@/assets/img/thumb.webp"
+import { AppDpx } from "@/context/AppContext"
+import { registerUser, verifyEmail } from "@/app/api/rest"
+import { MODAL_SET, USER_ADD } from "@/context/Action"
+import { notifySuccess } from "@/utils/notification"
+import { loginStyles } from "@/styles/loginStyles"
+import { Allcountries } from "@/utils/countries"
 
 const schema = yup.object().shape({
   firstname: yup.string().required("First name is required"),
@@ -45,7 +45,7 @@ const schema = yup.object().shape({
   passwordConfirm: yup
     .string()
     .oneOf([yup.ref("password"), ""], "Passwords must match"),
-});
+})
 
 const defaultValues = {
   firstname: "",
@@ -55,21 +55,21 @@ const defaultValues = {
   passwordConfirm: "",
   country: "AT",
   type: "STUDENT",
-};
+}
 
 type Props = {
-  modal?: boolean;
-};
+  modal?: boolean
+}
 
 const SignUpComponent = (props: Props) => {
-  const { modal = false } = props;
-  const router = useRouter();
-  const dispatch = React.useContext(AppDpx);
-  const [checked, setChecked] = React.useState(false);
+  const { modal = false } = props
+  const router = useRouter()
+  const dispatch = React.useContext(AppDpx)
+  const [checked, setChecked] = React.useState(false)
   const [al, setAlert] = React.useState<{
-    show: boolean;
-    msg: string;
-  } | null>(null);
+    show: boolean
+    msg: string
+  } | null>(null)
   const {
     control,
     handleSubmit,
@@ -78,53 +78,53 @@ const SignUpComponent = (props: Props) => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
-  });
+  })
 
   const { mutate } = useMutation(registerUser, {
     onSuccess: (data) => {
-      localStorage.setItem("horaceUser", JSON.stringify(data));
-      dispatch({ type: USER_ADD, payload: data });
-      notifySuccess("Registration succesful! check your email for more info.");
+      localStorage.setItem("horaceUser", JSON.stringify(data))
+      dispatch({ type: USER_ADD, payload: data })
+      notifySuccess("Registration succesful! check your email for more info.")
       if (modal) {
-        dispatch({ type: MODAL_SET, data: { open: false, type: "signup" } });
+        dispatch({ type: MODAL_SET, data: { open: false, type: "signup" } })
       } else {
-        router.push("/");
+        router.push("/")
       }
-      reset(defaultValues);
+      reset(defaultValues)
     },
     onError: () => {
       setAlert({
         show: true,
         msg: "Registration Failed, Please try again.",
-      });
+      })
     },
-  });
+  })
 
   const onSubmit = async (data: any) => {
-    const checkEmail: string = await verifyEmail(data.email);
+    const checkEmail: string = await verifyEmail(data.email)
 
     if (checkEmail === "true") {
       setAlert({
         show: true,
         msg: "Email already exists, Please try again or Login.",
-      });
-      return;
+      })
+      return
     }
 
-    mutate(data);
-  };
+    mutate(data)
+  }
 
   const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
+    setChecked(event.target.checked)
+  }
 
   const handleChangeTab = () => {
     if (modal) {
-      dispatch({ type: MODAL_SET, data: { open: true, type: "login" } });
-      return;
+      dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
+      return
     }
-    router.push("/login");
-  };
+    router.push("/login")
+  }
   return (
     <Box sx={loginStyles.right}>
       <Typography variant="h4" sx={[loginStyles.center, loginStyles.title]}>
@@ -319,11 +319,11 @@ const SignUpComponent = (props: Props) => {
               >
                 {Allcountries.sort((a, b) => {
                   if (a.code === "NG" || a.code === "US") {
-                    return -1;
+                    return -1
                   } else if (b.code === "NG" || b.code === "US") {
-                    return 1;
+                    return 1
                   }
-                  return a.name.localeCompare(b.name);
+                  return a.name.localeCompare(b.name)
                 }).map((a) => (
                   <MenuItem key={a.code} value={a.code}>
                     {a.name}
@@ -380,7 +380,7 @@ const SignUpComponent = (props: Props) => {
         Already have an account? Login
       </Typography>
     </Box>
-  );
-};
+  )
+}
 
-export default SignUpComponent;
+export default SignUpComponent

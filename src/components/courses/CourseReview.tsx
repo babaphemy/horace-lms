@@ -9,25 +9,25 @@ import {
   Rating,
   TextField,
   Typography,
-} from '@mui/material';
-import React from 'react';
-import { MODAL_SET } from '../../context/Action';
-import { AppDpx } from '../../context/AppContext';
-import ModalContainer from '../ModalContainer';
-import { useMutation, useQueryClient } from 'react-query';
-import { addReview } from '../../api/rest';
-import { fromNow } from '../../utils/fromNow';
+} from "@mui/material"
+import React from "react"
+import { MODAL_SET } from "../../context/Action"
+import { AppDpx } from "../../context/AppContext"
+import ModalContainer from "../ModalContainer"
+import { useMutation, useQueryClient } from "react-query"
+import { addReview } from "../../api/rest"
+import { fromNow } from "../../utils/fromNow"
 
 type Props = {
-  posts?: any[];
-  ratings?: number | null;
-};
+  posts?: any[]
+  ratings?: number | null
+}
 
 function LinearProgressWithLabel(
   props: LinearProgressProps & { value: number; label: string }
 ) {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box
         sx={{
           mr: 1,
@@ -37,7 +37,7 @@ function LinearProgressWithLabel(
         <Typography
           variant="body1"
           sx={{
-            fontSize: { xs: '0.75rem', md: '1rem' },
+            fontSize: { xs: "0.75rem", md: "1rem" },
           }}
           color="text.secondary"
         >
@@ -49,12 +49,12 @@ function LinearProgressWithLabel(
           variant="determinate"
           {...props}
           sx={{
-            borderRadius: '10px',
-            backgroundColor: '#F9AD5655',
+            borderRadius: "10px",
+            backgroundColor: "#F9AD5655",
 
-            '& .MuiLinearProgress-bar': {
-              borderRadius: '10px',
-              backgroundColor: '#F9AD56',
+            "& .MuiLinearProgress-bar": {
+              borderRadius: "10px",
+              backgroundColor: "#F9AD56",
             },
           }}
         />
@@ -65,92 +65,92 @@ function LinearProgressWithLabel(
         )}%`}</Typography>
       </Box>
     </Box>
-  );
+  )
 }
 
 const CourseReview = ({ posts, ratings }: Props) => {
-  const [viewMore, setViewMore] = React.useState(false);
-  const [conditionalReview, setConditionalReview] = React.useState<any[]>([]);
-  const dispatch = React.useContext(AppDpx);
+  const [viewMore, setViewMore] = React.useState(false)
+  const [conditionalReview, setConditionalReview] = React.useState<any[]>([])
+  const dispatch = React.useContext(AppDpx)
 
   const reviewOrder = posts
     ?.sort((a, b) => {
-      return b.rating - a.rating;
+      return b.rating - a.rating
     })
     .sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
 
   React.useEffect(() => {
     if (reviewOrder && reviewOrder.length > 3 && !viewMore) {
-      setConditionalReview(reviewOrder.slice(0, 3));
+      setConditionalReview(reviewOrder.slice(0, 3))
     } else {
-      setConditionalReview(reviewOrder || []);
+      setConditionalReview(reviewOrder || [])
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewMore, posts]);
+  }, [viewMore, posts])
 
   const handleOpenReviewModal = () => {
-    dispatch({ type: MODAL_SET, data: { open: true, type: 'review' } });
-  };
+    dispatch({ type: MODAL_SET, data: { open: true, type: "review" } })
+  }
 
   return (
     <div className="flex flex-col">
       <Typography
         variant="h4"
         sx={{
-          fontSize: { xs: '1.5rem', md: '2rem' },
+          fontSize: { xs: "1.5rem", md: "2rem" },
         }}
       >
         Reviews & Ratings
       </Typography>
       <Typography
         variant="body1"
-        sx={{ fontSize: { xs: '1rem', md: '1.2rem' } }}
+        sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
       >
         Our Students says about this course
       </Typography>
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
         }}
       >
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: "center",
             mt: 2,
             p: 2,
             flex: 1,
-            maxWidth: '700px',
-            borderRadius: '30px',
-            border: '1px solid #000000',
+            maxWidth: "700px",
+            borderRadius: "30px",
+            border: "1px solid #000000",
 
-            '@media (max-width: 1000px)': {
-              width: '100%',
+            "@media (max-width: 1000px)": {
+              width: "100%",
             },
           }}
         >
           <Box
             sx={{
               // backgroundColor: '#F9AD5611',
-              color: 'black',
+              color: "black",
               p: 3,
               mr: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              minHeight: '200px',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              minHeight: "200px",
 
-              '@media (max-width: 1000px)': {
+              "@media (max-width: 1000px)": {
                 mr: 0,
                 mb: 1,
-                width: '100%',
+                width: "100%",
               },
             }}
           >
@@ -171,24 +171,24 @@ const CourseReview = ({ posts, ratings }: Props) => {
             orientation="vertical"
             flexItem
             sx={{
-              '@media (max-width: 1000px)': {
-                display: 'none',
+              "@media (max-width: 1000px)": {
+                display: "none",
               },
             }}
           />
           <Box
             sx={{
               // backgroundColor: '#F9AD5611',
-              color: 'black',
+              color: "black",
               p: 3,
               flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              minHeight: '200px',
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              minHeight: "200px",
 
-              '@media (max-width: 1000px)': {
-                width: '100%',
+              "@media (max-width: 1000px)": {
+                width: "100%",
               },
             }}
           >
@@ -252,7 +252,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
         {conditionalReview?.map((post, index, array) => {
           return (
             <Box key={index}>
-              <Box display={'flex'} my={1}>
+              <Box display={"flex"} my={1}>
                 <Avatar
                   alt="instructor"
                   src="https://material-ui.com/static/images/avatar/1.webp"
@@ -266,7 +266,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
                     <Typography variant="body2" color="text.secondary" ml={1}>
                       {post.createdOn
                         ? fromNow(new Date(post.createdOn))
-                        : '1 day ago'}
+                        : "1 day ago"}
                     </Typography>
                   </Box>
                   <Rating
@@ -285,72 +285,72 @@ const CourseReview = ({ posts, ratings }: Props) => {
                 <Divider sx={{ my: 2 }} />
               )}
             </Box>
-          );
+          )
         })}
       </Box>
       {reviewOrder?.length! > 3 && (
         <Button
           sx={{
             ...styles.button,
-            alignSelf: 'center',
-            justifySelf: 'center',
+            alignSelf: "center",
+            justifySelf: "center",
           }}
           onClick={() => setViewMore(!viewMore)}
         >
-          {viewMore ? 'View Less' : 'View More'}
+          {viewMore ? "View Less" : "View More"}
         </Button>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CourseReview;
+export default CourseReview
 
 type ReviewModalProps = {
-  userId: string;
-  courseId: string;
-};
+  userId: string
+  courseId: string
+}
 
 export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
-  const queryClient = useQueryClient();
-  const [rating, setRating] = React.useState(1);
-  const [comment, setComment] = React.useState('');
-  const [error, setError] = React.useState('');
+  const queryClient = useQueryClient()
+  const [rating, setRating] = React.useState(1)
+  const [comment, setComment] = React.useState("")
+  const [error, setError] = React.useState("")
 
-  const dispatch = React.useContext(AppDpx);
+  const dispatch = React.useContext(AppDpx)
 
   const handleRatingChange = (event: any, newValue: any) => {
-    setRating(newValue);
-  };
+    setRating(newValue)
+  }
 
   const { mutate, isLoading: loading } = useMutation(addReview, {
     onSuccess: () => {
-      queryClient.invalidateQueries('acourse');
-      dispatch({ type: MODAL_SET, data: { open: false, type: 'review' } });
-      setComment('');
-      setRating(1);
+      queryClient.invalidateQueries("acourse")
+      dispatch({ type: MODAL_SET, data: { open: false, type: "review" } })
+      setComment("")
+      setRating(1)
     },
     onError: (error: any) => {
-      console.log(error);
+      console.log(error)
     },
-  });
+  })
 
   const handleSubmit = () => {
-    setError('');
+    setError("")
     if (!rating) {
-      setError('Please select a rating');
-      return;
+      setError("Please select a rating")
+      return
     }
     if (!comment) {
-      setError('Please add a comment');
-      return;
+      setError("Please add a comment")
+      return
     }
 
     const user = {
       user: {
         id: userId,
       },
-    };
+    }
 
     const payload = {
       ...(userId && user),
@@ -358,18 +358,18 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
         id: courseId,
       },
       rating: rating,
-      type: 'REVIEW',
+      type: "REVIEW",
       message: comment,
-    };
+    }
 
-    mutate(payload);
-  };
+    mutate(payload)
+  }
 
   return (
     <ModalContainer type="review">
       <Box
         sx={{
-          minWidth: '500px',
+          minWidth: "500px",
         }}
       >
         <Typography variant="h4">Add Review & Rating</Typography>
@@ -380,7 +380,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
             sx={{
               my: 2,
             }}
-            onClose={() => setError('')}
+            onClose={() => setError("")}
           >
             {error}
           </Alert>
@@ -403,7 +403,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
             variant="outlined"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            sx={{ width: '100%' }}
+            sx={{ width: "100%" }}
           />
         </Box>
         <Button sx={styles.button} disabled={loading} onClick={handleSubmit}>
@@ -411,14 +411,14 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
         </Button>
       </Box>
     </ModalContainer>
-  );
-};
+  )
+}
 
 const styles = {
   button: {
-    border: '1px solid',
-    borderColor: 'primary',
+    border: "1px solid",
+    borderColor: "primary",
     px: 4,
     my: 2,
   },
-};
+}

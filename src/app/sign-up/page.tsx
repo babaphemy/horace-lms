@@ -1,14 +1,14 @@
-"use client";
-import { Box, Container, Typography } from "@mui/material";
+"use client"
+import { Box, Container, Typography } from "@mui/material"
 
-import Image from "next/image";
-import useTag from "@/hooks/useTag";
-import Header from "@/components/Header";
-import woman from "@/assets/img/woman.webp";
-import subtract from "@/assets/img/subtract.webp";
-import { loginStyles } from "@/styles/loginStyles";
-import SignUpComponent from "@/components/auth/SignUpComponent";
-import Footer from "@/components/Footer";
+import Image from "next/image"
+import useTag from "@/hooks/useTag"
+import Header from "@/components/Header"
+import woman from "@/assets/img/woman.webp"
+import subtract from "@/assets/img/subtract.webp"
+import { loginStyles } from "@/styles/loginStyles"
+import SignUpComponent from "@/components/auth/SignUpComponent"
+import Footer from "@/components/Footer"
 
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Member Signup",
@@ -17,7 +17,7 @@ import Footer from "@/components/Footer";
 // });
 
 const SignUp = () => {
-  useTag({ pageTitle: "signup", pagePath: "/sign-up" });
+  useTag({ pageTitle: "signup", pagePath: "/sign-up" })
 
   return (
     <Box>
@@ -54,7 +54,7 @@ const SignUp = () => {
       </Box>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default SignUp;
+export default SignUp
