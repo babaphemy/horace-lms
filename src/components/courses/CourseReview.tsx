@@ -15,8 +15,8 @@ import { MODAL_SET } from "../../context/Action"
 import { AppDpx } from "../../context/AppContext"
 import ModalContainer from "../ModalContainer"
 import { useMutation, useQueryClient } from "react-query"
-import { addReview } from "../../api/rest"
 import { fromNow } from "../../utils/fromNow"
+import { addReview } from "@/app/api/rest"
 
 type Props = {
   posts?: any[]
