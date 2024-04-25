@@ -50,9 +50,11 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
         <Image
           src={`/img/${thumbnail || "1.webp"}`}
           alt="a man smiling"
-          width={"170rem"}
-          height={"200rem"}
-          style={{ borderRadius: "15px 0px 0px 15px" }}
+          style={{
+            borderRadius: "15px 0px 0px 15px",
+            width: "170rem",
+            height: "200rem",
+          }}
         />
         <Box sx={similarStyles.right}>
           <Box sx={similarStyles.between}>
