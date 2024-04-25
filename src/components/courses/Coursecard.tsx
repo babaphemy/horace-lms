@@ -1,12 +1,12 @@
-import { Button, Typography } from "@mui/material";
-import Link from "next/link";
-import React, { ReactElement } from "react";
-import { tCourse } from "../../types/types";
+import { Button, Typography } from "@mui/material"
+import Link from "next/link"
+import React, { ReactElement } from "react"
+import { tCourse } from "../../types/types"
 interface Props {
-  course: tCourse;
+  course: tCourse
 }
 const Coursecard: React.FC<Props> = (props: Props): ReactElement => {
-  const { course } = props;
+  const { course } = props
   return (
     <div>
       <Link href={`/course/${course.id}`} shallow>
@@ -15,7 +15,7 @@ const Coursecard: React.FC<Props> = (props: Props): ReactElement => {
       <Button>Join</Button>
       <Button>View</Button>
     </div>
-  );
-};
+  )
+}
 
-export default Coursecard;
+export default Coursecard

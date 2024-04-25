@@ -1,7 +1,7 @@
 interface SchoolLogo {
-  imageUrl: string;
-  websiteUrl?: string; // Optional if you want to make the logos clickable
-  altText: string;
+  imageUrl: string
+  websiteUrl?: string // Optional if you want to make the logos clickable
+  altText: string
 }
 
 const logos: SchoolLogo[] = [
@@ -25,7 +25,7 @@ const logos: SchoolLogo[] = [
     websiteUrl: "/login",
     altText: "Forte Kids Texas",
   },
-];
+]
 
 const SchoolLogos = () => {
   return (
@@ -52,6 +52,6 @@ const SchoolLogos = () => {
         </div>
       </div>
     </div>
-  );
-};
-export default SchoolLogos;
+  )
+}
+export default SchoolLogos

@@ -1,34 +1,34 @@
-"use client";
-import React, { createContext, ReactElement, useReducer } from "react";
-import { tCourse, tCourseLte, tLecture } from "@/types/types";
-import { Action, MODAL_SET, USER_ADD, USER_RESET } from "./Action";
-import { COURSE_SET, COURSES_SET, SET_PLAY_ID } from "./actions";
+"use client"
+import React, { createContext, ReactElement, useReducer } from "react"
+import { tCourse, tCourseLte, tLecture } from "@/types/types"
+import { Action, MODAL_SET, USER_ADD, USER_RESET } from "./Action"
+import { COURSE_SET, COURSES_SET, SET_PLAY_ID } from "./actions"
 
 type State = {
-  user: any;
-  course: tCourse | null;
-  courses: tCourseLte[] | [];
-  playId: tLecture | null;
+  user: any
+  course: tCourse | null
+  courses: tCourseLte[] | []
+  playId: tLecture | null
   modal: {
-    open: boolean;
-    type: "login" | "signup" | "payment" | "review";
-  };
-};
+    open: boolean
+    type: "login" | "signup" | "payment" | "review"
+  }
+}
 
 type Props = {
-  children: ReactElement;
-};
+  children: ReactElement
+}
 
 const getuser = () => {
   if (typeof window !== "undefined") {
-    const user = localStorage.getItem("horaceUser");
+    const user = localStorage.getItem("horaceUser")
     if (user) {
-      return JSON.parse(user);
+      return JSON.parse(user)
     }
-    return null;
+    return null
   }
-  return;
-};
+  return
+}
 
 const initialState: State = {
   user: getuser(),
@@ -39,37 +39,37 @@ const initialState: State = {
     open: false,
     type: "login",
   },
-};
+}
 
-const Appcontext = createContext(initialState);
-const AppDpx = createContext<React.Dispatch<Action>>(() => {});
+const Appcontext = createContext(initialState)
+const AppDpx = createContext<React.Dispatch<Action>>(() => {})
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case USER_ADD:
       return {
         ...state,
         user: action.payload,
-      };
+      }
     case USER_RESET:
       return {
         ...state,
         user: null,
-      };
+      }
     case COURSE_SET:
       return {
         ...state,
         course: action.data,
-      };
+      }
     case COURSES_SET:
       return {
         ...state,
         courses: action.data,
-      };
+      }
     case SET_PLAY_ID:
       return {
         ...state,
         playId: action.data,
-      };
+      }
     case MODAL_SET:
       return {
         ...state,
@@ -77,20 +77,20 @@ const reducer = (state: State, action: Action) => {
           open: action.data.open,
           type: action.data.type,
         },
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
 const AppProvider = ({ children }: Props) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   return (
     <Appcontext.Provider value={state}>
       <AppDpx.Provider value={dispatch}>{children}</AppDpx.Provider>
     </Appcontext.Provider>
-  );
-};
+  )
+}
 
-export { Appcontext, AppDpx, AppProvider };
+export { Appcontext, AppDpx, AppProvider }

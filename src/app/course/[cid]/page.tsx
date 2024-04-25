@@ -1,11 +1,26 @@
-"use client";
+"use client"
+import { addUserCourse, fetchCourse, isCourseReg } from "@/app/api/rest"
+import Header from "@/components/Header"
+import SimilarCard from "@/components/SimilarCard"
+import ModalLogin from "@/components/auth/ModalLogin"
+import SignUpLogin from "@/components/auth/ModalSignUp"
+import CourseObjectives from "@/components/courses/CourseObjectives"
+import { ReviewModal } from "@/components/courses/CourseReview"
+import Curriculumb from "@/components/courses/Curriculumb"
+import CourseHeader from "@/components/layout/CourseHeader"
+import FooterLte from "@/components/layout/FooterLte"
+import PaymentModal from "@/components/payment/PaymentModal"
+import { MODAL_SET } from "@/context/Action"
+import { AppDpx, Appcontext } from "@/context/AppContext"
+import { COURSE_SET, SET_PLAY_ID } from "@/context/actions"
+import { tCourseLte } from "@/types/types"
 import {
   Code,
   Download,
   NoteAddRounded,
   PlayCircle,
   QuizRounded,
-} from "@mui/icons-material";
+} from "@mui/icons-material"
 import {
   Avatar,
   Box,
@@ -20,30 +35,12 @@ import {
   Paper,
   Rating,
   Typography,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
-import React, { FC, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import ReactPlayer from "react-player";
-import Fuse from "fuse.js";
-import Head from "next/head";
-import { generateMetadata } from "@/app/metadata";
-import { AppDpx, Appcontext } from "@/context/AppContext";
-import { tCourseLte } from "@/types/types";
-import { addUserCourse, fetchCourse, isCourseReg } from "@/app/api/rest";
-import { useParams } from "next/navigation";
-import { COURSE_SET, SET_PLAY_ID } from "@/context/actions";
-import { MODAL_SET } from "@/context/Action";
-import Header from "@/components/Header";
-import CourseHeader from "@/components/layout/CourseHeader";
-import CourseObjectives from "@/components/courses/CourseObjectives";
-import Curriculumb from "@/components/courses/Curriculumb";
-import SimilarCard from "@/components/SimilarCard";
-import ModalLogin from "@/components/auth/ModalLogin";
-import SignUpLogin from "@/components/auth/ModalSignUp";
-import PaymentModal from "@/components/payment/PaymentModal";
-import { ReviewModal } from "@/components/courses/CourseReview";
-import FooterLte from "@/components/layout/FooterLte";
+} from "@mui/material"
+import Fuse from "fuse.js"
+import { useRouter } from "next/navigation"
+import React, { FC, useEffect } from "react"
+import ReactPlayer from "react-player"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Courses",
 //   description:
@@ -52,60 +49,60 @@ import FooterLte from "@/components/layout/FooterLte";
 
 interface IDetailbProps {
   params: {
-    cid: string;
-  };
+    cid: string
+  }
 }
 const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
-  const { user, courses } = React.useContext(Appcontext);
-  const dispatch = React.useContext(AppDpx);
-  const [regCourse, setRegCourse] = React.useState<boolean>(false);
-  const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([]);
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const { user, courses } = React.useContext(Appcontext)
+  const dispatch = React.useContext(AppDpx)
+  const [regCourse, setRegCourse] = React.useState<boolean>(false)
+  const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([])
+  const queryClient = useQueryClient()
+  const router = useRouter()
 
   const { data } = useQuery(["acourse", cid], () => fetchCourse(cid), {
     staleTime: 5000,
     cacheTime: 10,
     enabled: !!cid,
-  });
+  })
 
   useEffect(() => {
-    queryClient.invalidateQueries("acourse");
+    queryClient.invalidateQueries("acourse")
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const fuse: any = new Fuse(courses, {
       keys: ["category", "courseName", "brief"],
       includeScore: false,
       includeMatches: true,
       minMatchCharLength: 3,
-    });
+    })
 
     if (courseName || category) {
       const result = fuse
         .search(`${courseName} | ${category}`)
-        .map((item: any) => item.item);
+        .map((item: any) => item.item)
       if (result.length > 1) {
-        setSimilarCourses(result.slice(0, 2));
+        setSimilarCourses(result.slice(0, 2))
       } else {
-        setSimilarCourses(courses.slice(0, 2));
+        setSimilarCourses(courses.slice(0, 2))
       }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cid, data]);
+  }, [cid, data])
 
   const { mutate } = useMutation(isCourseReg, {
     onSuccess: (data) => {
       if (cid) {
-        setRegCourse(data.includes(cid));
+        setRegCourse(data.includes(cid))
       }
     },
     onError: (error) => {
-      setRegCourse(false);
-      throw error;
+      setRegCourse(false)
+      throw error
     },
-  });
+  })
 
-  const { course, posts } = data || {};
+  const { course, posts } = data || {}
   const {
     courseName,
     target,
@@ -115,40 +112,40 @@ const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
     updatedOn,
     price,
     assetCount,
-  } = course || {};
+  } = course || {}
 
-  const courseId = course?.id;
+  const courseId = course?.id
 
   const calculatedRating = () => {
-    let total = 0;
+    let total = 0
     posts?.forEach((post: any) => {
-      total += post.rating;
-    });
-    return total / posts?.length;
-  };
+      total += post.rating
+    })
+    return total / posts?.length
+  }
   const author = `${data?.course?.author?.firstname || "Horace"} ${
     data?.author?.lastname || "Instructor"
-  }`;
-  const preview = curriculum?.section[0]?.lecture[0]?.video;
+  }`
+  const preview = curriculum?.section[0]?.lecture[0]?.video
   const { lessonCount, downloadCount, quizCount, labCount, noteCount } =
-    assetCount || {};
+    assetCount || {}
 
   React.useEffect(() => {
     if (user?.id && cid) {
-      mutate(user?.id);
+      mutate(user?.id)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, regCourse]);
+  }, [user, regCourse])
 
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
-      addCourseToContext();
+      addCourseToContext()
     },
     onError: (error) => {
-      throw error;
+      throw error
     },
-  });
+  })
 
   const addCourseToContext = () => {
     dispatch({
@@ -157,22 +154,22 @@ const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
         ...data,
         id: courseId,
       },
-    });
+    })
     dispatch({
       type: SET_PLAY_ID,
       data: {
         ...curriculum.section[0].lecture[0],
       },
-    });
-    router.push("/course/classroom");
-    return;
-  };
+    })
+    router.push("/course/classroom")
+    return
+  }
 
   const handleJoinClass = () => {
     const payload = {
       id: courseId,
       user: user?.id,
-    };
+    }
 
     if (user?.id) {
       regCourse
@@ -182,13 +179,13 @@ const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
           : dispatch({
               type: MODAL_SET,
               data: { open: true, type: "payment" },
-            });
+            })
 
       // addCourseToUser.mutate(payload);
     } else {
-      dispatch({ type: MODAL_SET, data: { open: true, type: "login" } });
+      dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
     }
-  };
+  }
 
   const headerProps = {
     id: courseId,
@@ -202,7 +199,7 @@ const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
     preview,
     updatedOn,
     posts,
-  };
+  }
   const objProps = {
     target,
     courseName,
@@ -214,7 +211,7 @@ const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
     ratings: calculatedRating(),
     handleJoinClass,
     regCourse,
-  };
+  }
 
   return (
     <>
@@ -404,7 +401,7 @@ const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
       <ReviewModal userId={user?.id} courseId={courseId} />
       <FooterLte />
     </>
-  );
-};
+  )
+}
 
-export default Detailb;
+export default Detailb

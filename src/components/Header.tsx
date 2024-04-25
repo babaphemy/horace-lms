@@ -1,5 +1,5 @@
-"use client";
-import React, { useContext } from "react";
+"use client"
+import React, { useContext } from "react"
 import {
   Box,
   Container,
@@ -15,20 +15,20 @@ import {
   Menu,
   MenuProps,
   styled,
-} from "@mui/material";
-import Image from "next/image";
-import NextLink from "next/link";
-import LanguageIcon from "@mui/icons-material/Language";
-import MenuIcon from "@mui/icons-material/Menu";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import Person2Icon from "@mui/icons-material/Person2";
-import BookIcon from "@mui/icons-material/Book";
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import { AppDpx, Appcontext } from "@/context/AppContext";
-import { USER_RESET } from "@/context/Action";
-import TopBg from "./TopBg";
-import { useRouter } from "next/navigation";
+} from "@mui/material"
+import Image from "next/image"
+import NextLink from "next/link"
+import LanguageIcon from "@mui/icons-material/Language"
+import MenuIcon from "@mui/icons-material/Menu"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import DashboardIcon from "@mui/icons-material/Dashboard"
+import Person2Icon from "@mui/icons-material/Person2"
+import BookIcon from "@mui/icons-material/Book"
+import ExitToAppIcon from "@mui/icons-material/ExitToApp"
+import { AppDpx, Appcontext } from "@/context/AppContext"
+import { USER_RESET } from "@/context/Action"
+import TopBg from "./TopBg"
+import { useRouter } from "next/navigation"
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -66,42 +66,42 @@ const StyledMenu = styled((props: MenuProps) => (
       "&:active": {
         backgroundColor: alpha(
           theme.palette.primary.main,
-          theme.palette.action.selectedOpacity,
+          theme.palette.action.selectedOpacity
         ),
       },
     },
   },
-}));
+}))
 
 const Header = () => {
-  const router = useRouter();
-  const [open, setOpen] = React.useState(false);
-  const [loggedIn, setLoggedIn] = React.useState(false);
-  const { user } = useContext(Appcontext);
-  const dispatch = useContext(AppDpx);
+  const router = useRouter()
+  const [open, setOpen] = React.useState(false)
+  const [loggedIn, setLoggedIn] = React.useState(false)
+  const { user } = useContext(Appcontext)
+  const dispatch = useContext(AppDpx)
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const openMenu = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const openMenu = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
   const handleLogout = () => {
-    handleClose();
-    dispatch({ type: USER_RESET, payload: null });
-    router.push("/login");
-    localStorage.removeItem("horaceUser");
-  };
+    handleClose()
+    dispatch({ type: USER_RESET, payload: null })
+    router.push("/login")
+    localStorage.removeItem("horaceUser")
+  }
 
   React.useEffect(() => {
     if (user?.id) {
-      setLoggedIn(true);
+      setLoggedIn(true)
     } else {
-      setLoggedIn(false);
+      setLoggedIn(false)
     }
-  }, [user]);
+  }, [user])
 
   return (
     <>
@@ -278,7 +278,7 @@ const Header = () => {
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
-                        handleLogout();
+                        handleLogout()
                       }}
                       disableRipple
                     >
@@ -293,10 +293,10 @@ const Header = () => {
         </Container>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
 const headerStyles = {
   container: {
     marginTop: 2,
@@ -440,4 +440,4 @@ const headerStyles = {
     px: 1,
     textTransform: "capitalize",
   },
-};
+}

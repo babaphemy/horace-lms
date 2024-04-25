@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import { Appcontext, AppDpx } from "@/context/AppContext";
-import { tCurriculum, tNextPrev } from "@/types/types";
-import { ThumbDownAltOutlined, ThumbUpAltOutlined } from "@mui/icons-material";
+import { Appcontext, AppDpx } from "@/context/AppContext"
+import { tCurriculum, tNextPrev } from "@/types/types"
+import { ThumbDownAltOutlined, ThumbUpAltOutlined } from "@mui/icons-material"
 import {
   Box,
   Button,
@@ -13,61 +13,61 @@ import {
   Skeleton,
   Stack,
   Typography,
-} from "@mui/material";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useContext, useEffect } from "react";
-import ReactPlayer from "react-player";
-import Curriculumb from "../courses/Curriculumb";
-import ClassLayout from "../layout/ClassLayout";
+} from "@mui/material"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import React, { useContext, useEffect } from "react"
+import ReactPlayer from "react-player"
+import Curriculumb from "../courses/Curriculumb"
+import ClassLayout from "../layout/ClassLayout"
 
 interface Props {
-  handleNext: (id: number | undefined) => void;
-  handlePrev: () => void;
-  handleOpenExercise: () => void;
+  handleNext: (id: number | undefined) => void
+  handlePrev: () => void
+  handleOpenExercise: () => void
 }
 
 export function countLectureItems(curriculum: tCurriculum): number {
-  let lectureCount = 0;
+  let lectureCount = 0
 
   for (const section of curriculum.section) {
-    lectureCount += section.lecture.length;
+    lectureCount += section.lecture.length
   }
 
-  return lectureCount;
+  return lectureCount
 }
 const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
-  const { course, playId, user }: any = useContext(Appcontext);
-  const router = useRouter();
-  const dispatch = useContext(AppDpx);
+  const { course, playId, user }: any = useContext(Appcontext)
+  const router = useRouter()
+  const dispatch = useContext(AppDpx)
 
   const { curriculum, brief, courseName, category, posts, author } =
-    course || {};
-  const playing = playId || curriculum?.section[0]?.lecture[0];
+    course || {}
+  const playing = playId || curriculum?.section[0]?.lecture[0]
 
   const lessonCount =
-    curriculum?.section?.length > 0 ? countLectureItems(curriculum) : 0;
+    curriculum?.section?.length > 0 ? countLectureItems(curriculum) : 0
 
   useEffect(() => {
     if (!course) {
-      router.push("/courses");
+      router.push("/courses")
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   React.useEffect(() => {
     if (playId?.video === "" && playId?.id && playId.id > 1)
-      handleNext(playId?.id - 1);
+      handleNext(playId?.id - 1)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [course, playId]);
+  }, [course, playId])
 
   const calculatedRating = () => {
-    let total = 0;
+    let total = 0
     posts?.forEach((post: any) => {
-      total += post.rating;
-    });
-    return total / posts?.length;
-  };
+      total += post.rating
+    })
+    return total / posts?.length
+  }
 
   return (
     <ClassLayout>
@@ -251,7 +251,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
                       />
                     </IconButton>
                   </Box>
-                );
+                )
               })}
             </Box>
           </Box>
@@ -272,8 +272,8 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
         </div>
       </Paper>
     </ClassLayout>
-  );
-};
+  )
+}
 
 const NextPrev = ({
   handlePrev,
@@ -293,10 +293,10 @@ const NextPrev = ({
         Next
       </Button>
     </Box>
-  );
-};
+  )
+}
 
-export default ClassroomB;
+export default ClassroomB
 const playerStyles = {
   boxWrapper: {
     display: "flex",
@@ -312,4 +312,4 @@ const playerStyles = {
     height: "100%",
     width: "100%",
   },
-};
+}

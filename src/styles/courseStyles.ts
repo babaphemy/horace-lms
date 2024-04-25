@@ -5,5 +5,5 @@ const detailStyles = {
     backgroundColor: "black",
     color: "white",
   },
-};
-export { detailStyles };
+}
+export { detailStyles }

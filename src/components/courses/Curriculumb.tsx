@@ -1,23 +1,23 @@
-import React, { ReactElement, useContext } from "react";
+import React, { ReactElement, useContext } from "react"
 
-import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Paper from "@mui/material/Paper";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import Home from "@mui/icons-material/Home";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import QuizIcon from "@mui/icons-material/Quiz";
-import NoteIcon from "@mui/icons-material/Note";
-import DataObjectIcon from "@mui/icons-material/DataObject";
-import SlideshowIcon from "@mui/icons-material/Slideshow";
-import { SET_PLAY_ID } from "../../context/actions";
-import { tCurriculum, tLecture } from "../../types/types";
-import { AppDpx } from "../../context/AppContext";
+import Box from "@mui/material/Box"
+import { styled } from "@mui/material/styles"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import Paper from "@mui/material/Paper"
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown"
+import Home from "@mui/icons-material/Home"
+import PlayCircleIcon from "@mui/icons-material/PlayCircle"
+import QuizIcon from "@mui/icons-material/Quiz"
+import NoteIcon from "@mui/icons-material/Note"
+import DataObjectIcon from "@mui/icons-material/DataObject"
+import SlideshowIcon from "@mui/icons-material/Slideshow"
+import { SET_PLAY_ID } from "../../context/actions"
+import { tCurriculum, tLecture } from "../../types/types"
+import { AppDpx } from "../../context/AppContext"
 
 const data = [
   { icon: <PlayCircleIcon />, label: "lecture" },
@@ -25,7 +25,7 @@ const data = [
   { icon: <NoteIcon />, label: "note" },
   { icon: <SlideshowIcon />, label: "download" },
   { icon: <DataObjectIcon />, label: "handson" },
-];
+]
 
 const FireNav = styled(List)<{ component?: React.ElementType }>({
   "& .MuiListItemButton-root": {
@@ -39,22 +39,22 @@ const FireNav = styled(List)<{ component?: React.ElementType }>({
   "& .MuiSvgIcon-root": {
     fontSize: 20,
   },
-});
+})
 interface Props {
-  curriculum?: tCurriculum;
-  courseName?: string;
-  isShort?: boolean;
+  curriculum?: tCurriculum
+  courseName?: string
+  isShort?: boolean
 }
 const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
-  const { curriculum, courseName, isShort } = props;
-  const [selected, setSel] = React.useState<number>(0);
-  const dispatch = useContext(AppDpx);
+  const { curriculum, courseName, isShort } = props
+  const [selected, setSel] = React.useState<number>(0)
+  const dispatch = useContext(AppDpx)
   const doSel = (id: number) => {
-    setSel((v) => (v === id ? -1 : id));
-  };
+    setSel((v) => (v === id ? -1 : id))
+  }
   const _next = (id: tLecture) => {
-    dispatch({ type: SET_PLAY_ID, data: id });
-  };
+    dispatch({ type: SET_PLAY_ID, data: id })
+  }
   return (
     <Box className="flex w-full">
       <Paper elevation={0} className={`w-full mr-1 px-2 bg-transparent`}>
@@ -158,7 +158,7 @@ const Curriculumb: React.FC<Props> = (props: Props): ReactElement => {
         </FireNav>
       </Paper>
     </Box>
-  );
-};
+  )
+}
 
-export default Curriculumb;
+export default Curriculumb

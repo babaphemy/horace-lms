@@ -7,5 +7,5 @@ const curriculumStyles = {
   nested: {
     paddingLeft: 2,
   },
-};
-export { curriculumStyles };
+}
+export { curriculumStyles }

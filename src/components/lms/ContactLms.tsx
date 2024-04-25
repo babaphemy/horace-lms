@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "next/link"
 
 const ContactLms: React.FC = () => (
   <div className="bg-blue-600 text-white text-center p-8">
@@ -16,5 +16,5 @@ const ContactLms: React.FC = () => (
       </Link>
     </div>
   </div>
-);
-export default ContactLms;
+)
+export default ContactLms

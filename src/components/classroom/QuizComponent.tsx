@@ -1,6 +1,6 @@
-import React from "react";
-import { tCourse, tQuiz } from "../../types/types";
-import { useState } from "react";
+import React from "react"
+import { tCourse, tQuiz } from "../../types/types"
+import { useState } from "react"
 import {
   Container,
   Paper,
@@ -10,17 +10,17 @@ import {
   FormControlLabel,
   Button,
   Box,
-} from "@mui/material";
-import ClassLayout from "../layout/ClassLayout";
-import NextPrev from "./NextPrev";
+} from "@mui/material"
+import ClassLayout from "../layout/ClassLayout"
+import NextPrev from "./NextPrev"
 
 type Props = {
-  quizzes: tQuiz[];
-  playId: any;
-  handleNext: (id: number | undefined) => void;
-  handlePrev: () => void;
-  course?: tCourse;
-};
+  quizzes: tQuiz[]
+  playId: any
+  handleNext: (id: number | undefined) => void
+  handlePrev: () => void
+  course?: tCourse
+}
 
 const quizStyles = {
   frameContainer: {
@@ -61,7 +61,7 @@ const quizStyles = {
     justifyContent: "space-between",
     alignItems: "center",
   },
-};
+}
 
 const QuizComponent = ({
   quizzes,
@@ -70,69 +70,69 @@ const QuizComponent = ({
   handlePrev,
   course,
 }: Props) => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState("");
-  const [showScore, setShowScore] = useState(false);
-  const [studentAnswers, setStudentAnswers] = useState<any[]>([]);
-  const [currentQuiz, setCurrentQuiz] = useState(0);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [missedAnswers, setMissedAnswers] = useState<number[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [selectedAnswer, setSelectedAnswer] = useState("")
+  const [showScore, setShowScore] = useState(false)
+  const [studentAnswers, setStudentAnswers] = useState<any[]>([])
+  const [currentQuiz, setCurrentQuiz] = useState(0)
+  const [correctAnswers, setCorrectAnswers] = useState(0)
+  const [missedAnswers, setMissedAnswers] = useState<number[]>([])
 
   const handleOptionChange = (event: {
-    target: { value: React.SetStateAction<string> };
+    target: { value: React.SetStateAction<string> }
   }) => {
-    const currentAnswers = [...studentAnswers];
-    currentAnswers[currentQuiz] = event.target.value;
-    setStudentAnswers(currentAnswers);
-    setSelectedAnswer(event.target.value);
-  };
+    const currentAnswers = [...studentAnswers]
+    currentAnswers[currentQuiz] = event.target.value
+    setStudentAnswers(currentAnswers)
+    setSelectedAnswer(event.target.value)
+  }
 
   const handleNextQuestion = () => {
-    setSelectedAnswer(studentAnswers[currentQuiz + 1] || "");
+    setSelectedAnswer(studentAnswers[currentQuiz + 1] || "")
     if (currentQuiz < quizzes.length - 1) {
-      setCurrentQuiz(currentQuiz + 1);
+      setCurrentQuiz(currentQuiz + 1)
     }
     if (selectedAnswer === quizzes[currentQuestion].answer) {
-      setCorrectAnswers(correctAnswers + 1);
+      setCorrectAnswers(correctAnswers + 1)
     } else {
-      missedAnswers.push(currentQuiz);
+      missedAnswers.push(currentQuiz)
     }
 
     if (currentQuestion + 1 < quizzes.length) {
-      setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestion(currentQuestion + 1)
     } else {
-      setShowScore(true);
+      setShowScore(true)
     }
-  };
+  }
 
   const handlePrevQuestion = () => {
     if (currentQuiz > 0) {
-      setCurrentQuiz(currentQuiz - 1);
+      setCurrentQuiz(currentQuiz - 1)
     }
     if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
+      setCurrentQuestion(currentQuestion - 1)
     }
 
     if (
       studentAnswers[currentQuiz - 1] === quizzes[currentQuestion - 1].answer
     ) {
-      setCorrectAnswers(correctAnswers - 1);
+      setCorrectAnswers(correctAnswers - 1)
     } else {
-      missedAnswers.pop();
+      missedAnswers.pop()
     }
 
-    setSelectedAnswer(studentAnswers[currentQuiz - 1]);
-  };
+    setSelectedAnswer(studentAnswers[currentQuiz - 1])
+  }
 
   const handleResetQuiz = () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer("");
-    setShowScore(false);
-    setStudentAnswers([]);
-    setCurrentQuiz(0);
-    setCorrectAnswers(0);
-    setMissedAnswers([]);
-  };
+    setCurrentQuestion(0)
+    setSelectedAnswer("")
+    setShowScore(false)
+    setStudentAnswers([])
+    setCurrentQuiz(0)
+    setCorrectAnswers(0)
+    setMissedAnswers([])
+  }
 
   return (
     <ClassLayout>
@@ -164,7 +164,7 @@ const QuizComponent = ({
                       </Typography>
                       <Box sx={{ pl: 2 }}>
                         {missedAnswers.map((index) => {
-                          const quiz = quizzes[index];
+                          const quiz = quizzes[index]
                           return (
                             <Box key={quiz.id} sx={{ mb: 1 }}>
                               <Typography variant="body1" gutterBottom>
@@ -180,7 +180,7 @@ const QuizComponent = ({
                                 Correct answer: {quiz.answer}
                               </Typography>
                             </Box>
-                          );
+                          )
                         })}
                       </Box>
                     </Box>
@@ -285,7 +285,7 @@ const QuizComponent = ({
         </Box>
       </Paper>
     </ClassLayout>
-  );
-};
+  )
+}
 
-export default QuizComponent;
+export default QuizComponent

@@ -1,5 +1,5 @@
-import { Box, Grid, Typography } from "@mui/material";
-import BenefitCard from "./BenefitCard";
+import { Box, Grid, Typography } from "@mui/material"
+import BenefitCard from "./BenefitCard"
 
 const Benefits = () => {
   return (
@@ -38,10 +38,10 @@ const Benefits = () => {
         </Grid>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default Benefits;
+export default Benefits
 
 const benefitsStyles = {
   cardContainer: {
@@ -50,7 +50,7 @@ const benefitsStyles = {
   top: {
     maxWidth: "700px",
   },
-};
+}
 
 const cards = [
   {
@@ -74,4 +74,4 @@ const cards = [
       "Expert and Experienced Instructors Ready to Guide You to Success! Our Instructors are Industry Leaders, Working Professionals, and Experienced Educators.",
     color: "#FF5E78",
   },
-];
+]

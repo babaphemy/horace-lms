@@ -1,6 +1,6 @@
-import React, { ReactElement } from "react";
-import { Appcontext, AppDpx } from "../context/AppContext";
-import { Backdrop, Box, Fade, Modal } from "@mui/material";
+import React, { ReactElement } from "react"
+import { Appcontext, AppDpx } from "../context/AppContext"
+import { Backdrop, Box, Fade, Modal } from "@mui/material"
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -10,16 +10,16 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
-};
+}
 
 interface Props {
-  children: ReactElement;
-  type: "login" | "signup" | "payment" | "review";
+  children: ReactElement
+  type: "login" | "signup" | "payment" | "review"
 }
 
 const ModalContainer = ({ type, children }: Props) => {
-  const { modal } = React.useContext(Appcontext);
-  const dispatch = React.useContext(AppDpx);
+  const { modal } = React.useContext(Appcontext)
+  const dispatch = React.useContext(AppDpx)
 
   const handleClose = () => {
     dispatch({
@@ -28,8 +28,8 @@ const ModalContainer = ({ type, children }: Props) => {
         ...modal,
         open: false,
       },
-    });
-  };
+    })
+  }
   return (
     <Box>
       <Modal
@@ -53,7 +53,7 @@ const ModalContainer = ({ type, children }: Props) => {
         </Fade>
       </Modal>
     </Box>
-  );
-};
+  )
+}
 
-export default ModalContainer;
+export default ModalContainer

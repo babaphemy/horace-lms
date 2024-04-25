@@ -1,15 +1,15 @@
-import { Button, styled } from "@mui/material";
-import React from "react";
+import { Button, styled } from "@mui/material"
+import React from "react"
 
 type BatchProps = {
-  label: string;
-  onClick: () => void;
-  active?: boolean;
-};
+  label: string
+  onClick: () => void
+  active?: boolean
+}
 
 type ButtonProps = {
-  activeProp?: boolean;
-};
+  activeProp?: boolean
+}
 
 const ButtonStyled = styled(Button)<ButtonProps>(({ theme, activeProp }) => ({
   backgroundColor: activeProp ? "#FF6854 !important" : "transparent",
@@ -34,15 +34,15 @@ const ButtonStyled = styled(Button)<ButtonProps>(({ theme, activeProp }) => ({
     backgroundColor: "#FF6854 !important",
     color: "#fff",
   },
-}));
+}))
 
 const Batch: React.FC<BatchProps> = (props) => {
-  const { label, onClick, active } = props;
+  const { label, onClick, active } = props
   return (
     <ButtonStyled variant="text" activeProp={active} onClick={onClick}>
       {label}
     </ButtonStyled>
-  );
-};
+  )
+}
 
-export default Batch;
+export default Batch

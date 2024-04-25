@@ -1,4 +1,4 @@
-import CheckIcon from "@mui/icons-material/Check";
+import CheckIcon from "@mui/icons-material/Check"
 import {
   Button,
   Card,
@@ -6,18 +6,18 @@ import {
   CardHeader,
   Stack,
   Typography,
-} from "@mui/material";
-import React from "react";
+} from "@mui/material"
+import React from "react"
 
 interface Plan {
-  name: string;
-  price: string;
-  description: string;
-  duration?: string;
+  name: string
+  price: string
+  description: string
+  duration?: string
 }
 
 interface PricingPlanProps {
-  plan: Plan;
+  plan: Plan
 }
 
 const PricingPlan: React.FC<PricingPlanProps> = ({ plan }) => (
@@ -48,8 +48,8 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ plan }) => (
       </CardFooter>
     </Card>
   </div>
-);
-export default PricingPlan;
+)
+export default PricingPlan
 
 function FeatureItem({ children }: { children: React.ReactNode }) {
   return (
@@ -57,7 +57,7 @@ function FeatureItem({ children }: { children: React.ReactNode }) {
       <Typography variant="body1">{children}</Typography>
       <CheckIcon color="primary" />
     </Stack>
-  );
+  )
 }
 
 function CardFooter({ children }: { children: React.ReactNode }) {
@@ -65,5 +65,5 @@ function CardFooter({ children }: { children: React.ReactNode }) {
     <CardContent>
       <Stack spacing={2}>{children}</Stack>
     </CardContent>
-  );
+  )
 }

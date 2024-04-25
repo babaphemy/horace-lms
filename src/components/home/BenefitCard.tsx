@@ -1,16 +1,16 @@
-import { Box, Typography } from "@mui/material";
-import Image from "next/image";
-import React from "react";
+import { Box, Typography } from "@mui/material"
+import Image from "next/image"
+import React from "react"
 
 type BenefitCardProps = {
-  title: string;
-  icon: any;
-  description: string;
-  color: string;
-};
+  title: string
+  icon: any
+  description: string
+  color: string
+}
 
 const BenefitCard = (props: BenefitCardProps) => {
-  const { title, icon, description, color } = props;
+  const { title, icon, description, color } = props
   return (
     <Box sx={{ ...benefitsCardStyles.card, borderColor: color }}>
       <Box>
@@ -34,10 +34,10 @@ const BenefitCard = (props: BenefitCardProps) => {
         </Typography>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default BenefitCard;
+export default BenefitCard
 
 const benefitsCardStyles = {
   card: {
@@ -67,4 +67,4 @@ const benefitsCardStyles = {
   description: {
     textAlign: "left",
   },
-};
+}

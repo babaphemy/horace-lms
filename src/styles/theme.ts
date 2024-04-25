@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from "@mui/material"
 const colors = {
   transparent: "transparent",
   current: "currentColor",
@@ -344,7 +344,7 @@ const colors = {
     A400: "#00E5FF",
     A700: "#00B8D4",
   },
-};
+}
 export const muiTheme = createTheme({
   components: {
     MuiListItemButton: {
@@ -441,4 +441,4 @@ export const muiTheme = createTheme({
       lineHeight: 1.375,
     },
   },
-});
+})

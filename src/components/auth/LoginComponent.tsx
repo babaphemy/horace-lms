@@ -1,4 +1,4 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import { yupResolver } from "@hookform/resolvers/yup"
 import {
   Box,
   Typography,
@@ -9,23 +9,23 @@ import {
   InputAdornment,
   IconButton,
   Link,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useMutation } from "react-query";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import fb from "@/assets/img/fbcolor.webp";
-import google from "@/assets/img/ggcolor.webp";
-import yeah from "@/assets/img/yeah.webp";
-import * as yup from "yup";
-import Image from "next/image";
-import { AppDpx } from "@/context/AppContext";
-import { loginUser } from "@/app/api/rest";
-import { MODAL_SET, USER_ADD } from "@/context/Action";
-import { loginStyles } from "@/styles/loginStyles";
+} from "@mui/material"
+import { useRouter } from "next/navigation"
+import React from "react"
+import { useForm, Controller } from "react-hook-form"
+import { useMutation } from "react-query"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
+import MailOutlineIcon from "@mui/icons-material/MailOutline"
+import fb from "@/assets/img/fbcolor.webp"
+import google from "@/assets/img/ggcolor.webp"
+import yeah from "@/assets/img/yeah.webp"
+import * as yup from "yup"
+import Image from "next/image"
+import { AppDpx } from "@/context/AppContext"
+import { loginUser } from "@/app/api/rest"
+import { MODAL_SET, USER_ADD } from "@/context/Action"
+import { loginStyles } from "@/styles/loginStyles"
 
 const schema = yup.object().shape({
   email: yup
@@ -36,32 +36,32 @@ const schema = yup.object().shape({
     .string()
     .required("Please enter your password.")
     .min(4, "Password is too short - should be 4 chars minimum."),
-});
+})
 
 const defaultValues = {
   email: "",
   password: "",
-};
+}
 
 // Props
 type loginProps = {
-  email: string;
-  password: string;
-  type?: any;
-};
+  email: string
+  password: string
+  type?: any
+}
 
 type Props = {
-  modal?: boolean;
-};
+  modal?: boolean
+}
 const LoginComponent = (props: Props) => {
-  const { modal = false } = props;
-  const dispatch = React.useContext(AppDpx);
-  const router = useRouter();
-  const [showPassword, setShowPassword] = React.useState(false);
+  const { modal = false } = props
+  const dispatch = React.useContext(AppDpx)
+  const router = useRouter()
+  const [showPassword, setShowPassword] = React.useState(false)
   const [al, setAlert] = React.useState<{
-    show: boolean;
-    msg: string;
-  } | null>(null);
+    show: boolean
+    msg: string
+  } | null>(null)
 
   const {
     control,
@@ -72,42 +72,42 @@ const LoginComponent = (props: Props) => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
-  });
+  })
 
   const { mutate } = useMutation(loginUser, {
     onSuccess: (data: any) => {
-      localStorage.setItem("horaceUser", JSON.stringify(data));
-      dispatch({ type: USER_ADD, payload: data });
+      localStorage.setItem("horaceUser", JSON.stringify(data))
+      dispatch({ type: USER_ADD, payload: data })
       if (modal) {
-        dispatch({ type: MODAL_SET, data: { open: false, type: "login" } });
+        dispatch({ type: MODAL_SET, data: { open: false, type: "login" } })
       } else {
-        router.push("/");
+        router.push("/")
       }
-      reset(defaultValues);
+      reset(defaultValues)
     },
     onError: (error: any) => {
-      setAlert({ show: true, msg: "Login Failed, Please Try Again" });
+      setAlert({ show: true, msg: "Login Failed, Please Try Again" })
     },
-  });
+  })
 
   const onSubmit = (data: loginProps) => {
-    data.type = "USER";
-    mutate(data);
-  };
+    data.type = "USER"
+    mutate(data)
+  }
 
   const handleChangeTab = () => {
     if (modal) {
-      dispatch({ type: MODAL_SET, data: { open: true, type: "signup" } });
-      return;
+      dispatch({ type: MODAL_SET, data: { open: true, type: "signup" } })
+      return
     }
-    router.push("/sign-up");
-  };
+    router.push("/sign-up")
+  }
 
   const styles = {
     socials: {
       minWidth: modal ? "100%" : "70%",
     },
-  };
+  }
 
   return (
     <Box sx={loginStyles.right}>
@@ -255,7 +255,7 @@ const LoginComponent = (props: Props) => {
         Don't have an account? Sign Up
       </Typography>
     </Box>
-  );
-};
+  )
+}
 
-export default LoginComponent;
+export default LoginComponent

@@ -1,4 +1,4 @@
-import { Check, TextSnippet } from "@mui/icons-material";
+import { Check, TextSnippet } from "@mui/icons-material"
 import {
   Box,
   Button,
@@ -10,25 +10,25 @@ import {
   Tab,
   Tabs,
   Typography,
-} from "@mui/material";
-import { ReactElement, useState } from "react";
-import { tCurriculum } from "../../types/types";
-import CourseReview from "./CourseReview";
+} from "@mui/material"
+import { ReactElement, useState } from "react"
+import { tCurriculum } from "../../types/types"
+import CourseReview from "./CourseReview"
 const ranges = {
   content: "Content",
   reviews: "Reviews",
-};
+}
 interface Props {
-  category?: string;
-  target?: string;
-  modified?: string;
-  courseName?: string;
-  curriculum?: tCurriculum;
-  brief: string;
-  posts?: any[];
-  ratings?: number | null;
-  handleJoinClass: () => void;
-  regCourse?: boolean;
+  category?: string
+  target?: string
+  modified?: string
+  courseName?: string
+  curriculum?: tCurriculum
+  brief: string
+  posts?: any[]
+  ratings?: number | null
+  handleJoinClass: () => void
+  regCourse?: boolean
 }
 const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
   const {
@@ -41,8 +41,8 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     ratings,
     handleJoinClass,
     regCourse,
-  } = props;
-  const [tabValue, setTabValue] = useState(0);
+  } = props
+  const [tabValue, setTabValue] = useState(0)
 
   return (
     <>
@@ -171,7 +171,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
         </Paper>
       )}
     </>
-  );
-};
+  )
+}
 
-export default CourseObjectives;
+export default CourseObjectives

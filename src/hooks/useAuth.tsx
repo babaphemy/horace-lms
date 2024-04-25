@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
-import { getUsers } from "../api/rest";
+import { useEffect, useState } from "react"
 
 const useAuth = () => {
-  const [users, setUsers] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [users, setUsers] = useState<any>([])
+  const [loading, setLoading] = useState<boolean>(false)
   // useEffect(() => {
   // 	setLoading(true);
   // 	let contr = new AbortController();
@@ -18,7 +17,7 @@ const useAuth = () => {
   // 	};
   // }, []);
 
-  return [users, loading];
-};
+  return [users, loading]
+}
 
-export default useAuth;
+export default useAuth

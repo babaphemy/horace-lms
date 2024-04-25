@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const Map = () => {
   return (
@@ -12,7 +12,7 @@ const Map = () => {
       title="map showing location"
       // referrerpolicy={'no-referrer-when-downgrade'}
     ></iframe>
-  );
-};
+  )
+}
 
-export default Map;
+export default Map

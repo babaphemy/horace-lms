@@ -12,5 +12,5 @@ const HeaderBanner = () => (
       textShadow: "1px 1px 2px black",
     }}
   ></div>
-);
-export default HeaderBanner;
+)
+export default HeaderBanner

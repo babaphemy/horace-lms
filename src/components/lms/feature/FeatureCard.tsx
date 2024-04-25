@@ -1,10 +1,10 @@
-import { Feature } from "../../../types/types";
+import { Feature } from "../../../types/types"
 
 interface FeatureCardProps {
-  feature: Feature;
+  feature: Feature
 }
 const FeatureCard: React.FC<FeatureCardProps> = ({ feature }) => {
-  const Icon = feature.icon;
+  const Icon = feature.icon
   const colors = [
     "#F9AD56", // Orange
     "#16C79A", // Turquoise
@@ -15,14 +15,14 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature }) => {
     "#8E44AD", // Purple
     "#3498DB", // Sky blue
     "#F39C12", // Yellow
-  ];
+  ]
 
   function getRandomColor(colorsArray: string[]) {
-    const randomIndex = Math.floor(Math.random() * colorsArray.length);
-    return colorsArray[randomIndex];
+    const randomIndex = Math.floor(Math.random() * colorsArray.length)
+    return colorsArray[randomIndex]
   }
 
-  const color = getRandomColor(colors);
+  const color = getRandomColor(colors)
   return (
     <div
       className="max-w-sm  mx-auto sm:mx-0 space-y-2 rounded overflow-hidden shadow-lg bg-white p-6 border-2 min-h-[300px]"
@@ -39,6 +39,6 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature }) => {
       </div>
       <p className="text-gray-700 text-base">{feature.description}</p>
     </div>
-  );
-};
-export default FeatureCard;
+  )
+}
+export default FeatureCard

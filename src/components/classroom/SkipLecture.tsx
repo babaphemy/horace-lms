@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import ClassLayout from "../layout/ClassLayout";
+import React, { useEffect, useState } from "react"
+import ClassLayout from "../layout/ClassLayout"
 import {
   Box,
   Chip,
@@ -9,18 +9,18 @@ import {
   Rating,
   Stack,
   Typography,
-} from "@mui/material";
-import NextPrev from "./NextPrev";
-import { tCourse } from "../../types/types";
-import { ThumbUpAltOutlined, ThumbDownAltOutlined } from "@mui/icons-material";
-import Image from "next/image";
+} from "@mui/material"
+import NextPrev from "./NextPrev"
+import { tCourse } from "../../types/types"
+import { ThumbUpAltOutlined, ThumbDownAltOutlined } from "@mui/icons-material"
+import Image from "next/image"
 
 type SkipLectureProps = {
-  handleNext: (id: number | undefined) => void;
-  handlePrev: () => void;
-  playId: any;
-  course: tCourse;
-};
+  handleNext: (id: number | undefined) => void
+  handlePrev: () => void
+  playId: any
+  course: tCourse
+}
 
 const SkipLecture = ({
   handleNext,
@@ -28,22 +28,22 @@ const SkipLecture = ({
   playId,
   course,
 }: SkipLectureProps) => {
-  const [lessonCount, setLessonCount] = useState(1);
+  const [lessonCount, setLessonCount] = useState(1)
   const { assetCount, brief, courseName, category, posts, author } =
-    course || {};
+    course || {}
 
   useEffect(() => {
     if (assetCount) {
-      setLessonCount(assetCount.lessonCount);
+      setLessonCount(assetCount.lessonCount)
     }
-  }, [assetCount]);
+  }, [assetCount])
   const calculatedRating = () => {
-    let total = 0;
+    let total = 0
     posts?.forEach((post: any) => {
-      total += post.rating;
-    });
-    return total / posts?.length;
-  };
+      total += post.rating
+    })
+    return total / posts?.length
+  }
   return (
     <ClassLayout>
       <Paper
@@ -141,7 +141,7 @@ const SkipLecture = ({
         </Container>
       </Paper>
     </ClassLayout>
-  );
-};
+  )
+}
 
-export default SkipLecture;
+export default SkipLecture

@@ -1,16 +1,16 @@
-"use client";
+"use client"
 
-import { handlePay } from "@/app/api/rest";
-import { Appcontext } from "@/context/AppContext";
-import { Typography, Box, Divider, Button } from "@mui/material";
-import React, { useContext } from "react";
-import ModalContainer from "../ModalContainer";
+import { handlePay } from "@/app/api/rest"
+import { Appcontext } from "@/context/AppContext"
+import { Typography, Box, Divider, Button } from "@mui/material"
+import React, { useContext } from "react"
+import ModalContainer from "../ModalContainer"
 
 const PaymentModal = ({ course }: any) => {
-  const { user } = useContext(Appcontext);
+  const { user } = useContext(Appcontext)
   const author = `${course?.author?.firstname || "Horace"} ${
     course?.author?.lastname || "Instructor"
-  }`;
+  }`
 
   const handleCoursePayment = async () => {
     const payload = {
@@ -19,21 +19,21 @@ const PaymentModal = ({ course }: any) => {
       description: "Payment for " + course?.courseName,
       name:
         user?.firstname + " " + user?.lastname || user?.email?.split("@")[0],
-    };
+    }
 
     if (!user) {
-      alert("Please login to continue");
-      return;
+      alert("Please login to continue")
+      return
     }
 
     if (!course?.price) {
-      alert("Course price is not set");
-      return;
+      alert("Course price is not set")
+      return
     }
 
-    await handlePay(payload);
-    return;
-  };
+    await handlePay(payload)
+    return
+  }
   return (
     <ModalContainer type="payment">
       <Box>
@@ -71,7 +71,7 @@ const PaymentModal = ({ course }: any) => {
         </Button>
       </Box>
     </ModalContainer>
-  );
-};
+  )
+}
 
-export default PaymentModal;
+export default PaymentModal

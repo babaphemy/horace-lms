@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Alert,
@@ -11,22 +11,22 @@ import {
   Rating,
   TextField,
   Typography,
-} from "@mui/material";
-import React from "react";
-import { useMutation, useQueryClient } from "react-query";
-import { addReview } from "@/app/api/rest";
-import { AppDpx } from "@/context/AppContext";
-import { MODAL_SET } from "@/context/Action";
-import { fromNow } from "@/utils/fromNow";
-import ModalContainer from "../ModalContainer";
+} from "@mui/material"
+import React from "react"
+import { useMutation, useQueryClient } from "react-query"
+import { addReview } from "@/app/api/rest"
+import { AppDpx } from "@/context/AppContext"
+import { MODAL_SET } from "@/context/Action"
+import { fromNow } from "@/utils/fromNow"
+import ModalContainer from "../ModalContainer"
 
 type Props = {
-  posts?: any[];
-  ratings?: number | null;
-};
+  posts?: any[]
+  ratings?: number | null
+}
 
 function LinearProgressWithLabel(
-  props: LinearProgressProps & { value: number; label: string },
+  props: LinearProgressProps & { value: number; label: string }
 ) {
   return (
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -63,39 +63,39 @@ function LinearProgressWithLabel(
       </Box>
       <Box sx={{ ml: 1, flex: 2 }}>
         <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value,
+          props.value
         )}%`}</Typography>
       </Box>
     </Box>
-  );
+  )
 }
 
 const CourseReview = ({ posts, ratings }: Props) => {
-  const [viewMore, setViewMore] = React.useState(false);
-  const [conditionalReview, setConditionalReview] = React.useState<any[]>([]);
-  const dispatch = React.useContext(AppDpx);
+  const [viewMore, setViewMore] = React.useState(false)
+  const [conditionalReview, setConditionalReview] = React.useState<any[]>([])
+  const dispatch = React.useContext(AppDpx)
 
   const reviewOrder = posts
     ?.sort((a, b) => {
-      return b.rating - a.rating;
+      return b.rating - a.rating
     })
     .sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
 
   React.useEffect(() => {
     if (reviewOrder && reviewOrder.length > 3 && !viewMore) {
-      setConditionalReview(reviewOrder.slice(0, 3));
+      setConditionalReview(reviewOrder.slice(0, 3))
     } else {
-      setConditionalReview(reviewOrder || []);
+      setConditionalReview(reviewOrder || [])
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewMore, posts]);
+  }, [viewMore, posts])
 
   const handleOpenReviewModal = () => {
-    dispatch({ type: MODAL_SET, data: { open: true, type: "review" } });
-  };
+    dispatch({ type: MODAL_SET, data: { open: true, type: "review" } })
+  }
 
   return (
     <div className="flex flex-col">
@@ -287,7 +287,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
                 <Divider sx={{ my: 2 }} />
               )}
             </Box>
-          );
+          )
         })}
       </Box>
       {reviewOrder?.length! > 3 && (
@@ -303,56 +303,56 @@ const CourseReview = ({ posts, ratings }: Props) => {
         </Button>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CourseReview;
+export default CourseReview
 
 type ReviewModalProps = {
-  userId: string;
-  courseId: string;
-};
+  userId: string
+  courseId: string
+}
 
 export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
-  const queryClient = useQueryClient();
-  const [rating, setRating] = React.useState(1);
-  const [comment, setComment] = React.useState("");
-  const [error, setError] = React.useState("");
+  const queryClient = useQueryClient()
+  const [rating, setRating] = React.useState(1)
+  const [comment, setComment] = React.useState("")
+  const [error, setError] = React.useState("")
 
-  const dispatch = React.useContext(AppDpx);
+  const dispatch = React.useContext(AppDpx)
 
   const handleRatingChange = (event: any, newValue: any) => {
-    setRating(newValue);
-  };
+    setRating(newValue)
+  }
 
   const { mutate, isLoading: loading } = useMutation(addReview, {
     onSuccess: () => {
-      queryClient.invalidateQueries("acourse");
-      dispatch({ type: MODAL_SET, data: { open: false, type: "review" } });
-      setComment("");
-      setRating(1);
+      queryClient.invalidateQueries("acourse")
+      dispatch({ type: MODAL_SET, data: { open: false, type: "review" } })
+      setComment("")
+      setRating(1)
     },
     onError: (error: any) => {
-      console.log(error);
+      console.log(error)
     },
-  });
+  })
 
   const handleSubmit = () => {
-    setError("");
+    setError("")
     if (!rating) {
-      setError("Please select a rating");
-      return;
+      setError("Please select a rating")
+      return
     }
     if (!comment) {
-      setError("Please add a comment");
-      return;
+      setError("Please add a comment")
+      return
     }
 
     const user = {
       user: {
         id: userId,
       },
-    };
+    }
 
     const payload = {
       ...(userId && user),
@@ -362,10 +362,10 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
       rating: rating,
       type: "REVIEW",
       message: comment,
-    };
+    }
 
-    mutate(payload);
-  };
+    mutate(payload)
+  }
 
   return (
     <ModalContainer type="review">
@@ -413,8 +413,8 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
         </Button>
       </Box>
     </ModalContainer>
-  );
-};
+  )
+}
 
 const styles = {
   button: {
@@ -423,4 +423,4 @@ const styles = {
     px: 4,
     my: 2,
   },
-};
+}

@@ -1,5 +1,5 @@
-import { Plan } from "../../../types/types";
-import PricingPlan from "./PricingPlan";
+import { Plan } from "../../../types/types"
+import PricingPlan from "./PricingPlan"
 
 const Pricing: React.FC = () => {
   const plans: Plan[] = [
@@ -21,7 +21,7 @@ const Pricing: React.FC = () => {
       duration: "/choice",
       description: "Custom solutions for large institutions or districts.",
     },
-  ];
+  ]
 
   return (
     <div className="p-8 bg-gray-200">
@@ -48,7 +48,7 @@ const Pricing: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Pricing;
+export default Pricing

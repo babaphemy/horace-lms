@@ -1,5 +1,5 @@
-import LockIcon from "@mui/icons-material/Lock";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import LockIcon from "@mui/icons-material/Lock"
+import VisibilityIcon from "@mui/icons-material/Visibility"
 import {
   Collapse,
   Divider,
@@ -8,12 +8,12 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from "@mui/material";
-import { useState } from "react";
+} from "@mui/material"
+import { useState } from "react"
 
-import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material";
-import { sample } from "../../api/data";
-import { tCourse, tLecture } from "../../types/types";
+import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material"
+import { sample } from "@/app/api/data"
+import { tCourse, tLecture } from "../../types/types"
 
 const styles = {
   root: {
@@ -48,18 +48,18 @@ const styles = {
       },
     },
   },
-};
+}
 
 const Curriculum = () => {
-  const sidebar = true;
-  const [open, setOpen] = useState(true);
+  const sidebar = true
+  const [open, setOpen] = useState(true)
   const [selected, setSel] = useState({
     courseName: "Course 1",
-  });
+  })
   const handleClick = (sl: tCourse) => {
-    setSel(sl);
-    setOpen(!open);
-  };
+    setSel(sl)
+    setOpen(!open)
+  }
   return (
     <>
       <List
@@ -148,7 +148,7 @@ const Curriculum = () => {
                         </ListItemIcon>
                       )}
                     </ListItem>
-                  ),
+                  )
                 )}
               </List>
             </Collapse>
@@ -156,7 +156,7 @@ const Curriculum = () => {
         ))}
       </List>
     </>
-  );
-};
+  )
+}
 
-export default Curriculum;
+export default Curriculum

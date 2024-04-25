@@ -1,21 +1,21 @@
-"use client";
+"use client"
 
-import { Box, Typography, Avatar, Divider, Rating } from "@mui/material";
-import React from "react";
-import { Tag } from "./home/PopularCard";
-import Image from "next/image";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { tCourseLte, tPost } from "../types/types";
-import { useRouter } from "next/navigation";
+import { Box, Typography, Avatar, Divider, Rating } from "@mui/material"
+import React from "react"
+import { Tag } from "./home/PopularCard"
+import Image from "next/image"
+import PlayCircleIcon from "@mui/icons-material/PlayCircle"
+import FavoriteIcon from "@mui/icons-material/Favorite"
+import AddCircleIcon from "@mui/icons-material/AddCircle"
+import { tCourseLte, tPost } from "../types/types"
+import { useRouter } from "next/navigation"
 
 type SimilarCardProps = {
-  course: tCourseLte;
-};
+  course: tCourseLte
+}
 
 const SimilarCard = ({ course }: SimilarCardProps) => {
-  const router = useRouter();
+  const router = useRouter()
   const {
     id,
     courseName,
@@ -25,27 +25,27 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
     thumbnail,
     students,
     totalSteps,
-  } = course;
+  } = course
   const countStudent = () => {
     const likes = course.posts.reduce((acc: number, post: tPost) => {
-      acc += post.like;
-      return acc;
-    }, 0);
-    const st = students ?? 10;
-    return likes + totalSteps + st;
-  };
+      acc += post.like
+      return acc
+    }, 0)
+    const st = students ?? 10
+    return likes + totalSteps + st
+  }
 
   const handleCardClick = () => {
-    router.push(`/course/${id}`);
-  };
+    router.push(`/course/${id}`)
+  }
 
   const calculatedRating = () => {
-    let total = 0;
+    let total = 0
     posts?.forEach((post: any) => {
-      total += post.rating;
-    });
-    return total / posts?.length;
-  };
+      total += post.rating
+    })
+    return total / posts?.length
+  }
   return (
     <Box>
       <Box sx={similarStyles.card}>
@@ -138,10 +138,10 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
         </Box>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default SimilarCard;
+export default SimilarCard
 
 const similarStyles = {
   card: {
@@ -169,4 +169,4 @@ const similarStyles = {
   pointer: {
     cursor: "pointer",
   },
-};
+}

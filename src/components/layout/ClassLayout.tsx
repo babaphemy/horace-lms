@@ -1,11 +1,11 @@
-import React from "react";
-import FooterLte from "./FooterLte";
-import Header from "../Header";
-import { Box, Container } from "@mui/material";
+import React from "react"
+import FooterLte from "./FooterLte"
+import Header from "../Header"
+import { Box, Container } from "@mui/material"
 
 type ClassLayoutProps = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 
 const ClassLayout = ({ children }: ClassLayoutProps) => {
   return (
@@ -29,7 +29,7 @@ const ClassLayout = ({ children }: ClassLayoutProps) => {
       </Container>
       <FooterLte />
     </div>
-  );
-};
+  )
+}
 
-export default ClassLayout;
+export default ClassLayout

@@ -1,6 +1,6 @@
-import React from "react";
-import Image from "next/image";
-import { Box } from "@mui/material";
+import React from "react"
+import Image from "next/image"
+import { Box } from "@mui/material"
 
 const bgStyles = {
   blue: {
@@ -17,7 +17,7 @@ const bgStyles = {
     zIndex: -1,
     width: "100%",
   },
-};
+}
 const TopBg = () => {
   return (
     <Box>
@@ -42,7 +42,7 @@ const TopBg = () => {
         />
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default TopBg;
+export default TopBg

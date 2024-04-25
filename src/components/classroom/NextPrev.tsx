@@ -1,5 +1,5 @@
-import { Box, Button } from "@mui/material";
-import { tNextPrev } from "../../types/types";
+import { Box, Button } from "@mui/material"
+import { tNextPrev } from "../../types/types"
 
 const NextPrev = ({ handlePrev, playId, course, handleNext }: tNextPrev) => {
   return (
@@ -21,7 +21,7 @@ const NextPrev = ({ handlePrev, playId, course, handleNext }: tNextPrev) => {
         Next
       </Button>
     </Box>
-  );
-};
+  )
+}
 
-export default NextPrev;
+export default NextPrev

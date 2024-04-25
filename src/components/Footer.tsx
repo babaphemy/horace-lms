@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Container,
   Box,
@@ -10,15 +10,15 @@ import {
   TextField,
   Button,
   Divider,
-} from "@mui/material";
-import Image from "next/image";
-import Link from "next/link";
+} from "@mui/material"
+import Image from "next/image"
+import Link from "next/link"
 
 type SocialProps = {
-  name: string;
-  link: string;
-  icon: string | any;
-};
+  name: string
+  link: string
+  icon: string | any
+}
 
 const Footer = () => {
   return (
@@ -68,7 +68,7 @@ const Footer = () => {
                       style={footerStyles.socialLogo}
                     />
                   </IconButton>
-                );
+                )
               })}
             </Box>
           </Grid>
@@ -141,10 +141,10 @@ const Footer = () => {
         </Typography>
       </Container>
     </Box>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer
 
 const footerStyles = {
   container: {
@@ -190,7 +190,7 @@ const footerStyles = {
       background: "#000",
     },
   },
-};
+}
 
 const socials = [
   {
@@ -213,4 +213,4 @@ const socials = [
     link: "https://www.linkedin.com/company/10654256/",
     icon: "linkedin.webp",
   },
-];
+]

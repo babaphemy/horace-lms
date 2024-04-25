@@ -1,24 +1,24 @@
-import { Box, Chip, Container, Rating, Stack, Typography } from "@mui/material";
+import { Box, Chip, Container, Rating, Stack, Typography } from "@mui/material"
 
 interface Props {
   courseProps: {
-    id: string;
-    name: string;
-    author: string;
-    lessonCount: number;
-    category: string;
-    brief: string;
-    ratings?: number | null;
-    reviews?: number | null;
-    preview?: string;
-    posts?: any[];
-    students?: number;
-    totalSteps?: number;
-  };
+    id: string
+    name: string
+    author: string
+    lessonCount: number
+    category: string
+    brief: string
+    ratings?: number | null
+    reviews?: number | null
+    preview?: string
+    posts?: any[]
+    students?: number
+    totalSteps?: number
+  }
 }
 const CourseHeader = (props: Props) => {
   const { name, brief, category, lessonCount, ratings, author } =
-    props?.courseProps || {};
+    props?.courseProps || {}
 
   return (
     <Box
@@ -88,7 +88,7 @@ const CourseHeader = (props: Props) => {
         </Box>
       </Container>
     </Box>
-  );
-};
+  )
+}
 
-export default CourseHeader;
+export default CourseHeader

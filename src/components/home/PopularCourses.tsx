@@ -1,29 +1,29 @@
-"use client";
-import { tCourse } from "@/types/types";
-import { Box, Typography, Grid, CircularProgress, Button } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import Batch from "./Batch";
-import PopularCard from "./PopularCard";
+"use client"
+import { tCourse } from "@/types/types"
+import { Box, Typography, Grid, CircularProgress, Button } from "@mui/material"
+import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import Batch from "./Batch"
+import PopularCard from "./PopularCard"
 
 const PopularCourses = ({ data, isLoading }: any) => {
-  const router = useRouter();
-  const [active, setActive] = useState("all");
-  const [filteredData, setFilteredData] = useState(data);
+  const router = useRouter()
+  const [active, setActive] = useState("all")
+  const [filteredData, setFilteredData] = useState(data)
 
   useEffect(() => {
     if (active === "all") {
       if (data?.length > 6) {
-        setFilteredData(data?.slice(0, 6));
-        return;
+        setFilteredData(data?.slice(0, 6))
+        return
       }
-      setFilteredData(data);
+      setFilteredData(data)
     } else {
       const filtered = data?.filter(
         (course: tCourse) =>
           course?.category?.split(",").includes(active.toLowerCase()) ||
-          course?.courseName?.toLowerCase().includes(active.toLowerCase()),
-      );
+          course?.courseName?.toLowerCase().includes(active.toLowerCase())
+      )
       // const filtered = data?.filter((course: tCourse) => {
       //   if (course.category === active) {
       //     return course;
@@ -32,14 +32,14 @@ const PopularCourses = ({ data, isLoading }: any) => {
       //   }
       // });
       if (filtered?.length > 6) {
-        setFilteredData(filtered?.slice(0, 6));
-        return;
+        setFilteredData(filtered?.slice(0, 6))
+        return
       }
-      setFilteredData(filtered);
+      setFilteredData(filtered)
     }
-  }, [active, data]);
+  }, [active, data])
 
-  if (isLoading) return <CircularProgress />;
+  if (isLoading) return <CircularProgress />
 
   return (
     <Box>
@@ -51,7 +51,7 @@ const PopularCourses = ({ data, isLoading }: any) => {
               key={i + filter.value}
               label={filter.label}
               onClick={() => {
-                setActive(filter.value);
+                setActive(filter.value)
               }}
               active={active === filter.value ? true : false}
             />
@@ -72,7 +72,7 @@ const PopularCourses = ({ data, isLoading }: any) => {
               <Grid key={index + course.id} item xs={12} sm={6} md={4}>
                 <PopularCard data={course} />
               </Grid>
-            );
+            )
           })}
         </Grid>
         <Button
@@ -85,10 +85,10 @@ const PopularCourses = ({ data, isLoading }: any) => {
         </Button>
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default PopularCourses;
+export default PopularCourses
 const popularStyles = {
   top: {
     display: "flex",
@@ -113,7 +113,7 @@ const popularStyles = {
     textTransform: "capitalize",
     mb: "20px",
   },
-};
+}
 
 const filters = [
   {
@@ -152,4 +152,4 @@ const filters = [
     label: "web",
     value: "web",
   },
-];
+]

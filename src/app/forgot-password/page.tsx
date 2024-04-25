@@ -1,16 +1,16 @@
-"use client";
-import { Box, Container, Typography } from "@mui/material";
-import Image from "next/image";
-import subtract from "@/assets/img/subtract.webp";
-import man from "@/assets/img/man.webp";
-import useTag from "@/hooks/useTag";
-import Header from "@/components/Header";
-import { loginStyles } from "@/styles/loginStyles";
-import ForgotPasswordComponent from "@/components/auth/ForgotPasswordComponent";
-import Footer from "@/components/Footer";
+"use client"
+import { Box, Container, Typography } from "@mui/material"
+import Image from "next/image"
+import subtract from "@/assets/img/subtract.webp"
+import man from "@/assets/img/man.webp"
+import useTag from "@/hooks/useTag"
+import Header from "@/components/Header"
+import { loginStyles } from "@/styles/loginStyles"
+import ForgotPasswordComponent from "@/components/auth/ForgotPasswordComponent"
+import Footer from "@/components/Footer"
 
 const Login = () => {
-  useTag({ pageTitle: "login", pagePath: "/login" });
+  useTag({ pageTitle: "login", pagePath: "/login" })
   return (
     <Box component={"div"} id="login-component">
       <Header />
@@ -46,7 +46,7 @@ const Login = () => {
       </Box>
       <Footer />
     </Box>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import { useEffect } from "react";
-import TagManager from "react-gtm-module";
+import { useEffect } from "react"
+import TagManager from "react-gtm-module"
 const useTag = ({
   pageTitle,
   pagePath,
 }: {
-  pageTitle: string;
-  pagePath: string;
+  pageTitle: string
+  pagePath: string
 }) => {
   useEffect(() => {
     TagManager.dataLayer({
@@ -16,7 +16,7 @@ const useTag = ({
         pagePath,
         pageTitle,
       },
-    });
-  }, []);
-};
-export default useTag;
+    })
+  }, [])
+}
+export default useTag

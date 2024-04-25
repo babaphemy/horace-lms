@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import MenuIcon from "@mui/icons-material/Menu";
+import MenuIcon from "@mui/icons-material/Menu"
 import {
   AppBar,
   Avatar,
@@ -14,44 +14,42 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from "@mui/material";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React from "react";
-import logo from "../../assets/img/logo.webp";
+} from "@mui/material"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import React from "react"
+import logo from "../../assets/img/logo.webp"
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   marginLeft: -12,
   marginRight: 20,
-}));
-const pages = ["Home", "About", "Courses", "Contact"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
-const isAuth = false;
+}))
+const pages = ["Home", "About", "Courses", "Contact"]
+const settings = ["Profile", "Account", "Dashboard", "Logout"]
+const isAuth = false
 const DashboardHeader = () => {
-  const router = useRouter();
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null,
-  );
+  const router = useRouter()
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null,
-  );
+    null
+  )
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
+    setAnchorElNav(event.currentTarget)
+  }
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+    setAnchorElNav(null)
+  }
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+    setAnchorElUser(null)
+  }
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
+    setAnchorElUser(event.currentTarget)
+  }
   const goToPage = (page: string) => {
-    if (page.toLowerCase() === "home") return router.push("/");
-    router.push(`/${page.toLowerCase()}`);
-    handleCloseNavMenu();
-  };
+    if (page.toLowerCase() === "home") return router.push("/")
+    router.push(`/${page.toLowerCase()}`)
+    handleCloseNavMenu()
+  }
   return (
     <AppBar position="static" className="mb-4">
       <Container maxWidth="xl">
@@ -146,7 +144,7 @@ const DashboardHeader = () => {
         </Toolbar>
       </Container>
     </AppBar>
-  );
-};
+  )
+}
 
-export default DashboardHeader;
+export default DashboardHeader

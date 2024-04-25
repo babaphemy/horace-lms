@@ -1,6 +1,6 @@
-import { toast } from "react-toastify";
+import { toast } from "react-toastify"
 
-const { error, success, warn, info } = toast;
+const { error, success, warn, info } = toast
 
 export const notifyError = (message: string) => {
   error(message, {
@@ -11,8 +11,8 @@ export const notifyError = (message: string) => {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-  });
-};
+  })
+}
 
 export const notifySuccess = (message: string) => {
   success(message, {
@@ -23,8 +23,8 @@ export const notifySuccess = (message: string) => {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-  });
-};
+  })
+}
 
 export const notifyWarn = (message: string) => {
   warn(message, {
@@ -35,8 +35,8 @@ export const notifyWarn = (message: string) => {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-  });
-};
+  })
+}
 
 export const notifyInfo = (message: string) => {
   info(message, {
@@ -47,5 +47,5 @@ export const notifyInfo = (message: string) => {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-  });
-};
+  })
+}

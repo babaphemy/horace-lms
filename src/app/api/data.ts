@@ -39,7 +39,7 @@ const reviews = {
       ],
     },
   ],
-};
+}
 const author = {
   id: "63e1e5cbe46dc2016009e6c6",
   firstname: "morayo",
@@ -53,7 +53,7 @@ const author = {
   modifiedOn: "2023-02-06T23:49:12.354",
   lastLogin: "2023-02-13",
   roles: ["INSTRUCTOR", "USER"],
-};
+}
 
 const sample = [
   {
@@ -173,6 +173,6 @@ const sample = [
       ],
     },
   },
-];
+]
 
-export { reviews, author, sample };
+export { reviews, author, sample }

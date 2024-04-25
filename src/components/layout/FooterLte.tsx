@@ -1,5 +1,5 @@
-import { Box, Divider, Typography } from "@mui/material";
-import React from "react";
+import { Box, Divider, Typography } from "@mui/material"
+import React from "react"
 
 const FooterLte = () => {
   return (
@@ -10,10 +10,10 @@ const FooterLte = () => {
         {new Date().getFullYear()}
       </Typography>
     </Box>
-  );
-};
+  )
+}
 
-export default FooterLte;
+export default FooterLte
 const footerStyles = {
   container: {
     marginTop: 5,
@@ -26,4 +26,4 @@ const footerStyles = {
     my: 2,
   },
   center: { textAlign: "center", py: 2 },
-};
+}
