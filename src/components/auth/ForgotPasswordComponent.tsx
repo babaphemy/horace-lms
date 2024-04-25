@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   Button,
-  Divider,
   Alert,
   TextField,
   InputAdornment,
@@ -14,16 +13,11 @@ import { useRouter } from "next/navigation"
 import React from "react"
 import { useForm, Controller } from "react-hook-form"
 import { useMutation } from "react-query"
-import VisibilityIcon from "@mui/icons-material/Visibility"
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
-import fb from "@/assets/img/fbcolor.webp"
-import google from "@/assets/img/ggcolor.webp"
 import yeah from "@/assets/img/yeah.webp"
 import * as yup from "yup"
 import Image from "next/image"
 import { AppDpx } from "@/context/AppContext"
-import { loginUser } from "@/app/api/rest"
 import { MODAL_SET, USER_ADD } from "@/context/Action"
 import { loginStyles } from "@/styles/loginStyles"
 
@@ -50,7 +44,6 @@ const ForgotPasswordComponent = (props: Props) => {
   const { modal = false } = props
   const dispatch = React.useContext(AppDpx)
   const router = useRouter()
-  const [showPassword, setShowPassword] = React.useState(false)
   const [al, setAlert] = React.useState<{
     show: boolean
     msg: string
@@ -66,6 +59,7 @@ const ForgotPasswordComponent = (props: Props) => {
     resolver: yupResolver(schema),
     defaultValues,
   })
+  const hasErrors = Object.keys(errors).length > 0
 
   const forgotPass = async () => {
     return
@@ -85,7 +79,7 @@ const ForgotPasswordComponent = (props: Props) => {
       }
       reset(defaultValues)
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       setAlert({ show: true, msg: "Reset Password Failed, Please Try Again!" })
     },
   })
@@ -107,6 +101,11 @@ const ForgotPasswordComponent = (props: Props) => {
       <Typography variant="h4" sx={[loginStyles.center, loginStyles.title]}>
         Forgot Password <Image src={yeah} alt="yeah" width={30} height={30} />
       </Typography>
+      {hasErrors && (
+        <Alert severity="error" sx={loginStyles.alert}>
+          Form error
+        </Alert>
+      )}
 
       {al?.show && (
         <Alert
@@ -183,7 +182,7 @@ const ForgotPasswordComponent = (props: Props) => {
         color="primary"
         sx={loginStyles.changeTab}
       >
-        Don't have an account? Sign Up
+        Don&apos;t have an account? Sign Up
       </Typography>
     </Box>
   )

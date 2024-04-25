@@ -4,7 +4,6 @@ import {
   Box,
   Container,
   List,
-  Link as MuiLink,
   Typography,
   Button,
   IconButton,

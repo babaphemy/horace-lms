@@ -86,7 +86,7 @@ const LoginComponent = (props: Props) => {
       reset(defaultValues)
     },
     onError: (error: any) => {
-      setAlert({ show: true, msg: "Login Failed, Please Try Again" })
+      setAlert({ show: true, msg: `Login Failed, Please Try Again ${error}` })
     },
   })
 
@@ -111,6 +111,9 @@ const LoginComponent = (props: Props) => {
 
   return (
     <Box sx={loginStyles.right}>
+      {Object.keys(errors).length > 0 && (
+        <Alert severity="error">Form error</Alert>
+      )}
       <Typography variant="h4" sx={[loginStyles.center, loginStyles.title]}>
         Login <Image src={yeah} alt="yeah" width={30} height={30} />
       </Typography>
@@ -252,7 +255,7 @@ const LoginComponent = (props: Props) => {
         color="primary"
         sx={loginStyles.changeTab}
       >
-        Don't have an account? Sign Up
+        Don&apos;t have an account? Sign Up
       </Typography>
     </Box>
   )

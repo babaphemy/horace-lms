@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "export": "next build && next export -o _static",
+    "check-lint": "npx eslint ./src",
     "lint": "prettier --check .",
     "format": "prettier --write .",
     "test": "jest --watch",

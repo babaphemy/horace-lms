@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react"
-import { getUsers } from "../api/rest"
+import { useState } from "react"
 
 const useAuth = () => {
-  const [users, setUsers] = useState<any>([])
-  const [loading, setLoading] = useState<boolean>(false)
+  const [users] = useState<any>([])
+  const [loading] = useState<boolean>(false)
   // useEffect(() => {
   // 	setLoading(true);
   // 	let contr = new AbortController();

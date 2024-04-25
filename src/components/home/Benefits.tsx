@@ -18,14 +18,14 @@ const Benefits = () => {
           Learn From Industry Experts
         </Typography>
         <Typography variant="body2" align="justify" mb={2}>
-          At Horace, we're on a mission to democratize education and create a
-          level playing field for all. Our platform offers unparalleled access
+          At Horace, we&apos;re on a mission to democratize education and create
+          a level playing field for all. Our platform offers unparalleled access
           to world-class instructors, industry experts, and working
           professionals, enabling you to gain the knowledge and skills needed to
-          make a positive impact on the world. Whether you're from a small town
-          or a big city, we believe that anyone can achieve their dreams with
-          the right education and support. Join us today and take the first step
-          towards unlocking your true potential!
+          make a positive impact on the world. Whether you&apos;re from a small
+          town or a big city, we believe that anyone can achieve their dreams
+          with the right education and support. Join us today and take the first
+          step towards unlocking your true potential!
         </Typography>
       </Box>
       <Box sx={benefitsStyles.cardContainer}>

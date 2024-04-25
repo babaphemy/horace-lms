@@ -1,6 +1,6 @@
 import React, { createContext, ReactElement } from "react"
 import { Action, tCourse, tLecture, tUser } from "../types/types"
-import { COURSES_SET, LECTURE_SET } from "./actions"
+import { COURSES_SET } from "./actions"
 interface State {
   loading: boolean
   user?: tUser | null

@@ -102,7 +102,7 @@ export type tNextPrev = {
   handlePrev: () => void
   playId: any
   course: any
-  handleNext: (id: number | undefined) => void
+  handleNext: (_id: number | undefined) => void
   lessonCount: number
 }
 

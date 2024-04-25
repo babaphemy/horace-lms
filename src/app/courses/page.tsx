@@ -19,7 +19,6 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined"
 import { fetchCourses } from "../api/rest"
 import { AppDpx } from "@/context/AppContext"
 import { COURSES_SET } from "@/context/actions"
-import { generateMetadata } from "../metadata"
 import Header from "@/components/Header"
 import { tCourse } from "@/types/types"
 import PopularCard from "@/components/home/PopularCard"
@@ -168,7 +167,7 @@ const Courses = () => {
           <Grid container spacing={5}>
             {filteredData?.map((course: any, index: number) => {
               return (
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid key={index} item xs={12} sm={6} md={4}>
                   <PopularCard data={course} />
                 </Grid>
               )

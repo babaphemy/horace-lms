@@ -12,8 +12,8 @@ import {
 import { useState } from "react"
 
 import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material"
-import { sample } from "../../api/data"
 import { tCourse, tLecture } from "../../types/types"
+import { sample } from "@/app/api/data"
 
 const styles = {
   root: {

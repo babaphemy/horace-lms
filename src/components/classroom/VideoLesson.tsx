@@ -16,10 +16,10 @@ import React, { useContext, useEffect } from "react"
 import ReactPlayer from "react-player"
 import Curriculumb from "../../components/courses/Curriculumb"
 import ClassLayout from "../../components/layout/ClassLayout"
-import { AppDpx, Appcontext } from "../../context/AppContext"
+import { Appcontext } from "../../context/AppContext"
 import { tCurriculum, tNextPrev } from "../../types/types"
 interface Props {
-  handleNext: (id: number | undefined) => void
+  handleNext: (_id: number | undefined) => void
   handlePrev: () => void
   handleOpenExercise: () => void
 }
@@ -34,9 +34,8 @@ export function countLectureItems(curriculum: tCurriculum): number {
   return lectureCount
 }
 const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
-  const { course, playId, user }: any = useContext(Appcontext)
+  const { course, playId }: any = useContext(Appcontext)
   const router = useRouter()
-  const dispatch = useContext(AppDpx)
 
   const { curriculum, brief, courseName, category, posts, author } =
     course || {}
@@ -233,9 +232,12 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
               </Typography>
             </Box>
             <Box className="my-5">
-              {curriculum?.section?.map((curriculum: any) => {
+              {curriculum?.section?.map((curriculum: any, idx: number) => {
                 return (
-                  <Box className="rounded-xl my-2 bg-[#E9E7E6] flex items-center justify-between pl-4 md:pl-14 pr-3  py-1">
+                  <Box
+                    key={idx}
+                    className="rounded-xl my-2 bg-[#E9E7E6] flex items-center justify-between pl-4 md:pl-14 pr-3  py-1"
+                  >
                     <Typography variant="subtitle1">
                       {curriculum.title}.zip
                     </Typography>
@@ -294,19 +296,3 @@ const NextPrev = ({
 }
 
 export default ClassroomB
-const playerStyles = {
-  boxWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  frameContainer: { position: "relative", paddingTop: "56.25%" },
-  framePlayer: {
-    border: "none",
-    position: "absolute",
-    top: 0,
-    height: "100%",
-    width: "100%",
-  },
-}

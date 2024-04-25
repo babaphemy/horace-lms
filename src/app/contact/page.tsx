@@ -69,7 +69,7 @@ const ContactUs = () => {
   })
 
   const { mutate, isLoading } = useMutation(contactUs, {
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
       setAlert({
         show: true,
         msg: "Your message has been sent successfully",
@@ -77,7 +77,7 @@ const ContactUs = () => {
       })
       reset(defaultValues)
     },
-    onError: (error) => {
+    onError: (_error) => {
       setAlert({
         show: true,
         msg: "Something went wrong, please try again",
