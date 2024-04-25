@@ -45,6 +45,7 @@ const schema = yup.object().shape({
   passwordConfirm: yup
     .string()
     .oneOf([yup.ref("password"), ""], "Passwords must match"),
+  country: yup.string(),
 })
 
 const defaultValues = {

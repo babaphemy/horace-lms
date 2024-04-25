@@ -12,6 +12,7 @@
     "format": "prettier --write .",
     "test": "jest --watch",
     "prepare": "husky",
+    "watch": "tsc --watch",
     "check-branch-name": "chmod 755 ./hooks/check_branch_naming.sh && sh ./hooks/check_branch_naming.sh",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
