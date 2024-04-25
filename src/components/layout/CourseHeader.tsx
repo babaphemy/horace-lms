@@ -1,4 +1,4 @@
-import { Box, Chip, Container, Rating, Stack, Typography } from '@mui/material';
+import { Box, Chip, Container, Rating, Stack, Typography } from "@mui/material";
 
 interface Props {
   courseProps: {
@@ -24,13 +24,13 @@ const CourseHeader = (props: Props) => {
     <Box
       sx={{
         background:
-          'linear-gradient(197.86deg, #F59B9B 17.24%, #1B9CC3 69.35%, #107797 83.49%)',
-        minHeight: '300px',
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
+          "linear-gradient(197.86deg, #F59B9B 17.24%, #1B9CC3 69.35%, #107797 83.49%)",
+        minHeight: "300px",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
         p: 5,
       }}
     >
@@ -44,18 +44,20 @@ const CourseHeader = (props: Props) => {
           <Stack
             spacing={2}
             sx={{
-              maxWidth: '40rem',
+              maxWidth: "40rem",
             }}
           >
-            <Stack direction={'row'} spacing={1}>
-              {category?.split(',').map((x) => (
-                <Chip
-                  key={x}
-                  label={x}
-                  variant="outlined"
-                  className="text-white border-white"
-                />
-              ))}
+            <Stack direction={"row"} spacing={1}>
+              {category
+                ?.split(",")
+                .map((x) => (
+                  <Chip
+                    key={x}
+                    label={x}
+                    variant="outlined"
+                    className="text-white border-white"
+                  />
+                ))}
             </Stack>
             <Typography variant="h3" className="text-white">
               {name}
@@ -63,7 +65,7 @@ const CourseHeader = (props: Props) => {
             <Typography variant="subtitle1" className="text-white">
               {brief}
             </Typography>
-            <Stack direction={'row'} spacing={1}>
+            <Stack direction={"row"} spacing={1}>
               <Typography variant="caption" className="text-white">
                 {Number(ratings?.toFixed(1)) || 5}
               </Typography>

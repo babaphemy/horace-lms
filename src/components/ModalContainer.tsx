@@ -1,20 +1,20 @@
-import React, { ReactElement } from 'react';
-import { Appcontext, AppDpx } from '../context/AppContext';
-import { Backdrop, Box, Fade, Modal } from '@mui/material';
+import React, { ReactElement } from "react";
+import { Appcontext, AppDpx } from "../context/AppContext";
+import { Backdrop, Box, Fade, Modal } from "@mui/material";
 const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   minWidth: 400,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
 };
 
 interface Props {
   children: ReactElement;
-  type: 'login' | 'signup' | 'payment' | 'review';
+  type: "login" | "signup" | "payment" | "review";
 }
 
 const ModalContainer = ({ type, children }: Props) => {
@@ -23,7 +23,7 @@ const ModalContainer = ({ type, children }: Props) => {
 
   const handleClose = () => {
     dispatch({
-      type: 'MODAL_SET',
+      type: "MODAL_SET",
       data: {
         ...modal,
         open: false,

@@ -1,31 +1,33 @@
-import { Typography, Box, Divider, Button } from '@mui/material';
-import React, { useContext } from 'react';
-import { handlePay } from '../../api/rest';
-import { Appcontext } from '../../context/AppContext';
-import ModalContainer from '../ModalContainer';
+"use client";
+
+import { handlePay } from "@/app/api/rest";
+import { Appcontext } from "@/context/AppContext";
+import { Typography, Box, Divider, Button } from "@mui/material";
+import React, { useContext } from "react";
+import ModalContainer from "../ModalContainer";
 
 const PaymentModal = ({ course }: any) => {
   const { user } = useContext(Appcontext);
-  const author = `${course?.author?.firstname || 'Horace'} ${
-    course?.author?.lastname || 'Instructor'
+  const author = `${course?.author?.firstname || "Horace"} ${
+    course?.author?.lastname || "Instructor"
   }`;
 
   const handleCoursePayment = async () => {
     const payload = {
       amt: Number(course?.price - course?.tax) * 100,
-      currency: 'USD',
-      description: 'Payment for ' + course?.courseName,
+      currency: "USD",
+      description: "Payment for " + course?.courseName,
       name:
-        user?.firstname + ' ' + user?.lastname || user?.email?.split('@')[0],
+        user?.firstname + " " + user?.lastname || user?.email?.split("@")[0],
     };
 
     if (!user) {
-      alert('Please login to continue');
+      alert("Please login to continue");
       return;
     }
 
     if (!course?.price) {
-      alert('Course price is not set');
+      alert("Course price is not set");
       return;
     }
 
@@ -60,7 +62,7 @@ const PaymentModal = ({ course }: any) => {
         <Button
           variant="contained"
           sx={{
-            backgroundColor: 'red !important',
+            backgroundColor: "red !important",
           }}
           fullWidth
           onClick={handleCoursePayment}

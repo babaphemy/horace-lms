@@ -1,7 +1,7 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
-import { detailStyles } from '../styles/courseStyles';
-import Curriculum from './courses/Curriculum';
+import React from "react";
+import { Box, Typography } from "@mui/material";
+import { detailStyles } from "../styles/courseStyles";
+import Curriculum from "./courses/Curriculum";
 
 const ClassroomSidebar = () => {
   return (

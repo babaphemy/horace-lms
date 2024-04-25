@@ -1,6 +1,6 @@
-import React from 'react';
-import ModalContainer from '../ModalContainer';
-import SignUpComponent from './SignUpComponent';
+import React from "react";
+import ModalContainer from "../ModalContainer";
+import SignUpComponent from "./SignUpComponent";
 
 const SignUpLogin = () => {
   return (

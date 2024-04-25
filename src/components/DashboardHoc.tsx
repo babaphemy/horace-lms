@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
-import Curriculumb from './courses/Curriculumb';
-import { tCurriculum } from '../types/types';
-import FooterLte from './layout/FooterLte';
-import DashboardHeader from './layout/DashboardHeader';
-import { Box } from '@mui/material';
+import React, { ReactNode } from "react";
+import Curriculumb from "./courses/Curriculumb";
+import { tCurriculum } from "../types/types";
+import FooterLte from "./layout/FooterLte";
+import DashboardHeader from "./layout/DashboardHeader";
+import { Box } from "@mui/material";
 interface Props {
   children: ReactNode;
   isClass?: boolean;
@@ -18,8 +18,8 @@ const DashboardHoc = ({ children, courseName, curriculum }: Props) => {
 
       <Box
         sx={{
-          display: 'flex',
-          margin: '2px 0 0 2px',
+          display: "flex",
+          margin: "2px 0 0 2px",
         }}
       >
         <div className="">

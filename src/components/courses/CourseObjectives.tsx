@@ -1,4 +1,4 @@
-import { Check, TextSnippet } from '@mui/icons-material';
+import { Check, TextSnippet } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -10,13 +10,13 @@ import {
   Tab,
   Tabs,
   Typography,
-} from '@mui/material';
-import { ReactElement, useState } from 'react';
-import { tCurriculum } from '../../types/types';
-import CourseReview from './CourseReview';
+} from "@mui/material";
+import { ReactElement, useState } from "react";
+import { tCurriculum } from "../../types/types";
+import CourseReview from "./CourseReview";
 const ranges = {
-  content: 'Content',
-  reviews: 'Reviews',
+  content: "Content",
+  reviews: "Reviews",
 };
 interface Props {
   category?: string;
@@ -48,7 +48,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     <>
       <Box className="flex space-x-6 items-center my-5 mx-5">
         <Typography variant="subtitle1" className="text-gray-500 font-semibold">
-          {regCourse ? 'Enrolled' : 'Not Enrolled'}
+          {regCourse ? "Enrolled" : "Not Enrolled"}
         </Typography>
         {!regCourse && (
           <Button
@@ -69,15 +69,15 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
             textColor="inherit"
             variant="scrollable"
             scrollButtons={false}
-            className="-mx-4 min-h-40 "
+            className="-mx-4 min-h-16 "
             classes={{
-              indicator: 'flex justify-center bg-transparent w-full h-full',
+              indicator: "flex justify-center bg-transparent w-full h-full",
             }}
             TabIndicatorProps={{
               children: (
                 <Box
-                  sx={{ bgcolor: 'text.disabled', color: 'white' }}
-                  className="w-full h-full rounded-full bg-[#F9AD56] opacity-50"
+                  sx={{ bgcolor: "text.disabled", color: "white" }}
+                  className="w-full h-12 rounded-full bg-[#F9AD56] opacity-50"
                 />
               ),
             }}
@@ -100,13 +100,13 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
               </Typography>
               <Typography gutterBottom>{brief}</Typography>
               <Typography variant="subtitle1" gutterBottom>
-                Target Audience: {target || 'Beginner'}
+                Target Audience: {target || "Beginner"}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                Category: {category?.toString() || 'web'}
+                Category: {category?.toString() || "web"}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                Last Updated: {modified || 'N/A'}
+                Last Updated: {modified || "N/A"}
               </Typography>
               <Button
                 onClick={handleJoinClass}

@@ -23,11 +23,11 @@ export type tRegisterUser = {
   age?: string | number;
   country?: string;
   meta?: any;
-}
+};
 export type tLoginUser = {
   email: string;
   password: string | number;
-}
+};
 export type tQuiz = {
   id: number;
   title: string;
@@ -46,8 +46,8 @@ export type tSection = {
   title: string;
   description: string;
   id: string;
-  lecture: tLecture[]
-}
+  lecture: tLecture[];
+};
 export type tCurriculum = {
   section: tSection[];
   objective?: string[];
@@ -73,39 +73,37 @@ export type tCourse = {
   draft: boolean;
   posts?: any;
   assetCount: {
-    lessonCount: number,
-    labCount: number,
-    quizCount: number,
-    downloadCount: number,
-    noteCount: number,
-  }
-}
+    lessonCount: number;
+    labCount: number;
+    quizCount: number;
+    downloadCount: number;
+    noteCount: number;
+  };
+};
 export type tCourseLte = {
-  "author": string;
-  "id": string;
-  "courseName": string;
-  "brief": string;
-  "createdOn": string;
-  "updatedOn": string;
-  "thumbnail": string;
-  "category": string;
-  "totalSteps": number;
-  "activeStep": number | null;
-  "students": number;
-  "curriculum": null;
-  "draft": boolean;
-  "cost": number;
-  "posts": tPost[]
-
-}
-
+  author: string;
+  id: string;
+  courseName: string;
+  brief: string;
+  createdOn: string;
+  updatedOn: string;
+  thumbnail: string;
+  category: string;
+  totalSteps: number;
+  activeStep: number | null;
+  students: number;
+  curriculum: null;
+  draft: boolean;
+  cost: number;
+  posts: tPost[];
+};
 
 export type tNextPrev = {
   handlePrev: () => void;
   playId: any;
   course: any;
   handleNext: (id: number | undefined) => void;
-  lessonCount: number
+  lessonCount: number;
 };
 
 export type tPost = {
@@ -119,30 +117,30 @@ export type tPost = {
   like: number;
   share: number;
   rating: number;
-
-}
+};
 export type tLike = {
   likes: number[];
-}
+};
 
 export type tReview = {
   user?: {
     id: string;
-  },
+  };
   course: {
     id: string;
-  },
+  };
   rating: number;
   type: string;
   message: string;
-}
+};
 export type tStatus = { isPlaying: boolean };
 export type Action =
   | {
-    type: "USER_ADD";
-    data: [tUser];
-  }
-  | { type: "COURSE_SET"; data: tCourse | null } | { type: "COURSES_SET"; data: [tCourse] }
+      type: "USER_ADD";
+      data: [tUser];
+    }
+  | { type: "COURSE_SET"; data: tCourse | null }
+  | { type: "COURSES_SET"; data: [tCourse] };
 
 export interface Feature {
   icon: any;
@@ -155,4 +153,3 @@ export interface Plan {
   description: string;
   duration?: string;
 }
-

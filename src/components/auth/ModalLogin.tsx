@@ -1,6 +1,6 @@
-import React from 'react';
-import ModalContainer from '../ModalContainer';
-import LoginComponent from './LoginComponent';
+import React from "react";
+import ModalContainer from "../ModalContainer";
+import LoginComponent from "./LoginComponent";
 
 type Props = {};
 

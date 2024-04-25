@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Container,
   Box,
@@ -10,9 +10,9 @@ import {
   TextField,
   Button,
   Divider,
-} from '@mui/material';
-import Image from 'next/image';
-import Link from 'next/link';
+} from "@mui/material";
+import Image from "next/image";
+import Link from "next/link";
 
 type SocialProps = {
   name: string;
@@ -32,9 +32,9 @@ const Footer = () => {
           }}
         >
           <Grid item sm={12} md={3}>
-            <Box sx={{ float: 'left' }}>
+            <Box sx={{ float: "left" }}>
               <Image
-                src={'/img/logo.webp'}
+                src={"/img/logo.webp"}
                 alt="logo"
                 width={150}
                 height={50}
@@ -136,7 +136,7 @@ const Footer = () => {
         </Grid>
         <Divider sx={footerStyles.divider} />
         <Typography variant="body1" sx={footerStyles.center}>
-          Powered By Horace | All Rights Reserved! &copy;{' '}
+          Powered By Horace | All Rights Reserved! &copy;{" "}
           {new Date().getFullYear()}
         </Typography>
       </Container>
@@ -157,60 +157,60 @@ const footerStyles = {
   rounded: {
     borderRadius: 10,
 
-    '& .MuiOutlinedInput-root': {
+    "& .MuiOutlinedInput-root": {
       borderRadius: 10,
     },
   },
   noLeftPadding: {
-    '& > :not(style)': { paddingLeft: 0, cursor: 'pointer' },
+    "& > :not(style)": { paddingLeft: 0, cursor: "pointer" },
   },
-  center: { textAlign: 'center', py: 2 },
+  center: { textAlign: "center", py: 2 },
   divider: {
-    background: '#1A055F',
-    height: '3px',
+    background: "#1A055F",
+    height: "3px",
     my: 4,
   },
   section: {
-    '& > :not(style)': {
+    "& > :not(style)": {
       my: 1,
     },
   },
   newsletter: {
-    '& > :not(style)': {
+    "& > :not(style)": {
       my: 1,
     },
   },
   newsButton: {
-    background: '#00A9C1 !important',
-    color: '#fff',
+    background: "#00A9C1 !important",
+    color: "#fff",
     px: 3,
-    textTransform: 'capitalize',
+    textTransform: "capitalize",
 
-    '&:hover': {
-      background: '#000',
+    "&:hover": {
+      background: "#000",
     },
   },
 };
 
 const socials = [
   {
-    name: 'facebook',
-    link: 'https://www.facebook.com/horacelms',
-    icon: 'facebook.webp',
+    name: "facebook",
+    link: "https://www.facebook.com/horacelms",
+    icon: "facebook.webp",
   },
   {
-    name: 'twitter',
-    link: 'https://www.twitter.com/essloffice',
-    icon: 'twitter.webp',
+    name: "twitter",
+    link: "https://www.twitter.com/essloffice",
+    icon: "twitter.webp",
   },
   {
-    name: 'instagram',
-    link: 'https://www.instagram.com/',
-    icon: 'instagram.webp',
+    name: "instagram",
+    link: "https://www.instagram.com/",
+    icon: "instagram.webp",
   },
   {
-    name: 'linkedin',
-    link: 'https://www.linkedin.com/company/10654256/',
-    icon: 'linkedin.webp',
+    name: "linkedin",
+    link: "https://www.linkedin.com/company/10654256/",
+    icon: "linkedin.webp",
   },
 ];

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { getUsers } from '../api/rest';
+import { useEffect, useState } from "react";
+import { getUsers } from "../api/rest";
 
 const useAuth = () => {
   const [users, setUsers] = useState<any>([]);

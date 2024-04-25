@@ -1,5 +1,5 @@
-import LockIcon from '@mui/icons-material/Lock';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import LockIcon from "@mui/icons-material/Lock";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Collapse,
   Divider,
@@ -8,42 +8,42 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from '@mui/material';
-import { useState } from 'react';
+} from "@mui/material";
+import { useState } from "react";
 
-import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
-import { sample } from '../../api/data';
-import { tCourse, tLecture } from '../../types/types';
+import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material";
+import { sample } from "../../api/data";
+import { tCourse, tLecture } from "../../types/types";
 
 const styles = {
   root: {
-    width: '100%',
+    width: "100%",
     maxWidth: 360,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   nested: {
     paddingLeft: 4,
   },
   navBox: {
-    '& > *': {
-      padding: '0.8 0.5',
-      height: '100%',
-      cursor: 'pointer',
-      backgroundColor: 'darkblue',
-      '&:hover': {
-        backgroundColor: '#f5f5f5',
-        color: 'darkblue',
-        transform: 'translateX(2px)',
+    "& > *": {
+      padding: "0.8 0.5",
+      height: "100%",
+      cursor: "pointer",
+      backgroundColor: "darkblue",
+      "&:hover": {
+        backgroundColor: "#f5f5f5",
+        color: "darkblue",
+        transform: "translateX(2px)",
       },
-      '&__navItem': {
-        display: 'flex',
-        alignItems: 'center',
-        alignSelf: 'stretch',
-        '&__navText': {
-          marginLeft: '0.5rem',
+      "&__navItem": {
+        display: "flex",
+        alignItems: "center",
+        alignSelf: "stretch",
+        "&__navText": {
+          marginLeft: "0.5rem",
         },
-        '&__icon': {
-          fontsize: '1.5rem',
+        "&__icon": {
+          fontsize: "1.5rem",
         },
       },
     },
@@ -54,7 +54,7 @@ const Curriculum = () => {
   const sidebar = true;
   const [open, setOpen] = useState(true);
   const [selected, setSel] = useState({
-    courseName: 'Course 1',
+    courseName: "Course 1",
   });
   const handleClick = (sl: tCourse) => {
     setSel(sl);
@@ -74,15 +74,15 @@ const Curriculum = () => {
               button
               onClick={() => handleClick(course)}
               sx={{
-                '&__navItem': {
-                  display: 'flex',
-                  alignItems: 'center',
-                  alignSelf: 'stretch',
-                  '&__navText': {
-                    marginLeft: '0.5rem',
+                "&__navItem": {
+                  display: "flex",
+                  alignItems: "center",
+                  alignSelf: "stretch",
+                  "&__navText": {
+                    marginLeft: "0.5rem",
                   },
-                  '&__icon': {
-                    fontsize: '1.5rem',
+                  "&__icon": {
+                    fontsize: "1.5rem",
                   },
                 },
               }}
@@ -101,8 +101,8 @@ const Curriculum = () => {
                   <Typography
                     className={
                       sidebar
-                        ? 'font-normal text-sm'
-                        : 'font-semibold text-md md:font-bold md:text-lg'
+                        ? "font-normal text-sm"
+                        : "font-semibold text-md md:font-bold md:text-lg"
                     }
                     variant="h6"
                   >
@@ -117,8 +117,8 @@ const Curriculum = () => {
                   variant="body2"
                   component="p"
                 >
-                  {course.lecture.length}{' '}
-                  {course.lecture.length === 1 ? 'lecture' : 'lectures'}
+                  {course.lecture.length}{" "}
+                  {course.lecture.length === 1 ? "lecture" : "lectures"}
                 </Typography>
               )}
             </ListItem>
@@ -148,7 +148,7 @@ const Curriculum = () => {
                         </ListItemIcon>
                       )}
                     </ListItem>
-                  )
+                  ),
                 )}
               </List>
             </Collapse>

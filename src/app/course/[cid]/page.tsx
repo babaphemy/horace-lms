@@ -21,8 +21,8 @@ import {
   Rating,
   Typography,
 } from "@mui/material";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import React, { FC, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import ReactPlayer from "react-player";
 import Fuse from "fuse.js";
@@ -44,19 +44,25 @@ import SignUpLogin from "@/components/auth/ModalSignUp";
 import PaymentModal from "@/components/payment/PaymentModal";
 import { ReviewModal } from "@/components/courses/CourseReview";
 import FooterLte from "@/components/layout/FooterLte";
-export const metadata = generateMetadata({
-  title: "Horace Learning Management Solution | Horace Courses",
-  description:
-    "Horace Online Courses. Learning Management Solution and a complete school management system for all schools",
-});
-const Detailb = () => {
+// export const metadata = generateMetadata({
+//   title: "Horace Learning Management Solution | Horace Courses",
+//   description:
+//     "Horace Online Courses. Learning Management Solution and a complete school management system for all schools",
+// });
+
+interface IDetailbProps {
+  params: {
+    cid: string;
+  };
+}
+const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
   const { user, courses } = React.useContext(Appcontext);
   const dispatch = React.useContext(AppDpx);
   const [regCourse, setRegCourse] = React.useState<boolean>(false);
   const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([]);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const { cid } = useParams<{ cid: string }>();
+
   const { data } = useQuery(["acourse", cid], () => fetchCourse(cid), {
     staleTime: 5000,
     cacheTime: 10,
@@ -400,10 +406,5 @@ const Detailb = () => {
     </>
   );
 };
-Detailb.getInitialProps = async ({ query }: { query: any }) => {
-  // Fetch data based on the query parameters
-  const cid = query.cid; // Access the course ID from the query parameters
 
-  return { cid };
-};
 export default Detailb;

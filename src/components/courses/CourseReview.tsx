@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Alert,
   Avatar,
@@ -9,14 +11,14 @@ import {
   Rating,
   TextField,
   Typography,
-} from '@mui/material';
-import React from 'react';
-import { MODAL_SET } from '../../context/Action';
-import { AppDpx } from '../../context/AppContext';
-import ModalContainer from '../ModalContainer';
-import { useMutation, useQueryClient } from 'react-query';
-import { addReview } from '../../api/rest';
-import { fromNow } from '../../utils/fromNow';
+} from "@mui/material";
+import React from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { addReview } from "@/app/api/rest";
+import { AppDpx } from "@/context/AppContext";
+import { MODAL_SET } from "@/context/Action";
+import { fromNow } from "@/utils/fromNow";
+import ModalContainer from "../ModalContainer";
 
 type Props = {
   posts?: any[];
@@ -24,10 +26,10 @@ type Props = {
 };
 
 function LinearProgressWithLabel(
-  props: LinearProgressProps & { value: number; label: string }
+  props: LinearProgressProps & { value: number; label: string },
 ) {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box sx={{ display: "flex", alignItems: "center" }}>
       <Box
         sx={{
           mr: 1,
@@ -37,7 +39,7 @@ function LinearProgressWithLabel(
         <Typography
           variant="body1"
           sx={{
-            fontSize: { xs: '0.75rem', md: '1rem' },
+            fontSize: { xs: "0.75rem", md: "1rem" },
           }}
           color="text.secondary"
         >
@@ -49,19 +51,19 @@ function LinearProgressWithLabel(
           variant="determinate"
           {...props}
           sx={{
-            borderRadius: '10px',
-            backgroundColor: '#F9AD5655',
+            borderRadius: "10px",
+            backgroundColor: "#F9AD5655",
 
-            '& .MuiLinearProgress-bar': {
-              borderRadius: '10px',
-              backgroundColor: '#F9AD56',
+            "& .MuiLinearProgress-bar": {
+              borderRadius: "10px",
+              backgroundColor: "#F9AD56",
             },
           }}
         />
       </Box>
       <Box sx={{ ml: 1, flex: 2 }}>
         <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value
+          props.value,
         )}%`}</Typography>
       </Box>
     </Box>
@@ -92,7 +94,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
   }, [viewMore, posts]);
 
   const handleOpenReviewModal = () => {
-    dispatch({ type: MODAL_SET, data: { open: true, type: 'review' } });
+    dispatch({ type: MODAL_SET, data: { open: true, type: "review" } });
   };
 
   return (
@@ -100,57 +102,57 @@ const CourseReview = ({ posts, ratings }: Props) => {
       <Typography
         variant="h4"
         sx={{
-          fontSize: { xs: '1.5rem', md: '2rem' },
+          fontSize: { xs: "1.5rem", md: "2rem" },
         }}
       >
         Reviews & Ratings
       </Typography>
       <Typography
         variant="body1"
-        sx={{ fontSize: { xs: '1rem', md: '1.2rem' } }}
+        sx={{ fontSize: { xs: "1rem", md: "1.2rem" } }}
       >
         Our Students says about this course
       </Typography>
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "100%",
         }}
       >
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: "center",
             mt: 2,
             p: 2,
             flex: 1,
-            maxWidth: '700px',
-            borderRadius: '30px',
-            border: '1px solid #000000',
+            maxWidth: "700px",
+            borderRadius: "30px",
+            border: "1px solid #000000",
 
-            '@media (max-width: 1000px)': {
-              width: '100%',
+            "@media (max-width: 1000px)": {
+              width: "100%",
             },
           }}
         >
           <Box
             sx={{
               // backgroundColor: '#F9AD5611',
-              color: 'black',
+              color: "black",
               p: 3,
               mr: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              minHeight: '200px',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              minHeight: "200px",
 
-              '@media (max-width: 1000px)': {
+              "@media (max-width: 1000px)": {
                 mr: 0,
                 mb: 1,
-                width: '100%',
+                width: "100%",
               },
             }}
           >
@@ -171,24 +173,24 @@ const CourseReview = ({ posts, ratings }: Props) => {
             orientation="vertical"
             flexItem
             sx={{
-              '@media (max-width: 1000px)': {
-                display: 'none',
+              "@media (max-width: 1000px)": {
+                display: "none",
               },
             }}
           />
           <Box
             sx={{
               // backgroundColor: '#F9AD5611',
-              color: 'black',
+              color: "black",
               p: 3,
               flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              minHeight: '200px',
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              minHeight: "200px",
 
-              '@media (max-width: 1000px)': {
-                width: '100%',
+              "@media (max-width: 1000px)": {
+                width: "100%",
               },
             }}
           >
@@ -252,7 +254,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
         {conditionalReview?.map((post, index, array) => {
           return (
             <Box key={index}>
-              <Box display={'flex'} my={1}>
+              <Box display={"flex"} my={1}>
                 <Avatar
                   alt="instructor"
                   src="https://material-ui.com/static/images/avatar/1.webp"
@@ -266,7 +268,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
                     <Typography variant="body2" color="text.secondary" ml={1}>
                       {post.createdOn
                         ? fromNow(new Date(post.createdOn))
-                        : '1 day ago'}
+                        : "1 day ago"}
                     </Typography>
                   </Box>
                   <Rating
@@ -292,12 +294,12 @@ const CourseReview = ({ posts, ratings }: Props) => {
         <Button
           sx={{
             ...styles.button,
-            alignSelf: 'center',
-            justifySelf: 'center',
+            alignSelf: "center",
+            justifySelf: "center",
           }}
           onClick={() => setViewMore(!viewMore)}
         >
-          {viewMore ? 'View Less' : 'View More'}
+          {viewMore ? "View Less" : "View More"}
         </Button>
       )}
     </div>
@@ -314,8 +316,8 @@ type ReviewModalProps = {
 export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
   const queryClient = useQueryClient();
   const [rating, setRating] = React.useState(1);
-  const [comment, setComment] = React.useState('');
-  const [error, setError] = React.useState('');
+  const [comment, setComment] = React.useState("");
+  const [error, setError] = React.useState("");
 
   const dispatch = React.useContext(AppDpx);
 
@@ -325,9 +327,9 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
 
   const { mutate, isLoading: loading } = useMutation(addReview, {
     onSuccess: () => {
-      queryClient.invalidateQueries('acourse');
-      dispatch({ type: MODAL_SET, data: { open: false, type: 'review' } });
-      setComment('');
+      queryClient.invalidateQueries("acourse");
+      dispatch({ type: MODAL_SET, data: { open: false, type: "review" } });
+      setComment("");
       setRating(1);
     },
     onError: (error: any) => {
@@ -336,13 +338,13 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
   });
 
   const handleSubmit = () => {
-    setError('');
+    setError("");
     if (!rating) {
-      setError('Please select a rating');
+      setError("Please select a rating");
       return;
     }
     if (!comment) {
-      setError('Please add a comment');
+      setError("Please add a comment");
       return;
     }
 
@@ -358,7 +360,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
         id: courseId,
       },
       rating: rating,
-      type: 'REVIEW',
+      type: "REVIEW",
       message: comment,
     };
 
@@ -369,7 +371,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
     <ModalContainer type="review">
       <Box
         sx={{
-          minWidth: '500px',
+          minWidth: "500px",
         }}
       >
         <Typography variant="h4">Add Review & Rating</Typography>
@@ -380,7 +382,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
             sx={{
               my: 2,
             }}
-            onClose={() => setError('')}
+            onClose={() => setError("")}
           >
             {error}
           </Alert>
@@ -403,7 +405,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
             variant="outlined"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            sx={{ width: '100%' }}
+            sx={{ width: "100%" }}
           />
         </Box>
         <Button sx={styles.button} disabled={loading} onClick={handleSubmit}>
@@ -416,8 +418,8 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
 
 const styles = {
   button: {
-    border: '1px solid',
-    borderColor: 'primary',
+    border: "1px solid",
+    borderColor: "primary",
     px: 4,
     my: 2,
   },

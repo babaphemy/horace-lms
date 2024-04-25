@@ -44,7 +44,7 @@ const PopularCard = ({ data }: courseProp) => {
   };
 
   const handleCardClick = () => {
-    router.push(`/course/detailb?cid=${id}`);
+    router.push(`/course/${id}`);
   };
 
   const formattedBrief = (brief: string) => {
