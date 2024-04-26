@@ -9,7 +9,8 @@ import { AppDpx, AppProvider } from "@/context/AppContext"
 import { USER_ADD } from "@/context/Action"
 import { muiTheme } from "@/styles/theme"
 import { QueryClient, QueryClientProvider } from "react-query"
-import { ToastContainer } from "react-toastify"
+import ToastProvider from "@/providers/toast-provider"
+import "react-toastify/dist/ReactToastify.css"
 
 const volkhov = Open_Sans({
   subsets: ["latin"],
@@ -56,9 +57,9 @@ export default function RootLayout({
           <AppProvider>
             <QueryClientProvider client={queryClient}>
               {children}
+              <ToastProvider />
             </QueryClientProvider>
           </AppProvider>
-          <ToastContainer />
         </ThemeProvider>
       </body>
     </html>

@@ -1,6 +1,6 @@
 import { loadStripe } from "@stripe/stripe-js"
 import { auth, basePath, PostSettings } from "./setting"
-import { tReview } from "@/types/types"
+import { tInterview, tReview } from "@/types/types"
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
   return resp.json()
@@ -134,6 +134,17 @@ const handlePay = async (obj: any) => {
   return res
 }
 
+const submitInterview = async (data: tInterview) => {
+  const response = await fetch(
+    `${basePath}contact/interview`,
+    PostSettings(data)
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
 export {
   getUsers,
   loginUser,
@@ -149,4 +160,5 @@ export {
   isCourseReg,
   addReview,
   handlePay,
+  submitInterview,
 }

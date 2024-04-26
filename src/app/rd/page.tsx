@@ -1,52 +1,92 @@
 "use client"
-import React from "react"
+import React, { useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Typography, Box, TextField, Button, Container } from "@mui/material"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
+import { AppDpx, Appcontext } from "@/context/AppContext"
+import { submitInterview } from "../api/rest"
+import { notifyError, notifySuccess } from "@/utils/notification"
+import { useMutation } from "react-query"
+import ModalLogin from "@/components/auth/ModalLogin"
+import SignUpLogin from "@/components/auth/ModalSignUp"
+import { MODAL_SET } from "@/context/Action"
+
 const schema = yup.object().shape({
-  workflow: yup.string().required("First name is required"),
-  alignmentIssues: yup.string().required("Last name is required"),
-  hardestPart: yup
+  alignment: yup.string().label("Alignment").required(),
+  misalignment: yup.string().label("Misalignment").required(),
+  hardest: yup.string().label("Hardest").required(),
+  whyHardest: yup.string().label("Why Hardest"),
+  currentSolution: yup.string().label("Current Solution"),
+  strengthsCurrentSolution: yup
     .string()
-    .email("You must enter a valid email")
-    .required("You must enter a email"),
-  problemReason: yup.string().required("Phone number is required"),
-  currentSolution: yup.string().required("Message is required"),
-  likedSolution: yup.string(),
-  dislikedSolution: yup.string(),
-  weeklyHours: yup.string(),
-  additionalChallenges: yup.string(),
-  feedback: yup.string(),
+    .label("Strengths Current Solution")
+    .required(),
+  weaknessCurrentSolution: yup
+    .string()
+    .label("Weakness Current Solution")
+    .required(),
+  problemtime: yup.number().label("Problem Time"),
+  painpoint: yup.string().label("Pain Point").required(),
+  willTryHorace: yup.string().label("Will Try Horace"),
 })
 
 const defaultValues = {
-  workflow: "",
-  alignmentIssues: "",
-  hardestPart: "",
-  problemReason: "",
+  alignment: "",
+  misalignment: "",
+  hardest: "",
+  whyHardest: "",
   currentSolution: "",
-  likedSolution: "",
-  dislikedSolution: "",
-  weeklyHours: "",
-  additionalChallenges: "",
-  feedback: "",
+  strengthsCurrentSolution: "",
+  weaknessCurrentSolution: "",
+  problemtime: 0,
+  painpoint: "",
+  willTryHorace: "",
 }
 const InterviewQuestionnaire = () => {
+  const { user } = useContext(Appcontext)
+  const dispatch = useContext(AppDpx)
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
   })
 
-  const onSubmit = (data: any) => {
-    console.log(data)
-    // Handle form submission here
+  const { mutate } = useMutation(submitInterview, {
+    onSuccess: () => {
+      notifySuccess("Thank you for your feedback!")
+      reset()
+      return
+    },
+    onError: () => {
+      notifyError("Something went wrong")
+      return
+    },
+  })
+
+  const onSubmit = async (data: any) => {
+    if (!user || !user.id) {
+      return dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
+    }
+    const userInfo = {
+      fullname: user?.firstname + " " + user?.lastname,
+      email: user?.email,
+      phone: user?.phone,
+    }
+
+    mutate({
+      response: {
+        person: userInfo,
+        answer: data,
+      },
+    })
   }
 
   return (
@@ -76,21 +116,25 @@ const InterviewQuestionnaire = () => {
             Workflow Alignment:
           </Typography>
           <TextField
-            {...register("workflow")}
+            {...register("alignment")}
             variant="outlined"
             multiline
             rows={4}
             fullWidth
             margin="normal"
+            error={!!errors.alignment}
+            helperText={errors.alignment?.message}
             label="Could you please walk me through your typical workflow for managing school operations and learning activities?"
           />
           <TextField
-            {...register("alignmentIssues")}
+            {...register("misalignment")}
             variant="outlined"
             multiline
             rows={4}
             fullWidth
             margin="normal"
+            helperText={errors.misalignment?.message}
+            error={!!errors.misalignment}
             label="If the workflow of Horace Learning does not align with how you currently operate, what are the key areas of misalignment?"
           />
 
@@ -98,21 +142,25 @@ const InterviewQuestionnaire = () => {
             For each step in the workflow:
           </Typography>
           <TextField
-            {...register("hardestPart")}
+            {...register("hardest")}
             variant="outlined"
             multiline
             rows={4}
             fullWidth
             margin="normal"
+            error={!!errors.hardest}
+            helperText={errors.hardest?.message}
             label="What is the hardest part of this step for you? (Try to understand the problem)"
           />
           <TextField
-            {...register("problemReason")}
+            {...register("whyHardest")}
             variant="outlined"
             multiline
             rows={4}
             fullWidth
             margin="normal"
+            error={!!errors.whyHardest}
+            helperText={errors.whyHardest?.message}
             label="Why is that a problem for you? (Understand the emotion behind the problem)"
           />
           <TextField
@@ -122,32 +170,40 @@ const InterviewQuestionnaire = () => {
             rows={4}
             fullWidth
             margin="normal"
+            error={!!errors.currentSolution}
+            helperText={errors.currentSolution?.message}
             label="How are you currently solving this problem? (Access if they are searching for solutions)"
           />
           <TextField
-            {...register("likedSolution")}
+            {...register("strengthsCurrentSolution")}
             variant="outlined"
             multiline
             rows={4}
             fullWidth
             margin="normal"
+            error={!!errors.strengthsCurrentSolution}
+            helperText={errors.strengthsCurrentSolution?.message}
             label="What do you like about your current solution?"
           />
           <TextField
-            {...register("dislikedSolution")}
+            {...register("weaknessCurrentSolution")}
             variant="outlined"
             multiline
             rows={4}
             fullWidth
             margin="normal"
+            error={!!errors.weaknessCurrentSolution}
+            helperText={errors.weaknessCurrentSolution?.message}
             label="What do you not like about your current solution? (Don't look for gaps)"
           />
           <TextField
-            {...register("weeklyHours", { valueAsNumber: true })}
+            {...register("problemtime", { valueAsNumber: true })}
             type="number"
             variant="outlined"
             fullWidth
             margin="normal"
+            helperText={errors.problemtime?.message}
+            error={!!errors.problemtime}
             label="Approximately how many hours per week do you spend on this step of the problem?"
           />
 
@@ -155,19 +211,23 @@ const InterviewQuestionnaire = () => {
             Additional Questions:
           </Typography>
           <TextField
-            {...register("additionalChallenges")}
+            {...register("painpoint")}
             variant="outlined"
             multiline
             rows={4}
             fullWidth
             margin="normal"
+            error={!!errors.painpoint}
+            helperText={errors.painpoint?.message}
             label="Are there any other significant challenges or pain points you face in managing school operations and learning activities that we haven't covered?"
           />
           <TextField
-            {...register("feedback", { value: "yes" })}
+            {...register("willTryHorace", { value: "yes" })}
             variant="outlined"
             fullWidth
             margin="normal"
+            error={!!errors.willTryHorace}
+            helperText={errors.willTryHorace?.message}
             label="If we were to develop solutions to address the challenges you've mentioned, would it be okay if I get back to you for further input and feedback?"
           />
 
@@ -187,6 +247,8 @@ const InterviewQuestionnaire = () => {
             </Button>
           </Box>
         </form>
+        <ModalLogin />
+        <SignUpLogin />
       </Container>
       <Footer />
     </Box>

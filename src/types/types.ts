@@ -153,3 +153,27 @@ export interface Plan {
   description: string
   duration?: string
 }
+
+export interface IPerson {
+  fullname?: string
+  email?: string
+  phone?: string
+}
+export interface IAnswer {
+  alignment: string
+  misalignment: string
+  hardest: string
+  whyHardest: string
+  currentSolution: string
+  strengthsCurrentSolution: string
+  weaknessCurrentSolution: string
+  problemtime: number
+  painpoint: string
+  willTryHorace: string
+}
+export type tInterview = {
+  response: {
+    person: IPerson
+    answer: IAnswer
+  }
+}
