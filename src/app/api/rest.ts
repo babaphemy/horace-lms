@@ -47,6 +47,7 @@ const resetPass = async (data: {
   token: string | number
   email: string
   password: string | number
+  type: string
 }) => {
   const resp = await fetch(`${basePath}user/reset/password`, PostSettings(data))
   if (!resp.ok) {
