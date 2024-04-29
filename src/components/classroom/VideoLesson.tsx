@@ -1,3 +1,7 @@
+"use client"
+
+import { Appcontext, AppDpx } from "@/context/AppContext"
+import { tCurriculum, tNextPrev } from "@/types/types"
 import { ThumbDownAltOutlined, ThumbUpAltOutlined } from "@mui/icons-material"
 import {
   Box,
@@ -11,13 +15,12 @@ import {
   Typography,
 } from "@mui/material"
 import Image from "next/image"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 import React, { useContext, useEffect } from "react"
 import ReactPlayer from "react-player"
-import Curriculumb from "../../components/courses/Curriculumb"
-import ClassLayout from "../../components/layout/ClassLayout"
-import { AppDpx, Appcontext } from "../../context/AppContext"
-import { tCurriculum, tNextPrev } from "../../types/types"
+import Curriculumb from "../courses/Curriculumb"
+import ClassLayout from "../layout/ClassLayout"
+
 interface Props {
   handleNext: (id: number | undefined) => void
   handlePrev: () => void

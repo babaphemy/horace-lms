@@ -12,7 +12,7 @@ import {
 import { useState } from "react"
 
 import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material"
-import { sample } from "../../api/data"
+import { sample } from "@/app/api/data"
 import { tCourse, tLecture } from "../../types/types"
 
 const styles = {

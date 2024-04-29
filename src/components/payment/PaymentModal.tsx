@@ -1,7 +1,9 @@
+"use client"
+
+import { handlePay } from "@/app/api/rest"
+import { Appcontext } from "@/context/AppContext"
 import { Typography, Box, Divider, Button } from "@mui/material"
 import React, { useContext } from "react"
-import { handlePay } from "../../api/rest"
-import { Appcontext } from "../../context/AppContext"
 import ModalContainer from "../ModalContainer"
 
 const PaymentModal = ({ course }: any) => {

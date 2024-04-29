@@ -1,3 +1,5 @@
+"use client"
+
 import { Box, Typography, Avatar, Divider, Rating } from "@mui/material"
 import React from "react"
 import { Tag } from "./home/PopularCard"
@@ -6,7 +8,7 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import { tCourseLte, tPost } from "../types/types"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 type SimilarCardProps = {
   course: tCourseLte
@@ -34,7 +36,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
   }
 
   const handleCardClick = () => {
-    router.push(`/course/detailb?cid=${id}`)
+    router.push(`/course/${id}`)
   }
 
   const calculatedRating = () => {
@@ -50,9 +52,14 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
         <Image
           src={`/img/${thumbnail || "1.webp"}`}
           alt="a man smiling"
-          width={"170rem"}
-          height={"200rem"}
-          style={{ borderRadius: "15px 0px 0px 15px" }}
+          width={0}
+          height={0}
+          sizes="100%"
+          style={{
+            width: "13rem",
+            height: "12rem",
+            borderRadius: "15px 0px 0px 15px",
+          }}
         />
         <Box sx={similarStyles.right}>
           <Box sx={similarStyles.between}>

@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Alert,
   Avatar,
@@ -11,12 +13,12 @@ import {
   Typography,
 } from "@mui/material"
 import React from "react"
-import { MODAL_SET } from "../../context/Action"
-import { AppDpx } from "../../context/AppContext"
-import ModalContainer from "../ModalContainer"
 import { useMutation, useQueryClient } from "react-query"
-import { addReview } from "../../api/rest"
-import { fromNow } from "../../utils/fromNow"
+import { addReview } from "@/app/api/rest"
+import { AppDpx } from "@/context/AppContext"
+import { MODAL_SET } from "@/context/Action"
+import { fromNow } from "@/utils/fromNow"
+import ModalContainer from "../ModalContainer"
 
 type Props = {
   posts?: any[]
