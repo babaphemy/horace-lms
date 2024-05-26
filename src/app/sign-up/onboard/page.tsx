@@ -2,18 +2,15 @@
 import Header from "@/components/Header"
 import useTag from "@/hooks/useTag"
 import { Container } from "@mui/material"
-import React, { useState } from "react"
+import React from "react"
 import { Button } from "@mui/material"
 export default function Onboard() {
   useTag({ pageTitle: "signup", pagePath: "/sign-up" })
-  const [schoolName] = useState("")
-  const [address] = useState("")
-  const [contactNumber] = useState("")
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     // Perform form submission logic here
     // e.g., send data to the server
-    console.log("Form submitted:", schoolName, address, contactNumber)
   }
 
   return (
