@@ -6,9 +6,9 @@ import React, { useState } from "react"
 import { Button } from "@mui/material"
 export default function Onboard() {
   useTag({ pageTitle: "signup", pagePath: "/sign-up" })
-  const [schoolName, setSchoolName] = useState("")
-  const [address, setAddress] = useState("")
-  const [contactNumber, setContactNumber] = useState("")
+  const [schoolName] = useState("")
+  const [address] = useState("")
+  const [contactNumber] = useState("")
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     // Perform form submission logic here
