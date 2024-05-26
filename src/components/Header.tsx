@@ -144,6 +144,13 @@ const Header = () => {
                   <NextLink href="/" passHref>
                     Home
                   </NextLink>
+                  <NextLink
+                    href="htts://horacelearning.com"
+                    target="_blank"
+                    passHref
+                  >
+                    Admin
+                  </NextLink>
                   <NextLink href="/lms" passHref>
                     LMS
                   </NextLink>
@@ -199,6 +206,13 @@ const Header = () => {
               <List sx={headerStyles.flexList}>
                 <NextLink href="/" passHref>
                   Home
+                </NextLink>
+                <NextLink
+                  href="https://horacelearning.com"
+                  target="_blank"
+                  passHref
+                >
+                  Admin
                 </NextLink>
                 <NextLink href="/lms" passHref>
                   LMS
