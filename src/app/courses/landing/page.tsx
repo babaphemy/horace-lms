@@ -3,7 +3,7 @@
 import { Box, Container } from "@mui/material"
 import type { NextPage } from "next"
 import { useQuery } from "react-query"
-import styles from "../styles/Home.module.css"
+import styles from "@/styles/Home.module.css"
 import { useContext } from "react"
 import { AppDpx } from "@/context/AppContext"
 import { fetchCourses } from "@/app/api/rest"
