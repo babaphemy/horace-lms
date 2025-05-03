@@ -32,7 +32,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature }) => {
         className={`flex items-center justify-center p-4 w-fit mb-5 rounded-full`}
         style={{ backgroundColor: color }}
       >
-        <Icon className="w-6 h-6 text-white" />
+        <Icon />
       </div>
       <div className="font-bold text-xl mb-2 text-gray-700">
         {feature.title}

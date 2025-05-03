@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material"
 import { ReactElement, useState } from "react"
-import { tCurriculum } from "../../types/types"
+import { tCurriculum, tPost } from "../../types/types"
 import CourseReview from "./CourseReview"
 const ranges = {
   content: "Content",
@@ -25,7 +25,7 @@ interface Props {
   courseName?: string
   curriculum?: tCurriculum
   brief: string
-  posts?: any[]
+  posts?: tPost[]
   ratings?: number | null
   handleJoinClass: () => void
   regCourse?: boolean

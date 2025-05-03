@@ -1,9 +1,9 @@
-import { tCourse, tCourseLte, tLecture } from "../types/types"
+import { tCourse, tCourseLte, tLecture, UserDto } from "../types/types"
 
 export type Action =
   | {
       type: "USER_ADD"
-      payload: any
+      payload: UserDto
     }
   | {
       type: "USER_RESET"

@@ -1,6 +1,6 @@
 import { doToken, resetPass } from "@/app/api/rest"
 import yeah from "@/assets/img/yeah.webp"
-import { MODAL_SET, USER_ADD } from "@/context/Action"
+import { MODAL_SET } from "@/context/Action"
 import { AppDpx } from "@/context/AppContext"
 import { loginStyles } from "@/styles/loginStyles"
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -88,14 +88,13 @@ const ForgotPasswordComponent = (props: Props) => {
       notifySuccess("Password reset token sent to your email")
       return
     },
-    onError: (error: any) => {
+    onError: () => {
       setAlert({ show: true, msg: "Reset Password Failed, Please Try Again!" })
-      console.log(error)
     },
   })
 
   const resetMutation = useMutation(resetPass, {
-    onSuccess: (data: any) => {
+    onSuccess: () => {
       notifySuccess("Password reset successful!")
       if (modal) {
         dispatch({
@@ -107,7 +106,7 @@ const ForgotPasswordComponent = (props: Props) => {
       }
       reset(defaultValues)
     },
-    onError: (_error: any) => {
+    onError: () => {
       setAlert({ show: true, msg: "Reset Password Failed, Please Try Again!" })
     },
   })

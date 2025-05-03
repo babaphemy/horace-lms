@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { tUser } from "@/types/types"
+import { useState } from "react"
 
 const useAuth = () => {
-  const [users] = useState<any>([])
+  const [users] = useState<tUser[]>([])
   const [loading] = useState<boolean>(false)
   // useEffect(() => {
   // 	setLoading(true);

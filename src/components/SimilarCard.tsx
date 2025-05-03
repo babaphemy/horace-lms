@@ -41,7 +41,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
 
   const calculatedRating = () => {
     let total = 0
-    posts?.forEach((post: any) => {
+    posts?.forEach((post: tPost) => {
       total += post.rating
     })
     return total / posts?.length

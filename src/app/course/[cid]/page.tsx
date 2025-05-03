@@ -13,7 +13,7 @@ import PaymentModal from "@/components/payment/PaymentModal"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx, Appcontext } from "@/context/AppContext"
 import { COURSE_SET, SET_PLAY_ID } from "@/context/actions"
-import { tCourseLte } from "@/types/types"
+import { tCourseLte, tPost } from "@/types/types"
 import {
   Code,
   Download,
@@ -69,7 +69,7 @@ const Detailb = () => {
   useEffect(() => {
     queryClient.invalidateQueries("acourse")
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const fuse: any = new Fuse(courses, {
+    const fuse = new Fuse(courses, {
       keys: ["category", "courseName", "brief"],
       includeScore: false,
       includeMatches: true,
@@ -79,7 +79,7 @@ const Detailb = () => {
     if (courseName || category) {
       const result = fuse
         .search(`${courseName} | ${category}`)
-        .map((item: any) => item.item)
+        .map((item: { item: tCourseLte }) => item.item)
       if (result.length > 1) {
         setSimilarCourses(result.slice(0, 2))
       } else {
@@ -118,7 +118,7 @@ const Detailb = () => {
 
   const calculatedRating = () => {
     let total = 0
-    posts?.forEach((post: any) => {
+    posts?.forEach((post: tPost) => {
       total += post.rating
     })
     return total / posts?.length
@@ -132,7 +132,7 @@ const Detailb = () => {
 
   useEffect(() => {
     if (user?.id && cid) {
-      mutate(user?.id)
+      mutate(String(user?.id))
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,7 +175,7 @@ const Detailb = () => {
       regCourse
         ? addCourseToContext()
         : price === 0
-          ? addCourseToUser.mutate(payload)
+          ? addCourseToUser.mutate({ ...payload, user: String(payload.user) })
           : dispatch({
               type: MODAL_SET,
               data: { open: true, type: "payment" },
@@ -398,7 +398,7 @@ const Detailb = () => {
       <ModalLogin />
       <SignUpLogin />
       <PaymentModal course={data} />
-      <ReviewModal userId={user?.id} courseId={courseId} />
+      <ReviewModal userId={user?.id || ""} courseId={courseId} />
       <FooterLte />
     </>
   )

@@ -1,11 +1,11 @@
 "use client"
 import React, { createContext, ReactElement, useReducer } from "react"
-import { tCourse, tCourseLte, tLecture } from "@/types/types"
+import { tCourse, tCourseLte, tLecture, UserDto } from "@/types/types"
 import { Action, MODAL_SET, USER_ADD, USER_RESET } from "./Action"
 import { COURSE_SET, COURSES_SET, SET_PLAY_ID } from "./actions"
 
 type State = {
-  user: any
+  user: UserDto | null
   course: tCourse | null
   courses: tCourseLte[] | []
   playId: tLecture | null

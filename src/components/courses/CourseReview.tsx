@@ -19,9 +19,10 @@ import { AppDpx } from "@/context/AppContext"
 import { MODAL_SET } from "@/context/Action"
 import { fromNow } from "@/utils/fromNow"
 import ModalContainer from "../ModalContainer"
+import { tPost } from "@/types/types"
 
 type Props = {
-  posts?: any[]
+  posts?: tPost[]
   ratings?: number | null
 }
 
@@ -72,7 +73,7 @@ function LinearProgressWithLabel(
 
 const CourseReview = ({ posts, ratings }: Props) => {
   const [viewMore, setViewMore] = React.useState(false)
-  const [conditionalReview, setConditionalReview] = React.useState<any[]>([])
+  const [conditionalReview, setConditionalReview] = React.useState<tPost[]>([])
   const dispatch = React.useContext(AppDpx)
 
   const reviewOrder = posts
@@ -309,7 +310,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
 export default CourseReview
 
 type ReviewModalProps = {
-  userId: string
+  userId: string | number
   courseId: string
 }
 
@@ -317,12 +318,17 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
   const queryClient = useQueryClient()
   const [rating, setRating] = React.useState(1)
   const [comment, setComment] = React.useState("")
-  const [error, setError] = React.useState("")
+  const [error, setError] = React.useState<Error | string>("")
 
   const dispatch = React.useContext(AppDpx)
 
-  const handleRatingChange = (event: any, newValue: any) => {
-    setRating(newValue)
+  const handleRatingChange = (
+    _event: React.SyntheticEvent,
+    newValue: number | null
+  ) => {
+    if (newValue !== null) {
+      setRating(newValue)
+    }
   }
 
   const { mutate, isLoading: loading } = useMutation(addReview, {
@@ -332,7 +338,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
       setComment("")
       setRating(1)
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       setError(error)
     },
   })
@@ -350,7 +356,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
 
     const user = {
       user: {
-        id: userId,
+        id: String(userId),
       },
     }
 
@@ -384,7 +390,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
             }}
             onClose={() => setError("")}
           >
-            {error}
+            {typeof error === "string" ? error : error.message}
           </Alert>
         )}
         <Box>

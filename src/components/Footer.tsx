@@ -17,7 +17,7 @@ import Link from "next/link"
 type SocialProps = {
   name: string
   link: string
-  icon: string | any
+  icon: string
 }
 
 const Footer = () => {

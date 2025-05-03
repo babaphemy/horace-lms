@@ -29,6 +29,7 @@ import { MODAL_SET, USER_ADD } from "@/context/Action"
 import { notifySuccess } from "@/utils/notification"
 import { loginStyles } from "@/styles/loginStyles"
 import { Allcountries } from "@/utils/countries"
+import { UserDto } from "@/types/types"
 
 const schema = yup.object().shape({
   firstname: yup.string().required("First name is required"),
@@ -101,7 +102,7 @@ const SignUpComponent = (props: Props) => {
     },
   })
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: UserDto) => {
     const checkEmail: string = await verifyEmail(data.email)
 
     if (checkEmail === "true") {

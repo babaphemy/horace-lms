@@ -20,6 +20,7 @@ import { useMutation } from "react-query"
 import ModalLogin from "@/components/auth/ModalLogin"
 import SignUpLogin from "@/components/auth/ModalSignUp"
 import { MODAL_SET } from "@/context/Action"
+import { IAnswer } from "@/types/types"
 
 const schema = yup.object().shape({
   alignment: yup.string().label("Alignment").required(),
@@ -78,7 +79,7 @@ const InterviewQuestionnaire = () => {
     },
   })
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: IAnswer) => {
     if (!user || !user.id) {
       return dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
     }

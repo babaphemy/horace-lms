@@ -26,6 +26,7 @@ import { AppDpx } from "@/context/AppContext"
 import { loginUser } from "@/app/api/rest"
 import { MODAL_SET, USER_ADD } from "@/context/Action"
 import { loginStyles } from "@/styles/loginStyles"
+import { UserDto } from "@/types/types"
 
 const schema = yup.object().shape({
   email: yup
@@ -47,7 +48,7 @@ const defaultValues = {
 type loginProps = {
   email: string
   password: string
-  type?: any
+  type?: string
 }
 
 type Props = {
@@ -75,8 +76,9 @@ const LoginComponent = (props: Props) => {
   })
 
   const { mutate } = useMutation(loginUser, {
-    onSuccess: (data: any) => {
+    onSuccess: (data: UserDto) => {
       localStorage.setItem("horaceUser", JSON.stringify(data))
+
       dispatch({ type: USER_ADD, payload: data })
       if (modal) {
         dispatch({ type: MODAL_SET, data: { open: false, type: "login" } })
@@ -85,7 +87,7 @@ const LoginComponent = (props: Props) => {
       }
       reset(defaultValues)
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       setAlert({ show: true, msg: `Login Failed, Please Try Again ${error}` })
     },
   })

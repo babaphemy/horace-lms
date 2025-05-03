@@ -13,18 +13,23 @@ import React, { useState, useEffect, useContext } from "react"
 import { useQuery } from "react-query"
 import { debounce } from "lodash"
 import FilterListIcon from "@mui/icons-material/FilterList"
-import Fuse from "fuse.js"
+import Fuse, { FuseResult } from "fuse.js"
 
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined"
 import { fetchCourses } from "../api/rest"
 import { AppDpx } from "@/context/AppContext"
 import { COURSES_SET } from "@/context/actions"
 import Header from "@/components/Header"
-import { tCourse } from "@/types/types"
+import { tCourse, tCourseLte } from "@/types/types"
 import PopularCard from "@/components/home/PopularCard"
 import Footer from "@/components/Footer"
 
-const filter = [
+type FilterItem = {
+  label: string
+  value: string
+}
+
+const filter: FilterItem[] = [
   { label: "All Courses", value: "all" },
   { label: "Web Development", value: "web" },
   { label: "Mobile Development", value: "mobile" },
@@ -41,7 +46,7 @@ const filter = [
 // });
 const Courses = () => {
   const [allCourses, setAllCourses] = useState([])
-  const [filteredData, setFilteredData] = useState([])
+  const [filteredData, setFilteredData] = useState<tCourseLte[] | []>([])
   const [currentFilter, setCurrentFilter] = useState(filter[0])
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -61,14 +66,17 @@ const Courses = () => {
     cacheTime: 10,
   })
 
-  const handleSearch = debounce(async (query) => {
-    const fuse: any = new Fuse(data, {
+  const handleSearch = debounce(async (query: string) => {
+    // Ensure that 'data' is an array of tCourse.
+    const fuse = new Fuse<tCourse>(data, {
       keys: ["category", "courseName"],
       includeScore: false,
       includeMatches: true,
       minMatchCharLength: 3,
     })
-    const result = fuse.search(query).map((item: any) => item.item)
+
+    const searchResults: FuseResult<tCourseLte>[] = fuse.search(query)
+    const result: tCourseLte[] = searchResults.map((item) => item.item)
 
     if (result.length < 1) {
       setFilteredData(allCourses)
@@ -127,7 +135,7 @@ const Courses = () => {
               open={dropDown}
               onClose={handleClose}
             >
-              {filter.map((item: any, index: number) => {
+              {filter.map((item: FilterItem, index: number) => {
                 return (
                   <MenuItem
                     key={index}
@@ -165,7 +173,7 @@ const Courses = () => {
           </Typography>
           {isLoading && <CircularProgress />}
           <Grid container spacing={5}>
-            {filteredData?.map((course: any, index: number) => {
+            {filteredData?.map((course: tCourseLte, index: number) => {
               return (
                 <Grid key={index} item xs={12} sm={6} md={4}>
                   <PopularCard data={course} />

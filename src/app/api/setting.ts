@@ -10,7 +10,7 @@ const authKey = process.env.NEXT_PUBLIC_APIKEY
 export const auth = {
   headers: { Authorization: `Basic ${authKey}` },
 }
-export const PostSettings = (obj: any) => {
+export const PostSettings = <T>(obj: T) => {
   return {
     method: "POST",
     headers: {
@@ -21,7 +21,7 @@ export const PostSettings = (obj: any) => {
     body: JSON.stringify(obj),
   }
 }
-export const DeleteSettings = (obj: any) => {
+export const DeleteSettings = <T>(obj: T) => {
   return {
     method: "DELETE",
     headers: {
@@ -32,7 +32,7 @@ export const DeleteSettings = (obj: any) => {
     body: JSON.stringify(obj),
   }
 }
-export const PutSettings = (obj: any) => {
+export const PutSettings = <T>(obj: T) => {
   return {
     method: "PUT",
     headers: {

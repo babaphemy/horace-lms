@@ -4,7 +4,7 @@ import React from "react"
 
 type BenefitCardProps = {
   title: string
-  icon: any
+  icon: string
   description: string
   color: string
 }

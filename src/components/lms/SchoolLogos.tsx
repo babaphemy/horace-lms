@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 interface SchoolLogo {
   imageUrl: string
   websiteUrl?: string
@@ -45,10 +47,12 @@ const SchoolLogos = () => {
               title={logo.altText}
               className="transition-transform hover:scale-105"
             >
-              <img
+              <Image
                 src={logo.imageUrl}
                 alt={logo.altText}
                 className="h-16 sm:h-20 object-contain"
+                width={100}
+                height={100}
               />
             </a>
           ))}

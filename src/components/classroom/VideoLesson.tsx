@@ -1,7 +1,7 @@
 "use client"
 
-import { Appcontext, AppDpx } from "@/context/AppContext"
-import { tCurriculum, tNextPrev } from "@/types/types"
+import { Appcontext } from "@/context/AppContext"
+import { tCurriculum, tNextPrev, tPost, tSection } from "@/types/types"
 import { ThumbDownAltOutlined, ThumbUpAltOutlined } from "@mui/icons-material"
 import {
   Box,
@@ -37,7 +37,7 @@ export function countLectureItems(curriculum: tCurriculum): number {
   return lectureCount
 }
 const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
-  const { course, playId }: any = useContext(Appcontext)
+  const { course, playId } = useContext(Appcontext)
   const router = useRouter()
 
   const { curriculum, brief, courseName, category, posts, author } =
@@ -45,7 +45,9 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
   const playing = playId || curriculum?.section[0]?.lecture[0]
 
   const lessonCount =
-    curriculum?.section?.length > 0 ? countLectureItems(curriculum) : 0
+    curriculum?.section && curriculum.section.length > 0
+      ? countLectureItems(curriculum)
+      : 0
 
   useEffect(() => {
     if (!course) {
@@ -62,10 +64,10 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
 
   const calculatedRating = () => {
     let total = 0
-    posts?.forEach((post: any) => {
+    posts?.forEach((post: tPost) => {
       total += post.rating
     })
-    return total / posts?.length
+    return total / (posts?.length ?? 1)
   }
 
   return (
@@ -129,8 +131,9 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
               <Box className="my-2">
                 <NextPrev
                   handlePrev={handlePrev}
-                  playId={playId}
-                  course={course}
+                  playId=""
+                  // playId={playId}
+                  course={course!}
                   handleNext={handleNext}
                   lessonCount={0} // to do
                 />
@@ -211,8 +214,8 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
             <Box className="my-2">
               <NextPrev
                 handlePrev={handlePrev}
-                playId={playId}
-                course={course}
+                playId={""}
+                course={course!}
                 handleNext={handleNext}
                 lessonCount={0} // to do
               />
@@ -235,7 +238,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
               </Typography>
             </Box>
             <Box className="my-5">
-              {curriculum?.section?.map((curriculum: any, idx: number) => {
+              {curriculum?.section?.map((curriculum: tSection, idx: number) => {
                 return (
                   <Box
                     key={idx}
@@ -285,12 +288,12 @@ const NextPrev = ({
 }: tNextPrev) => {
   return (
     <Box display={"flex"} justifyContent="space-between">
-      <Button onClick={handlePrev} disabled={playId?.id === 1}>
+      <Button onClick={handlePrev} disabled={Number(playId) === 1}>
         Previous
       </Button>
       <Button
-        onClick={() => handleNext(playId?.id)}
-        disabled={playId?.id === lessonCount}
+        onClick={() => handleNext(Number(playId))}
+        disabled={Number(playId) === lessonCount}
       >
         Next
       </Button>

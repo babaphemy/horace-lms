@@ -17,6 +17,6 @@ const useTag = ({
         pageTitle,
       },
     })
-  }, [])
+  }, [pagePath, pageTitle])
 }
 export default useTag
