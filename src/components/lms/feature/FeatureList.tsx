@@ -39,15 +39,14 @@ const features: Feature[] = [
   },
   {
     icon: CastForEducationIcon,
-    title: "Staff Information Management ",
-    description:
-      "Monitor staff progress, activities and generate reports in just a few clicks.",
+    title: "AI Agent",
+    description: "AI agent for course creation and content generation.",
   },
   {
     icon: AdminPanelSettingsIcon,
     title: "Admin Management ",
     description:
-      "A small ERP that empowers you to manage your school from your phone or a laptop.",
+      "Manage videos, assets, certificates, video encoding and transcoding.",
   },
   {
     icon: MarkUnreadChatAltIcon,
@@ -69,24 +68,19 @@ const features: Feature[] = [
   {
     icon: QuizIcon,
     title: "CBT",
-    description: "Create and manage Computer Based Tests for your school.",
+    description: "Create and manage Computer Based Tests for your students.",
   },
   {
     icon: BiotechIcon,
-    title: "STEM Handson Projects ",
+    title: "Hands-on Projects ",
     description:
-      "Robotics, AI and animation project for all students and teachers.",
+      "Build and manage hands-on projects in Robotics, AI, Game Development, and Animation.",
   },
   {
     icon: SecurityIcon,
     title: "Security & Privacy ",
     description:
-      "Role based access control of resources and enhanced security of school data with periodic back-up.",
-  },
-  {
-    icon: SchoolIcon,
-    title: "LMS Integration & Customization ",
-    description: "Integration to leading LMS solutions like Google Classroom.",
+      "Role based access control of resources and enhanced security of data with periodic back-up.",
   },
   {
     icon: MobileFriendly,
@@ -95,19 +89,19 @@ const features: Feature[] = [
   },
   {
     icon: Payment,
-    title: "Tuition Payment System ",
-    description:
-      "Automated fee and transaction management system. Manage debtors with just a click",
+    title: "Payment System ",
+    description: "Automated fee and transaction management and payment system.",
   },
   {
     icon: AccountTreeRounded,
-    title: "Attendance Management System ",
-    description: "Manage student and staff attendance .",
+    title: "API Integration ",
+    description:
+      "Well documented API for integration with other systems and platforms.",
   },
   {
     icon: CardGiftcard,
     title: "Schorlaship Management",
-    description: "Manage schorlaship and awards for students and staff.",
+    description: "Manage schorlaship and awards for students.",
   },
 ]
 const FeatureList: React.FC = () => (

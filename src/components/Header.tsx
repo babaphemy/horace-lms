@@ -29,6 +29,7 @@ import { AppDpx, Appcontext } from "@/context/AppContext"
 import { USER_RESET } from "@/context/Action"
 import TopBg from "./TopBg"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -109,13 +110,15 @@ const Header = () => {
       <Box sx={headerStyles.container}>
         <Container maxWidth="lg">
           <Box sx={headerStyles.drawerContainer}>
-            <Image
-              src={`/img/logo.webp`}
-              alt="logo"
-              width={150}
-              height={50}
-              style={headerStyles.logo}
-            />
+            <Link href={"/"}>
+              <Image
+                src={`/img/logo.webp`}
+                alt="logo"
+                width={150}
+                height={50}
+                style={headerStyles.logo}
+              />
+            </Link>
             <IconButton
               edge="start"
               color="inherit"
@@ -145,9 +148,7 @@ const Header = () => {
                   <NextLink href="/" passHref>
                     Home
                   </NextLink>
-                  <NextLink href="/lms" passHref>
-                    LMS
-                  </NextLink>
+
                   <NextLink href="/about" passHref>
                     About
                   </NextLink>
@@ -190,20 +191,20 @@ const Header = () => {
           </Box>
           <Box sx={headerStyles.flexHeader}>
             <Box sx={headerStyles.flexHeader}>
-              <Image
-                src={`/img/logo.webp`}
-                alt="logo"
-                width={200}
-                height={80}
-                style={headerStyles.logo}
-              />
+              <Link href={"/"}>
+                <Image
+                  src={`/img/logo.webp`}
+                  alt="logo"
+                  width={200}
+                  height={80}
+                  style={headerStyles.logo}
+                />
+              </Link>
               <List sx={headerStyles.flexList}>
                 <NextLink href="/" passHref>
                   Home
                 </NextLink>
-                <NextLink href="/lms" passHref>
-                  LMS
-                </NextLink>
+
                 <NextLink href="/about" passHref>
                   About
                 </NextLink>
