@@ -152,6 +152,7 @@ export interface Plan {
   price: string
   description: string
   duration?: string
+  features?: string[]
 }
 
 export interface IPerson {

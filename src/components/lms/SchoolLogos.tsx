@@ -1,6 +1,6 @@
 interface SchoolLogo {
   imageUrl: string
-  websiteUrl?: string // Optional if you want to make the logos clickable
+  websiteUrl?: string
   altText: string
 }
 
@@ -29,29 +29,33 @@ const logos: SchoolLogo[] = [
 
 const SchoolLogos = () => {
   return (
-    <div className="bg-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-semibold text-center mb-6">
-          Trusted by Leading Schools
+    <section className="bg-gray-50 py-12">
+      <div className="max-w-6xl mx-auto px-4">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-10">
+          Trusted by Leading Schools and Corporates
         </h2>
-        <div className="flex flex-wrap justify-center items-center gap-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8 items-center justify-items-center">
           {logos.map((logo, index) => (
             <a
               key={index}
               href={logo.websiteUrl || "#"}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={logo.altText}
+              title={logo.altText}
+              className="transition-transform hover:scale-105"
             >
               <img
                 src={logo.imageUrl}
                 alt={logo.altText}
-                className="h-12 md:h-24"
+                className="h-16 sm:h-20 object-contain"
               />
             </a>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   )
 }
+
 export default SchoolLogos

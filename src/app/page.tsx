@@ -1,44 +1,30 @@
-"use client"
-
-import { Box, Container } from "@mui/material"
-import type { NextPage } from "next"
-import { useQuery } from "react-query"
-import Footer from "../components/Footer"
-import Header from "../components/Header"
-import Benefits from "../components/home/Benefits"
-import Hero from "../components/home/Hero"
-import PopularCourses from "../components/home/PopularCourses"
-import styles from "../styles/Home.module.css"
-import { useContext } from "react"
-import { AppDpx } from "../context/AppContext"
-import { COURSES_SET } from "../context/actions"
-import { fetchCourses } from "./api/rest"
-
-const Home: NextPage = () => {
-  const dispatch = useContext(AppDpx)
-
-  const { data, isLoading } = useQuery("usersAdddoc", fetchCourses, {
-    staleTime: 5000,
-    cacheTime: 10,
-  })
-
-  if (data) {
-    dispatch({ type: COURSES_SET, data })
-  }
-
+import Footer from "@/components/Footer"
+import Header from "@/components/Header"
+import ContactLms from "@/components/lms/ContactLms"
+import HeaderBanner from "@/components/lms/Headerbanner"
+import SchoolLogos from "@/components/lms/SchoolLogos"
+import FeatureList from "@/components/lms/feature/FeatureList"
+import Pricing from "@/components/lms/pricing/Pricing"
+import { Box } from "@mui/material"
+import { generateMetadata } from "./metadata"
+export const metadata = generateMetadata({
+  title: "Horace Learning Mamagement Solution",
+  description:
+    "Horace Learning Management Solution, School Management Solution, School ERP",
+})
+const Lms = () => {
   return (
-    <div className={styles.container}>
+    <Box>
+      <Header />
+      <HeaderBanner />
       <Box>
-        <Header />
-        <Container>
-          <Hero />
-          <Benefits />
-          <PopularCourses data={data} isLoading={isLoading} />
-        </Container>
-        <Footer />
+        <FeatureList />
+        <Pricing />
+        <SchoolLogos />
+        <ContactLms />
       </Box>
-    </div>
+      <Footer />
+    </Box>
   )
 }
-
-export default Home
+export default Lms

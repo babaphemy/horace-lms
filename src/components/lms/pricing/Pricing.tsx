@@ -8,18 +8,42 @@ const Pricing: React.FC = () => {
       price: "$10",
       duration: "/month",
       description: "Ideal for small schools or individual educators.",
+      features: [
+        "User Management",
+        "Course Creation",
+        "Quiz and Assessment",
+        "Basic Reporting",
+        "Email Support",
+        "Payment System",
+      ],
     },
     {
       name: "Standard",
       price: "$30",
       duration: "/month",
       description: "Perfect for mid-sized schools and corporate organizations.",
+      features: [
+        "All Basic Features",
+        "Advanced Reporting",
+        "AI Agent",
+        "Priority Support",
+        "Custom Branding",
+        "Certificates and Badges",
+      ],
     },
     {
       name: "Standard+",
       price: "Custom Pricing",
       duration: "/choice",
       description: "Custom solutions for large institutions or districts.",
+      features: [
+        "All Standard Features",
+        "Dedicated Account Manager",
+        "Custom Integrations",
+        "Advanced Analytics",
+        "On-site Training",
+        "White Labeling",
+      ],
     },
   ]
 

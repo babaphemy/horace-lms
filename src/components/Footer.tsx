@@ -22,25 +22,16 @@ type SocialProps = {
 
 const Footer = () => {
   return (
-    <Box sx={footerStyles.container}>
+    <Box component="footer" sx={footerStyles.container}>
       <Container maxWidth="lg">
-        <Grid
-          container
-          columnSpacing={{
-            xs: 8,
-            md: 3,
-          }}
-        >
-          <Grid item sm={12} md={3}>
-            <Box sx={{ float: "left" }}>
-              <Image
-                src={"/img/logo.webp"}
-                alt="logo"
-                width={150}
-                height={50}
-              />
-            </Box>
-
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={3}>
+            <Image
+              src="/img/logo.webp"
+              alt="Horace LMS Logo"
+              width={150}
+              height={50}
+            />
             <Box sx={footerStyles.section}>
               <Typography variant="body2" align="justify">
                 At Horace Online Learning, we are passionate about empowering
@@ -51,72 +42,68 @@ const Footer = () => {
                 all, regardless of their background or location.
               </Typography>
             </Box>
-            <Box>
-              {socials.map((social: SocialProps) => {
-                return (
-                  <IconButton
-                    key={social.name}
-                    href={social.link}
-                    target="_blank"
-                    rel="noreferer noopener"
-                  >
-                    <Image
-                      src={`/img/${social.icon}`}
-                      alt={social.name}
-                      width={30}
-                      height={30}
-                      style={footerStyles.socialLogo}
-                    />
-                  </IconButton>
-                )
-              })}
+            <Box mt={2}>
+              {socials.map((social: SocialProps) => (
+                <IconButton
+                  key={social.name}
+                  href={social.link}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={social.name}
+                >
+                  <Image
+                    src={`/img/${social.icon}`}
+                    alt={`${social.name} icon`}
+                    width={30}
+                    height={30}
+                    style={footerStyles.socialLogo}
+                  />
+                </IconButton>
+              ))}
             </Box>
           </Grid>
-          <Grid item sm={6} md={3}>
-            <Typography variant="h6">Quick Links</Typography>
-            <Box>
-              <List sx={footerStyles.noLeftPadding}>
-                <ListItem>
-                  <Link href="/">Home</Link>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Typography variant="h6" gutterBottom>
+              Navigation
+            </Typography>
+            <List sx={footerStyles.noLeftPadding}>
+              {[
+                { label: "Home", href: "/" },
+                { label: "About", href: "/about" },
+                { label: "Courses", href: "/courses" },
+                { label: "Contact", href: "/contact" },
+              ].map((link) => (
+                <ListItem key={link.href}>
+                  <Link href={link.href}>{link.label}</Link>
                 </ListItem>
-                <ListItem>
-                  <Link href="/about">About</Link>
-                </ListItem>
-                <ListItem>
-                  <Link href="/courses">Courses</Link>
-                </ListItem>
-                <ListItem>
-                  <Link href="/contact">Contact</Link>
-                </ListItem>
-              </List>
-            </Box>
+              ))}
+            </List>
           </Grid>
-          <Grid item sm={6} md={3}>
-            <Typography variant="h6">Quick Links</Typography>
-            <Box>
-              <List sx={footerStyles.noLeftPadding}>
-                {/* <ListItem>
-                  <Link href="/help-center">Help Center</Link>
-                </ListItem> */}
-                {/* <ListItem>
-                  <Link href="/ask-question">Ask Questions</Link>
-                </ListItem> */}
-                <ListItem>
-                  <Link href="/contact">Send Feedback</Link>
-                </ListItem>
-                <ListItem>
-                  <Link href="/terms">Terms of Use</Link>
-                </ListItem>
-                <ListItem>
-                  <Link href="/privacy">Privacy Policy</Link>
-                </ListItem>
-              </List>
-            </Box>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <Typography variant="h6" gutterBottom>
+              Support
+            </Typography>
+            <List sx={footerStyles.noLeftPadding}>
+              <ListItem>
+                <Link href="/contact">Send Feedback</Link>
+              </ListItem>
+              <ListItem>
+                <Link href="/terms">Terms of Use</Link>
+              </ListItem>
+              <ListItem>
+                <Link href="/privacy">Privacy Policy</Link>
+              </ListItem>
+            </List>
           </Grid>
-          <Grid item sm={12} md={3}>
-            <Typography variant="h6">Newsletter</Typography>
+
+          <Grid item xs={12} md={3}>
+            <Typography variant="h6" gutterBottom>
+              Newsletter
+            </Typography>
             <Box sx={footerStyles.newsletter}>
-              <Typography variant="body1">
+              <Typography variant="body2">
                 Subscribe for latest updates
               </Typography>
               <TextField
@@ -134,10 +121,10 @@ const Footer = () => {
             </Box>
           </Grid>
         </Grid>
+
         <Divider sx={footerStyles.divider} />
-        <Typography variant="body1" sx={footerStyles.center}>
-          Powered By Horace | All Rights Reserved! &copy;{" "}
-          {new Date().getFullYear()}
+        <Typography variant="body2" sx={footerStyles.center}>
+          Powered by Horace | All Rights Reserved © {new Date().getFullYear()}
         </Typography>
       </Container>
     </Box>
@@ -149,14 +136,15 @@ export default Footer
 const footerStyles = {
   container: {
     marginTop: 16,
+    backgroundColor: "#f5f5f5",
+    padding: "3rem 0",
   },
   socialLogo: {
     aspectRatio: 1,
-    width: 40,
+    width: 30,
   },
   rounded: {
     borderRadius: 10,
-
     "& .MuiOutlinedInput-root": {
       borderRadius: 10,
     },
@@ -168,16 +156,17 @@ const footerStyles = {
   divider: {
     background: "#1A055F",
     height: "3px",
-    my: 4,
+    marginTop: "2rem",
+    marginBottom: "1.5rem",
   },
   section: {
     "& > :not(style)": {
-      my: 1,
+      marginTop: "0.5rem",
     },
   },
   newsletter: {
     "& > :not(style)": {
-      my: 1,
+      marginTop: "0.75rem",
     },
   },
   newsButton: {
@@ -185,31 +174,30 @@ const footerStyles = {
     color: "#fff",
     px: 3,
     textTransform: "capitalize",
-
     "&:hover": {
       background: "#000",
     },
   },
 }
 
-const socials = [
+const socials: SocialProps[] = [
   {
-    name: "facebook",
+    name: "Facebook",
     link: "https://www.facebook.com/horacelms",
     icon: "facebook.webp",
   },
   {
-    name: "twitter",
+    name: "Twitter",
     link: "https://www.twitter.com/essloffice",
     icon: "twitter.webp",
   },
   {
-    name: "instagram",
+    name: "Instagram",
     link: "https://www.instagram.com/",
     icon: "instagram.webp",
   },
   {
-    name: "linkedin",
+    name: "LinkedIn",
     link: "https://www.linkedin.com/company/10654256/",
     icon: "linkedin.webp",
   },

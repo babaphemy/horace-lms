@@ -1,61 +1,68 @@
+import { Plan } from "@/types/types"
 import CheckIcon from "@mui/icons-material/Check"
 import {
   Button,
   Card,
   CardContent,
   CardHeader,
+  Divider,
   Stack,
   Typography,
 } from "@mui/material"
 import React from "react"
-
-interface Plan {
-  name: string
-  price: string
-  description: string
-  duration?: string
-}
 
 interface PricingPlanProps {
   plan: Plan
 }
 
 const PricingPlan: React.FC<PricingPlanProps> = ({ plan }) => (
-  <div className="max-w-xs">
-    <Card className="min-h-[35rem] h-full flex flex-col space-y-4">
+  <div className="max-w-sm w-full">
+    <Card className="min-h-[36rem] flex flex-col justify-between shadow-lg rounded-2xl">
       <CardHeader
         title={plan.name}
-        titleTypographyProps={{ variant: "h3" }}
-        subheader={plan.description}
+        titleTypographyProps={{ variant: "h4", textAlign: "center" }}
+        subheader={
+          <Typography
+            variant="subtitle1"
+            textAlign="center"
+            color="text.secondary"
+          >
+            {plan.description}
+          </Typography>
+        }
       />
-      <CardContent className="flex-grow-[1]">
-        <Typography className="text-4xl font-bold text-center mb-2">
+      <CardContent className="flex flex-col items-center">
+        <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>
           {plan.price}
         </Typography>
-        <Typography className="text-gray-700 text-center">
-          {plan?.duration || ""}
-        </Typography>
-        <Stack spacing={2} sx={{ mt: 4 }}>
-          <FeatureItem>Projects Flexibility</FeatureItem>
-          <FeatureItem>Collaborators Inclusivity</FeatureItem>
-          <FeatureItem>Dedicated Support</FeatureItem>
+        {plan.duration && (
+          <Typography variant="body2" color="text.secondary">
+            {plan.duration}
+          </Typography>
+        )}
+        <Divider sx={{ my: 3, width: "100%" }} />
+        <Stack spacing={2} width="100%">
+          {plan.features?.map((feature, index) => (
+            <FeatureItem key={index}>{feature}</FeatureItem>
+          ))}
         </Stack>
       </CardContent>
       <CardFooter>
-        <Button fullWidth variant="contained" className="bg-blue-500">
+        <Button fullWidth variant="contained" size="large" color="primary">
           Choose Plan
         </Button>
       </CardFooter>
     </Card>
   </div>
 )
+
 export default PricingPlan
 
 function FeatureItem({ children }: { children: React.ReactNode }) {
   return (
-    <Stack direction="row" justifyContent="space-between">
+    <Stack direction="row" alignItems="center" spacing={1}>
+      <CheckIcon color="success" fontSize="small" />
       <Typography variant="body1">{children}</Typography>
-      <CheckIcon color="primary" />
     </Stack>
   )
 }
@@ -63,7 +70,9 @@ function FeatureItem({ children }: { children: React.ReactNode }) {
 function CardFooter({ children }: { children: React.ReactNode }) {
   return (
     <CardContent>
-      <Stack spacing={2}>{children}</Stack>
+      <Stack spacing={2} mt={2}>
+        {children}
+      </Stack>
     </CardContent>
   )
 }

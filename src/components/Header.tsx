@@ -152,8 +152,8 @@ const Header = () => {
                   <NextLink href="/about" passHref>
                     About
                   </NextLink>
-                  <NextLink href="/courses" passHref>
-                    Courses
+                  <NextLink href="/academy" passHref>
+                    Playground
                   </NextLink>
                   <NextLink href="/contact" passHref>
                     Contact
@@ -208,8 +208,8 @@ const Header = () => {
                 <NextLink href="/about" passHref>
                   About
                 </NextLink>
-                <NextLink href="/courses" passHref>
-                  Courses
+                <NextLink href="/academy" passHref>
+                  Playground
                 </NextLink>
                 <NextLink href="/contact" passHref>
                   Contact
