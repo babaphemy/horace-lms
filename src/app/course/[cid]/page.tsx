@@ -37,34 +37,34 @@ import {
   Typography,
 } from "@mui/material"
 import Fuse from "fuse.js"
-import { useRouter } from "next/navigation"
-import React, { FC, useEffect } from "react"
 import ReactPlayer from "react-player"
+import React, { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
+import { useParams, useRouter } from "next/navigation"
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Courses",
 //   description:
 //     "Horace Online Courses. Learning Management Solution and a complete school management system for all schools",
-// });
-
-interface IDetailbProps {
-  params: {
-    cid: string
-  }
-}
-const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
+// })
+const Detailb = () => {
   const { user, courses } = React.useContext(Appcontext)
+  const params = useParams()
+  const { cid } = params
   const dispatch = React.useContext(AppDpx)
   const [regCourse, setRegCourse] = React.useState<boolean>(false)
   const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([])
   const queryClient = useQueryClient()
   const router = useRouter()
 
-  const { data } = useQuery(["acourse", cid], () => fetchCourse(cid), {
-    staleTime: 5000,
-    cacheTime: 10,
-    enabled: !!cid,
-  })
+  const { data } = useQuery(
+    ["acourse", cid],
+    () => fetchCourse(Array.isArray(cid) ? cid[0] : cid),
+    {
+      staleTime: 5000,
+      cacheTime: 10,
+      enabled: !!cid,
+    }
+  )
 
   useEffect(() => {
     queryClient.invalidateQueries("acourse")
@@ -130,7 +130,7 @@ const Detailb: FC<IDetailbProps> = ({ params: { cid } }) => {
   const { lessonCount, downloadCount, quizCount, labCount, noteCount } =
     assetCount || {}
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user?.id && cid) {
       mutate(user?.id)
     }

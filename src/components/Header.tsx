@@ -4,7 +4,6 @@ import {
   Box,
   Container,
   List,
-  Link as MuiLink,
   Typography,
   Button,
   IconButton,
@@ -148,7 +147,6 @@ const Header = () => {
                   <NextLink href="/" passHref>
                     Home
                   </NextLink>
-
                   <NextLink href="/about" passHref>
                     About
                   </NextLink>
@@ -204,7 +202,6 @@ const Header = () => {
                 <NextLink href="/" passHref>
                   Home
                 </NextLink>
-
                 <NextLink href="/about" passHref>
                   About
                 </NextLink>

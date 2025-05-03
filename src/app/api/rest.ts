@@ -130,7 +130,7 @@ const handlePay = async (obj: any) => {
     sessionId: session.id,
   })
   if (res?.error) {
-    console.error(res.error, " what happened to stripe? ")
+    throw new Error(`Stripe error: ${res.error}`)
   }
   return res
 }

@@ -3,7 +3,14 @@ import React, { useContext } from "react"
 import { useForm } from "react-hook-form"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { Typography, Box, TextField, Button, Container } from "@mui/material"
+import {
+  Typography,
+  Box,
+  TextField,
+  Button,
+  Container,
+  Alert,
+} from "@mui/material"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { AppDpx, Appcontext } from "@/context/AppContext"
@@ -101,6 +108,9 @@ const InterviewQuestionnaire = () => {
         </Typography>
 
         <Box sx={{ my: 4 }}>
+          {Object.keys(errors).length > 0 && (
+            <Alert severity="error">Form error</Alert>
+          )}
           <Typography variant="body1" gutterBottom>
             Introduction: Thank you for taking the time to participate in this
             interview. We are exploring ways to improve our school management

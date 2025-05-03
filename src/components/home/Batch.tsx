@@ -11,7 +11,7 @@ type ButtonProps = {
   activeProp?: boolean
 }
 
-const ButtonStyled = styled(Button)<ButtonProps>(({ theme, activeProp }) => ({
+const ButtonStyled = styled(Button)<ButtonProps>(({ activeProp }) => ({
   backgroundColor: activeProp ? "#FF6854 !important" : "transparent",
   color: activeProp ? "#fff" : "#FF6854",
   padding: "5px 10px",

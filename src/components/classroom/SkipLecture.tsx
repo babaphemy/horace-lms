@@ -16,7 +16,7 @@ import { ThumbUpAltOutlined, ThumbDownAltOutlined } from "@mui/icons-material"
 import Image from "next/image"
 
 type SkipLectureProps = {
-  handleNext: (id: number | undefined) => void
+  handleNext: (_id: number | undefined) => void
   handlePrev: () => void
   playId: any
   course: tCourse

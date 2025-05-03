@@ -19,7 +19,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import React from "react"
 import logo from "../../assets/img/logo.webp"
-const StyledIconButton = styled(IconButton)(({ theme }) => ({
+const StyledIconButton = styled(IconButton)(() => ({
   marginLeft: -12,
   marginRight: 20,
 }))

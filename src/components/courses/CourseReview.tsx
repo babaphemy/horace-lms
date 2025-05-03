@@ -333,7 +333,7 @@ export const ReviewModal = ({ userId, courseId }: ReviewModalProps) => {
       setRating(1)
     },
     onError: (error: any) => {
-      console.log(error)
+      setError(error)
     },
   })
 

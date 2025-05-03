@@ -17,7 +17,7 @@ import NextPrev from "./NextPrev"
 type Props = {
   quizzes: tQuiz[]
   playId: any
-  handleNext: (id: number | undefined) => void
+  handleNext: (_id: number | undefined) => void
   handlePrev: () => void
   course?: tCourse
 }

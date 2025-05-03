@@ -2,9 +2,7 @@ import React from "react"
 import ModalContainer from "../ModalContainer"
 import LoginComponent from "./LoginComponent"
 
-type Props = {}
-
-const ModalLogin = (props: Props) => {
+const ModalLogin = () => {
   return (
     <ModalContainer type="login">
       <LoginComponent modal={true} />

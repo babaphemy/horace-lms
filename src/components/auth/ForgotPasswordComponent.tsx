@@ -80,6 +80,7 @@ const ForgotPasswordComponent = (props: Props) => {
     resolver: yupResolver(schema),
     defaultValues,
   })
+  const hasErrors = Object.keys(errors).length > 0
 
   const tokenMutation = useMutation(doToken, {
     onSuccess: () => {
@@ -106,7 +107,7 @@ const ForgotPasswordComponent = (props: Props) => {
       }
       reset(defaultValues)
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       setAlert({ show: true, msg: "Reset Password Failed, Please Try Again!" })
     },
   })
@@ -133,6 +134,11 @@ const ForgotPasswordComponent = (props: Props) => {
       <Typography variant="h4" sx={[loginStyles.center, loginStyles.title]}>
         Forgot Password <Image src={yeah} alt="yeah" width={30} height={30} />
       </Typography>
+      {hasErrors && (
+        <Alert severity="error" sx={loginStyles.alert}>
+          Form error
+        </Alert>
+      )}
 
       {al?.show && (
         <Alert
@@ -299,7 +305,7 @@ const ForgotPasswordComponent = (props: Props) => {
         color="primary"
         sx={loginStyles.changeTab}
       >
-        Don't have an account? Sign Up
+        Don&apos;t have an account? Sign Up
       </Typography>
     </Box>
   )

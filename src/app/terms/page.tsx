@@ -21,11 +21,11 @@ const Page = () => {
         </Typography>
         <Typography variant="body1" mb={4}>
           Horace Learning provides online software services consisting of a
-          learning management system ("LMS"), student information system ("SIS")
-          and website hosting to schools and other educational institutions as a
+          learning management system (LMS), student information system (SIS) and
+          website hosting to schools and other educational institutions as a
           software-as-a-service platform. This may include access to online
           courses, portals for assessments, enrollments, schedules and records,
-          communication tools, and other modules (collectively "Services").
+          communication tools, and other modules (collectively Services).
         </Typography>
         <Typography variant="h4" gutterBottom>
           2. Acceptable Use
@@ -58,7 +58,7 @@ const Page = () => {
           5. Disclaimers
         </Typography>
         <Typography variant="body1" mb={4}>
-          All information is provided 'AS IS'. Horace Learning disclaims implied
+          All information is provided AS IS. Horace Learning disclaims implied
           warranties of fitness or completeness. Statutory consumer rights
           remain unaffected.
         </Typography>

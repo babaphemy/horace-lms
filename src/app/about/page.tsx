@@ -59,8 +59,8 @@ const AboutUs = () => {
           </Typography>
           <Box sx={aboutStyles.cardContainer}>
             <Grid container rowSpacing={2} columnSpacing={5}>
-              {statistics.map((item) => (
-                <Grid item xs={12} sm={4}>
+              {statistics.map((item, idx) => (
+                <Grid key={idx} item xs={12} sm={4}>
                   <Box sx={{ ...aboutStyles.card, borderColor: item.color }}>
                     <Box className="flex flex-col items-center justify-center">
                       <div className="flex flex-col items-center justify-center my-2">
@@ -97,7 +97,7 @@ const AboutUs = () => {
             </Typography>
             <Typography variant="body2" mb={2}>
               At Horace Learning, we specialize in providing students with the
-              computer knowledge they need to succeed in today's fast-paced
+              computer knowledge they need to succeed in today&apos;s fast-paced
               digital world. From coding and programming to data analysis and
               cyber security, our courses and resources are designed to help
               students develop the practical skills and theoretical knowledge
@@ -151,8 +151,8 @@ const AboutUs = () => {
             Courses We Support
           </Typography>
           <Grid container spacing={3}>
-            {exampleCourses.map((item) => (
-              <Grid item xs={6} sm={4} md={3}>
+            {exampleCourses.map((item, idx) => (
+              <Grid key={idx} item xs={6} sm={4} md={3}>
                 <Typography
                   variant="body2"
                   className="flex flex-col items-center border rounded-md border-red-500 p-3"
@@ -189,8 +189,8 @@ const AboutUs = () => {
             What Our Partners Say
           </Typography>
           <Grid container spacing={3}>
-            {whatOurStudentsSay.map((item) => (
-              <Grid item xs={12} sm={6} md={4}>
+            {whatOurStudentsSay.map((item, idx) => (
+              <Grid key={idx} item xs={12} sm={6} md={4}>
                 <Box sx={aboutStyles.card}>
                   <Box className="flex justify-between items-center my-2">
                     <Rating

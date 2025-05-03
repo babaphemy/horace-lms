@@ -11,7 +11,7 @@ type State = {
   playId: tLecture | null
   modal: {
     open: boolean
-    type: "login" | "signup" | "payment" | "review"
+    type: "login" | "signup" | "payment" | "review" | "forgotPassword"
   }
 }
 
@@ -43,7 +43,7 @@ const initialState: State = {
 
 const Appcontext = createContext(initialState)
 const AppDpx = createContext<React.Dispatch<Action>>(() => {})
-const reducer = (state: State, action: Action) => {
+const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case USER_ADD:
       return {

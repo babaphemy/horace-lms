@@ -17,9 +17,9 @@ const Page = () => {
         </Typography>
 
         <Typography variant="subtitle1" mb={4}>
-          Horace Learning ("us", "we", or "our") operates the
+          Horace Learning (us, we, or our) operates the
           https://www.horacelearning.com website and mobile application
-          (hereinafter referred to as the "Service").
+          (hereinafter referred to as the Service).
         </Typography>
 
         <Typography variant="h4" gutterBottom>

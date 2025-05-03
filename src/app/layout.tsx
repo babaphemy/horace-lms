@@ -34,6 +34,7 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
+  types: any
 }>) {
   ReactGA.initialize(process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS!)
   useEffect(() => {
