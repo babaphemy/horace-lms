@@ -197,7 +197,7 @@ const ForgotPasswordComponent = (props: Props) => {
                   label="Token"
                   variant="outlined"
                   size="small"
-                  type="token"
+                  type="text"
                   fullWidth
                   sx={loginStyles.input}
                   helperText={error?.message}
