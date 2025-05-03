@@ -1,28 +1,24 @@
 "use client"
 import { Box, Container, Typography } from "@mui/material"
+
 import Image from "next/image"
-import subtract from "@/assets/img/subtract.webp"
-import man from "@/assets/img/man.webp"
 import useTag from "@/hooks/useTag"
 import Header from "@/components/Header"
+import woman from "@/assets/img/woman.webp"
+import subtract from "@/assets/img/subtract.webp"
 import { loginStyles } from "@/styles/loginStyles"
-import LoginComponent from "@/components/auth/LoginComponent"
+import SignUpComponent from "@/components/auth/SignUpComponent"
 import Footer from "@/components/Footer"
-// export const metadata = generateMetadata({
-//   title: "Horace Learning Management Solution | Horace Courses",
-//   description:
-//     "Horace Online Courses. STEM focused online courses for all ages. Members login",
-// });
-const Login = () => {
-  useTag({ pageTitle: "login", pagePath: "/login" })
+const SignupForm = () => {
+  useTag({ pageTitle: "signup", pagePath: "/sign-up" })
   return (
-    <Box component={"div"} id="login-component">
+    <Box>
       <Header />
       <Box sx={loginStyles.body}>
         <Container maxWidth="lg">
           <Box sx={loginStyles.center}>
             <Box sx={loginStyles.box}>
-              <LoginComponent />
+              <SignUpComponent />
               <Box sx={loginStyles.subtract}>
                 <Image
                   src={subtract}
@@ -37,8 +33,8 @@ const Login = () => {
                     Smart Learning. Limitless Growth.
                   </Typography>
                   <Image
-                    src={man}
-                    alt="man holding a laptop"
+                    src={woman}
+                    alt="woman standing"
                     width={420}
                     height={400}
                   />
@@ -52,5 +48,4 @@ const Login = () => {
     </Box>
   )
 }
-
-export default Login
+export default SignupForm

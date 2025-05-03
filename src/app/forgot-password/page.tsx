@@ -32,7 +32,7 @@ const Login = () => {
                   />
                   <Box sx={loginStyles.glass}>
                     <Typography variant="h5" sx={loginStyles.note}>
-                      the best courses you will find here login to get started
+                      Smart Learning. Limitless Growth.
                     </Typography>
                     <Image
                       src={man}

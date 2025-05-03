@@ -25,7 +25,7 @@ import * as yup from "yup"
 import thumb from "@/assets/img/thumb.webp"
 import { AppDpx } from "@/context/AppContext"
 import { registerUser, verifyEmail } from "@/app/api/rest"
-import { MODAL_SET, USER_ADD } from "@/context/Action"
+import { MODAL_SET } from "@/context/Action"
 import { notifySuccess } from "@/utils/notification"
 import { loginStyles } from "@/styles/loginStyles"
 import { Allcountries } from "@/utils/countries"
@@ -55,7 +55,7 @@ const defaultValues = {
   email: "",
   password: "",
   passwordConfirm: "",
-  country: "AT",
+  country: "NG",
   type: "STUDENT",
 }
 
@@ -83,9 +83,9 @@ const SignUpComponent = (props: Props) => {
   })
 
   const { mutate } = useMutation(registerUser, {
-    onSuccess: (data) => {
-      localStorage.setItem("horaceUser", JSON.stringify(data))
-      dispatch({ type: USER_ADD, payload: data })
+    onSuccess: () => {
+      // localStorage.setItem("horaceUser", JSON.stringify(data))
+      // dispatch({ type: USER_ADD, payload: data })
       notifySuccess("Registration succesful! check your email for more info.")
       if (modal) {
         dispatch({ type: MODAL_SET, data: { open: false, type: "signup" } })
@@ -108,7 +108,7 @@ const SignUpComponent = (props: Props) => {
     if (checkEmail === "true") {
       setAlert({
         show: true,
-        msg: "Email already exists, Please try again or Login.",
+        msg: "This email is already registered. Try again or log in.",
       })
       return
     }
