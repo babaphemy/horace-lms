@@ -1,10 +1,13 @@
+"use client"
+
+import { handlePay } from "@/app/api/rest"
+import { Appcontext } from "@/context/AppContext"
 import { Typography, Box, Divider, Button } from "@mui/material"
 import React, { useContext } from "react"
-import { Appcontext } from "../../context/AppContext"
 import ModalContainer from "../ModalContainer"
-import { handlePay } from "@/app/api/rest"
+import { tCourse } from "@/types/types"
 
-const PaymentModal = ({ course }: any) => {
+const PaymentModal = ({ course }: { course: tCourse }) => {
   const { user } = useContext(Appcontext)
   const author = `${course?.author?.firstname || "Horace"} ${
     course?.author?.lastname || "Instructor"

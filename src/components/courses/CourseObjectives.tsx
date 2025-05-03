@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material"
 import { ReactElement, useState } from "react"
-import { tCurriculum } from "../../types/types"
+import { tCurriculum, tPost } from "../../types/types"
 import CourseReview from "./CourseReview"
 const ranges = {
   content: "Content",
@@ -25,7 +25,7 @@ interface Props {
   courseName?: string
   curriculum?: tCurriculum
   brief: string
-  posts?: any[]
+  posts?: tPost[]
   ratings?: number | null
   handleJoinClass: () => void
   regCourse?: boolean
@@ -69,7 +69,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
             textColor="inherit"
             variant="scrollable"
             scrollButtons={false}
-            className="-mx-4 min-h-40 "
+            className="-mx-4 min-h-16 "
             classes={{
               indicator: "flex justify-center bg-transparent w-full h-full",
             }}
@@ -77,7 +77,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
               children: (
                 <Box
                   sx={{ bgcolor: "text.disabled", color: "white" }}
-                  className="w-full h-full rounded-full bg-[#F9AD56] opacity-50"
+                  className="w-full h-12 rounded-full bg-[#F9AD56] opacity-50"
                 />
               ),
             }}

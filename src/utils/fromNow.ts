@@ -1,5 +1,7 @@
-export function fromNow(date: any) {
-  var seconds = Math.floor((new Date().getTime() - date) / 1000)
+export function fromNow(date: string | number | Date) {
+  var seconds = Math.floor(
+    (new Date().getTime() - new Date(date).getTime()) / 1000
+  )
   var years = Math.floor(seconds / 31536000)
   var months = Math.floor(seconds / 2592000)
   var days = Math.floor(seconds / 86400)

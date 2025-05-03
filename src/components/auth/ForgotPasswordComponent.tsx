@@ -1,40 +1,50 @@
+import { doToken, resetPass } from "@/app/api/rest"
+import yeah from "@/assets/img/yeah.webp"
+import { MODAL_SET } from "@/context/Action"
+import { AppDpx } from "@/context/AppContext"
+import { loginStyles } from "@/styles/loginStyles"
 import { yupResolver } from "@hookform/resolvers/yup"
+import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import {
-  Box,
-  Typography,
-  Button,
   Alert,
-  TextField,
-  InputAdornment,
+  Box,
+  Button,
   IconButton,
+  InputAdornment,
   Link,
+  TextField,
+  Typography,
 } from "@mui/material"
+import VpnKeyIcon from "@mui/icons-material/VpnKey"
+import { PasswordRounded } from "@mui/icons-material"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import React from "react"
-import { useForm, Controller } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { useMutation } from "react-query"
-import MailOutlineIcon from "@mui/icons-material/MailOutline"
-import yeah from "@/assets/img/yeah.webp"
 import * as yup from "yup"
-import Image from "next/image"
-import { AppDpx } from "@/context/AppContext"
-import { MODAL_SET, USER_ADD } from "@/context/Action"
-import { loginStyles } from "@/styles/loginStyles"
+import { useSearchParams } from "next/navigation"
+import { notifySuccess } from "@/utils/notification"
 
 const schema = yup.object().shape({
   email: yup
     .string()
     .email("You must enter a valid email")
     .required("You must enter a email"),
+  token: yup.string().required("Please enter your token."),
+  password: yup.string().required("Please enter your new password."),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "Passwords must match")
+    .required("Please confirm your password."),
 })
-
-const defaultValues = {
-  email: "",
-}
 
 // Props
 type forgotPassProps = {
   email: string
+  token: string
+  password: string
+  confirmPassword: string
 }
 
 type Props = {
@@ -42,6 +52,7 @@ type Props = {
 }
 const ForgotPasswordComponent = (props: Props) => {
   const { modal = false } = props
+  const searchParams = useSearchParams()
   const dispatch = React.useContext(AppDpx)
   const router = useRouter()
   const [al, setAlert] = React.useState<{
@@ -49,9 +60,19 @@ const ForgotPasswordComponent = (props: Props) => {
     msg: string
   } | null>(null)
 
+  const userEmail = searchParams?.get("userEmail")
+
+  const defaultValues = {
+    email: userEmail || "",
+    token: "",
+    password: "",
+    confirmPassword: "",
+  }
+
   const {
     control,
     handleSubmit,
+    getValues,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
     reset,
@@ -61,31 +82,42 @@ const ForgotPasswordComponent = (props: Props) => {
   })
   const hasErrors = Object.keys(errors).length > 0
 
-  const forgotPass = async () => {
-    return
-  }
+  const tokenMutation = useMutation(doToken, {
+    onSuccess: () => {
+      router.push("?userEmail=" + getValues("email"))
+      notifySuccess("Password reset token sent to your email")
+      return
+    },
+    onError: () => {
+      setAlert({ show: true, msg: "Reset Password Failed, Please Try Again!" })
+    },
+  })
 
-  const { mutate } = useMutation(forgotPass, {
-    onSuccess: (data: any) => {
-      localStorage.setItem("horaceUser", JSON.stringify(data))
-      dispatch({ type: USER_ADD, payload: data })
+  const resetMutation = useMutation(resetPass, {
+    onSuccess: () => {
+      notifySuccess("Password reset successful!")
       if (modal) {
         dispatch({
           type: MODAL_SET,
-          data: { open: false, type: "forgotPassword" },
+          data: { open: true, type: "login" },
         })
       } else {
-        router.push("/")
+        router.push("/login")
       }
       reset(defaultValues)
     },
-    onError: (_error: any) => {
+    onError: () => {
       setAlert({ show: true, msg: "Reset Password Failed, Please Try Again!" })
     },
   })
 
   const onSubmit = (data: forgotPassProps) => {
-    mutate(data as any)
+    resetMutation.mutate({
+      email: data.email,
+      token: data.token,
+      password: data.password,
+      type: "USER",
+    })
   }
 
   const handleChangeTab = () => {
@@ -116,12 +148,7 @@ const ForgotPasswordComponent = (props: Props) => {
           {al.msg}
         </Alert>
       )}
-      <Box
-        component="form"
-        id="login-form"
-        sx={loginStyles.form}
-        onSubmit={handleSubmit(onSubmit)}
-      >
+      <Box component="form" id="login-form" sx={loginStyles.form}>
         <Controller
           name="email"
           control={control}
@@ -153,6 +180,93 @@ const ForgotPasswordComponent = (props: Props) => {
           )}
         />
 
+        {userEmail && (
+          <>
+            <Controller
+              name="token"
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  error={!!error}
+                  id="token"
+                  label="Token"
+                  variant="outlined"
+                  size="small"
+                  type="text"
+                  fullWidth
+                  sx={loginStyles.input}
+                  helperText={error?.message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton>
+                          <PasswordRounded />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+            />
+
+            <Controller
+              name="password"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  sx={loginStyles.input}
+                  size="small"
+                  fullWidth
+                  type="password"
+                  label="Password"
+                  error={!!errors.password}
+                  helperText={errors?.password?.message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <VpnKeyIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  variant="outlined"
+                  required
+                />
+              )}
+            />
+
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  sx={loginStyles.input}
+                  size="small"
+                  fullWidth
+                  type="password"
+                  label="Confirm Password"
+                  error={!!errors.confirmPassword}
+                  helperText={errors?.confirmPassword?.message}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <VpnKeyIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  variant="outlined"
+                  required
+                />
+              )}
+            />
+          </>
+        )}
+
         <Typography
           variant="body1"
           sx={{
@@ -170,9 +284,17 @@ const ForgotPasswordComponent = (props: Props) => {
           sx={[loginStyles.button, loginStyles.submit]}
           variant="contained"
           fullWidth
-          type="submit"
+          onClick={
+            userEmail
+              ? handleSubmit(onSubmit)
+              : () =>
+                  tokenMutation.mutate({
+                    email: getValues("email"),
+                    type: "USER",
+                  })
+          }
         >
-          Send Email
+          {userEmail ? "Submit" : "Send Reset Token"}
         </Button>
       </Box>
       <Typography

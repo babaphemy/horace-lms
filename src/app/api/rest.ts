@@ -1,6 +1,6 @@
 import { loadStripe } from "@stripe/stripe-js"
 import { auth, basePath, PostSettings } from "./setting"
-import { tReview } from "@/types/types"
+import { CardDto, tInterview, tReview, UserDto } from "@/types/types"
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
   return resp.json()
@@ -17,7 +17,7 @@ const loginUser = async (data: {
   return resp.json()
 }
 
-const registerUser = async (data: any) => {
+const registerUser = async (data: UserDto) => {
   const resp = await fetch(`${basePath}user/add`, PostSettings(data))
   if (!resp.ok) {
     throw new Error(resp.statusText)
@@ -47,6 +47,7 @@ const resetPass = async (data: {
   token: string | number
   email: string
   password: string | number
+  type: string
 }) => {
   const resp = await fetch(`${basePath}user/reset/password`, PostSettings(data))
   if (!resp.ok) {
@@ -118,7 +119,7 @@ const addReview = async (data: tReview) => {
   }
   return response.json()
 }
-const handlePay = async (obj: any) => {
+const handlePay = async (obj: CardDto) => {
   const apikey = process.env.NEXT_PUBLIC_stripe_pub || ""
   const stripeInit = loadStripe(apikey)
   const str = await stripeInit
@@ -132,6 +133,17 @@ const handlePay = async (obj: any) => {
     throw new Error(`Stripe error: ${res.error}`)
   }
   return res
+}
+
+const submitInterview = async (data: tInterview) => {
+  const response = await fetch(
+    `${basePath}contact/interview`,
+    PostSettings(data)
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
 }
 
 export {
@@ -149,4 +161,5 @@ export {
   isCourseReg,
   addReview,
   handlePay,
+  submitInterview,
 }

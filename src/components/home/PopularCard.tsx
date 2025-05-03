@@ -44,7 +44,7 @@ const PopularCard = ({ data }: courseProp) => {
   }
 
   const handleCardClick = () => {
-    router.push(`/course/detailb?cid=${id}`)
+    router.push(`/course/${id}`)
   }
 
   const formattedBrief = (brief: string) => {
@@ -56,7 +56,7 @@ const PopularCard = ({ data }: courseProp) => {
 
   const calculatedRating = () => {
     let total = 0
-    posts?.forEach((post: any) => {
+    posts?.forEach((post: tPost) => {
       total += post.rating
     })
     return total / posts?.length

@@ -4,15 +4,31 @@ export interface State {
   course: [tCourse] | []
 }
 export type tUser = {
-  id: number
+  id?: number
   email: string
+  phone?: string
   firstname: string
   lastname?: string
   roles: string[]
   status?: boolean | string
   token?: string
   updatedOn: string
-  photo: string
+  photo?: string
+}
+export type CardDto = {
+  amount?: number // corresponds to int amount
+  amt: number // corresponds to Long amt
+  currency: string
+  usr?: string
+  email?: string
+  name?: string
+  description: string
+}
+export type tMeta = { [key: string]: string | number }
+export type Questionnaire = {
+  id: string
+  response: Record<string, unknown>
+  createdOn: string // ISO date string representation of LocalDateTime
 }
 export type tRegisterUser = {
   email: string
@@ -22,7 +38,7 @@ export type tRegisterUser = {
   dp?: string
   age?: string | number
   country?: string
-  meta?: any
+  meta?: tMeta
 }
 export type tLoginUser = {
   email: string
@@ -35,12 +51,21 @@ export type tQuiz = {
   answer: string
 }
 export type tLecture = {
-  id: number
+  id?: number
   title: string
-  video: string
+  video?: string
+  quiz?: string
   type: string
-  content?: any
-  open: boolean
+  content?: string
+  open?: boolean
+}
+export type tContact = {
+  firstname: string
+  lastname: string
+  email: string
+  phone: string
+  message: string
+  type: string
 }
 export type tSection = {
   title: string
@@ -71,7 +96,7 @@ export type tCourse = {
   updatedOn: string
   totalSteps: number
   draft: boolean
-  posts?: any
+  posts?: tPost[]
   assetCount: {
     lessonCount: number
     labCount: number
@@ -90,18 +115,18 @@ export type tCourseLte = {
   thumbnail: string
   category: string
   totalSteps: number
-  activeStep: number | null
-  students: number
+  activeStep?: number | null
+  students?: number
   curriculum: null
   draft: boolean
-  cost: number
+  cost?: number
   posts: tPost[]
 }
 
 export type tNextPrev = {
   handlePrev: () => void
-  playId: any
-  course: any
+  playId: string
+  course: tCourse
   handleNext: (_id: number | undefined) => void
   lessonCount: number
 }
@@ -117,9 +142,32 @@ export type tPost = {
   like: number
   share: number
   rating: number
+  createdAt: string
+  updatedAt?: string
 }
 export type tLike = {
   likes: number[]
+}
+
+export type UserDto = {
+  id?: string
+  firstname: string
+  lastname: string
+  country?: string
+  password: string
+  email: string
+  phone?: string
+  type: string
+  updatedOn?: string // representing ISO date string
+  modifiedOn?: string // representing ISO date string
+  token?: string
+  dp?: string
+  status?: boolean
+  roles?: string[]
+  message?: string
+  courses?: string[]
+  rating?: number
+  reviews?: string[]
 }
 
 export type tReview = {
@@ -143,7 +191,7 @@ export type Action =
   | { type: "COURSES_SET"; data: [tCourse] }
 
 export interface Feature {
-  icon: any
+  icon: React.ElementType
   title: string
   description: string
 }
@@ -152,4 +200,30 @@ export interface Plan {
   price: string
   description: string
   duration?: string
+  features?: string[]
+}
+
+export interface IPerson {
+  fullname?: string
+  email?: string
+  phone?: string
+}
+export interface IAnswer {
+  alignment: string
+  misalignment: string
+  hardest: string
+  whyHardest?: string
+  currentSolution?: string
+  strengthsCurrentSolution: string
+  weaknessCurrentSolution: string
+  problemtime?: number
+  painpoint: string
+  willTryHorace?: string
+}
+
+export type tInterview = {
+  response: {
+    person: IPerson
+    answer: IAnswer
+  }
 }

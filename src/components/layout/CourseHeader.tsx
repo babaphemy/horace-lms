@@ -1,3 +1,4 @@
+import { tPost } from "@/types/types"
 import { Box, Chip, Container, Rating, Stack, Typography } from "@mui/material"
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
     ratings?: number | null
     reviews?: number | null
     preview?: string
-    posts?: any[]
+    posts?: tPost[]
     students?: number
     totalSteps?: number
   }

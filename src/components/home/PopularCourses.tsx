@@ -1,15 +1,21 @@
 "use client"
-import { tCourse } from "@/types/types"
+import { tCourseLte } from "@/types/types"
 import { Box, Typography, Grid, CircularProgress, Button } from "@mui/material"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import Batch from "./Batch"
 import PopularCard from "./PopularCard"
 
-const PopularCourses = ({ data, isLoading }: any) => {
+const PopularCourses = ({
+  data,
+  isLoading,
+}: {
+  data: tCourseLte[]
+  isLoading: boolean
+}) => {
   const router = useRouter()
   const [active, setActive] = useState("all")
-  const [filteredData, setFilteredData] = useState(data)
+  const [filteredData, setFilteredData] = useState<tCourseLte[]>(data)
 
   useEffect(() => {
     if (active === "all") {
@@ -20,17 +26,11 @@ const PopularCourses = ({ data, isLoading }: any) => {
       setFilteredData(data)
     } else {
       const filtered = data?.filter(
-        (course: tCourse) =>
+        (course: tCourseLte) =>
           course?.category?.split(",").includes(active.toLowerCase()) ||
           course?.courseName?.toLowerCase().includes(active.toLowerCase())
       )
-      // const filtered = data?.filter((course: tCourse) => {
-      //   if (course.category === active) {
-      //     return course;
-      //   } else {
-      //     return course.category?.split(',').includes(active.toLowerCase());
-      //   }
-      // });
+
       if (filtered?.length > 6) {
         setFilteredData(filtered?.slice(0, 6))
         return
@@ -67,7 +67,7 @@ const PopularCourses = ({ data, isLoading }: any) => {
         }}
       >
         <Grid container spacing={5}>
-          {filteredData?.map((course: any, index: number) => {
+          {filteredData?.map((course: tCourseLte, index: number) => {
             return (
               <Grid key={index + course.id} item xs={12} sm={6} md={4}>
                 <PopularCard data={course} />

@@ -1,7 +1,13 @@
 import React from "react"
 import { Box, Toolbar, Typography } from "@mui/material"
 
-const Coursebar = ({ title, subtitle }: any) => {
+const Coursebar = ({
+  title,
+  subtitle,
+}: {
+  title: string
+  subtitle: string
+}) => {
   return (
     <Box className="flex flex-auto w-full text-center rounded-2xl overflow-hidden">
       <Toolbar className="w-full mb-1">

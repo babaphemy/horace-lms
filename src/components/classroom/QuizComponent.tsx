@@ -16,7 +16,7 @@ import NextPrev from "./NextPrev"
 
 type Props = {
   quizzes: tQuiz[]
-  playId: any
+  playId: number
   handleNext: (_id: number | undefined) => void
   handlePrev: () => void
   course?: tCourse
@@ -73,7 +73,7 @@ const QuizComponent = ({
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState("")
   const [showScore, setShowScore] = useState(false)
-  const [studentAnswers, setStudentAnswers] = useState<any[]>([])
+  const [studentAnswers, setStudentAnswers] = useState<string[]>([])
   const [currentQuiz, setCurrentQuiz] = useState(0)
   const [correctAnswers, setCorrectAnswers] = useState(0)
   const [missedAnswers, setMissedAnswers] = useState<number[]>([])
@@ -82,7 +82,7 @@ const QuizComponent = ({
     target: { value: React.SetStateAction<string> }
   }) => {
     const currentAnswers = [...studentAnswers]
-    currentAnswers[currentQuiz] = event.target.value
+    currentAnswers[currentQuiz] = event.target.value as string
     setStudentAnswers(currentAnswers)
     setSelectedAnswer(event.target.value)
   }
@@ -222,7 +222,7 @@ const QuizComponent = ({
                     sx={quizStyles.button}
                     variant="contained"
                     color="primary"
-                    onClick={() => handleNext(playId?.id)}
+                    onClick={() => handleNext(playId)}
                   >
                     Next Lesson
                   </Button>
@@ -275,8 +275,8 @@ const QuizComponent = ({
             <Box className="mt-8">
               <NextPrev
                 handlePrev={handlePrev}
-                playId={playId}
-                course={course}
+                playId={""}
+                course={course!}
                 handleNext={handleNext}
                 lessonCount={0} // to do
               />

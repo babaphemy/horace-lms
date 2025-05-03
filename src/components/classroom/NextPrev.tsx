@@ -8,15 +8,15 @@ const NextPrev = ({ handlePrev, playId, course, handleNext }: tNextPrev) => {
         variant="contained"
         className="bg-[#00A9C1] text-white py-1 px-6 rounded-full hover:bg-[#00A9C1]"
         onClick={handlePrev}
-        disabled={playId?.id === 1}
+        disabled={Number(playId) === 1}
       >
         Previous
       </Button>
       <Button
         variant="contained"
         className="bg-[#00A9C1] text-white py-1 px-6 rounded-full hover:bg-[#00A9C1]"
-        onClick={() => handleNext(playId?.id)}
-        disabled={playId?.id === course?.assetCount?.lessonCount}
+        onClick={() => handleNext(Number(playId))}
+        disabled={Number(playId) === course?.assetCount?.lessonCount}
       >
         Next
       </Button>

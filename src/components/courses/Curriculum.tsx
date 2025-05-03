@@ -1,19 +1,4 @@
-import LockIcon from "@mui/icons-material/Lock"
-import VisibilityIcon from "@mui/icons-material/Visibility"
-import {
-  Collapse,
-  Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-} from "@mui/material"
-import { useState } from "react"
-
-import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material"
-import { tCourse, tLecture } from "../../types/types"
-import { sample } from "@/app/api/data"
+import { List } from "@mui/material"
 
 const styles = {
   root: {
@@ -51,15 +36,14 @@ const styles = {
 }
 
 const Curriculum = () => {
-  const sidebar = true
-  const [open, setOpen] = useState(true)
-  const [selected, setSel] = useState({
-    courseName: "Course 1",
-  })
-  const handleClick = (sl: tCourse) => {
-    setSel(sl)
-    setOpen(!open)
-  }
+  // const [open, setOpen] = useState(true)
+  // const [, setSel] = useState({
+  //   courseName: "Course 1",
+  // })
+  // const handleClick = (sl: tCourse) => {
+  //   setSel(sl)
+  //   setOpen(!open)
+  // }
   return (
     <>
       <List
@@ -68,7 +52,7 @@ const Curriculum = () => {
         // className={classes.root}
         sx={styles.navBox}
       >
-        {sample.map((course: any, index: number) => (
+        {/* {sample.map((course: Course, index: number) => (
           <div key={index + course.courseName}>
             <ListItem
               button
@@ -153,7 +137,7 @@ const Curriculum = () => {
               </List>
             </Collapse>
           </div>
-        ))}
+        ))} */}
       </List>
     </>
   )

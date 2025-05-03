@@ -1,4 +1,19 @@
 "use client"
+import { addUserCourse, fetchCourse, isCourseReg } from "@/app/api/rest"
+import Header from "@/components/Header"
+import SimilarCard from "@/components/SimilarCard"
+import ModalLogin from "@/components/auth/ModalLogin"
+import SignUpLogin from "@/components/auth/ModalSignUp"
+import CourseObjectives from "@/components/courses/CourseObjectives"
+import { ReviewModal } from "@/components/courses/CourseReview"
+import Curriculumb from "@/components/courses/Curriculumb"
+import CourseHeader from "@/components/layout/CourseHeader"
+import FooterLte from "@/components/layout/FooterLte"
+import PaymentModal from "@/components/payment/PaymentModal"
+import { MODAL_SET } from "@/context/Action"
+import { AppDpx, Appcontext } from "@/context/AppContext"
+import { COURSE_SET, SET_PLAY_ID } from "@/context/actions"
+import { tCourseLte, tPost } from "@/types/types"
 import {
   Code,
   Download,
@@ -21,27 +36,11 @@ import {
   Rating,
   Typography,
 } from "@mui/material"
-import { useRouter } from "next/router"
+import Fuse from "fuse.js"
+import ReactPlayer from "react-player"
 import React, { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
-import ReactPlayer from "react-player"
-import Fuse from "fuse.js"
-import { AppDpx, Appcontext } from "@/context/AppContext"
-import { tCourseLte } from "@/types/types"
-import { addUserCourse, fetchCourse, isCourseReg } from "@/app/api/rest"
-import { useParams } from "next/navigation"
-import { COURSE_SET, SET_PLAY_ID } from "@/context/actions"
-import { MODAL_SET } from "@/context/Action"
-import Header from "@/components/Header"
-import CourseHeader from "@/components/layout/CourseHeader"
-import CourseObjectives from "@/components/courses/CourseObjectives"
-import Curriculumb from "@/components/courses/Curriculumb"
-import SimilarCard from "@/components/SimilarCard"
-import ModalLogin from "@/components/auth/ModalLogin"
-import SignUpLogin from "@/components/auth/ModalSignUp"
-import PaymentModal from "@/components/payment/PaymentModal"
-import { ReviewModal } from "@/components/courses/CourseReview"
-import FooterLte from "@/components/layout/FooterLte"
+import { useParams, useRouter } from "next/navigation"
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Courses",
 //   description:
@@ -49,22 +48,28 @@ import FooterLte from "@/components/layout/FooterLte"
 // })
 const Detailb = () => {
   const { user, courses } = React.useContext(Appcontext)
+  const params = useParams()
+  const { cid } = params
   const dispatch = React.useContext(AppDpx)
   const [regCourse, setRegCourse] = React.useState<boolean>(false)
   const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([])
   const queryClient = useQueryClient()
   const router = useRouter()
-  const { cid } = useParams<{ cid: string }>()
-  const { data } = useQuery(["acourse", cid], () => fetchCourse(cid), {
-    staleTime: 5000,
-    cacheTime: 10,
-    enabled: !!cid,
-  })
+
+  const { data } = useQuery(
+    ["acourse", cid],
+    () => fetchCourse(Array.isArray(cid) ? cid[0] : cid),
+    {
+      staleTime: 5000,
+      cacheTime: 10,
+      enabled: !!cid,
+    }
+  )
 
   useEffect(() => {
     queryClient.invalidateQueries("acourse")
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const fuse: any = new Fuse(courses, {
+    const fuse = new Fuse(courses, {
       keys: ["category", "courseName", "brief"],
       includeScore: false,
       includeMatches: true,
@@ -74,7 +79,7 @@ const Detailb = () => {
     if (courseName || category) {
       const result = fuse
         .search(`${courseName} | ${category}`)
-        .map((item: any) => item.item)
+        .map((item: { item: tCourseLte }) => item.item)
       if (result.length > 1) {
         setSimilarCourses(result.slice(0, 2))
       } else {
@@ -113,7 +118,7 @@ const Detailb = () => {
 
   const calculatedRating = () => {
     let total = 0
-    posts?.forEach((post: any) => {
+    posts?.forEach((post: tPost) => {
       total += post.rating
     })
     return total / posts?.length
@@ -125,9 +130,9 @@ const Detailb = () => {
   const { lessonCount, downloadCount, quizCount, labCount, noteCount } =
     assetCount || {}
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user?.id && cid) {
-      mutate(user?.id)
+      mutate(String(user?.id))
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -170,7 +175,7 @@ const Detailb = () => {
       regCourse
         ? addCourseToContext()
         : price === 0
-          ? addCourseToUser.mutate(payload)
+          ? addCourseToUser.mutate({ ...payload, user: String(payload.user) })
           : dispatch({
               type: MODAL_SET,
               data: { open: true, type: "payment" },
@@ -393,15 +398,10 @@ const Detailb = () => {
       <ModalLogin />
       <SignUpLogin />
       <PaymentModal course={data} />
-      <ReviewModal userId={user?.id} courseId={courseId} />
+      <ReviewModal userId={user?.id || ""} courseId={courseId} />
       <FooterLte />
     </>
   )
 }
-Detailb.getInitialProps = async ({ query }: { query: any }) => {
-  // Fetch data based on the query parameters
-  const cid = query.cid // Access the course ID from the query parameters
 
-  return { cid }
-}
 export default Detailb

@@ -1,7 +1,7 @@
 const HeaderBanner = () => (
   <div
     style={{
-      backgroundImage: "url(/img/lms-banner.png)",
+      backgroundImage: "url(/img/boy2.png)",
       backgroundSize: "cover",
       backgroundPosition: "center",
       height: "300px",

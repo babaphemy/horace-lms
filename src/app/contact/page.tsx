@@ -25,6 +25,7 @@ import Header from "@/components/Header"
 import Map from "@/components/Map"
 import Footer from "@/components/Footer"
 import { useRouter } from "next/navigation"
+import { tContact } from "@/types/types"
 
 const schema = yup.object().shape({
   firstname: yup.string().required("First name is required"),
@@ -35,6 +36,7 @@ const schema = yup.object().shape({
     .required("You must enter a email"),
   phone: yup.string().required("Phone number is required"),
   message: yup.string().required("Message is required"),
+  type: yup.string().default("PMP"),
 })
 
 const defaultValues = {
@@ -86,7 +88,7 @@ const ContactUs = () => {
     },
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: tContact) => {
     mutate(data)
   }
   const emailAddress = "office@horacelearning.com"

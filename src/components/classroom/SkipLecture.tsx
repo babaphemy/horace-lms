@@ -11,14 +11,14 @@ import {
   Typography,
 } from "@mui/material"
 import NextPrev from "./NextPrev"
-import { tCourse } from "../../types/types"
+import { tCourse, tPost } from "../../types/types"
 import { ThumbUpAltOutlined, ThumbDownAltOutlined } from "@mui/icons-material"
 import Image from "next/image"
 
 type SkipLectureProps = {
   handleNext: (_id: number | undefined) => void
   handlePrev: () => void
-  playId: any
+  playId: number | undefined
   course: tCourse
 }
 
@@ -39,10 +39,10 @@ const SkipLecture = ({
   }, [assetCount])
   const calculatedRating = () => {
     let total = 0
-    posts?.forEach((post: any) => {
+    posts?.forEach((post: tPost) => {
       total += post.rating
     })
-    return total / posts?.length
+    return posts?.length ? total / posts.length : 0
   }
   return (
     <ClassLayout>
@@ -64,7 +64,7 @@ const SkipLecture = ({
           </Typography>
           <NextPrev
             handlePrev={handlePrev}
-            playId={playId}
+            playId={playId?.toString() || ""}
             course={course}
             handleNext={handleNext}
             lessonCount={0} // to do
