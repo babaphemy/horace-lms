@@ -195,9 +195,18 @@ export interface Feature {
   title: string
   description: string
 }
+
+export interface PriceByCountry {
+  NG: string
+  US: string
+}
 export interface Plan {
   name: string
-  price: string
+  slug: string
+  price: {
+    US: string
+    NG: string
+  }
   description: string
   duration?: string
   features?: string[]
@@ -227,3 +236,55 @@ export type tInterview = {
     answer: IAnswer
   }
 }
+export interface TransactionData {
+  payee: string
+  description: string
+  amount: number
+  currency: "NGN" | "USD"
+  tranx: string
+}
+export interface Tranx {
+  id: string
+  amount: number
+  description: string
+  currency: string
+  payee: UserDto
+  first_name: string | null
+  last_name: string | null
+  email: string | null
+  phone: string | null
+  detail: string | null
+  tranx_type: string
+  receipt: string | null
+  ref: number
+  isp: string | null
+  stripe_payment_method: string | null
+  status: string
+  createdOn: string
+  modifiedOn: string | null
+  callback_url: string | null
+  stripeId: string | null
+}
+export interface Address {
+  street: string
+  city: string
+  state: string
+  country: string
+  phone_number: string
+  zip_code: string
+  email: string
+}
+export interface UserPayload {
+  id?: number
+  first_name: string
+  last_name: string
+  email: string
+  roles: string[]
+  status: string
+  timestamp?: string
+  password?: string
+  is_active?: boolean
+  gender?: string
+  address?: Address
+}
+export type TCountryCode = "NG" | "US"

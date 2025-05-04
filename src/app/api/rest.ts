@@ -1,6 +1,13 @@
 import { loadStripe } from "@stripe/stripe-js"
 import { auth, basePath, PostSettings } from "./setting"
-import { CardDto, tInterview, tReview, UserDto } from "@/types/types"
+import {
+  CardDto,
+  tInterview,
+  TransactionData,
+  Tranx,
+  tReview,
+  UserDto,
+} from "@/types/types"
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
   return resp.json()
@@ -145,8 +152,57 @@ const submitInterview = async (data: tInterview) => {
   }
   return response.json()
 }
+const fetcher = async (
+  url: RequestInfo,
+  init?: RequestInit & { token?: string }
+) => {
+  const headers = new Headers({
+    "Content-Type": "application/json",
+    ...(init?.headers as Record<string, string>),
+  })
+
+  if (init?.token) {
+    headers.set("Authorization", `Bearer ${init.token}`)
+  }
+
+  const res = await fetch(url, { ...init, headers })
+  return await res.json()
+}
+const createPaymentIntent = async (data: TransactionData) => {
+  const resp = await fetch(`${basePath}tranx/stripe`, PostSettings(data))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+const paystacktx = async (data: TransactionData) => {
+  const resp = await fetch(`${basePath}tranx/pay`, PostSettings(data))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+export const storeTranx = async (data: TransactionData): Promise<Tranx> => {
+  const resp = await fetch(`${basePath}pay/tranx`, PostSettings(data))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+const portalAuth = async (data: {
+  id: string
+  content: string
+  product_id: number
+}) => {
+  const resp = await fetch(`${basePath}info/auth`, PostSettings(data))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
 
 export {
+  createPaymentIntent,
   getUsers,
   loginUser,
   registerUser,
@@ -162,4 +218,7 @@ export {
   addReview,
   handlePay,
   submitInterview,
+  fetcher,
+  paystacktx,
+  portalAuth,
 }

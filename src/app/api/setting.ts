@@ -1,9 +1,5 @@
-let basePath = "https://robiatschools.com/api/v1/"
+const basePath = process.env.NEXT_PUBLIC_BASEPATH
 // let MONGO_URI = process.env.MONGO_URI!;
-
-if (process.env.NODE_ENV == "development") {
-  basePath = "http://localhost:5071/api/v1/"
-}
 
 const authKey = process.env.NEXT_PUBLIC_APIKEY
 export const auth = {

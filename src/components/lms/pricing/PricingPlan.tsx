@@ -1,4 +1,4 @@
-import { Plan } from "@/types/types"
+import { Plan, TCountryCode } from "@/types/types"
 import CheckIcon from "@mui/icons-material/Check"
 import {
   Button,
@@ -13,9 +13,11 @@ import React from "react"
 
 interface PricingPlanProps {
   plan: Plan
+  action: (_plan: Plan) => void
+  locale: TCountryCode
 }
 
-const PricingPlan: React.FC<PricingPlanProps> = ({ plan }) => (
+const PricingPlan: React.FC<PricingPlanProps> = ({ plan, locale, action }) => (
   <div className="max-w-sm w-full">
     <Card className="min-h-[36rem] flex flex-col justify-between shadow-lg rounded-2xl">
       <CardHeader
@@ -33,7 +35,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ plan }) => (
       />
       <CardContent className="flex flex-col items-center">
         <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>
-          {plan.price}
+          {plan.price[locale]}
         </Typography>
         {plan.duration && (
           <Typography variant="body2" color="text.secondary">
@@ -48,7 +50,13 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ plan }) => (
         </Stack>
       </CardContent>
       <CardFooter>
-        <Button fullWidth variant="contained" size="large" color="primary">
+        <Button
+          fullWidth
+          variant="contained"
+          size="large"
+          color="primary"
+          onClick={() => action(plan)}
+        >
           Choose Plan
         </Button>
       </CardFooter>

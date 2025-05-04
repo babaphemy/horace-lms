@@ -11,6 +11,9 @@ import { muiTheme } from "@/styles/theme"
 import { QueryClient, QueryClientProvider } from "react-query"
 import ToastProvider from "@/providers/toast-provider"
 import "react-toastify/dist/ReactToastify.css"
+import Ga from "@/components/Analytics/Google/Ga"
+import { SessionProvider } from "next-auth/react"
+import { CookiesProvider } from "react-cookie"
 
 const volkhov = Open_Sans({
   subsets: ["latin"],
@@ -19,7 +22,14 @@ const volkhov = Open_Sans({
   display: "swap",
   weight: ["400", "700"],
 })
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    },
+  },
+})
 
 // export const metadata: Metadata = {
 //   title: "Horace Learning Management Solution and School ERP",
@@ -54,14 +64,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${volkhov.variable}`}>
-        <ThemeProvider theme={muiTheme}>
-          <AppProvider>
-            <QueryClientProvider client={queryClient}>
-              {children}
-              <ToastProvider />
-            </QueryClientProvider>
-          </AppProvider>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={muiTheme}>
+            <Ga />
+            <SessionProvider>
+              <CookiesProvider defaultSetOptions={{ path: "/" }}>
+                <AppProvider>
+                  <>
+                    {children}
+                    <ToastProvider />
+                  </>
+                </AppProvider>
+              </CookiesProvider>
+            </SessionProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
       </body>
     </html>
   )
