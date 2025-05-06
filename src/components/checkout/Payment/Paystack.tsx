@@ -4,9 +4,10 @@ import { paystacktx } from "@/app/api/rest"
 import { notifyError } from "@/utils/notification"
 import { Button } from "@mui/material"
 import { useMutation } from "react-query"
+import { Plan } from "@/types/types"
 
-const Paystack = () => {
-  const { plan, user } = React.useContext(Appcontext)
+const Paystack = ({ plan }: { plan: Plan }) => {
+  const { user, userId } = React.useContext(Appcontext)
   const dispatch = React.useContext(AppDpx)
   const mutation = useMutation({
     mutationFn: paystacktx,
@@ -18,7 +19,6 @@ const Paystack = () => {
       } else {
         notifyError("error occured! Paystack not initialized")
       }
-      // redirect to url
     },
     onError: () => {
       notifyError("error occured! Paystack not initialized")
@@ -31,10 +31,15 @@ const Paystack = () => {
         (plan?.price["NG"] || "").replace(/[^0-9.]/g, "").replace(",", "")
       ) * 100
 
+    if (!userId && !user?.id && !convertedAmt) {
+      notifyError("error occured! User not found")
+      return
+    }
+
     const paydto = {
       amount: convertedAmt,
       email: user?.email,
-      payee: user?.id || "",
+      payee: user?.id || userId || "",
       first_name: user?.firstname,
       last_name: user?.lastname,
       currency: "NGN" as "NGN",

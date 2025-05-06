@@ -239,31 +239,38 @@ export type tInterview = {
 export interface TransactionData {
   payee: string
   description: string
+  name?: string
   amount: number
   currency: "NGN" | "USD"
   tranx: string
+  status?: string
+  type?: string
+  stripe_payment_method?: string
+  firstname?: string
+  callback_url?: string
 }
 export interface Tranx {
-  id: string
-  amount: number
-  description: string
-  currency: string
-  payee: UserDto
-  first_name: string | null
-  last_name: string | null
-  email: string | null
-  phone: string | null
-  detail: string | null
-  tranx_type: string
-  receipt: string | null
-  ref: number
-  isp: string | null
-  stripe_payment_method: string | null
-  status: string
-  createdOn: string
-  modifiedOn: string | null
-  callback_url: string | null
-  stripeId: string | null
+  id?: string
+  amount?: number
+  description?: string
+  currency?: string
+  payee?: UserDto
+  first_name?: string | null
+  last_name?: string | null
+  email?: string | null
+  phone?: string | null
+  detail?: string | null
+  tranx_type?: string
+  receipt?: string | null
+  ref?: number
+  isp?: string | null
+  stripe_payment_method?: string | null
+  status?: string
+  createdOn?: string
+  modifiedOn?: string | null
+  callback_url?: string | null
+  stripeId?: string | null
+  clientSecret?: string | null
 }
 export interface Address {
   street: string
@@ -288,3 +295,34 @@ export interface UserPayload {
   address?: Address
 }
 export type TCountryCode = "NG" | "US"
+
+export interface Payee {
+  id: string
+  firstname: string
+  lastname: string
+  country: string | null
+  email: string
+  token: string
+  dp: string | null
+  active: boolean
+  createdOn: string
+  modifiedOn: string | null
+  lastLogin: string | null
+  roles: string[]
+}
+
+export interface TransactionItem {
+  id: string
+  ref: number | null
+  stripeId: string | null
+  amount: number
+  currency: "USD" | "NGN"
+  callback: string | null
+  type: string | null
+  status: string | null
+  description: string
+  payee: Payee
+  detail: string | null
+  createdOn: string | null
+  modifiedOn: string | null
+}

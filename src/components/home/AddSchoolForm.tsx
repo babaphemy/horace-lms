@@ -56,10 +56,6 @@ interface Addschoolprops {
   callback?: (_user_id: string) => void
 }
 const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
-  //   const dispatch = useContext(AppDpx)
-  //   const { plan } = useContext(Appcontext)
-  //   const { data: session } = useSession()
-
   const form = useForm({
     defaultValues: {
       firstname: "",
@@ -79,10 +75,6 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
   })
 
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    // const owner_id =
-    //   session?.user?.id && !isNaN(Number(session.user.id))
-    //     ? +session.user.id
-    //     : 1
     const userPayload = {
       firstname: data.firstname,
       lastname: data.lastname,
@@ -96,24 +88,6 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
       address: data.address,
     }
     userMutation.mutate(userPayload)
-    // const schoolPayload = {
-    //   name: data.name,
-    //   email: data.email,
-    //   status: data.status,
-    //   owner_id,
-    //   address: data.address,
-    // }
-    // if (session?.user?.id) {
-    //   mutate(schoolPayload)
-    //   if (plan !== null) {
-    //     dispatch({ type: SET_STEP, payload: 3 })
-    //   } else {
-    //     dispatch({ type: SET_STEP, payload: 2 })
-    //   }
-    // } else {
-    //   setPayload(schoolPayload)
-    //   userMutation.mutate(userPayload)
-    // }
   }
 
   const userMutation = useMutation({
@@ -129,24 +103,6 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
       notifyError("User Sign Up Failed")
     },
   })
-
-  //   const { mutate, isLoading } = useMutation({
-  //     mutationFn: addSchool,
-  //     onSuccess: (data) => {
-  //       notifySuccess("Registration is successful")
-  //       if (callback) {
-  //         callback(data.owner_id)
-  //       }
-  //       if (plan !== null) {
-  //         dispatch({ type: SET_STEP, payload: 3 })
-  //       } else {
-  //         dispatch({ type: SET_STEP, payload: 2 })
-  //       }
-  //     },
-  //     onError: () => {
-  //       notifyError("School Sign Up Failed")
-  //     },
-  //   })
 
   return (
     <Paper

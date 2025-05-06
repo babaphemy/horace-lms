@@ -10,7 +10,7 @@ const handler = NextAuth({
         const fd = new FormData()
         fd.append("username", credentials.email)
         fd.append("password", credentials.password)
-        const res = await fetch(`${basePath}info/login`, {
+        const res = await fetch(`${basePath}user/login2`, {
           method: "POST",
           body: fd,
           credentials: "include",

@@ -1,6 +1,5 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { notifyError, notifySuccess } from "@/utils/notification"
-import { AppDpx } from "@/context/AppContext"
 import { portalAuth } from "@/app/api/rest"
 import { Box, Button, Stack, TextField, Typography } from "@mui/material"
 import { ArrowRightAlt } from "@mui/icons-material"
@@ -14,13 +13,11 @@ interface Props {
 }
 
 const CheckoutLogin: React.FC<Props> = ({ callback }) => {
-  const dispatch = useContext(AppDpx)
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   })
   const handleLogin = async (e: React.FormEvent) => {
-    // login is not next-auth cos its portal.horacelearning
     e.preventDefault()
     if (!formData.email || !formData.password) {
       notifyError("Please fill in all fields.")
@@ -28,22 +25,20 @@ const CheckoutLogin: React.FC<Props> = ({ callback }) => {
     }
     try {
       const response = await portalAuth({
-        id: formData.email,
-        content: formData.password,
-        product_id: 1,
+        email: formData.email,
+        password: formData.password,
+        type: "ADMIN",
       })
       if (response?.id) {
         notifySuccess("Login successful")
-        // TODO: find and set pending transactions
-        dispatch({ type: "SET_USER", data: response })
         if (callback) {
           callback(response.id)
         }
       } else {
-        notifyError("Login failed")
+        notifyError("Login failed! Invalid credentials")
       }
-    } catch (error) {
-      const err = error instanceof Error ? error.message : "An error occurred"
+    } catch {
+      const err = "An error occurred! invalid account."
       notifyError(err)
     }
   }

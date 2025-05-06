@@ -15,7 +15,7 @@ import { storeTranx } from "@/app/api/rest"
 import { Plan, TCountryCode } from "@/types/types"
 import CheckoutLogin from "../auth/CheckoutLogin"
 import AddSchoolForm from "../home/AddSchoolForm"
-import { SET_TRANX } from "@/context/Action"
+import { SET_TRANX, SET_USER_ID } from "@/context/Action"
 import { notifySuccess } from "@/utils/notification"
 import Link from "next/link"
 
@@ -42,8 +42,11 @@ const RenderAuth: React.FC<Props> = ({ planDetail, locale }) => {
         amount: convertedAmt * 100,
         currency: locale === "NG" ? "NGN" : "USD",
         tranx: "PLAN",
+        status: "PENDING",
+        type: locale,
       })
       dispatch({ type: SET_TRANX, payload: tranx })
+      dispatch({ type: SET_USER_ID, payload: user_id })
       notifySuccess("Signup successful!")
     }
   }
@@ -84,15 +87,7 @@ const RenderAuth: React.FC<Props> = ({ planDetail, locale }) => {
 
         {tab === 0 && (
           <Box sx={{ mt: 2 }}>
-            <Card sx={{ width: "100%", maxWidth: "2xl" }}>
-              <CardHeader
-                title="Information"
-                titleTypographyProps={{ textAlign: "center" }}
-              />
-              <CardContent>
-                <AddSchoolForm callback={makeTranx} />
-              </CardContent>
-            </Card>
+            <AddSchoolForm callback={makeTranx} />
           </Box>
         )}
         {tab === 1 && (

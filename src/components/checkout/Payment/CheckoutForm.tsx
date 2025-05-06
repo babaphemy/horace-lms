@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js"
 import { StripeCardElement } from "@stripe/stripe-js"
 import { Button } from "@mui/material"
+import { notifyError } from "@/utils/notification"
 
 interface CheckoutFormProps {
   amount: number
@@ -13,7 +14,6 @@ export default function CheckoutForm({ amount }: CheckoutFormProps) {
   const stripe = useStripe()
   const elements = useElements()
   const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -23,7 +23,6 @@ export default function CheckoutForm({ amount }: CheckoutFormProps) {
     }
 
     setIsLoading(true)
-    setErrorMessage("")
 
     // Create payment intent on the server
     const response = await fetch("/api/create-payment-intent", {
@@ -35,7 +34,7 @@ export default function CheckoutForm({ amount }: CheckoutFormProps) {
     const { clientSecret, error: intentError } = await response.json()
 
     if (intentError) {
-      setErrorMessage(intentError)
+      notifyError(intentError)
       setIsLoading(false)
       return
     }
@@ -56,7 +55,7 @@ export default function CheckoutForm({ amount }: CheckoutFormProps) {
     setIsLoading(false)
 
     if (error) {
-      setErrorMessage(error.message || "")
+      notifyError(error.message || "")
     } else if (paymentIntent.status === "succeeded") {
       // Payment successful - redirect or show success message
       window.location.href = "/success"
@@ -86,8 +85,6 @@ export default function CheckoutForm({ amount }: CheckoutFormProps) {
           />
         </div>
       </div>
-
-      {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
 
       <Button type="submit" disabled={!stripe || isLoading} className="w-full">
         {isLoading ? "Processing..." : `Pay $${amount.toFixed(2)}`}

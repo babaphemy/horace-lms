@@ -13,10 +13,12 @@ import {
   Action,
   MODAL_SET,
   SET_LOCALE,
+  SET_PAYMENT_STATUS,
   SET_PLAN,
   SET_STEP,
   SET_TRANX,
   SET_USER,
+  SET_USER_ID,
   USER_ADD,
   USER_RESET,
 } from "./Action"
@@ -24,6 +26,8 @@ import { COURSE_SET, COURSES_SET, SET_PLAY_ID } from "./actions"
 
 type State = {
   user: UserDto | null
+  paymentStatus: string
+  userId: string | null
   course: tCourse | null
   courses: tCourseLte[] | []
   playId: tLecture | null
@@ -32,6 +36,7 @@ type State = {
   locale: TCountryCode
   isAuthenticated: boolean
   tranx: Tranx | null
+
   modal: {
     open: boolean
     type: "login" | "signup" | "payment" | "review" | "forgotPassword"
@@ -55,6 +60,8 @@ const getuser = () => {
 
 const initialState: State = {
   user: getuser(),
+  userId: null,
+  paymentStatus: "initial",
   course: null,
   courses: [],
   plan: null,
@@ -78,6 +85,17 @@ const reducer = (state: State, action: Action): State => {
         ...state,
         user: action.data,
         isAuthenticated: true,
+      }
+    case SET_PAYMENT_STATUS:
+      return {
+        ...state,
+        paymentStatus: action.payload,
+      }
+
+    case SET_USER_ID:
+      return {
+        ...state,
+        userId: action.payload,
       }
     case USER_ADD:
       return {

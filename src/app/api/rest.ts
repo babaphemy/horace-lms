@@ -169,14 +169,14 @@ const fetcher = async (
   return await res.json()
 }
 const createPaymentIntent = async (data: TransactionData) => {
-  const resp = await fetch(`${basePath}tranx/stripe`, PostSettings(data))
+  const resp = await fetch(`${basePath}pay/intent`, PostSettings(data))
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
   return resp.json()
 }
 const paystacktx = async (data: TransactionData) => {
-  const resp = await fetch(`${basePath}tranx/pay`, PostSettings(data))
+  const resp = await fetch(`${basePath}pay/paystack`, PostSettings(data))
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -190,11 +190,11 @@ export const storeTranx = async (data: TransactionData): Promise<Tranx> => {
   return resp.json()
 }
 const portalAuth = async (data: {
-  id: string
-  content: string
-  product_id: number
+  email: string
+  password: string
+  type: string
 }) => {
-  const resp = await fetch(`${basePath}info/auth`, PostSettings(data))
+  const resp = await fetch(`${basePath}user/login`, PostSettings(data))
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }

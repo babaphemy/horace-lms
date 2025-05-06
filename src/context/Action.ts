@@ -36,6 +36,8 @@ export type Action =
   | { type: "SET_PLAN"; payload: Plan | null }
   | { type: "SET_TRANX"; payload: Tranx | null }
   | { type: "SET_LOCALE"; payload: TCountryCode }
+  | { type: "SET_USER_ID"; payload: string }
+  | { type: "SET_PAYMENT_STATUS"; payload: string }
 
 export const USER_ADD = "USER_ADD"
 export const USER_RESET = "USER_RESET"
@@ -44,4 +46,6 @@ export const SET_PLAN = "SET_PLAN"
 export const SET_TRANX = "SET_TRANX"
 export const SET_LOCALE = "SET_LOCALE"
 export const SET_USER = "SET_USER"
+export const SET_USER_ID = "SET_USER_ID"
 export const SET_STEP = "SET_STEP"
+export const SET_PAYMENT_STATUS = "SET_PAYMENT_STATUS"

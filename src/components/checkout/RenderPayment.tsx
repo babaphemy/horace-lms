@@ -39,7 +39,11 @@ const RenderPayment: React.FC<Props> = ({ planDetail, amt, locale }) => (
       </div>
       {planDetail?.slug !== "standard-plus" && (
         <div className="space-y-4">
-          {locale === "NG" ? <Paystack /> : <ElementsForm amt={amt} />}
+          {locale === "NG" ? (
+            <Paystack plan={planDetail} />
+          ) : (
+            <ElementsForm amt={amt} />
+          )}
         </div>
       )}
     </CardContent>
