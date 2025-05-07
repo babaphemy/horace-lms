@@ -7,6 +7,7 @@ import getStripe from "./get-stripe"
 
 import { LinearProgress } from "@mui/material"
 import ElementCheckout from "./ElementCheckout"
+import { StripeElementsOptions } from "@stripe/stripe-js"
 interface StripeProps {
   tranx?: Transaction
   amt: number
@@ -14,27 +15,21 @@ interface StripeProps {
 
 interface Transaction {
   clientSecret?: string
-  // Add other transaction properties
 }
 
 const ElementsForm: React.FC<StripeProps> = ({ tranx, amt }) => {
   const stripeOptions = useMemo(() => {
-    const options: any = {
+    const options: StripeElementsOptions = {
       appearance: {
         variables: {
           colorIcon: "#6772e5",
           fontFamily: "Roboto, Open Sans, Segoe UI, sans-serif",
         },
       },
-      currency: "usd",
-      mode: "payment" as "payment",
-      amount: amt,
-    }
-    if (tranx?.clientSecret) {
-      options.clientSecret = tranx.clientSecret
+      ...(tranx?.clientSecret ? { clientSecret: tranx.clientSecret } : {}),
     }
     return options
-  }, [amt, tranx?.clientSecret])
+  }, [tranx?.clientSecret])
 
   return (
     <div className="container mx-auto px-4 py-8">
