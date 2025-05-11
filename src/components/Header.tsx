@@ -85,14 +85,14 @@ const Header = () => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
-  const handleClose = () => {
+  const handleClose = (path?: string) => {
+    if (path) router.push(path)
     setAnchorEl(null)
   }
   const handleLogout = () => {
-    handleClose()
     dispatch({ type: USER_RESET, payload: null })
-    router.push("/login")
     localStorage.removeItem("horaceUser")
+    handleClose("/login")
   }
 
   React.useEffect(() => {
@@ -151,7 +151,10 @@ const Header = () => {
                     About
                   </NextLink>
                   <NextLink href="/academy" passHref>
-                    Playground
+                    Academy
+                  </NextLink>
+                  <NextLink href="/courses" passHref>
+                    Courses
                   </NextLink>
                   <NextLink href="/contact" passHref>
                     Contact
@@ -206,7 +209,10 @@ const Header = () => {
                   About
                 </NextLink>
                 <NextLink href="/academy" passHref>
-                  Playground
+                  Academy
+                </NextLink>
+                <NextLink href="/courses" passHref>
+                  Courses
                 </NextLink>
                 <NextLink href="/contact" passHref>
                   Contact
@@ -261,16 +267,25 @@ const Header = () => {
                     open={openMenu}
                     onClose={handleClose}
                   >
-                    <MenuItem onClick={handleClose} disableRipple>
+                    <MenuItem
+                      onClick={() => handleClose("/dashboard")}
+                      disableRipple
+                    >
                       <DashboardIcon />
                       Dashboard
                     </MenuItem>
-                    <MenuItem onClick={handleClose} disableRipple>
+                    <MenuItem
+                      onClick={() => handleClose("/profile")}
+                      disableRipple
+                    >
                       <Person2Icon />
                       Profile
                     </MenuItem>
                     <Divider sx={{ my: 0.5 }} />
-                    <MenuItem onClick={handleClose} disableRipple>
+                    <MenuItem
+                      onClick={() => handleClose(`/courses/${user?.id}`)}
+                      disableRipple
+                    >
                       <BookIcon />
                       My Courses
                     </MenuItem>

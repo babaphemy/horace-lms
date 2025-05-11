@@ -27,15 +27,16 @@ import { loginUser } from "@/app/api/rest"
 import { MODAL_SET, USER_ADD } from "@/context/Action"
 import { loginStyles } from "@/styles/loginStyles"
 import { UserDto } from "@/types/types"
+import { notifyError, notifySuccess } from "@/utils/notification"
 
 const schema = yup.object().shape({
   email: yup
     .string()
-    .email("You must enter a valid email")
+    .email("A valid email is required")
     .required("You must enter a email"),
   password: yup
     .string()
-    .required("Please enter your password.")
+    .required("Password is required!.")
     .min(4, "Password is too short - should be 4 chars minimum."),
 })
 
@@ -44,7 +45,6 @@ const defaultValues = {
   password: "",
 }
 
-// Props
 type loginProps = {
   email: string
   password: string
@@ -77,18 +77,23 @@ const LoginComponent = (props: Props) => {
 
   const { mutate } = useMutation(loginUser, {
     onSuccess: (data: UserDto) => {
-      localStorage.setItem("horaceUser", JSON.stringify(data))
+      if (!data.status) {
+        notifyError(data?.message || "Login Failed, Please Try Again")
+        return
+      }
+      localStorage.setItem("horaceUser", JSON.stringify(data)) // TODO: use next-auth
+      notifySuccess("Login Successful!")
 
       dispatch({ type: USER_ADD, payload: data })
       if (modal) {
         dispatch({ type: MODAL_SET, data: { open: false, type: "login" } })
       } else {
-        router.push("/")
+        router.push("/academy")
       }
       reset(defaultValues)
     },
     onError: (error: Error) => {
-      setAlert({ show: true, msg: `Login Failed, Please Try Again ${error}` })
+      notifyError(`Login Failed, Please Try Again ${error}`)
     },
   })
 

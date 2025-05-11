@@ -41,6 +41,7 @@ import ReactPlayer from "react-player"
 import React, { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useParams, useRouter } from "next/navigation"
+import { notifyError, notifySuccess } from "@/utils/notification"
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Courses",
 //   description:
@@ -57,8 +58,8 @@ const Detailb = () => {
   const router = useRouter()
 
   const { data } = useQuery(
-    ["acourse", cid],
-    () => fetchCourse(Array.isArray(cid) ? cid[0] : cid),
+    ["acourse", cid, user?.id],
+    () => fetchCourse(cid as string, user?.id),
     {
       staleTime: 5000,
       cacheTime: 10,
@@ -91,6 +92,7 @@ const Detailb = () => {
   }, [cid, data])
 
   const { mutate } = useMutation(isCourseReg, {
+    // TODO: remove this
     onSuccess: (data) => {
       if (cid) {
         setRegCourse(data.includes(cid))
@@ -101,9 +103,8 @@ const Detailb = () => {
       throw error
     },
   })
-
-  const { course, posts } = data || {}
   const {
+    courseId,
     courseName,
     target,
     curriculum,
@@ -111,10 +112,10 @@ const Detailb = () => {
     category,
     updatedOn,
     price,
+    posts,
     assetCount,
-  } = course || {}
-
-  const courseId = course?.id
+    registered,
+  } = data || {}
 
   const calculatedRating = () => {
     let total = 0
@@ -123,7 +124,7 @@ const Detailb = () => {
     })
     return total / posts?.length
   }
-  const author = `${data?.course?.author?.firstname || "Horace"} ${
+  const author = `${data?.author?.firstname || "Horace"} ${
     data?.author?.lastname || "Instructor"
   }`
   const preview = curriculum?.section[0]?.lecture[0]?.video
@@ -140,9 +141,11 @@ const Detailb = () => {
 
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
+      notifySuccess("You are now enrolled!")
       addCourseToContext()
     },
     onError: (error) => {
+      notifyError("Enrollment Failed, Please Try Again!")
       throw error
     },
   })
@@ -161,7 +164,7 @@ const Detailb = () => {
         ...curriculum.section[0].lecture[0],
       },
     })
-    router.push("/course/classroom")
+    router.push("/course/classroom?courseId=" + courseId)
     return
   }
 
@@ -180,8 +183,6 @@ const Detailb = () => {
               type: MODAL_SET,
               data: { open: true, type: "payment" },
             })
-
-      // addCourseToUser.mutate(payload);
     } else {
       dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
     }
@@ -341,33 +342,50 @@ const Detailb = () => {
                     </List>
                   </nav>
                   <Box className="flex justify-between items-center mb-10">
-                    <Button
-                      variant="contained"
-                      className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
-                      onClick={handleJoinClass}
-                    >
-                      Join Class
-                    </Button>
+                    {registered ? (
+                      <Button
+                        variant="contained"
+                        className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
+                        onClick={() =>
+                          router.push("/course/classroom?courseId=" + courseId)
+                        }
+                      >
+                        Go To Class
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
+                        onClick={handleJoinClass}
+                      >
+                        Enroll
+                      </Button>
+                    )}
+
                     <Typography variant="h6" className="text-[#00A9C1]">
-                      ${price || 0}
+                      {typeof price === "number"
+                        ? price === 0
+                          ? "Free"
+                          : `$${price}`
+                        : ""}
                     </Typography>
                   </Box>
                 </Box>
               </Box>
             </Box>
             <Box className="mt-8 px-2 hidden md:block">
-              <ReactPlayer
+              {/* <ReactPlayer
                 url={`https://essl.b-cdn.net/${preview}`}
                 controls={true}
                 loop={true}
                 width="100%"
                 height="100%"
-              />
+              /> */}
             </Box>
             <Box className="mt-8 block ">
               <Paper className="py-7 p-3 mt-8 rounded-2xl border-2 border-[#FF869A] bg-gray-100">
                 <Typography variant="h6" className="mt-4 mx-4">
-                  Syllabus
+                  Content
                 </Typography>
                 <Curriculumb
                   courseName={courseName}

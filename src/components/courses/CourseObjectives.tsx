@@ -108,13 +108,6 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
               <Typography variant="subtitle1" gutterBottom>
                 Last Updated: {modified || "N/A"}
               </Typography>
-              <Button
-                onClick={handleJoinClass}
-                variant="contained"
-                className="bg-[#00A9C1] text-white rounded-full px-10 py-2 my-5 hover:bg-[#00A9C1]"
-              >
-                Join Class
-              </Button>
             </div>
           )}
           {tabValue === 1 && (

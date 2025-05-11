@@ -70,8 +70,28 @@ const fetchCourses = async () => {
   }
   return response.json()
 }
-const fetchCourse = async (id: string) => {
-  const response = await fetch(`${basePath}course/${id}`, auth)
+const fetchCourse = async (id: string, userid?: string) => {
+  const response = await fetch(
+    userid ? `${basePath}course/${id}/${userid}` : `${basePath}course/${id}`,
+    auth
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const fetchLMS = async (id: string) => {
+  const response = await fetch(`${basePath}course/lms/${id}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const myRegisteredCourses = async (userId: string) => {
+  const response = await fetch(
+    `${basePath}course/courses/my-registered?usr=${userId}`,
+    auth
+  )
   if (!response.ok) {
     return { error: response.status }
   }
@@ -209,6 +229,7 @@ export {
   verifyEmail,
   fetchCourses,
   fetchCourse,
+  fetchLMS,
   doToken,
   resetPass,
   addUserCourse,
@@ -218,6 +239,7 @@ export {
   addReview,
   handlePay,
   submitInterview,
+  myRegisteredCourses,
   fetcher,
   paystacktx,
   portalAuth,

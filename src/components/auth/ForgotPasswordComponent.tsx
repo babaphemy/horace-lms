@@ -6,7 +6,6 @@ import { loginStyles } from "@/styles/loginStyles"
 import { yupResolver } from "@hookform/resolvers/yup"
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import {
-  Alert,
   Box,
   Button,
   IconButton,
@@ -24,7 +23,7 @@ import { Controller, useForm } from "react-hook-form"
 import { useMutation } from "react-query"
 import * as yup from "yup"
 import { useSearchParams } from "next/navigation"
-import { notifySuccess } from "@/utils/notification"
+import { notifyError, notifySuccess } from "@/utils/notification"
 
 const schema = yup.object().shape({
   email: yup
@@ -39,7 +38,6 @@ const schema = yup.object().shape({
     .required("Please confirm your password."),
 })
 
-// Props
 type forgotPassProps = {
   email: string
   token: string
@@ -55,10 +53,6 @@ const ForgotPasswordComponent = (props: Props) => {
   const searchParams = useSearchParams()
   const dispatch = React.useContext(AppDpx)
   const router = useRouter()
-  const [al, setAlert] = React.useState<{
-    show: boolean
-    msg: string
-  } | null>(null)
 
   const userEmail = searchParams?.get("userEmail")
 
@@ -73,15 +67,13 @@ const ForgotPasswordComponent = (props: Props) => {
     control,
     handleSubmit,
     getValues,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    watch,
     formState: { errors },
     reset,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
   })
-  const hasErrors = Object.keys(errors).length > 0
-
   const tokenMutation = useMutation(doToken, {
     onSuccess: () => {
       router.push("?userEmail=" + getValues("email"))
@@ -89,13 +81,13 @@ const ForgotPasswordComponent = (props: Props) => {
       return
     },
     onError: () => {
-      setAlert({ show: true, msg: "Reset Password Failed, Please Try Again!" })
+      notifyError("Reset Password Failed, Please Try Again!")
     },
   })
 
   const resetMutation = useMutation(resetPass, {
     onSuccess: () => {
-      notifySuccess("Password reset successful!")
+      notifySuccess("Password changed successfully!")
       if (modal) {
         dispatch({
           type: MODAL_SET,
@@ -107,7 +99,7 @@ const ForgotPasswordComponent = (props: Props) => {
       reset(defaultValues)
     },
     onError: () => {
-      setAlert({ show: true, msg: "Reset Password Failed, Please Try Again!" })
+      notifyError("Password Reset Failed, Please Try Again!")
     },
   })
 
@@ -127,27 +119,26 @@ const ForgotPasswordComponent = (props: Props) => {
     }
     router.push("/sign-up")
   }
+  const emailInput = watch("email")
+
+  const handleToken = () => {
+    if (!emailInput) {
+      notifyError("Please enter your email")
+      return
+    }
+
+    tokenMutation.mutate({
+      email: emailInput,
+      type: "USER",
+    })
+  }
 
   return (
     <Box sx={loginStyles.right}>
       <Typography variant="h4" sx={[loginStyles.center, loginStyles.title]}>
         Forgot Password <Image src={yeah} alt="yeah" width={30} height={30} />
       </Typography>
-      {hasErrors && (
-        <Alert severity="error" sx={loginStyles.alert}>
-          Form error
-        </Alert>
-      )}
 
-      {al?.show && (
-        <Alert
-          severity="error"
-          onClose={() => setAlert(null)}
-          sx={loginStyles.alert}
-        >
-          {al.msg}
-        </Alert>
-      )}
       <Box component="form" id="login-form" sx={loginStyles.form}>
         <Controller
           name="email"
@@ -284,15 +275,7 @@ const ForgotPasswordComponent = (props: Props) => {
           sx={[loginStyles.button, loginStyles.submit]}
           variant="contained"
           fullWidth
-          onClick={
-            userEmail
-              ? handleSubmit(onSubmit)
-              : () =>
-                  tokenMutation.mutate({
-                    email: getValues("email"),
-                    type: "USER",
-                  })
-          }
+          onClick={userEmail ? handleSubmit(onSubmit) : handleToken}
         >
           {userEmail ? "Submit" : "Send Reset Token"}
         </Button>
