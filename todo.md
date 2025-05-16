@@ -1,2 +1,1 @@
-- Upgrade MUI. Grid2 is missing
 - create the endpoint for addSubjectComplete
