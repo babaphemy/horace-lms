@@ -192,7 +192,7 @@ const Exercise = () => {
         <Box sx={{ mt: 4 }}>
           <Grid container spacing={1} justifyContent="center">
             {questionNumbers.slice(0, 15).map((num) => (
-              <Grid item key={num}>
+              <Grid key={num}>
                 <NavigationCircle
                   active={num === currentQuestion}
                   onClick={() => goToQuestion(num)}
@@ -204,7 +204,7 @@ const Exercise = () => {
           </Grid>
           <Grid container spacing={1} justifyContent="center" sx={{ mt: 1 }}>
             {questionNumbers.slice(15, 30).map((num) => (
-              <Grid item key={num}>
+              <Grid key={num}>
                 <NavigationCircle
                   active={num === currentQuestion}
                   onClick={() => goToQuestion(num)}

@@ -1,2 +1,2 @@
-- make currency dynamic
-- login as student or non-student role
+- Upgrade MUI. Grid2 is missing
+- create the endpoint for addSubjectComplete

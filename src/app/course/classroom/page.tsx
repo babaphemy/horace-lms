@@ -145,7 +145,7 @@ const ClassroomPage = () => {
       <Header />
       <MainCard>
         <Grid container>
-          <Grid item xs={12} md={8}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Box sx={{ p: 3 }}>
               <Box
                 sx={{
@@ -464,7 +464,7 @@ const ClassroomPage = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={4} sx={{ bgcolor: "grey.50" }}>
+          <Grid size={{ xs: 12, md: 4 }} sx={{ bgcolor: "grey.50" }}>
             <Box sx={{ p: 3 }}>
               <Box sx={{ mb: 3 }}>
                 <Typography

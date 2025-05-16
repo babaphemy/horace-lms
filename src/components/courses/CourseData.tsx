@@ -26,7 +26,7 @@ const CourseData: React.FC<Props> = ({
       <Grid container spacing={5}>
         {filteredData?.map((course: tCourseLte, index: number) => {
           return (
-            <Grid key={index} item xs={12} sm={6} md={4}>
+            <Grid key={index} size={{ xs: 12, sm: 6, md: 4 }}>
               <PopularCard data={course} />
             </Grid>
           )

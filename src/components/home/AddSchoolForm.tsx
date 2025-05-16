@@ -130,7 +130,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
           </Typography>
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 name="firstname"
                 control={form.control}
@@ -146,7 +146,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 name="lastname"
                 control={form.control}
@@ -163,7 +163,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 name="email"
                 control={form.control}
@@ -181,7 +181,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 name="address.phone_number"
                 control={form.control}
@@ -210,7 +210,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
           </Typography>
 
           <Grid container spacing={3} sx={{ mt: 1 }}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Controller
                 name="address.street"
                 control={form.control}
@@ -227,7 +227,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 name="address.city"
                 control={form.control}
@@ -244,7 +244,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 name="address.state"
                 control={form.control}
@@ -261,7 +261,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Controller
                 name="address.country"
                 control={form.control}
@@ -289,7 +289,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Controller
                 name="address.zip_code"
                 control={form.control}

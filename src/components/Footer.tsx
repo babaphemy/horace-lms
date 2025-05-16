@@ -25,7 +25,7 @@ const Footer = () => {
     <Box component="footer" sx={footerStyles.container}>
       <Container maxWidth="lg">
         <Grid container spacing={4}>
-          <Grid item xs={12} md={3}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Image
               src="/img/logo.webp"
               alt="Horace LMS Logo"
@@ -63,7 +63,7 @@ const Footer = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, md: 3, sm: 6 }}>
             <Typography variant="h6" gutterBottom>
               Navigation
             </Typography>
@@ -81,7 +81,7 @@ const Footer = () => {
             </List>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, md: 3, sm: 6 }}>
             <Typography variant="h6" gutterBottom>
               Support
             </Typography>
@@ -98,7 +98,7 @@ const Footer = () => {
             </List>
           </Grid>
 
-          <Grid item xs={12} md={3}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Typography variant="h6" gutterBottom>
               Newsletter
             </Typography>

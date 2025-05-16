@@ -4,7 +4,7 @@ export interface State {
   course: [tCourse] | []
 }
 export type tUser = {
-  id?: number
+  id?: string
   email: string
   phone?: string
   firstname: string
@@ -12,8 +12,9 @@ export type tUser = {
   roles: string[]
   status?: boolean | string
   token?: string
-  updatedOn: string
+  updatedOn?: string
   photo?: string
+  gender?: string
 }
 export type CardDto = {
   amount?: number // corresponds to int amount
@@ -78,6 +79,93 @@ export type tCurriculum = {
   objective?: string[]
   requirement?: string[]
 }
+export enum LESSONTYPE {
+  video = "video",
+  document = "document",
+  html = "html",
+  pdf = "pdf",
+  quiz = "quiz",
+  text = "text",
+}
+export interface CourseCreate {
+  id?: string
+  user: string
+  courseName: string
+  category?: string
+  target?: string
+  brief?: string
+  overview: string
+  price?: number
+  tax?: number
+  thumbnail?: string
+  draft?: string
+  currency?: string
+  createdOn?: Date
+  updatedOn?: Date
+}
+export interface CourseComplete extends CourseCreate {
+  topics: TopicDto[]
+}
+export interface CurriculumMap {
+  topic: TopicDto[]
+  requirement: string[]
+  objective: string[]
+}
+export type TopicDto = {
+  id?: string
+  title: string
+  description: string
+  cid: string
+  orderIndex?: number
+  lessons: LessonDto[]
+  dueDate?: Date
+  createdOn?: Date
+  updatedOn?: Date
+}
+export interface UserResp {
+  id: string
+  name: string
+  email: string
+}
+export interface PostResponse {
+  id: string
+  content: string
+  createdOn: string // LocalDateTime (ISO string)
+}
+
+export interface CourseResponse {
+  courseId: string
+  courseName: string
+  author: UserResp
+  category: string
+  target: string
+  curriculum: CurriculumMap
+  brief: string
+  price: number
+  tax: number
+  posts: PostResponse[]
+  signed: Record<string, string>[]
+  assetCount: Record<string, number>
+  createdOn: string // LocalDateTime (ISO string)
+  thumbnail: string
+  updatedOn: string // LocalDate (ISO string)
+  totalSteps: number
+  draft: boolean
+  isRegistered: boolean
+}
+
+export type LessonDto = {
+  id?: string
+  tid: string
+  title: string
+  video?: string
+  type: string
+  content?: string
+  orderIndex?: number
+  dueDate?: Date
+  createdOn?: Date
+  updatedOn?: Date
+}
 export type tCourse = {
   id: string
   author: tUser
@@ -98,6 +186,7 @@ export type tCourse = {
   draft: boolean
   posts?: tPost[]
   assetCount: {
+    topicCount: number
     lessonCount: number
     labCount: number
     quizCount: number
@@ -326,3 +415,4 @@ export interface TransactionItem {
   createdOn: string | null
   modifiedOn: string | null
 }
+export type TableClickType = "delete" | "edit" | "view"

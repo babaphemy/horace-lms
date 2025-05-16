@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { PostSettings } from "../../setting"
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH
 
@@ -7,14 +8,10 @@ const handler = NextAuth({
   providers: [
     CredentialsProvider({
       authorize: async (credentials) => {
-        const fd = new FormData()
-        fd.append("username", credentials.email)
-        fd.append("password", credentials.password)
-        const res = await fetch(`${basePath}user/login2`, {
-          method: "POST",
-          body: fd,
-          credentials: "include",
-        })
+        const res = await fetch(
+          `${basePath}user/login2`,
+          PostSettings(credentials)
+        )
         const user = await res.json()
         if (res?.ok && user) {
           if (user.detail) {
@@ -27,6 +24,10 @@ const handler = NextAuth({
         }
       },
     }),
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    // }),
   ],
   session: {
     jwt: true,
@@ -47,9 +48,9 @@ const handler = NextAuth({
     },
   },
   pages: {
-    signIn: "/authentication/sign-in/",
-    signOut: "/authentication/logout/",
-    error: "/authentication/sign-in/",
+    signIn: "/login/",
+    signOut: "/logout/",
+    error: "/login/",
   },
 })
 export { handler as GET, handler as POST }

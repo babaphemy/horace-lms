@@ -29,6 +29,7 @@ import { USER_RESET } from "@/context/Action"
 import TopBg from "./TopBg"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -75,9 +76,9 @@ const StyledMenu = styled((props: MenuProps) => (
 
 const Header = () => {
   const router = useRouter()
+  const { data: session } = useSession()
+  const user = session?.user
   const [open, setOpen] = React.useState(false)
-  const [loggedIn, setLoggedIn] = React.useState(false)
-  const { user } = useContext(Appcontext)
   const dispatch = useContext(AppDpx)
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -94,14 +95,6 @@ const Header = () => {
     localStorage.removeItem("horaceUser")
     handleClose("/login")
   }
-
-  React.useEffect(() => {
-    if (user?.id) {
-      setLoggedIn(true)
-    } else {
-      setLoggedIn(false)
-    }
-  }, [user])
 
   return (
     <>
@@ -166,13 +159,13 @@ const Header = () => {
                   <Typography variant="body1" sx={headerStyles.language}>
                     English
                   </Typography>
-                  {!loggedIn && (
+                  {!user?.id && (
                     <NextLink href="/login" passHref>
                       Login
                     </NextLink>
                   )}
                 </Box>
-                {!loggedIn && (
+                {!user?.id && (
                   <NextLink href="/sign-up" passHref>
                     <Button
                       variant="contained"
@@ -224,7 +217,7 @@ const Header = () => {
                 <LanguageIcon />
                 English
               </Typography>
-              {!loggedIn ? (
+              {!user?.id ? (
                 <>
                   <NextLink href="/login" passHref>
                     Login
@@ -265,7 +258,7 @@ const Header = () => {
                     }}
                     anchorEl={anchorEl}
                     open={openMenu}
-                    onClose={handleClose}
+                    onClose={() => handleClose()}
                   >
                     <MenuItem
                       onClick={() => handleClose("/dashboard")}

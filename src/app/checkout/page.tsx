@@ -72,7 +72,7 @@ const CheckoutContent: React.FC = () => {
               />
             )}
 
-            <Grid item xs={12} md={data?.length > 0 ? 6 : 12}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Paper
                 elevation={2}
                 sx={{

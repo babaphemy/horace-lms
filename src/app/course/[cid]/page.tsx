@@ -407,7 +407,7 @@ const Detailb = () => {
           </Grid> */}
 
           {similarCourses?.map((course) => (
-            <Grid item xs={12} md={6} key={course.id}>
+            <Grid size={{ xs: 12, md: 6 }} key={course.id}>
               <SimilarCard course={course} />
             </Grid>
           ))}

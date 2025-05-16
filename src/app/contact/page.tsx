@@ -120,7 +120,7 @@ const ContactUs = () => {
               </Alert>
             )}
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="firstname"
                   control={control}
@@ -147,7 +147,7 @@ const ContactUs = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="lastname"
                   control={control}
@@ -174,8 +174,7 @@ const ContactUs = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12}>
-                {" "}
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <Controller
                   name="email"
                   control={control}
@@ -202,7 +201,7 @@ const ContactUs = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <Controller
                   name="phone"
                   control={control}
@@ -229,7 +228,7 @@ const ContactUs = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <Controller
                   name="message"
                   control={control}
@@ -258,7 +257,7 @@ const ContactUs = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={12}>
+              <Grid size={{ xs: 12, sm: 12 }}>
                 <Button type="submit" sx={contactStyles.button}>
                   Send Message
                 </Button>
@@ -271,7 +270,7 @@ const ContactUs = () => {
         </Paper>
         <Paper sx={contactStyles.othersContainer}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, md: 3, sm: 6 }}>
               <Box sx={contactStyles.gridBox}>
                 <div className="flex items-center justify-center p-2 w-fit mb-5 rounded-md bg-orange-500 text-white cursor-pointer">
                   <MailOutlineIcon />
@@ -298,7 +297,7 @@ const ContactUs = () => {
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, md: 3, sm: 6 }}>
               <Box sx={contactStyles.gridBox}>
                 <div className="flex items-center justify-center p-2 w-fit mb-5 rounded-md bg-orange-500 text-white cursor-pointer">
                   <MapOutlinedIcon />
@@ -314,7 +313,7 @@ const ContactUs = () => {
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, md: 3, sm: 6 }}>
               <Box sx={contactStyles.gridBox}>
                 <div className="flex items-center justify-center p-2 w-fit mb-5 rounded-md bg-orange-500 text-white cursor-pointer">
                   <PhoneInTalkIcon />
@@ -330,7 +329,7 @@ const ContactUs = () => {
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid size={{ xs: 12, md: 3, sm: 6 }}>
               <Box sx={contactStyles.gridBox}>
                 <div className="flex items-center justify-center flex-col text-center">
                   <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
