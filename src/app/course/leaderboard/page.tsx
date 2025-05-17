@@ -11,7 +11,6 @@ import {
   TableHead,
   TableRow,
   styled,
-  useTheme,
 } from "@mui/material"
 
 interface MedalAvatarProps {
@@ -136,8 +135,6 @@ const FooterText = styled(Typography)(({ theme }) => ({
 }))
 
 const Leaderboard = () => {
-  const theme = useTheme()
-
   // Sample data
   const leaderboardData = [
     {

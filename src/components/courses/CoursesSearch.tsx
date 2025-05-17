@@ -7,7 +7,7 @@ import React from "react"
 interface Props {
   handleSearch: (_value: string) => void
   setCurrentFilter: (_item: FilterItem) => void
-  setFilteredData: (_data: any) => void
+  setFilteredData: (_data: tCourse[]) => void
   allCourses: tCourse[]
 }
 const CoursesSearch: React.FC<Props> = ({

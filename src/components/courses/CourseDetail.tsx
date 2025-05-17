@@ -29,7 +29,6 @@ import {
   School,
 } from "@mui/icons-material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import { useParams } from "next/navigation"
 import Link from "next/link"
 import { useContext, useMemo, useState } from "react"
 import { notifyError, notifySuccess } from "@/utils/notification"
@@ -74,7 +73,6 @@ const CourseDetail = ({ cid }: { cid: string }) => {
     queryFn: () => fetchCourse(cid as string),
     enabled: !!cid,
   })
-  console.log(data, "course detail")
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
       notifySuccess("You are now enrolled!")

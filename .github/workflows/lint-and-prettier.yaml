@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -27,10 +28,13 @@ jobs:
       - name: Run lint
         run: npm run lint
 
+      - name: Run lint check
+        run: npm run check-lint
+
       - name: Run ESLint with auto-fix and enforcement
         run: |
-          npx eslint --fix --config .eslintrc.json .
-          npx eslint --max-warnings=0 --config .eslintrc.json .
+          npx eslint --fix .
+          npx eslint --max-warnings=0 .
         if: ${{ failure() }}
         env:
-          ESLINT_CONFIG_PATH: .eslintrc.json
+          ESLINT_CONFIG_PATH: eslintrc.config.mjs

@@ -1,7 +1,6 @@
 "use client"
 import fb from "@/assets/img/fbcolor.webp"
 import google from "@/assets/img/ggcolor.webp"
-import yeah from "@/assets/img/yeah.webp"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx } from "@/context/AppContext"
 import useUser from "@/hooks/useUser"

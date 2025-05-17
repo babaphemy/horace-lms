@@ -97,7 +97,6 @@ const ExerciseResults = () => {
   const theme = useTheme()
 
   // Mock data for the results
-  const totalQuestions = 30
   const correctAnswers = 21
   const incorrectAnswers = 9
 

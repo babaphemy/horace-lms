@@ -67,7 +67,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
       [topicId]: !prev[topicId],
     }))
   }
-  console.log(topics, " topics")
 
   const getLessonIcon = (lessonType: string) => {
     switch (lessonType?.toLowerCase()) {
