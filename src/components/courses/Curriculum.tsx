@@ -41,7 +41,9 @@ const Curriculum = ({ data }: { data: CourseResponse }) => {
                         setExpandedVideoId(
                           expandedVideoId === asset.id ? null : asset.id ?? null
                         )
-                        asset?.video && setVideoPreviewUrl(asset?.video)
+                        if (asset?.video) {
+                          setVideoPreviewUrl(asset.video)
+                        }
                       }
                     }}
                   >

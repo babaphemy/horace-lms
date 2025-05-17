@@ -76,7 +76,6 @@ const CourseDetail = ({ cid }: { cid: string }) => {
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
       notifySuccess("You are now enrolled!")
-      // addCourseToContext()
     },
     onError: (error) => {
       notifyError("Enrollment Failed, Please Try Again!")
@@ -89,14 +88,19 @@ const CourseDetail = ({ cid }: { cid: string }) => {
       user: String(user?.id),
     }
     if (user?.id) {
-      data?.price > 0
-        ? addCourseToUser.mutate({ ...payload, user: String(payload.user) })
-        : dispatch({
-            type: MODAL_SET,
-            data: { open: true, type: "payment" },
-          })
+      if (data?.price > 0) {
+        addCourseToUser.mutate({ ...payload, user: String(payload.user) })
+      } else {
+        dispatch({
+          type: MODAL_SET,
+          data: { open: true, type: "payment" },
+        })
+      }
     } else {
-      dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
+      dispatch({
+        type: MODAL_SET,
+        data: { open: true, type: "login" },
+      })
     }
   }
 
@@ -433,8 +437,9 @@ const CourseDetail = ({ cid }: { cid: string }) => {
                                       ? null
                                       : asset.id ?? null
                                   )
-                                  asset?.video &&
-                                    setVideoPreviewUrl(asset?.video)
+                                  if (asset.video) {
+                                    setVideoPreviewUrl(asset.video)
+                                  }
                                 }
                               }}
                             >
