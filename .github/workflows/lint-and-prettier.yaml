@@ -29,8 +29,8 @@ jobs:
 
       - name: Run ESLint with auto-fix and enforcement
         run: |
-          npx eslint --fix .
-          npx eslint --max-warnings=0 .
+          npx eslint --fix --config .eslintrc.json .
+          npx eslint --max-warnings=0 --config .eslintrc.json .
         if: ${{ failure() }}
         env:
           ESLINT_CONFIG_PATH: .eslintrc.json
