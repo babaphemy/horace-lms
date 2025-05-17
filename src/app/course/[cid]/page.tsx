@@ -138,12 +138,14 @@ const Detailb = () => {
     }
 
     if (user?.id) {
-      price > 0
-        ? addCourseToUser.mutate({ ...payload, user: String(payload.user) })
-        : dispatch({
-            type: MODAL_SET,
-            data: { open: true, type: "payment" },
-          })
+      if (price > 0) {
+        addCourseToUser.mutate({ ...payload, user: String(payload.user) })
+      } else {
+        dispatch({
+          type: MODAL_SET,
+          data: { open: true, type: "payment" },
+        })
+      }
     } else {
       dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
     }
