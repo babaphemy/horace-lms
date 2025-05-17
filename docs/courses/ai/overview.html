@@ -9,9 +9,6 @@
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         line-height: 1.6;
         color: #333;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
         background-color: #f9f9f9;
       }
       .container {
@@ -101,6 +98,341 @@
             <span class="highlight">No prior AI experience required</span>
           </li>
         </ul>
+      </div>
+    </div>
+  </body>
+</html>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Definition and Scope of AI</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 850px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f7fa;
+      }
+      .lesson-container {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 35px;
+      }
+      .lesson-header {
+        border-bottom: 2px solid #3498db;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+      }
+      h1 {
+        color: #2c3e50;
+        margin-top: 0;
+        font-size: 2.2em;
+      }
+      h2 {
+        color: #2980b9;
+        margin-top: 30px;
+        font-size: 1.6em;
+      }
+      h3 {
+        color: #3498db;
+        margin-top: 25px;
+        font-size: 1.3em;
+      }
+      p {
+        margin-bottom: 20px;
+        font-size: 1.05em;
+      }
+      .key-concept {
+        background-color: #e8f4fc;
+        border-left: 4px solid #3498db;
+        padding: 15px 20px;
+        margin: 25px 0;
+        border-radius: 0 4px 4px 0;
+      }
+      .example {
+        background-color: #f0f7ee;
+        border-left: 4px solid #27ae60;
+        padding: 15px 20px;
+        margin: 25px 0;
+        border-radius: 0 4px 4px 0;
+      }
+      .quote {
+        font-style: italic;
+        color: #555;
+        border-left: 3px solid #bdc3c7;
+        padding-left: 20px;
+        margin: 20px 0;
+      }
+      .diagram {
+        background-color: #fafafa;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 15px;
+        margin: 25px 0;
+        text-align: center;
+      }
+      .diagram img {
+        max-width: 100%;
+        height: auto;
+      }
+      .callout {
+        background-color: #fff8e1;
+        border-left: 4px solid #ffc107;
+        padding: 15px 20px;
+        margin: 25px 0;
+        border-radius: 0 4px 4px 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+      }
+      th,
+      td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+        font-weight: 600;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+      }
+      .nav-button {
+        display: inline-block;
+        padding: 10px 18px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+      }
+      .nav-button:hover {
+        background-color: #2980b9;
+      }
+      .disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+      }
+      .disabled:hover {
+        background-color: #bdc3c7;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="lesson-container">
+      <div class="lesson-header">
+        <small
+          >Module 1: Introduction to Artificial Intelligence > Lesson 1.1</small
+        >
+        <h1>Definition and Scope of AI</h1>
+      </div>
+      <h2>What is Artificial Intelligence?</h2>
+      <p>
+        Artificial Intelligence (AI) refers to the simulation of human
+        intelligence in machines that are programmed to think and learn like
+        humans. The term may also be applied to any machine that exhibits traits
+        associated with a human mind such as learning, problem-solving,
+        perception, and language understanding.
+      </p>
+      <div class="key-concept">
+        <h3>Key Definition</h3>
+        <p>
+          Artificial Intelligence is the branch of computer science concerned
+          with building smart machines capable of performing tasks that
+          typically require human intelligence.
+        </p>
+      </div>
+      <p>
+        John McCarthy, who coined the term in 1956, defines it as "the science
+        and engineering of making intelligent machines." This definition
+        emphasizes the engineering aspect of creating systems that can operate
+        in ways we would consider "intelligent" if a human were to perform the
+        same actions.
+      </p>
+      <div class="quote">
+        "AI is the study of how to make computers do things which, at the
+        moment, people do better." — Rich & Knight
+      </div>
+      <h2>The Scope of AI</h2>
+      <p>
+        The field of AI encompasses a wide range of technologies, approaches,
+        and applications. Its scope has expanded dramatically since its
+        inception, particularly with recent advancements in computing power,
+        data availability, and algorithm development.
+      </p>
+      <h3>Major Areas Within AI</h3>
+      <p>Artificial Intelligence covers several specialized domains:</p>
+      <table>
+        <tr>
+          <th>Area</th>
+          <th>Focus</th>
+          <th>Examples</th>
+        </tr>
+        <tr>
+          <td>Machine Learning</td>
+          <td>Systems that learn from data and improve with experience</td>
+          <td>Recommendation systems, fraud detection</td>
+        </tr>
+        <tr>
+          <td>Natural Language Processing</td>
+          <td>Understanding and generating human language</td>
+          <td>Chatbots, translation services, text analysis</td>
+        </tr>
+        <tr>
+          <td>Computer Vision</td>
+          <td>Interpretation and analysis of visual information</td>
+          <td>Facial recognition, medical imaging, autonomous vehicles</td>
+        </tr>
+        <tr>
+          <td>Robotics</td>
+          <td>Physical systems that interact with the real world</td>
+          <td>Manufacturing robots, drones, household robots</td>
+        </tr>
+        <tr>
+          <td>Knowledge Representation</td>
+          <td>Storing information in a way that computers can utilize</td>
+          <td>Expert systems, semantic networks</td>
+        </tr>
+      </table>
+      <div class="diagram">
+        <img
+          src="/api/placeholder/700/400"
+          alt="AI and its subfields diagram showing relationships between AI disciplines"
+        />
+        <p>
+          <small
+            >Figure 1: The relationship between AI and its major
+            subfields</small
+          >
+        </p>
+      </div>
+      <h2>Categorizing AI Systems</h2>
+      <p>
+        AI systems can be categorized in several ways, but two of the most
+        common distinctions are:
+      </p>
+      <h3>1. Weak AI vs. Strong AI</h3>
+      <p>
+        <strong>Weak AI</strong> (also called Narrow AI) refers to systems
+        designed and trained for a specific task. These systems don't possess
+        general intelligence or consciousness but can perform their designated
+        tasks at or above human levels of performance.
+      </p>
+      <p>
+        <strong>Strong AI</strong> (also called Artificial General Intelligence
+        or AGI) refers to systems with generalized human cognitive abilities.
+        When presented with an unfamiliar task, a strong AI system could find a
+        solution without human intervention. This remains largely theoretical at
+        present.
+      </p>
+      <div class="example">
+        <h3>Examples of Weak AI in Daily Life</h3>
+        <ul>
+          <li>Voice assistants (Siri, Alexa, Google Assistant)</li>
+          <li>Email spam filters</li>
+          <li>Netflix and Spotify recommendation systems</li>
+          <li>Weather prediction software</li>
+          <li>Autonomous features in modern vehicles</li>
+        </ul>
+      </div>
+      <h3>2. Based on Functionality</h3>
+      <p>
+        Another way to categorize AI systems is based on their capabilities and
+        how they compare to human intelligence:
+      </p>
+      <ul>
+        <li>
+          <strong>Reactive Machines:</strong> Basic AI systems that react to
+          current scenarios without memory of past events or ability to plan
+          future actions.
+        </li>
+        <li>
+          <strong>Limited Memory:</strong> AI systems that can use past
+          experiences to inform future decisions.
+        </li>
+        <li>
+          <strong>Theory of Mind:</strong> AI systems that understand human
+          emotions, beliefs, and thought processes (largely theoretical).
+        </li>
+        <li>
+          <strong>Self-Aware AI:</strong> Systems with consciousness and
+          self-awareness (entirely theoretical).
+        </li>
+      </ul>
+      <div class="callout">
+        <h3>Historical Perspective</h3>
+        <p>
+          The concept of artificial intelligence dates back to ancient history
+          with myths of artificial beings. However, AI as a formal academic
+          discipline began in 1956 at the Dartmouth Conference, where the term
+          "artificial intelligence" was first adopted.
+        </p>
+      </div>
+      <h2>The Current AI Landscape</h2>
+      <p>
+        Today's AI landscape is dominated by machine learning, particularly deep
+        learning approaches. These systems excel at pattern recognition tasks
+        and have revolutionized fields like:
+      </p>
+      <ul>
+        <li>Language translation and processing</li>
+        <li>Image and speech recognition</li>
+        <li>Game playing (Chess, Go, video games)</li>
+        <li>Medical diagnosis</li>
+        <li>Financial analysis and prediction</li>
+      </ul>
+      <p>
+        While impressive, current AI systems remain examples of narrow AI,
+        excelling in specific domains but lacking the general intelligence that
+        characterizes human thinking.
+      </p>
+      <div class="key-concept">
+        <h3>Key Takeaway</h3>
+        <p>
+          AI is not a single technology but a broad field encompassing numerous
+          approaches to creating machines that can perform tasks requiring
+          intelligence. Its definition and scope continue to evolve as new
+          breakthroughs emerge and our understanding of both human and machine
+          intelligence deepens.
+        </p>
+      </div>
+      <h2>Discussion Questions</h2>
+      <ol>
+        <li>
+          How would you define AI in your own words based on what you've
+          learned?
+        </li>
+        <li>What examples of AI do you interact with in your daily life?</li>
+        <li>
+          Why is the distinction between narrow AI and general AI important?
+        </li>
+        <li>
+          What ethical considerations might arise from the development of
+          increasingly capable AI systems?
+        </li>
+      </ol>
+      <div class="nav-buttons">
+        <a href="#" class="nav-button disabled">← Previous Lesson</a>
+        <a href="#" class="nav-button">Mark Complete</a>
+        <a href="#" class="nav-button">Next Lesson →</a>
       </div>
     </div>
   </body>

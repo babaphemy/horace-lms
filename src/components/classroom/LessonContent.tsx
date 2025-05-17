@@ -17,7 +17,29 @@ import {
   PlayCircle,
   Share,
 } from "@mui/icons-material"
-
+interface HTMLLessonProps {
+  lesson: {
+    content?: string
+  }
+}
+const HTMLLesson: React.FC<HTMLLessonProps> = ({ lesson }) => {
+  return (
+    <DocumentContainer>
+      <HTMLContent>
+        {lesson.content ? (
+          <div
+            className="lesson-html-content"
+            dangerouslySetInnerHTML={{ __html: lesson.content }}
+          />
+        ) : (
+          <Typography variant="body1" color="text.secondary" align="center">
+            No content available for this lesson.
+          </Typography>
+        )}
+      </HTMLContent>
+    </DocumentContainer>
+  )
+}
 const VideoPlaceholder = styled(Box)(({ theme }) => ({
   position: "relative",
   aspectRatio: "16/9",
@@ -31,7 +53,29 @@ const DocumentContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
   minHeight: "400px",
   display: "flex",
+  width: "100%",
   flexDirection: "column",
+  boxSizing: "border-box",
+}))
+const HTMLContent = styled(Box)(({ theme }) => ({
+  flex: 1,
+  width: "100%",
+  overflow: "auto",
+  "& img": {
+    maxWidth: "100%",
+    height: "auto",
+  },
+
+  "& > *": {
+    maxWidth: "100%",
+  },
+
+  "& div, & section, & article, & main": {
+    width: "100%",
+    maxWidth: "100%",
+    margin: "0",
+    boxSizing: "border-box",
+  },
 }))
 
 const PDFPreview = styled(Box)(({ theme }) => ({
@@ -205,25 +249,7 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
 
     case "text":
     case "html":
-      return (
-        <DocumentContainer>
-          <Box
-            sx={{
-              flex: 1,
-              overflow: "auto",
-              "& img": { maxWidth: "100%", height: "auto" },
-            }}
-          >
-            {lesson.content ? (
-              <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
-            ) : (
-              <Typography variant="body1" color="text.secondary" align="center">
-                No content available for this lesson.
-              </Typography>
-            )}
-          </Box>
-        </DocumentContainer>
-      )
+      return <HTMLLesson lesson={lesson} />
 
     case "code":
       return (
