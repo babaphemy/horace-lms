@@ -76,7 +76,6 @@ const CourseDetail = ({ cid }: { cid: string }) => {
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
       notifySuccess("You are now enrolled!")
-      // addCourseToContext()
     },
     onError: (error) => {
       notifyError("Enrollment Failed, Please Try Again!")

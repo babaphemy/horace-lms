@@ -92,7 +92,9 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
   const userMutation = useMutation({
     mutationFn: registerUser,
     onSuccess: async (data) => {
-      callback && callback(data.id)
+      if (callback) {
+        callback(data.id)
+      }
       form.reset()
     },
     onError: () => {

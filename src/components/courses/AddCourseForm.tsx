@@ -30,7 +30,6 @@ const AddCourseForm = () => {
   const { control, setValue } = useFormContext()
   const [checked, setChecked] = React.useState(false)
   const [uploading, setUploading] = React.useState(false)
-  const [_, setUploadedImage] = React.useState<string>("")
   const [imagePreview, setImagePreview] = React.useState<string>("")
   const handleUpload = async (file: File) => {
     setUploading(true)
@@ -48,7 +47,6 @@ const AddCourseForm = () => {
 
       setValue("thumbnail", uploadUrl)
       setValue("file", file) // Store file object in form
-      setUploadedImage(uploadUrl)
       notifySuccess("Thumbnail uploaded successfully!")
     } catch {
       notifyError("Failed to upload image. Please try again.")
@@ -61,7 +59,6 @@ const AddCourseForm = () => {
   const removeImage = () => {
     setValue("thumbnail", "")
     setValue("file", null)
-    setUploadedImage("")
     setImagePreview("")
   }
   const { getRootProps, getInputProps, isDragActive, fileRejections } =

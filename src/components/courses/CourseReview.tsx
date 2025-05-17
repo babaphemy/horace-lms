@@ -200,27 +200,34 @@ const CourseReview = ({ posts, ratings }: Props) => {
                 label="Excellent"
                 variant="determinate"
                 value={
-                  ((posts?.filter((post) => post.rating === 5).length || 0) /
-                    posts?.length!) *
-                    100 || 100
+                  posts && posts.length > 0
+                    ? (posts.filter((post) => post.rating === 5).length /
+                        posts.length) *
+                      100
+                    : 100
                 }
               />
               <LinearProgressWithLabel
                 label="Very Good"
                 variant="determinate"
                 value={
-                  ((posts?.filter((post) => post.rating === 4).length || 0) /
-                    posts?.length!) *
-                    100 || 0
+                  posts && posts.length > 0
+                    ? (posts.filter((post) => post.rating === 4).length /
+                        posts.length) *
+                      100
+                    : 0
                 }
               />
               <LinearProgressWithLabel
                 label="Average"
                 variant="determinate"
                 value={
-                  ((posts?.filter((post) => post.rating === 3).length || 0) /
-                    posts?.length!) *
-                    100 || 0
+                  posts && posts?.length
+                    ? ((posts?.filter((post) => post.rating === 3).length ||
+                        0) /
+                        posts?.length!) *
+                      100
+                    : 100
                 }
               />
               <LinearProgressWithLabel

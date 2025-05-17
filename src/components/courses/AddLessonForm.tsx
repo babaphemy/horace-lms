@@ -58,7 +58,7 @@ const TopicAccordion: React.FC<{
     control,
     name: `topics.${topicIndex}.lessons`,
   })
-  const handleLessonTypeChange = (lessonIndex: number, _newType: string) => {
+  const handleLessonTypeChange = (lessonIndex: number) => {
     setValue(`topics.${topicIndex}.lessons.${lessonIndex}.video`, "")
     setValue(`topics.${topicIndex}.lessons.${lessonIndex}.content`, "")
   }
