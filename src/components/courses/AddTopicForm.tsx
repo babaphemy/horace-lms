@@ -19,7 +19,7 @@ const AddTopicForm = () => {
     name: "topics",
   })
   const addTopic = () => {
-    append({ title: "", week: "" })
+    append({ title: "", description: "" })
   }
   return (
     <Box>

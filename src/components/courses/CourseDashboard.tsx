@@ -120,7 +120,12 @@ const CourseDashboard = () => {
     if (type === "delete") {
     }
     if (type === "edit") {
-      form.reset(subject)
+      form.reset({
+        user: subject.author?.id || "",
+        courseName: subject.courseName || "",
+        overview: subject.description || "",
+        // Add other fields as needed, ensuring types match CourseCreate
+      })
     }
     if (type === "view") {
       router.push(`/subject/${subject.id}`)

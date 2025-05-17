@@ -104,12 +104,21 @@ export interface CourseCreate {
   updatedOn?: Date
 }
 export interface CourseComplete extends CourseCreate {
-  topics: TopicDto[]
+  topics: TopicBase[]
 }
 export interface CurriculumMap {
   topic: TopicDto[]
   requirement: string[]
   objective: string[]
+}
+export type TopicBase = {
+  title: string
+  description: string
+  orderIndex?: number
+  lessons?: LessonBase[]
+  dueDate?: Date
+  createdOn?: Date
+  updatedOn?: Date
 }
 export type TopicDto = {
   id?: string
@@ -153,7 +162,16 @@ export interface CourseResponse {
   draft: boolean
   isRegistered: boolean
 }
-
+export type LessonBase = {
+  title: string
+  video?: string
+  type: string
+  content?: string
+  orderIndex?: number
+  dueDate?: Date
+  createdOn?: Date
+  updatedOn?: Date
+}
 export type LessonDto = {
   id?: string
   tid: string

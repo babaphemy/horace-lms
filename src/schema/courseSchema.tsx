@@ -19,10 +19,8 @@ export const courseCompleteSchema = courseCreateSchema.shape({
     .array()
     .of(
       yup.object().shape({
-        id: yup.string().optional(),
         title: yup.string().required("Topic title is required"),
         description: yup.string().required("Topic description is required"),
-        cid: yup.string().required("Course ID is required"),
         orderIndex: yup
           .number()
           .optional()
@@ -31,12 +29,8 @@ export const courseCompleteSchema = courseCreateSchema.shape({
           .array()
           .of(
             yup.object().shape({
-              id: yup.string().optional(),
               title: yup.string().required("Lesson title is required"),
-              tid: yup.string().required("Topic ID is required"),
-              type: yup
-                .mixed<LESSONTYPE>()
-                .oneOf(Object.values(LESSONTYPE), "Invalid lesson type"),
+              type: yup.string().optional(),
               orderIndex: yup
                 .number()
                 .optional()

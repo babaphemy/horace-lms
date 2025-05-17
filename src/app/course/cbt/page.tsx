@@ -65,24 +65,36 @@ const RadioOptionLabel = styled(FormControlLabel)(({ theme }) => ({
   },
 }))
 
-const OptionBox = styled(Box)(({ theme, selected }) => ({
+interface OptionBoxProps {
+  selected?: boolean
+}
+
+const OptionBox = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "selected",
+})<OptionBoxProps>(({ theme, selected }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(1, 2),
   borderRadius: theme.shape.borderRadius,
   border: `1px solid ${selected ? theme.palette.primary.main : theme.palette.grey[300]}`,
   backgroundColor: selected
-    ? theme.palette.primary.lighter
+    ? theme.palette.primary.light
     : theme.palette.grey[50],
   width: "100%",
   "&:hover": {
     backgroundColor: selected
-      ? theme.palette.primary.lighter
+      ? theme.palette.primary.light
       : theme.palette.grey[100],
   },
 }))
 
-const NavigationCircle = styled(Avatar)(({ theme, active }) => ({
+interface NavigationCircleProps {
+  active?: boolean
+}
+
+const NavigationCircle = styled(Avatar, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<NavigationCircleProps>(({ theme, active }) => ({
   width: 24,
   height: 24,
   fontSize: "0.75rem",
@@ -108,7 +120,7 @@ const Exercise = () => {
   const [selectedOption, setSelectedOption] = useState("")
   const [currentQuestion, setCurrentQuestion] = useState(8)
 
-  const handleOptionChange = (event) => {
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedOption(event.target.value)
   }
 
@@ -125,7 +137,7 @@ const Exercise = () => {
     }
   }
 
-  const goToQuestion = (questionNumber) => {
+  const goToQuestion = (questionNumber: number) => {
     setCurrentQuestion(questionNumber)
   }
 

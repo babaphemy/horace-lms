@@ -111,7 +111,7 @@ const TopicAccordion: React.FC<{
                           displayEmpty
                           onChange={(e) => {
                             field.onChange(e)
-                            handleLessonTypeChange(lessonIndex, e.target.value)
+                            handleLessonTypeChange(lessonIndex)
                           }}
                         >
                           <MenuItem value="" disabled>
