@@ -1,14 +1,16 @@
 "use client"
 
 import { handlePay } from "@/app/api/rest"
-import { Appcontext } from "@/context/AppContext"
 import { Typography, Box, Divider, Button } from "@mui/material"
-import React, { useContext } from "react"
+import React from "react"
 import ModalContainer from "../ModalContainer"
 import { tCourse } from "@/types/types"
+import { useSession } from "next-auth/react"
+import { notifyInfo } from "@/utils/notification"
 
 const PaymentModal = ({ course }: { course: tCourse }) => {
-  const { user } = useContext(Appcontext)
+  const { data: session } = useSession()
+  const user = session?.user
   const author = `${course?.author?.firstname || "Horace"} ${
     course?.author?.lastname || "Instructor"
   }`
@@ -23,12 +25,12 @@ const PaymentModal = ({ course }: { course: tCourse }) => {
     }
 
     if (!user) {
-      alert("Please login to continue")
+      notifyInfo("Please login to continue")
       return
     }
 
     if (!course?.price) {
-      alert("Course price is not set")
+      notifyInfo("Course price is not set")
       return
     }
 

@@ -13,6 +13,14 @@ import {
 } from "@mui/material"
 import React from "react"
 
+import { registerUser, verifyEmail } from "@/app/api/rest"
+import thumb from "@/assets/img/thumb.webp"
+import { MODAL_SET } from "@/context/Action"
+import { AppDpx } from "@/context/AppContext"
+import { loginStyles } from "@/styles/loginStyles"
+import { UserDto } from "@/types/types"
+import { Allcountries } from "@/utils/countries"
+import { notifySuccess } from "@/utils/notification"
 import { yupResolver } from "@hookform/resolvers/yup"
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline"
@@ -22,14 +30,6 @@ import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { useMutation } from "react-query"
 import * as yup from "yup"
-import thumb from "@/assets/img/thumb.webp"
-import { AppDpx } from "@/context/AppContext"
-import { registerUser, verifyEmail } from "@/app/api/rest"
-import { MODAL_SET } from "@/context/Action"
-import { notifySuccess } from "@/utils/notification"
-import { loginStyles } from "@/styles/loginStyles"
-import { Allcountries } from "@/utils/countries"
-import { UserDto } from "@/types/types"
 
 const schema = yup.object().shape({
   firstname: yup.string().required("First name is required"),
@@ -84,9 +84,9 @@ const SignUpComponent = (props: Props) => {
 
   const { mutate } = useMutation(registerUser, {
     onSuccess: () => {
-      // localStorage.setItem("horaceUser", JSON.stringify(data))
-      // dispatch({ type: USER_ADD, payload: data })
-      notifySuccess("Registration succesful! check your email for more info.")
+      notifySuccess(
+        "Registration successful! Please check your email for more info."
+      )
       if (modal) {
         dispatch({ type: MODAL_SET, data: { open: false, type: "signup" } })
       } else {

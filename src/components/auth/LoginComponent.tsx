@@ -1,41 +1,42 @@
-import { yupResolver } from "@hookform/resolvers/yup"
-import {
-  Box,
-  Typography,
-  Button,
-  Divider,
-  Alert,
-  TextField,
-  InputAdornment,
-  IconButton,
-  Link,
-} from "@mui/material"
-import { useRouter } from "next/navigation"
-import React from "react"
-import { useForm, Controller } from "react-hook-form"
-import { useMutation } from "react-query"
-import VisibilityIcon from "@mui/icons-material/Visibility"
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
-import MailOutlineIcon from "@mui/icons-material/MailOutline"
+"use client"
 import fb from "@/assets/img/fbcolor.webp"
 import google from "@/assets/img/ggcolor.webp"
 import yeah from "@/assets/img/yeah.webp"
-import * as yup from "yup"
-import Image from "next/image"
+import { MODAL_SET } from "@/context/Action"
 import { AppDpx } from "@/context/AppContext"
-import { loginUser } from "@/app/api/rest"
-import { MODAL_SET, USER_ADD } from "@/context/Action"
+import useUser from "@/hooks/useUser"
 import { loginStyles } from "@/styles/loginStyles"
-import { UserDto } from "@/types/types"
+import { notifyError, notifySuccess } from "@/utils/notification"
+import { yupResolver } from "@hookform/resolvers/yup"
+import MailOutlineIcon from "@mui/icons-material/MailOutline"
+import VisibilityIcon from "@mui/icons-material/Visibility"
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
+import {
+  Alert,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material"
+import { signIn } from "next-auth/react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import React from "react"
+import { Controller, useForm } from "react-hook-form"
+import * as yup from "yup"
 
 const schema = yup.object().shape({
   email: yup
     .string()
-    .email("You must enter a valid email")
+    .email("A valid email is required")
     .required("You must enter a email"),
   password: yup
     .string()
-    .required("Please enter your password.")
+    .required("Password is required!.")
     .min(4, "Password is too short - should be 4 chars minimum."),
 })
 
@@ -44,7 +45,6 @@ const defaultValues = {
   password: "",
 }
 
-// Props
 type loginProps = {
   email: string
   password: string
@@ -55,10 +55,12 @@ type Props = {
   modal?: boolean
 }
 const LoginComponent = (props: Props) => {
+  const { setUser } = useUser()
   const { modal = false } = props
   const dispatch = React.useContext(AppDpx)
   const router = useRouter()
   const [showPassword, setShowPassword] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false)
   const [al, setAlert] = React.useState<{
     show: boolean
     msg: string
@@ -67,7 +69,6 @@ const LoginComponent = (props: Props) => {
   const {
     control,
     handleSubmit,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     formState: { errors },
     reset,
   } = useForm({
@@ -75,26 +76,30 @@ const LoginComponent = (props: Props) => {
     defaultValues,
   })
 
-  const { mutate } = useMutation(loginUser, {
-    onSuccess: (data: UserDto) => {
-      localStorage.setItem("horaceUser", JSON.stringify(data))
+  const onSubmit = async (data: loginProps) => {
+    setIsLoading(true)
 
-      dispatch({ type: USER_ADD, payload: data })
-      if (modal) {
-        dispatch({ type: MODAL_SET, data: { open: false, type: "login" } })
-      } else {
+    try {
+      const response = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      })
+
+      if (response?.status === 200) {
+        setUser()
+        notifySuccess("Login successful")
         router.push("/")
+      } else {
+        notifyError("Invalid credentials or account not active!")
       }
-      reset(defaultValues)
-    },
-    onError: (error: Error) => {
-      setAlert({ show: true, msg: `Login Failed, Please Try Again ${error}` })
-    },
-  })
-
-  const onSubmit = (data: loginProps) => {
-    data.type = "USER"
-    mutate(data)
+    } catch (error) {
+      notifyError("An error occurred. Please try again.")
+      throw new Error(error instanceof Error ? error.message : String(error))
+    } finally {
+      setIsLoading(false)
+      reset()
+    }
   }
 
   const handleChangeTab = () => {
@@ -117,7 +122,7 @@ const LoginComponent = (props: Props) => {
         <Alert severity="error">Form error</Alert>
       )}
       <Typography variant="h4" sx={[loginStyles.center, loginStyles.title]}>
-        Login <Image src={yeah} alt="yeah" width={30} height={30} />
+        Login <Image src="/icons/yeah.svg" alt="yeah" width={30} height={30} />
       </Typography>
 
       <Box sx={{ ...loginStyles.socials, ...styles.socials }}>
@@ -246,8 +251,9 @@ const LoginComponent = (props: Props) => {
           variant="contained"
           fullWidth
           type="submit"
+          disabled={isLoading}
         >
-          Login
+          {isLoading ? "Login in..." : "Login"}
         </Button>
       </Box>
       <Typography

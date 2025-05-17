@@ -1,19 +1,17 @@
 "use client"
-import { addUserCourse, fetchCourse, isCourseReg } from "@/app/api/rest"
+import { addUserCourse, fetchCourse } from "@/app/api/rest"
 import Header from "@/components/Header"
 import SimilarCard from "@/components/SimilarCard"
 import ModalLogin from "@/components/auth/ModalLogin"
 import SignUpLogin from "@/components/auth/ModalSignUp"
 import CourseObjectives from "@/components/courses/CourseObjectives"
 import { ReviewModal } from "@/components/courses/CourseReview"
-import Curriculumb from "@/components/courses/Curriculumb"
 import CourseHeader from "@/components/layout/CourseHeader"
 import FooterLte from "@/components/layout/FooterLte"
 import PaymentModal from "@/components/payment/PaymentModal"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx, Appcontext } from "@/context/AppContext"
-import { COURSE_SET, SET_PLAY_ID } from "@/context/actions"
-import { tCourseLte, tPost } from "@/types/types"
+import { LessonDto, tCourseLte, TopicDto, tPost } from "@/types/types"
 import {
   Code,
   Download,
@@ -41,24 +39,29 @@ import ReactPlayer from "react-player"
 import React, { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useParams, useRouter } from "next/navigation"
+import { notifyError, notifySuccess } from "@/utils/notification"
+import Curriculum from "@/components/courses/Curriculum"
+import { useSession } from "next-auth/react"
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution | Horace Courses",
 //   description:
 //     "Horace Online Courses. Learning Management Solution and a complete school management system for all schools",
 // })
 const Detailb = () => {
-  const { user, courses } = React.useContext(Appcontext)
+  const { courses } = React.useContext(Appcontext)
+  const { data: session } = useSession()
+  const user = session?.user
   const params = useParams()
   const { cid } = params
   const dispatch = React.useContext(AppDpx)
-  const [regCourse, setRegCourse] = React.useState<boolean>(false)
+  // const [regCourse, setRegCourse] = React.useState<boolean>(false)
   const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([])
   const queryClient = useQueryClient()
   const router = useRouter()
 
   const { data } = useQuery(
-    ["acourse", cid],
-    () => fetchCourse(Array.isArray(cid) ? cid[0] : cid),
+    ["acourse", cid, user?.id],
+    () => fetchCourse(cid as string, user?.id),
     {
       staleTime: 5000,
       cacheTime: 10,
@@ -90,31 +93,20 @@ const Detailb = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cid, data])
 
-  const { mutate } = useMutation(isCourseReg, {
-    onSuccess: (data) => {
-      if (cid) {
-        setRegCourse(data.includes(cid))
-      }
-    },
-    onError: (error) => {
-      setRegCourse(false)
-      throw error
-    },
-  })
-
-  const { course, posts } = data || {}
   const {
+    courseId,
     courseName,
+    overview,
     target,
     curriculum,
     brief,
     category,
     updatedOn,
     price,
+    posts,
     assetCount,
-  } = course || {}
-
-  const courseId = course?.id
+    registered,
+  } = data || {}
 
   const calculatedRating = () => {
     let total = 0
@@ -123,47 +115,21 @@ const Detailb = () => {
     })
     return total / posts?.length
   }
-  const author = `${data?.course?.author?.firstname || "Horace"} ${
+  const author = `${data?.author?.firstname || "Horace"} ${
     data?.author?.lastname || "Instructor"
   }`
-  const preview = curriculum?.section[0]?.lecture[0]?.video
   const { lessonCount, downloadCount, quizCount, labCount, noteCount } =
     assetCount || {}
 
-  useEffect(() => {
-    if (user?.id && cid) {
-      mutate(String(user?.id))
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, regCourse])
-
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
-      addCourseToContext()
+      notifySuccess("You are now enrolled!")
     },
     onError: (error) => {
+      notifyError("Enrollment Failed, Please Try Again!")
       throw error
     },
   })
-
-  const addCourseToContext = () => {
-    dispatch({
-      type: COURSE_SET,
-      data: {
-        ...data,
-        id: courseId,
-      },
-    })
-    dispatch({
-      type: SET_PLAY_ID,
-      data: {
-        ...curriculum.section[0].lecture[0],
-      },
-    })
-    router.push("/course/classroom")
-    return
-  }
 
   const handleJoinClass = () => {
     const payload = {
@@ -172,16 +138,12 @@ const Detailb = () => {
     }
 
     if (user?.id) {
-      regCourse
-        ? addCourseToContext()
-        : price === 0
-          ? addCourseToUser.mutate({ ...payload, user: String(payload.user) })
-          : dispatch({
-              type: MODAL_SET,
-              data: { open: true, type: "payment" },
-            })
-
-      // addCourseToUser.mutate(payload);
+      price > 0
+        ? addCourseToUser.mutate({ ...payload, user: String(payload.user) })
+        : dispatch({
+            type: MODAL_SET,
+            data: { open: true, type: "payment" },
+          })
     } else {
       dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
     }
@@ -196,12 +158,13 @@ const Detailb = () => {
     ratings: calculatedRating(),
     reviews: data?.reviews,
     author,
-    preview,
+    overview,
     updatedOn,
     posts,
   }
   const objProps = {
     target,
+    overview,
     courseName,
     curriculum,
     category,
@@ -210,8 +173,13 @@ const Detailb = () => {
     posts,
     ratings: calculatedRating(),
     handleJoinClass,
-    regCourse,
+    registered,
   }
+  const firstVideo = curriculum?.topic
+    ?.flatMap((topic: TopicDto) => topic.lessons || [])
+    ?.find(
+      (lesson: LessonDto) => lesson.video !== null && lesson.video !== undefined
+    )
 
   return (
     <>
@@ -227,21 +195,23 @@ const Detailb = () => {
         <div className="flex flex-col px-2 md:px-0 md:flex-row space-y-5 md:space-y-0">
           <div className="w-full  md:w-2/3">
             <Box className="my-4 px-2 block md:hidden">
-              <ReactPlayer
-                url={`https://essl.b-cdn.net/${preview}`}
-                controls={true}
-                loop={true}
-                width="100%"
-                height="100%"
-                light={true}
-                config={{
-                  file: {
-                    attributes: {
-                      controlsList: "nodownload",
+              {firstVideo && (
+                <ReactPlayer
+                  url={`https://essl.b-cdn.net/${firstVideo}`}
+                  controls={true}
+                  loop={true}
+                  width="100%"
+                  height="100%"
+                  light={true}
+                  config={{
+                    file: {
+                      attributes: {
+                        controlsList: "nodownload",
+                      },
                     },
-                  },
-                }}
-              />
+                  }}
+                />
+              )}
             </Box>
             <CourseObjectives {...objProps} />
           </div>
@@ -341,39 +311,58 @@ const Detailb = () => {
                     </List>
                   </nav>
                   <Box className="flex justify-between items-center mb-10">
-                    <Button
-                      variant="contained"
-                      className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
-                      onClick={handleJoinClass}
+                    {registered ? (
+                      <Button
+                        variant="contained"
+                        className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
+                        onClick={() =>
+                          router.push("/course/classroom?courseId=" + courseId)
+                        }
+                      >
+                        Go To Class
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
+                        onClick={handleJoinClass}
+                      >
+                        Enroll
+                      </Button>
+                    )}
+
+                    <Typography
+                      variant="h6"
+                      className="text-[#00A9C1]"
+                      sx={{
+                        textDecoration: registered ? "line-through" : "none",
+                      }}
                     >
-                      Join Class
-                    </Button>
-                    <Typography variant="h6" className="text-[#00A9C1]">
-                      ${price || 0}
+                      {typeof price === "number"
+                        ? price < 1
+                          ? "Free"
+                          : `$${price}`
+                        : ""}
                     </Typography>
                   </Box>
                 </Box>
               </Box>
             </Box>
             <Box className="mt-8 px-2 hidden md:block">
-              <ReactPlayer
+              {/* <ReactPlayer
                 url={`https://essl.b-cdn.net/${preview}`}
                 controls={true}
                 loop={true}
                 width="100%"
                 height="100%"
-              />
+              /> */}
             </Box>
             <Box className="mt-8 block ">
               <Paper className="py-7 p-3 mt-8 rounded-2xl border-2 border-[#FF869A] bg-gray-100">
                 <Typography variant="h6" className="mt-4 mx-4">
-                  Syllabus
+                  Content
                 </Typography>
-                <Curriculumb
-                  courseName={courseName}
-                  curriculum={curriculum}
-                  isShort={true}
-                />
+                <Curriculum data={data} />
               </Paper>
             </Box>
           </div>
@@ -389,7 +378,7 @@ const Detailb = () => {
           </Grid> */}
 
           {similarCourses?.map((course) => (
-            <Grid item xs={12} md={6} key={course.id}>
+            <Grid size={{ xs: 12, md: 6 }} key={course.id}>
               <SimilarCard course={course} />
             </Grid>
           ))}

@@ -29,6 +29,7 @@ import { USER_RESET } from "@/context/Action"
 import TopBg from "./TopBg"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -75,9 +76,9 @@ const StyledMenu = styled((props: MenuProps) => (
 
 const Header = () => {
   const router = useRouter()
+  const { data: session } = useSession()
+  const user = session?.user
   const [open, setOpen] = React.useState(false)
-  const [loggedIn, setLoggedIn] = React.useState(false)
-  const { user } = useContext(Appcontext)
   const dispatch = useContext(AppDpx)
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -85,23 +86,15 @@ const Header = () => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
-  const handleClose = () => {
+  const handleClose = (path?: string) => {
+    if (path) router.push(path)
     setAnchorEl(null)
   }
   const handleLogout = () => {
-    handleClose()
     dispatch({ type: USER_RESET, payload: null })
-    router.push("/login")
     localStorage.removeItem("horaceUser")
+    handleClose("/login")
   }
-
-  React.useEffect(() => {
-    if (user?.id) {
-      setLoggedIn(true)
-    } else {
-      setLoggedIn(false)
-    }
-  }, [user])
 
   return (
     <>
@@ -151,7 +144,10 @@ const Header = () => {
                     About
                   </NextLink>
                   <NextLink href="/academy" passHref>
-                    Playground
+                    Academy
+                  </NextLink>
+                  <NextLink href="/courses" passHref>
+                    Courses
                   </NextLink>
                   <NextLink href="/contact" passHref>
                     Contact
@@ -163,13 +159,13 @@ const Header = () => {
                   <Typography variant="body1" sx={headerStyles.language}>
                     English
                   </Typography>
-                  {!loggedIn && (
+                  {!user?.id && (
                     <NextLink href="/login" passHref>
                       Login
                     </NextLink>
                   )}
                 </Box>
-                {!loggedIn && (
+                {!user?.id && (
                   <NextLink href="/sign-up" passHref>
                     <Button
                       variant="contained"
@@ -206,7 +202,10 @@ const Header = () => {
                   About
                 </NextLink>
                 <NextLink href="/academy" passHref>
-                  Playground
+                  Academy
+                </NextLink>
+                <NextLink href="/courses" passHref>
+                  Courses
                 </NextLink>
                 <NextLink href="/contact" passHref>
                   Contact
@@ -218,7 +217,7 @@ const Header = () => {
                 <LanguageIcon />
                 English
               </Typography>
-              {!loggedIn ? (
+              {!user?.id ? (
                 <>
                   <NextLink href="/login" passHref>
                     Login
@@ -259,18 +258,27 @@ const Header = () => {
                     }}
                     anchorEl={anchorEl}
                     open={openMenu}
-                    onClose={handleClose}
+                    onClose={() => handleClose()}
                   >
-                    <MenuItem onClick={handleClose} disableRipple>
+                    <MenuItem
+                      onClick={() => handleClose("/dashboard")}
+                      disableRipple
+                    >
                       <DashboardIcon />
                       Dashboard
                     </MenuItem>
-                    <MenuItem onClick={handleClose} disableRipple>
+                    <MenuItem
+                      onClick={() => handleClose("/profile")}
+                      disableRipple
+                    >
                       <Person2Icon />
                       Profile
                     </MenuItem>
                     <Divider sx={{ my: 0.5 }} />
-                    <MenuItem onClick={handleClose} disableRipple>
+                    <MenuItem
+                      onClick={() => handleClose(`/courses/${user?.id}`)}
+                      disableRipple
+                    >
                       <BookIcon />
                       My Courses
                     </MenuItem>

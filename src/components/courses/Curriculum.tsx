@@ -1,145 +1,72 @@
-import { List } from "@mui/material"
+"use client"
+import { CourseResponse, TopicDto } from "@/types/types"
+import { ExpandMore, PlayCircle } from "@mui/icons-material"
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material"
+import { useState } from "react"
+import { getIcon } from "./CourseDetail"
+import ReactPlayer from "react-player"
 
-const styles = {
-  root: {
-    width: "100%",
-    maxWidth: 360,
-    backgroundColor: "white",
-  },
-  nested: {
-    paddingLeft: 4,
-  },
-  navBox: {
-    "& > *": {
-      padding: "0.8 0.5",
-      height: "100%",
-      cursor: "pointer",
-      backgroundColor: "darkblue",
-      "&:hover": {
-        backgroundColor: "#f5f5f5",
-        color: "darkblue",
-        transform: "translateX(2px)",
-      },
-      "&__navItem": {
-        display: "flex",
-        alignItems: "center",
-        alignSelf: "stretch",
-        "&__navText": {
-          marginLeft: "0.5rem",
-        },
-        "&__icon": {
-          fontsize: "1.5rem",
-        },
-      },
-    },
-  },
-}
-
-const Curriculum = () => {
-  // const [open, setOpen] = useState(true)
-  // const [, setSel] = useState({
-  //   courseName: "Course 1",
-  // })
-  // const handleClick = (sl: tCourse) => {
-  //   setSel(sl)
-  //   setOpen(!open)
-  // }
+const Curriculum = ({ data }: { data: CourseResponse }) => {
+  const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null)
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null)
   return (
-    <>
-      <List
-        component="nav"
-        aria-labelledby="nested-list-subheader"
-        // className={classes.root}
-        sx={styles.navBox}
-      >
-        {/* {sample.map((course: Course, index: number) => (
-          <div key={index + course.courseName}>
-            <ListItem
-              button
-              onClick={() => handleClick(course)}
-              sx={{
-                "&__navItem": {
-                  display: "flex",
-                  alignItems: "center",
-                  alignSelf: "stretch",
-                  "&__navText": {
-                    marginLeft: "0.5rem",
-                  },
-                  "&__icon": {
-                    fontsize: "1.5rem",
-                  },
-                },
-              }}
-            >
-              <ListItemIcon>
-                {course.courseName === selected?.courseName ? (
-                  <ExpandLess />
-                ) : (
-                  <ExpandMore />
-                )}
-              </ListItemIcon>
-
-              <ListItemText
-                disableTypography
-                primary={
-                  <Typography
-                    className={
-                      sidebar
-                        ? "font-normal text-sm"
-                        : "font-semibold text-md md:font-bold md:text-lg"
-                    }
-                    variant="h6"
+    <Box sx={{ p: 0 }}>
+      {data?.curriculum?.topic?.map((module: TopicDto, idx: number) => (
+        <Accordion key={`${module.id}-${idx}`} disableGutters>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Box display="flex" alignItems="center">
+              <PlayCircle sx={{ mr: 1 }} />
+              <Typography fontWeight={500}>{module.title}</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            <List dense>
+              {module?.lessons?.map((asset) => (
+                <Box key={asset.id}>
+                  <ListItem
+                    component="button"
+                    key={asset.id}
+                    onClick={() => {
+                      if (asset.type === "video") {
+                        setExpandedVideoId(
+                          expandedVideoId === asset.id ? null : asset.id ?? null
+                        )
+                        asset?.video && setVideoPreviewUrl(asset?.video)
+                      }
+                    }}
                   >
-                    {course.courseName}
-                  </Typography>
-                }
-              />
-
-              {!sidebar && (
-                <Typography
-                  className="text-grey-700"
-                  variant="body2"
-                  component="p"
-                >
-                  {course.lecture.length}{" "}
-                  {course.lecture.length === 1 ? "lecture" : "lectures"}
-                </Typography>
-              )}
-            </ListItem>
-            <Divider />
-            <Collapse
-              in={course.courseName === selected?.courseName}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
-                {course?.curriculum?.section?.map(
-                  (lec: tLecture, idx: number) => (
-                    <ListItem key={lec.title + idx} button sx={styles.nested}>
-                      <ListItemIcon>
-                        <StarBorder />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={
-                          <Typography className="text-grey-700">
-                            {lec.title}
-                          </Typography>
-                        }
+                    <ListItemIcon>
+                      {getIcon(asset.type, asset?.content)}
+                    </ListItemIcon>
+                    <ListItemText primary={asset.title} secondary={asset.id} />
+                  </ListItem>
+                  {expandedVideoId === asset.id && videoPreviewUrl && (
+                    <Box sx={{ p: 2, width: "100%", ml: 4 }}>
+                      <ReactPlayer
+                        url={videoPreviewUrl}
+                        controls
+                        width="100%"
+                        height="100%"
                       />
-                      {!sidebar && (
-                        <ListItemIcon>
-                          {lec.open ? <VisibilityIcon /> : <LockIcon />}
-                        </ListItemIcon>
-                      )}
-                    </ListItem>
-                  )
-                )}
-              </List>
-            </Collapse>
-          </div>
-        ))} */}
-      </List>
-    </>
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </List>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </Box>
   )
 }
 

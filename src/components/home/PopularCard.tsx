@@ -5,6 +5,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import { useRouter } from "next/navigation"
 import { tCourseLte, tPost } from "@/types/types"
+import DynamicThumbnail from "../courses/DynamicThumb"
 interface courseProp {
   data: tCourseLte
 }
@@ -65,15 +66,7 @@ const PopularCard = ({ data }: courseProp) => {
   return (
     <Box>
       <Box sx={cardStyles.card}>
-        <Box sx={cardStyles.image}>
-          <Image
-            src={`/img/${thumbnail || "3.webp"}`}
-            width={400}
-            height={250}
-            alt="a man smiling"
-            style={{ borderRadius: "15px", width: "400rem", height: "20rem" }}
-          />
-        </Box>
+        <DynamicThumbnail thumbnail={thumbnail} title={courseName} />
         <Box padding={"20px"}>
           <Box sx={cardStyles.between}>
             <Typography

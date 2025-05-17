@@ -1,0 +1,107 @@
+{
+  "id": "63e1e68be46dc2016009e6c9",
+  "author": {
+    "id": "63e1e5cbe46dc2016009e6c6"
+  },
+  "courseName": "React For Web Development",
+  "category": "web,mobile",
+  "target": "beginner, intermediate",
+  "curriculum": {
+    "section": [
+      {
+        "title": "Introduction",
+        "description": "what is React",
+        "id": "9405652c",
+        "lecture": [
+          {
+            "id": 1,
+            "title": "Welcome",
+            "video": "react-intro.mp4",
+            "type": "lecture"
+          },
+          {
+            "id": 2,
+            "title": "Main Slide",
+            "video": "",
+            "type": "download"
+          },
+          {
+            "id": 3,
+            "title": "Why React?",
+            "video": "why-react-2_1.mp4",
+            "type": "lecture"
+          },
+          {
+            "id": 4,
+            "title": "Folder Structure",
+            "video": "3-folder-b.mp4",
+            "type": "lecture"
+          },
+          {
+            "id": 5,
+            "title": "Quiz1",
+            "video": "NA",
+            "type": "quiz"
+          }
+        ]
+      },
+      {
+        "title": "Getting Started",
+        "description": "Installation and system requirements",
+        "id": "beb653b0",
+        "lecture": [
+          {
+            "id": 6,
+            "title": "system setup",
+            "video": "lesson-4-a.mp4",
+            "type": "lecture"
+          },
+          {
+            "id": 7,
+            "title": "Lab1",
+            "video": "",
+            "type": "handson"
+          },
+          {
+            "id": 8,
+            "title": "Quiz2",
+            "video": "NA",
+            "type": "quiz"
+          }
+        ]
+      },
+      {
+        "title": "Our First Component",
+        "description": "Lets build our first react component",
+        "id": "e259eeed",
+        "lecture": []
+      }
+    ],
+    "requirement": [
+      "Understanding of HTML, CSS, and JavaScript",
+      "Understanding of the latest version of JavaScript (ES6) and its new features such as arrow functions, template literals, and classes.",
+      "You should be familiar with package managers such as npm and yarn.",
+      "Basic understanding of Git and GitHub as many React projects are hosted on GitHub.",
+      "Good problem-solving skills to debug and troubleshoot errors in your code"
+    ],
+    "objective": [
+      "Gain the ability to build modern, dynamic, and interactive web applications using React's component-based architecture.",
+      "Be able to design and develop user interfaces using React's declarative syntax and will become familiar with its virtual DOM and state management concepts",
+      "Be able to use React alongside other popular libraries and tools such as Redux, React Router, and Webpack.",
+      "Gain Solid understanding of React's concepts, including components, props, state, and lifecycle methods.",
+      "Learn to work collaboratively using version control systems such as Git and GitHub",
+      "Learn Best practices for building and deploying React applications.",
+      "Develop problem-solving skills, critical thinking, and creativity, which are essential in building complex web applications",
+      "Gain the ability to learn and adapt to new technologies and frameworks, which are crucial in the fast-paced web development industry",
+      "Be proficient in building modern web applications using React and to be prepared for a career in web development"
+    ]
+  },
+  "brief": "Learn to build web applications using the most popular web framework with the highest job openings.",
+  "price": 105.0,
+  "tax": 5.0,
+  "createdOn": null,
+  "thumbnail": "react-logo.png",
+  "updatedOn": "2023-03-01",
+  "totalSteps": 4,
+  "draft": false
+}

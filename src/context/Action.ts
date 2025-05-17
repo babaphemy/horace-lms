@@ -11,7 +11,7 @@ import {
 export type Action =
   | {
       type: "SET_USER"
-      data: UserDto
+      data: UserDto | null
     }
   | { type: "SET_STEP"; payload: number }
   | {

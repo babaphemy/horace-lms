@@ -9,11 +9,13 @@ declare module "next-auth" {
     user: {
       id: string
       name?: string | null
+      firstname?: string | null
+      lastname?: string | null
       email: string
       image?: string | null
       phone?: string
       password?: string
-      role: string
+      roles: string[]
       token?: string
     } & DefaultSession["user"]
   }

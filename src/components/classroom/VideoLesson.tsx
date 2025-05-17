@@ -265,7 +265,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
           <Box className="md:mt-24 block ">
             <Paper className="py-4 p-3 my-8 rounded-2xl border-2 border-[#FF869A] bg-gray-100">
               <Typography variant="h6" className="mt-4 mx-4">
-                Syllabus
+                Content
               </Typography>
               <Curriculumb
                 courseName={courseName}

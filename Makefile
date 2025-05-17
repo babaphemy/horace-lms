@@ -1,2 +1,2 @@
 run:
-	yarn dev
+	yarn dev --hostname 0.0.0.0

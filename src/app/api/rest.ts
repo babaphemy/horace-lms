@@ -1,15 +1,32 @@
-import { loadStripe } from "@stripe/stripe-js"
-import { auth, basePath, PostSettings } from "./setting"
 import {
   CardDto,
+  CourseComplete,
+  CourseResponse,
   tInterview,
   TransactionData,
   Tranx,
   tReview,
+  tUser,
   UserDto,
 } from "@/types/types"
+import { loadStripe } from "@stripe/stripe-js"
+import { auth, basePath, PostSettings } from "./setting"
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
+  return resp.json()
+}
+const getAllUsers = async (): Promise<tUser[]> => {
+  const resp = await fetch(`${basePath}user/users`)
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+const getUserById = async (id: number): Promise<tUser> => {
+  const resp = await fetch(`${basePath}info/user/byid?usr=${id}`) // TODO: this is wrong endpoint
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
   return resp.json()
 }
 const loginUser = async (data: {
@@ -62,6 +79,18 @@ const resetPass = async (data: {
   }
   return resp.text()
 }
+const addSubjectComplete = async (
+  subject: CourseComplete
+): Promise<CourseResponse> => {
+  const resp = await fetch(
+    `${basePath}classroom/subject/complete`, //TODO: Create endpoint
+    PostSettings(subject)
+  )
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
 
 const fetchCourses = async () => {
   const response = await fetch(`${basePath}course/courses`, auth)
@@ -70,8 +99,28 @@ const fetchCourses = async () => {
   }
   return response.json()
 }
-const fetchCourse = async (id: string) => {
-  const response = await fetch(`${basePath}course/${id}`, auth)
+const fetchCourse = async (id: string, userid?: string) => {
+  const response = await fetch(
+    userid ? `${basePath}course/${id}/${userid}` : `${basePath}course/${id}`,
+    auth
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const fetchLMS = async (id: string) => {
+  const response = await fetch(`${basePath}course/lms/${id}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const myRegisteredCourses = async (userId: string) => {
+  const response = await fetch(
+    `${basePath}course/courses/my-registered?usr=${userId}`,
+    auth
+  )
   if (!response.ok) {
     return { error: response.status }
   }
@@ -182,6 +231,26 @@ const paystacktx = async (data: TransactionData) => {
   }
   return resp.json()
 }
+const getAllNavigationItems = async () => {
+  const resp = await fetch(`${basePath}rbac/menu`)
+
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+
+  return resp.json()
+}
+const getSideNavItems = async (role: string, acitve: boolean) => {
+  const resp = await fetch(
+    `${basePath}rbac/menu/?active=${acitve}&role=${role}`
+  )
+
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+
+  return resp.json()
+}
 export const storeTranx = async (data: TransactionData): Promise<Tranx> => {
   const resp = await fetch(`${basePath}pay/tranx`, PostSettings(data))
   if (!resp.ok) {
@@ -200,25 +269,73 @@ const portalAuth = async (data: {
   }
   return resp.json()
 }
+const login2 = async (data: { email: string; password: string }) => {
+  const resp = await fetch(`${basePath}user/login2`, PostSettings(data))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+const uploadVideoToS3 = async (videoBinary: Blob): Promise<string> => {
+  const formData = new FormData()
+
+  formData.append("video", videoBinary)
+
+  const headers = {
+    method: "POST",
+    body: formData,
+  }
+  const resp = await fetch(`${basePath}info/s3/video`, headers)
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+
+const uploadImageToS3 = async (imageBinary: Blob): Promise<string> => {
+  const formData = new FormData()
+
+  formData.append("image", imageBinary)
+
+  const headers = {
+    method: "PUT",
+    body: formData,
+  }
+  const resp = await fetch(`${basePath}info/s3/upload`, headers)
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
 
 export {
-  createPaymentIntent,
-  getUsers,
-  loginUser,
-  registerUser,
-  verifyEmail,
-  fetchCourses,
-  fetchCourse,
-  doToken,
-  resetPass,
+  addReview,
+  addSubjectComplete,
   addUserCourse,
   contactUs,
-  getCourseLecture,
-  isCourseReg,
-  addReview,
-  handlePay,
-  submitInterview,
+  createPaymentIntent,
+  doToken,
+  fetchCourse,
+  fetchCourses,
   fetcher,
+  fetchLMS,
+  getAllNavigationItems,
+  getAllUsers,
+  getCourseLecture,
+  getSideNavItems,
+  getUserById,
+  getUsers,
+  handlePay,
+  isCourseReg,
+  loginUser,
+  myRegisteredCourses,
   paystacktx,
   portalAuth,
+  registerUser,
+  resetPass,
+  submitInterview,
+  uploadImageToS3,
+  uploadVideoToS3,
+  verifyEmail,
+  login2,
 }
