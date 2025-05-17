@@ -19,11 +19,9 @@ import React from "react"
 import { Controller, useForm } from "react-hook-form"
 import Link from "next/link"
 import { registerUser, verifyEmail } from "@/app/api/rest"
-// import { Appcontext, AppDpx } from "@/context/AppContext"
-// import { useSession } from "next-auth/react"
-// import { SET_STEP } from "@/context/Action"
 import { Send } from "@mui/icons-material"
 import { useMutation } from "react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 const formSchema = z.object({
   firstname: z.string().min(2, "Name is required"),
@@ -46,7 +44,7 @@ const formSchema = z.object({
     zip_code: z.string().min(2, "Zip code required"),
   }),
 })
-
+type FormData = z.infer<typeof formSchema>
 const countries = [
   { code: "US", name: "United States" },
   { code: "NG", name: "Nigeria" },
@@ -57,6 +55,7 @@ interface Addschoolprops {
 }
 const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
   const form = useForm({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       firstname: "",
       lastname: "",
@@ -74,7 +73,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
     },
   })
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+  const handleSubmit = (data: FormData) => {
     const userPayload = {
       firstname: data.firstname,
       lastname: data.lastname,
@@ -93,10 +92,7 @@ const AddSchoolForm: React.FC<Addschoolprops> = ({ callback }) => {
   const userMutation = useMutation({
     mutationFn: registerUser,
     onSuccess: async (data) => {
-      //@ts-ignore
-      //dispatch({ type: SET_USER, data: data })
-      //   mutate({ ...payload, owner_id: data.id })
-      callback(data.id)
+      callback && callback(data.id)
       form.reset()
     },
     onError: () => {
