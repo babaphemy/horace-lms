@@ -222,10 +222,9 @@ const CourseReview = ({ posts, ratings }: Props) => {
                 label="Average"
                 variant="determinate"
                 value={
-                  posts && posts?.length
-                    ? ((posts?.filter((post) => post.rating === 3).length ||
-                        0) /
-                        posts?.length!) *
+                  posts && posts.length > 0
+                    ? (posts.filter((post) => post.rating === 3).length /
+                        posts.length) *
                       100
                     : 100
                 }
