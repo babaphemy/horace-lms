@@ -60,7 +60,7 @@ const AboutUs = () => {
           <Box sx={aboutStyles.cardContainer}>
             <Grid container rowSpacing={2} columnSpacing={5}>
               {statistics.map((item, idx) => (
-                <Grid key={idx} item xs={12} sm={4}>
+                <Grid key={idx} size={{ xs: 12, sm: 4 }}>
                   <Box sx={{ ...aboutStyles.card, borderColor: item.color }}>
                     <Box className="flex flex-col items-center justify-center">
                       <div className="flex flex-col items-center justify-center my-2">
@@ -190,7 +190,7 @@ const AboutUs = () => {
           </Typography>
           <Grid container spacing={3}>
             {whatOurStudentsSay.map((item, idx) => (
-              <Grid key={idx} item xs={12} sm={6} md={4}>
+              <Grid key={idx} size={{ xs: 12, sm: 6, md: 4 }}>
                 <Box sx={aboutStyles.card}>
                   <Box className="flex justify-between items-center my-2">
                     <Rating
@@ -298,19 +298,19 @@ const statistics = [
     number: 10,
     name: "Courses",
     color: "#F9AD56",
-    icon: require("../../assets/img/icon-1.webp"),
+    icon: "/icons/icon-1.webp",
   },
   {
     number: 12,
     name: "Awards",
     color: "#16C79A",
-    icon: require("../../assets/img/icon-2.webp"),
+    icon: "/icons/icon-2.webp",
   },
   {
     number: 100,
     name: "Students",
     color: "#FF5E78",
-    icon: require("../../assets/img/icon-3.webp"),
+    icon: "/icons/icon-3.webp",
   },
 ]
 
