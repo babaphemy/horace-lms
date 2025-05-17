@@ -1,6 +1,5 @@
 import { dirname } from "path"
 import { fileURLToPath } from "url"
-import typescriptEslint from "@typescript-eslint/eslint-plugin"
 import js from "@eslint/js"
 import { FlatCompat } from "@eslint/eslintrc"
 
@@ -22,11 +21,8 @@ const eslintConfig = [
       "cypress.config.ts",
     ],
   },
-  ...compat.extends("next/core-web-vitals"),
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    plugins: {
-      "@typescript-eslint": typescriptEslint,
-    },
     rules: {
       "@typescript-eslint/no-explicit-any": "warn",
 

@@ -42,7 +42,7 @@ const Paystack = ({ plan }: { plan: Plan }) => {
       payee: user?.id || userId || "",
       first_name: user?.firstname,
       last_name: user?.lastname,
-      currency: "NGN" as "NGN",
+      currency: "NGN" as const,
       tranx_type: "PLAN",
       tranx: `${user?.id}-${plan?.slug}-${Date.now()}`,
       status: "Pending",

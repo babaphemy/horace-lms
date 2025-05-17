@@ -2,7 +2,7 @@ import React, { ReactElement } from "react"
 import { Appcontext, AppDpx } from "../context/AppContext"
 import { Backdrop, Box, Fade, Modal } from "@mui/material"
 const style = {
-  position: "absolute" as "absolute",
+  position: "absolute" as const,
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
