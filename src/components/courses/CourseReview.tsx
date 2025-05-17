@@ -310,7 +310,7 @@ const CourseReview = ({ posts, ratings }: Props) => {
 export default CourseReview
 
 type ReviewModalProps = {
-  userId: string | number
+  userId: string
   courseId: string
 }
 

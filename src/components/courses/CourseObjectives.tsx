@@ -14,12 +14,14 @@ import {
 import { ReactElement, useState } from "react"
 import { tCurriculum, tPost } from "../../types/types"
 import CourseReview from "./CourseReview"
+import { fromNow } from "@/utils/fromNow"
 const ranges = {
-  content: "Content",
+  overview: "Overview",
   reviews: "Reviews",
 }
 interface Props {
   category?: string
+  overview?: string
   target?: string
   modified?: string
   courseName?: string
@@ -28,10 +30,11 @@ interface Props {
   posts?: tPost[]
   ratings?: number | null
   handleJoinClass: () => void
-  regCourse?: boolean
+  registered?: boolean
 }
 const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
   const {
+    overview,
     target,
     category,
     modified,
@@ -40,7 +43,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     posts,
     ratings,
     handleJoinClass,
-    regCourse,
+    registered,
   } = props
   const [tabValue, setTabValue] = useState(0)
 
@@ -48,9 +51,9 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     <>
       <Box className="flex space-x-6 items-center my-5 mx-5">
         <Typography variant="subtitle1" className="text-gray-500 font-semibold">
-          {regCourse ? "Enrolled" : "Not Enrolled"}
+          {registered ? "Enrolled" : "Not Enrolled"}
         </Typography>
-        {!regCourse && (
+        {!registered && (
           <Button
             variant="contained"
             className="bg-[#00A9C1] text-white rounded-full px-5 py-2 hover:bg-[#00A9C1] capitalize"
@@ -95,9 +98,15 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
         <div className="w-full mt-5">
           {tabValue === 0 && (
             <div>
-              <Typography variant="h6" className="mb-4">
-                Overview
-              </Typography>
+              {overview && (
+                <Typography
+                  variant="body1"
+                  className="mb-4"
+                  dangerouslySetInnerHTML={{
+                    __html: overview,
+                  }}
+                />
+              )}
               <Typography gutterBottom>{brief}</Typography>
               <Typography variant="subtitle1" gutterBottom>
                 Target Audience: {target || "Beginner"}
@@ -106,7 +115,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
                 Category: {category?.toString() || "web"}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                Last Updated: {modified || "N/A"}
+                Last Updated: {modified ? fromNow(modified) : "N/A"}
               </Typography>
             </div>
           )}

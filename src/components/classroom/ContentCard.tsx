@@ -31,7 +31,7 @@ export interface Lesson {
 
 interface Topic {
   id: string
-  title: string
+  module: string
   description: string
   cid: string | null
   orderIndex: number
@@ -67,6 +67,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
       [topicId]: !prev[topicId],
     }))
   }
+  console.log(topics, " topics")
 
   const getLessonIcon = (lessonType: string) => {
     switch (lessonType?.toLowerCase()) {
@@ -95,7 +96,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
           <List disablePadding>
             {topics
               .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0))
-              .map((topic) => (
+              .map((topic, idx) => (
                 <Box key={topic.id} sx={{ mb: 2 }}>
                   <Box
                     sx={{
@@ -116,7 +117,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
                       />
                     )}
                     <Typography variant="caption" fontWeight="medium">
-                      {topic.orderIndex}: {topic.title}
+                      {idx + 1}: {topic.module}
                     </Typography>
                   </Box>
 
