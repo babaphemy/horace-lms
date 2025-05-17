@@ -104,7 +104,7 @@ const SubjectCreatePage = () => {
 
   const methods = useForm({
     defaultValues,
-    resolver: yupResolver(defaultValues),
+    resolver: yupResolver(courseCompleteSchema),
   })
 
   const steps = ["Subject Details", "Add Topics", "Add Lessons", "Review"]
