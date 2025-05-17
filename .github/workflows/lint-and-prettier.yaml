@@ -33,11 +33,3 @@ jobs:
 
       - name: Run lint check
         run: npm run check-lint
-
-      - name: Run ESLint with auto-fix and enforcement
-        run: |
-          npx eslint --fix .
-          npx eslint --max-warnings=0 .
-        if: ${{ failure() }}
-        env:
-          ESLINT_CONFIG_PATH: eslintrc.config.mjs
