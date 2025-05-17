@@ -1,5 +1,4 @@
 import { Avatar, Box, Divider, Rating, Typography } from "@mui/material"
-import Image from "next/image"
 import PlayCircleIcon from "@mui/icons-material/PlayCircle"
 import FavoriteIcon from "@mui/icons-material/Favorite"
 import AddCircleIcon from "@mui/icons-material/AddCircle"

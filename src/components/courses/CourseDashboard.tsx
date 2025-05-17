@@ -25,7 +25,6 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
-import SubjectForm from "./SubjectForm"
 export const categories = ["web"]
 const isStudent = false
 const tableHeaderCells: string[] = ["Subject", "Class", "Lessons", "Action"]
@@ -83,8 +82,8 @@ const CourseDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("web")
   const [page, setPage] = useState<number>(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(10)
-  const [openModal, setOpenModal] = useState<boolean>(false)
-  const [isLoading, setLoading] = useState<boolean>(false)
+  const [_, setOpenModal] = useState<boolean>(false)
+  const [isLoading] = useState<boolean>(false)
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchInput(event.target.value)
   }

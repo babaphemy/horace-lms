@@ -57,7 +57,7 @@ const DocumentContainer = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   boxSizing: "border-box",
 }))
-const HTMLContent = styled(Box)(({ theme }) => ({
+const HTMLContent = styled(Box)(() => ({
   flex: 1,
   width: "100%",
   overflow: "auto",

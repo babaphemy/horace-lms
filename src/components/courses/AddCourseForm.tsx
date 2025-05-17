@@ -19,6 +19,7 @@ import { Controller, useFormContext } from "react-hook-form"
 import { categories } from "./CourseDashboard"
 import { useDropzone } from "react-dropzone"
 import { Image as ImageIcon, Close as CloseIcon } from "@mui/icons-material"
+import Image from "next/image"
 const IMAGE_TYPES = {
   "image/jpeg": [".jpg", ".jpeg"],
   "image/png": [".png"],
@@ -29,8 +30,7 @@ const AddCourseForm = () => {
   const { control, setValue } = useFormContext()
   const [checked, setChecked] = React.useState(false)
   const [uploading, setUploading] = React.useState(false)
-  const [uploadProgress, setUploadProgress] = React.useState(0)
-  const [uploadedImage, setUploadedImage] = React.useState<string>("")
+  const [_, setUploadedImage] = React.useState<string>("")
   const [imagePreview, setImagePreview] = React.useState<string>("")
   const handleUpload = async (file: File) => {
     setUploading(true)
@@ -236,9 +236,11 @@ const AddCourseForm = () => {
                 }}
               >
                 <Box sx={{ position: "relative", mb: 2 }}>
-                  <img
+                  <Image
                     src={imagePreview}
                     alt="Course thumbnail preview"
+                    width={300}
+                    height={200}
                     style={{
                       width: "100%",
                       maxHeight: 300,

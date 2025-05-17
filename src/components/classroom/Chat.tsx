@@ -3,7 +3,6 @@ import { Send } from "@mui/icons-material"
 import {
   Avatar,
   Box,
-  Card,
   CardActionArea,
   CardContent,
   IconButton,
@@ -71,8 +70,8 @@ const ChatComponent = () => {
                 Mark Johnson
               </Typography>
               <Typography variant="body2">
-                When is the best time to use Kotlin vs Java? I'm coming from a
-                Java background and wondering if it's worth switching
+                When is the best time to use Kotlin vs Java? I am coming from a
+                Java background and wondering if it&apos;s worth switching
                 completely.
               </Typography>
               <Typography
@@ -98,8 +97,8 @@ const ChatComponent = () => {
               </Typography>
               <Typography variant="body2">
                 Great question! Kotlin is fully interoperable with Java, so you
-                can gradually migrate your projects. We'll cover more advantages
-                in section 3.
+                can gradually migrate your projects. We will cover more
+                advantages in section 3.
               </Typography>
               <Typography
                 variant="caption"

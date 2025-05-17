@@ -49,7 +49,7 @@ const AddLessonForm = () => {
 const TopicAccordion: React.FC<{
   topicIndex: number
 }> = ({ topicIndex }) => {
-  const { control, watch } = useFormContext()
+  const { control, watch, setValue } = useFormContext()
   const {
     fields: lessonFields,
     append: appendLesson,
@@ -58,9 +58,7 @@ const TopicAccordion: React.FC<{
     control,
     name: `topics.${topicIndex}.lessons`,
   })
-  const handleLessonTypeChange = (lessonIndex: number, newType: string) => {
-    // Clear file fields when lesson type changes
-    const { setValue } = useFormContext()
+  const handleLessonTypeChange = (lessonIndex: number, _newType: string) => {
     setValue(`topics.${topicIndex}.lessons.${lessonIndex}.video`, "")
     setValue(`topics.${topicIndex}.lessons.${lessonIndex}.content`, "")
   }

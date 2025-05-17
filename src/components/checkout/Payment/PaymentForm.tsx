@@ -79,7 +79,17 @@ const PaymentForm = ({ amount }: { amount: number }) => {
         notifyError("An unknown error occurred")
       }
     },
-    [dispatch, elements, cardholderName, plan, amount, stripe, user?.id]
+    [
+      dispatch,
+      elements,
+      cardholderName,
+      plan,
+      amount,
+      stripe,
+      user?.id,
+      tranx,
+      paymentType,
+    ]
   )
   return (
     <form onSubmit={handleSubmit} className="space-y-6">

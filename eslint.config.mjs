@@ -1,7 +1,6 @@
 import { dirname } from "path"
 import { fileURLToPath } from "url"
 import typescriptEslint from "@typescript-eslint/eslint-plugin"
-import tsParser from "@typescript-eslint/parser"
 import js from "@eslint/js"
 import { FlatCompat } from "@eslint/eslintrc"
 
@@ -35,6 +34,8 @@ const eslintConfig = [
         "error",
         {
           argsIgnorePattern: "^_",
+          varsIgnorePattern: "^React$|^_",
+          ignoreRestSiblings: true,
         },
       ],
 
