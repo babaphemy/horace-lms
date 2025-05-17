@@ -47,21 +47,4 @@ const eslintConfig = [
     },
   },
 ]
-// export default defineConfig([
-//   {
-
-//     languageOptions: {
-//       parser: tsParser,
-//     },
-
-//     settings: {
-//       "import/resolver": {
-//         node: {
-//           extensions: [".js", ".jsx", ".ts", ".tsx"],
-//         },
-//       },
-//     },
-
-//   },
-// ])
 export default eslintConfig
