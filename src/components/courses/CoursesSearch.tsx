@@ -1,6 +1,7 @@
-import { coursefilter, FilterItem } from "@/app/courses/page"
+import { FilterItem } from "@/app/courses/page"
 import { courseStyles } from "@/styles/courseStyles"
 import { tCourseLte } from "@/types/types"
+import { coursefilter } from "@/utils/util"
 import { FilterList, SearchOutlined } from "@mui/icons-material"
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material"
 import React from "react"

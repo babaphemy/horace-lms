@@ -10,10 +10,10 @@ import { debounce } from "lodash"
 import { useParams } from "next/navigation"
 import { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
-import { coursefilter } from "../page"
 import { COURSES_SET } from "@/context/actions"
 import { AppDpx } from "@/context/AppContext"
 import CourseData from "@/components/courses/CourseData"
+import { coursefilter } from "@/utils/util"
 
 const MyCourses = () => {
   const params = useParams()
