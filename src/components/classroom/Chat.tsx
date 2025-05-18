@@ -12,7 +12,14 @@ import {
   Typography,
 } from "@mui/material"
 import { useState } from "react"
-const MessageBubble = styled(Box)(({ theme, isInstructor }) => ({
+
+interface MessageBubbleProps {
+  isInstructor?: boolean
+}
+
+const MessageBubble = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "isInstructor",
+})<MessageBubbleProps>(({ theme, isInstructor }) => ({
   backgroundColor: isInstructor
     ? theme.palette.primary.light
     : theme.palette.grey[100],

@@ -19,7 +19,13 @@ const AddTopicForm = () => {
     name: "topics",
   })
   const addTopic = () => {
-    append({ title: "", week: "" })
+    append({
+      title: "",
+      description: "",
+      orderIndex: 0,
+      dueDate: "",
+      lessons: [],
+    })
   }
   return (
     <Box>
@@ -34,14 +40,14 @@ const AddTopicForm = () => {
           <Accordion key={field.id} defaultExpanded={index === 0}>
             <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
               <Typography>
-                {watch(`topics.${index}.topic.title`) || `Topic ${index + 1}`}
+                {watch(`topics.${index}.title`) || `Topic ${index + 1}`}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
-                    name={`topics.${index}.topic.title`}
+                    name={`topics.${index}.title`}
                     control={control}
                     rules={{ required: "Topic title is required" }}
                     render={({ field, fieldState: { error } }) => (
@@ -58,7 +64,7 @@ const AddTopicForm = () => {
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
-                    name={`topics.${index}.topic.description`}
+                    name={`topics.${index}.description`}
                     control={control}
                     render={({ field }) => (
                       <TextField {...field} label="Description" fullWidth />
@@ -67,7 +73,7 @@ const AddTopicForm = () => {
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
-                    name={`topics.${index}.topic.orderIndex`}
+                    name={`topics.${index}.orderIndex`}
                     control={control}
                     render={({ field }) => (
                       <TextField {...field} label="Index" fullWidth />

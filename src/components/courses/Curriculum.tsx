@@ -16,7 +16,7 @@ import { useState } from "react"
 import { getIcon } from "./CourseDetail"
 import ReactPlayer from "react-player"
 
-const Curriculum = ({ data }: { data: CourseResponse }) => {
+const Curriculum = ({ data }: { data?: CourseResponse }) => {
   const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null)
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null)
   return (
@@ -41,7 +41,9 @@ const Curriculum = ({ data }: { data: CourseResponse }) => {
                         setExpandedVideoId(
                           expandedVideoId === asset.id ? null : asset.id ?? null
                         )
-                        asset?.video && setVideoPreviewUrl(asset?.video)
+                        if (asset?.video) {
+                          setVideoPreviewUrl(asset.video)
+                        }
                       }
                     }}
                   >

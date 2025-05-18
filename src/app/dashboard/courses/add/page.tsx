@@ -60,53 +60,6 @@ const SubjectCreatePage = () => {
   const [isLoading] = useState(false)
   const queryClient = useQueryClient()
 
-  const defaultValues: CourseComplete = {
-    id: undefined, // Optional
-    user: session?.id || "", // Must be provided from session
-    courseName: "",
-    category: "",
-    target: "",
-    brief: "",
-    overview: "",
-    price: undefined,
-    tax: undefined,
-    thumbnail: "",
-    draft: "",
-    currency: "",
-    createdOn: new Date(),
-    updatedOn: new Date(),
-    topics: [
-      {
-        id: undefined, // Optional
-        title: "",
-        description: "",
-        cid: "",
-        orderIndex: undefined,
-        lessons: [
-          {
-            id: undefined, // Optional
-            title: "",
-            tid: "",
-            type: LESSONTYPE.video,
-            orderIndex: undefined,
-            video: "",
-            content: "",
-            createdOn: new Date(),
-            updatedOn: new Date(),
-          },
-        ],
-        dueDate: new Date(new Date().setMonth(new Date().getMonth() + 3)), // Default due date 3 months ahead
-        createdOn: new Date(),
-        updatedOn: new Date(),
-      },
-    ],
-  }
-
-  const methods = useForm({
-    defaultValues,
-    resolver: yupResolver(courseCompleteSchema),
-  })
-
   const steps = ["Subject Details", "Add Topics", "Add Lessons", "Review"]
 
   const handleNext = async () => {
@@ -132,8 +85,60 @@ const SubjectCreatePage = () => {
     },
   })
 
+  const defaultValues: CourseComplete = {
+    id: undefined,
+    user: session?.user?.id || "",
+    courseName: "",
+    category: "",
+    target: "",
+    brief: "",
+    overview: "",
+    price: undefined,
+    tax: undefined,
+    thumbnail: "",
+    draft: "",
+    currency: "",
+    createdOn: new Date(),
+    updatedOn: new Date(),
+    topics: [
+      {
+        title: "",
+        description: "",
+        orderIndex: undefined,
+        lessons: [
+          {
+            title: "",
+            type: LESSONTYPE.text,
+            orderIndex: undefined,
+            video: "",
+            content: "",
+            createdOn: new Date(),
+            updatedOn: new Date(),
+          },
+        ],
+        dueDate: new Date(new Date().setMonth(new Date().getMonth() + 3)), // Default due date 3 months ahead
+        createdOn: new Date(),
+        updatedOn: new Date(),
+      },
+    ],
+  }
+
+  const methods = useForm({
+    defaultValues,
+    resolver: yupResolver(courseCompleteSchema),
+  })
+
   async function onSubmit(values: yup.InferType<typeof courseCompleteSchema>) {
-    mutate(values)
+    if (!session?.user?.id) {
+      notifyError("User not authenticated")
+      return
+    }
+    const submitData = {
+      ...values,
+      user: session?.user?.id,
+      topics: values.topics ?? [],
+    }
+    mutate(submitData)
   }
 
   const renderStepContent = (step: number) => {
@@ -175,36 +180,41 @@ const SubjectCreatePage = () => {
                 {renderErrors(methods.formState.errors)}
               </Box>
             )}
+            <FormProvider {...methods}>
+              <form onSubmit={methods.handleSubmit(onSubmit)}>
+                <Box sx={{ mb: 4 }}>{renderStepContent(activeStep)}</Box>
 
-            <form onSubmit={methods.handleSubmit(onSubmit)}>
-              <Box sx={{ mb: 4 }}>{renderStepContent(activeStep)}</Box>
-
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Button
-                  onClick={handleBack}
-                  disabled={activeStep === 0 || isLoading}
-                >
-                  Back
-                </Button>
-                <Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <Button
-                    variant="contained"
-                    type={activeStep === steps.length - 1 ? "submit" : "button"}
-                    onClick={
-                      activeStep === steps.length - 1 ? undefined : handleNext
-                    }
-                    disabled={isLoading}
-                    startIcon={
-                      activeStep === steps.length - 1 ? <SaveIcon /> : undefined
-                    }
+                    onClick={handleBack}
+                    disabled={activeStep === 0 || isLoading}
                   >
-                    {activeStep === steps.length - 1
-                      ? "Create Subject"
-                      : "Next"}
+                    Back
                   </Button>
+                  <Box>
+                    <Button
+                      variant="contained"
+                      type={
+                        activeStep === steps.length - 1 ? "submit" : "button"
+                      }
+                      onClick={
+                        activeStep === steps.length - 1 ? undefined : handleNext
+                      }
+                      disabled={isLoading}
+                      startIcon={
+                        activeStep === steps.length - 1 ? (
+                          <SaveIcon />
+                        ) : undefined
+                      }
+                    >
+                      {activeStep === steps.length - 1
+                        ? "Create Subject"
+                        : "Next"}
+                    </Button>
+                  </Box>
                 </Box>
-              </Box>
-            </form>
+              </form>
+            </FormProvider>
           </Paper>
         </FormProvider>
       </Box>

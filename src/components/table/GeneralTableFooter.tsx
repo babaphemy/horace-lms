@@ -11,9 +11,17 @@ import FirstPageIcon from "@mui/icons-material/FirstPage"
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft"
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight"
 import LastPageIcon from "@mui/icons-material/LastPage"
-import { TablePaginationActionsProps } from "@mui/material/TablePagination/TablePaginationActions"
 export interface DataItem {
   [key: string]: unknown
+}
+export interface TablePaginationActionsProps {
+  count: number
+  page: number
+  rowsPerPage: number
+  onPageChange: (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    _newPage: number
+  ) => void
 }
 export function ListsPagination(props: TablePaginationActionsProps) {
   const theme = useTheme()

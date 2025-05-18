@@ -1,14 +1,15 @@
-import { coursefilter, FilterItem } from "@/app/courses/page"
+import { FilterItem } from "@/app/courses/page"
 import { courseStyles } from "@/styles/courseStyles"
-import { tCourse } from "@/types/types"
+import { tCourseLte } from "@/types/types"
+import { coursefilter } from "@/utils/util"
 import { FilterList, SearchOutlined } from "@mui/icons-material"
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material"
 import React from "react"
 interface Props {
   handleSearch: (_value: string) => void
   setCurrentFilter: (_item: FilterItem) => void
-  setFilteredData: (_data: tCourse[]) => void
-  allCourses: tCourse[]
+  setFilteredData: (_data: tCourseLte[]) => void
+  allCourses: tCourseLte[]
 }
 const CoursesSearch: React.FC<Props> = ({
   handleSearch,
@@ -75,7 +76,7 @@ const CoursesSearch: React.FC<Props> = ({
                   }
                   setFilteredData(
                     allCourses.filter(
-                      (course: tCourse) =>
+                      (course: tCourseLte) =>
                         course?.category
                           ?.split(",")
                           .includes(item.value.toLowerCase()) ||

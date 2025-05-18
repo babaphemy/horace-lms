@@ -82,7 +82,7 @@ const CourseDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("web")
   const [page, setPage] = useState<number>(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(10)
-  const [_, setOpenModal] = useState<boolean>(false)
+
   const [isLoading] = useState<boolean>(false)
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setSearchInput(event.target.value)
@@ -118,11 +118,14 @@ const CourseDashboard = () => {
       : 0
   const handleTableClick = (subject: tCourse, type: TableClickType): void => {
     if (type === "delete") {
-      setOpenModal(true)
     }
     if (type === "edit") {
-      form.reset(subject)
-      setOpenModal(true)
+      form.reset({
+        user: subject.author?.id || "",
+        courseName: subject.courseName || "",
+        overview: subject.description || "",
+        // Add other fields as needed, ensuring types match CourseCreate
+      })
     }
     if (type === "view") {
       router.push(`/subject/${subject.id}`)

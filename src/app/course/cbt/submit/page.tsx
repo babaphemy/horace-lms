@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 import {
   Box,
@@ -58,23 +59,30 @@ const ResultColumn = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 4),
 }))
 
-const NavigationCircle = styled(Avatar)(
-  ({ theme, correct, incorrect, active }) => ({
-    width: 32,
-    height: 32,
-    fontSize: "0.75rem",
-    backgroundColor: correct
-      ? theme.palette.success.light
-      : incorrect
-        ? theme.palette.error.light
-        : active
-          ? theme.palette.primary.main
-          : theme.palette.grey[300],
-    margin: theme.spacing(0.5),
-    border: active ? `2px solid ${theme.palette.primary.main}` : "none",
-    color: correct || incorrect ? theme.palette.common.white : undefined,
-  })
-)
+interface NavigationCircleProps {
+  correct?: boolean
+  incorrect?: boolean
+  active?: boolean
+}
+
+const NavigationCircle = styled(Avatar, {
+  shouldForwardProp: (prop) =>
+    prop !== "correct" && prop !== "incorrect" && prop !== "active",
+})<NavigationCircleProps>(({ theme, correct, incorrect, active }) => ({
+  width: 32,
+  height: 32,
+  fontSize: "0.75rem",
+  backgroundColor: correct
+    ? theme.palette.success.light
+    : incorrect
+      ? theme.palette.error.light
+      : active
+        ? theme.palette.primary.main
+        : theme.palette.grey[300],
+  margin: theme.spacing(0.5),
+  border: active ? `2px solid ${theme.palette.primary.main}` : "none",
+  color: correct || incorrect ? theme.palette.common.white : undefined,
+}))
 
 const LeaderboardButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,

@@ -152,7 +152,7 @@ const AboutUs = () => {
           </Typography>
           <Grid container spacing={3}>
             {exampleCourses.map((item, idx) => (
-              <Grid key={idx} item xs={6} sm={4} md={3}>
+              <Grid key={idx} size={{ xs: 6, sm: 4, md: 3 }}>
                 <Typography
                   variant="body2"
                   className="flex flex-col items-center border rounded-md border-red-500 p-3"

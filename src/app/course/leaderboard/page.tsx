@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 import {
   Box,
@@ -12,6 +13,7 @@ import {
   TableRow,
   styled,
 } from "@mui/material"
+import type { TableCellProps } from "@mui/material"
 
 interface MedalAvatarProps {
   place: number
@@ -82,8 +84,14 @@ const ScoreTableCell = styled(TableCell)(({ theme }) => ({
   textAlign: "center",
 }))
 
-const RankCell = styled(TableCell)(({ theme, rank }) => {
-  const getColor = (rank) => {
+interface RankCellProps extends TableCellProps {
+  rank: number
+}
+
+const RankCell = styled(TableCell, {
+  shouldForwardProp: (prop) => prop !== "rank",
+})<RankCellProps>(({ theme, rank }) => {
+  const getColor = (rank: number) => {
     if (rank === 1) return "#FFD700" // Gold
     if (rank === 2) return "#C0C0C0" // Silver
     if (rank === 3) return "#CD7F32" // Bronze

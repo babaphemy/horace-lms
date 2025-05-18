@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import {
   Box,
   Typography,
@@ -309,5 +309,10 @@ const ClassroomPage = () => {
     </Box>
   )
 }
-
-export default ClassroomPage
+export default function ClassroomPageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ClassroomPage />
+    </Suspense>
+  )
+}
