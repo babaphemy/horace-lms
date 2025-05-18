@@ -111,6 +111,16 @@ export interface CurriculumMap {
   requirement: string[]
   objective: string[]
 }
+export type LessonBase = {
+  title: string
+  video?: string
+  type: string
+  content?: string
+  orderIndex?: number
+  dueDate?: Date
+  createdOn?: Date
+  updatedOn?: Date
+}
 export type TopicBase = {
   title: string
   description: string
@@ -162,16 +172,7 @@ export interface CourseResponse {
   draft: boolean
   isRegistered: boolean
 }
-export type LessonBase = {
-  title: string
-  video?: string
-  type: string
-  content?: string
-  orderIndex?: number
-  dueDate?: Date
-  createdOn?: Date
-  updatedOn?: Date
-}
+
 export type LessonDto = {
   id?: string
   tid: string

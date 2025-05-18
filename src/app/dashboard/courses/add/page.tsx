@@ -5,7 +5,7 @@ import AddLessonForm from "@/components/courses/AddLessonForm"
 import AddTopicForm from "@/components/courses/AddTopicForm"
 import ReviewSubjectForm from "@/components/courses/ReviewSubjectForm"
 import { courseCompleteSchema } from "@/schema/courseSchema"
-import { CourseComplete } from "@/types/types"
+import { CourseComplete, LESSONTYPE } from "@/types/types"
 import { notifyError, notifySuccess } from "@/utils/notification"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Save as SaveIcon } from "@mui/icons-material"
@@ -86,7 +86,7 @@ const SubjectCreatePage = () => {
   })
 
   const defaultValues: CourseComplete = {
-    id: undefined, // Optional
+    id: undefined,
     user: session?.user?.id || "",
     courseName: "",
     category: "",
@@ -108,7 +108,7 @@ const SubjectCreatePage = () => {
         lessons: [
           {
             title: "",
-            type: "",
+            type: LESSONTYPE.text,
             orderIndex: undefined,
             video: "",
             content: "",
@@ -129,9 +129,14 @@ const SubjectCreatePage = () => {
   })
 
   async function onSubmit(values: yup.InferType<typeof courseCompleteSchema>) {
+    if (!session?.user?.id) {
+      notifyError("User not authenticated")
+      return
+    }
     const submitData = {
       ...values,
       user: session?.user?.id,
+      topics: values.topics ?? [],
     }
     mutate(submitData)
   }

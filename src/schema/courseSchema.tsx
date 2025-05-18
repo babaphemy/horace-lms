@@ -5,7 +5,7 @@ export const courseCreateSchema = yup.object().shape({
   category: yup.string().optional(),
   target: yup.string().optional(),
   brief: yup.string().optional(),
-  overview: yup.string().optional(),
+  overview: yup.string().required("Overview is required"),
   price: yup.number().optional().positive("Price must be positive"),
   tax: yup.number().optional().positive("Tax must be positive"),
   thumbnail: yup.string().url("Thumbnail must be a valid URL").optional(),
@@ -30,7 +30,7 @@ export const courseCompleteSchema = courseCreateSchema.shape({
           .of(
             yup.object().shape({
               title: yup.string().required("Lesson title is required"),
-              type: yup.string().optional(),
+              type: yup.string().required("Lesson type is required"),
               orderIndex: yup
                 .number()
                 .optional()

@@ -1,4 +1,4 @@
-import { LESSONTYPE, TopicDto } from "@/types/types"
+import { LESSONTYPE, TopicBase } from "@/types/types"
 import {
   Add as AddIcon,
   Remove as DeleteIcon,
@@ -27,7 +27,7 @@ import FileUploadZone from "./FileUploadZone"
 const AddLessonForm = () => {
   const { watch } = useFormContext()
 
-  const topics = watch("topics")
+  const topics = watch("topics") ?? []
   return (
     <Box>
       <>
@@ -38,8 +38,8 @@ const AddLessonForm = () => {
           </Typography>
         </Box>
 
-        {topics.map((topicField: TopicDto, topicIndex: number) => (
-          <TopicAccordion key={topicField.id} topicIndex={topicIndex} />
+        {topics.map((topicField: TopicBase, topicIndex: number) => (
+          <TopicAccordion key={topicField.title} topicIndex={topicIndex} />
         ))}
       </>
     </Box>
