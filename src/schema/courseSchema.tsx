@@ -6,20 +6,21 @@ export const courseCreateSchema = yup.object().shape({
   target: yup.string().optional(),
   brief: yup.string().optional(),
   overview: yup.string().required("Overview is required"),
-  price: yup.number().optional().positive("Price must be positive"),
-  tax: yup.number().optional().positive("Tax must be positive"),
+  price: yup.number().optional().min(0, "Price must be positive"),
+  tax: yup.number().optional().min(0, "Tax must be 0 or positive"),
   thumbnail: yup.string().url("Thumbnail must be a valid URL").optional(),
   draft: yup.string().optional(),
   currency: yup.string().optional(),
   createdOn: yup.date().optional(),
   updatedOn: yup.date().optional(),
 })
-export const courseCompleteSchema = courseCreateSchema.shape({
+export const courseCompleteSchema = yup.object().shape({
+  course: courseCreateSchema,
   topics: yup
     .array()
     .of(
       yup.object().shape({
-        title: yup.string().required("Topic title is required"),
+        module: yup.string().required("Topic title is required"),
         description: yup.string().required("Topic description is required"),
         orderIndex: yup
           .number()
@@ -42,7 +43,6 @@ export const courseCompleteSchema = courseCreateSchema.shape({
             })
           )
           .min(1, "At least one lesson is required"),
-        dueDate: yup.date().optional(),
         createdOn: yup.date().optional(),
         updatedOn: yup.date().optional(),
       })
@@ -55,7 +55,7 @@ export const curriculumMapSchema = yup.object().shape({
     .of(
       yup.object().shape({
         id: yup.string().optional(),
-        title: yup.string().required("Topic title is required"),
+        module: yup.string().required("Topic title is required"),
         description: yup.string().required("Topic description is required"),
         cid: yup.string().required("Course ID is required"),
         orderIndex: yup

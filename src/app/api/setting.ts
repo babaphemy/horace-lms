@@ -1,4 +1,5 @@
 const basePath = process.env.NEXT_PUBLIC_BASEPATH
+const horacePath = process.env.NEXT_PUBLIC_HORACE
 // let MONGO_URI = process.env.MONGO_URI!;
 
 const authKey = process.env.NEXT_PUBLIC_APIKEY
@@ -39,4 +40,4 @@ export const PutSettings = <T>(obj: T) => {
   }
 }
 
-export { basePath }
+export { basePath, horacePath }

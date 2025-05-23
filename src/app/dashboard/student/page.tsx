@@ -47,7 +47,7 @@ export default function Students() {
           </Breadcrumbs>
         </Box>
         <Box>
-          <Link href={"/student/lms"}>
+          <Link href={`/courses/${session?.user?.id}`}>
             <Button variant="contained" color="primary" sx={{ mr: 2 }}>
               My Courses
             </Button>
