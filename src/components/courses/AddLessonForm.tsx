@@ -1,4 +1,4 @@
-import { CourseComplete, LESSONTYPE, TopicBase } from "@/types/types"
+import { LESSONTYPE, TopicBase } from "@/types/types"
 import {
   Add as AddIcon,
   Remove as DeleteIcon,
@@ -23,12 +23,7 @@ import {
   ToggleButtonGroup,
 } from "@mui/material"
 import React, { useState } from "react"
-import {
-  Control,
-  Controller,
-  useFieldArray,
-  useFormContext,
-} from "react-hook-form"
+import { Controller, useFieldArray, useFormContext } from "react-hook-form"
 import RichEditor from "./Editor"
 import FileUploadZone from "./FileUploadZone"
 
@@ -184,7 +179,6 @@ const TopicAccordion: React.FC<{
                       <HTMLContentEditor
                         topicIndex={topicIndex}
                         lessonIndex={lessonIndex}
-                        control={control}
                       />
                     </Grid>
                   )}
@@ -231,15 +225,12 @@ const TopicAccordion: React.FC<{
     </Accordion>
   )
 }
-
-// New component for HTML content editing
 const HTMLContentEditor: React.FC<{
   topicIndex: number
   lessonIndex: number
-  control: Control<CourseComplete>
-}> = ({ topicIndex, lessonIndex, control }) => {
+}> = ({ topicIndex, lessonIndex }) => {
   const [editMode, setEditMode] = useState<"visual" | "code">("visual")
-  const { watch } = useFormContext()
+  const { watch, control } = useFormContext()
 
   const currentContent =
     watch(`topics.${topicIndex}.lessons.${lessonIndex}.content`) || ""

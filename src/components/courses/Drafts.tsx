@@ -21,6 +21,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 import { useRouter } from "next/navigation"
 import React from "react"
+import { notifyInfo } from "@/utils/notification"
 
 const Drafts = ({
   data,
@@ -48,7 +49,9 @@ const Drafts = ({
       day: "numeric",
     })
   }
-  const handleDelete = () => {}
+  const handleDelete = (id: string) => {
+    notifyInfo(`Deleting course... ${id}`)
+  }
 
   if (loading) {
     return (

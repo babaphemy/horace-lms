@@ -42,6 +42,8 @@ const processedSubjects: tCourse[] = [
     author: {
       id: "user-001",
       firstname: "Alice Smith",
+      lastname: "Smith",
+      type: "admin",
       email: "alice@example.com",
       roles: ["admin"],
     },

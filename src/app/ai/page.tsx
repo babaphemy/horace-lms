@@ -184,7 +184,9 @@ export default function Home() {
         )
       }
 
-      // Process the streaming response
+      if (!response.body) {
+        throw new Error("No response body from Ollama server.")
+      }
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
       let responseText = ""
@@ -228,7 +230,7 @@ export default function Home() {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (input.trim() === "") return
 
