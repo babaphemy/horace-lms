@@ -45,7 +45,7 @@ const DynamicThumbnail = ({
     <Box sx={cardStyles.image}>
       {thumbnail && !imageError ? (
         <Image
-          src={`/img/${thumbnail}`}
+          src={`${thumbnail}`}
           width={400}
           height={250}
           alt={title || "Thumbnail image"}

@@ -7,14 +7,33 @@ export type tUser = {
   id?: string
   email: string
   phone?: string
+  address?: string
+  country?: string
+  city?: string
+  state?: string
+  zip?: string
+  dp?: string
+  organization?: string
   firstname: string
-  lastname?: string
-  roles: string[]
+  lastname: string
+  bio?: string
+  roles: (string | undefined)[]
+  type: string
   status?: boolean | string
   token?: string
   updatedOn?: string
+  createdOn?: string
   photo?: string
   gender?: string
+}
+export interface ProfileFormData {
+  firstname: string
+  lastname: string
+  email: string
+  phone?: string
+  company?: string
+  roles: (string | undefined)[]
+  brief?: string
 }
 export type CardDto = {
   amount?: number // corresponds to int amount
@@ -103,7 +122,8 @@ export interface CourseCreate {
   createdOn?: Date
   updatedOn?: Date
 }
-export interface CourseComplete extends CourseCreate {
+export interface CourseComplete {
+  course: CourseCreate
   topics: TopicBase[]
 }
 export interface CurriculumMap {
@@ -122,7 +142,7 @@ export type LessonBase = {
   updatedOn?: Date
 }
 export type TopicBase = {
-  title: string
+  module: string
   description: string
   orderIndex?: number
   lessons?: LessonBase[]
@@ -132,9 +152,11 @@ export type TopicBase = {
 }
 export type TopicDto = {
   id?: string
-  title: string
+  module: string
+  title?: string
   description: string
   cid: string
+  courseId?: string
   orderIndex?: number
   lessons: LessonDto[]
   dueDate?: Date
@@ -215,6 +237,8 @@ export type tCourse = {
 }
 export type tCourseLte = {
   author: string
+  authorRole?: string
+  authorCompany?: string
   id: string
   courseName: string
   brief: string
@@ -262,6 +286,7 @@ export type UserDto = {
   firstname: string
   lastname: string
   country?: string
+  organization?: string
   password: string
   email: string
   phone?: string

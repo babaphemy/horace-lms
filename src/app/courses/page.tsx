@@ -32,7 +32,7 @@ const Courses = () => {
 
   const dispatch = useContext(AppDpx)
 
-  const { data, isLoading } = useQuery("usersAdddoc", fetchCourses, {
+  const { data, isLoading } = useQuery("usersRegisteredCourses", fetchCourses, {
     staleTime: 5000,
     cacheTime: 10,
   })
@@ -62,8 +62,7 @@ const Courses = () => {
       dispatch({ type: COURSES_SET, data })
       return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+  }, [data, dispatch])
 
   return (
     <Box>

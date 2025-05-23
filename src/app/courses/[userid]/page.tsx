@@ -1,6 +1,10 @@
 "use client"
 
-import { myRegisteredCourses } from "@/app/api/rest"
+import {
+  coursesByAuthor,
+  manageDraft,
+  myRegisteredCourses,
+} from "@/app/api/rest"
 import CoursesSearch from "@/components/courses/CoursesSearch"
 import Header from "@/components/Header"
 import { tCourse, tCourseLte } from "@/types/types"
@@ -9,24 +13,44 @@ import Fuse, { FuseResult } from "fuse.js"
 import { debounce } from "lodash"
 import { useParams } from "next/navigation"
 import { useContext, useEffect, useState } from "react"
-import { useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import { COURSES_SET } from "@/context/actions"
 import { AppDpx } from "@/context/AppContext"
 import CourseData from "@/components/courses/CourseData"
 import { coursefilter } from "@/utils/util"
+import Drafts from "@/components/courses/Drafts"
+import { notifyInfo } from "@/utils/notification"
 
 const MyCourses = () => {
   const params = useParams()
   const { userid } = params
   const dispatch = useContext(AppDpx)
+  const queryClient = useQueryClient()
   const [filteredData, setFilteredData] = useState<tCourseLte[] | []>([])
-  const [currentFilter, setCurrentFilter] = useState(coursefilter[0])
+  const [currentFilter, setCurrentFilter] = useState(coursefilter[8])
   const [allCourses, setAllCourses] = useState([])
   const { data, isLoading } = useQuery({
     queryKey: ["myCourses", userid],
     queryFn: () => myRegisteredCourses(userid as string),
     enabled: !!userid,
   })
+  const { data: drafts, isLoading: draftsLoading } = useQuery({
+    queryKey: ["allusercourses", userid],
+    queryFn: () => coursesByAuthor(userid as string),
+    enabled: !!userid,
+  })
+
+  const { mutate } = useMutation({
+    mutationFn: manageDraft,
+    onSuccess: () => {
+      notifyInfo("Published status updated")
+      queryClient.invalidateQueries(["allusercourses", userid])
+    },
+  })
+  const handlePublish = (id: string, draft: boolean) => {
+    mutate({ id, draft, courseName: "", user: userid as string })
+  }
+
   useEffect(() => {
     if (data?.length > 0) {
       setFilteredData(data)
@@ -67,6 +91,11 @@ const MyCourses = () => {
           currentFilter={currentFilter}
           isLoading={isLoading}
           filteredData={filteredData}
+        />
+        <Drafts
+          data={drafts}
+          loading={draftsLoading}
+          onPublish={handlePublish}
         />
       </Container>
     </Box>

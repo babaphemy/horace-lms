@@ -20,10 +20,9 @@ const AddTopicForm = () => {
   })
   const addTopic = () => {
     append({
-      title: "",
+      module: "",
       description: "",
       orderIndex: 0,
-      dueDate: "",
       lessons: [],
     })
   }
@@ -31,29 +30,29 @@ const AddTopicForm = () => {
     <Box>
       <>
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h6">Add Topics</Typography>
+          <Typography variant="h6">Add Module(s)</Typography>
           <Typography variant="body2" color="text.secondary">
-            Add topics for course: {watch("courseName")}
+            Add module(s) for course: {watch("course.courseName")}
           </Typography>
         </Box>
         {fields.map((field, index) => (
           <Accordion key={field.id} defaultExpanded={index === 0}>
             <AccordionSummary expandIcon={<GridExpandMoreIcon />}>
               <Typography>
-                {watch(`topics.${index}.title`) || `Topic ${index + 1}`}
+                {watch(`topics.${index}.module`) || `Module ${index + 1}`}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
-                    name={`topics.${index}.title`}
+                    name={`topics.${index}.module`}
                     control={control}
-                    rules={{ required: "Topic title is required" }}
+                    rules={{ required: "Module title is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
-                        label="Topic Title"
+                        label="Module Title"
                         required
                         fullWidth
                         error={!!error}
@@ -75,8 +74,15 @@ const AddTopicForm = () => {
                   <Controller
                     name={`topics.${index}.orderIndex`}
                     control={control}
-                    render={({ field }) => (
-                      <TextField {...field} label="Index" fullWidth />
+                    defaultValue={index + 1}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        label="Index"
+                        fullWidth
+                        error={!!error}
+                        helperText={error?.message}
+                      />
                     )}
                   />
                 </Grid>
@@ -88,7 +94,7 @@ const AddTopicForm = () => {
                   startIcon={<Delete />}
                   sx={{ mt: 2 }}
                 >
-                  Remove Topic
+                  Remove Module
                 </Button>
               )}
             </AccordionDetails>
@@ -96,7 +102,7 @@ const AddTopicForm = () => {
         ))}
         <Box sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
           <Button startIcon={<Add />} onClick={addTopic}>
-            Add Topic
+            Add Another Module
           </Button>
         </Box>
       </>

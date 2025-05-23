@@ -76,16 +76,16 @@ const AddCourseForm = () => {
   return (
     <Stack spacing={3}>
       <Controller
-        name="courseName"
+        name="course.courseName"
         control={control}
         rules={{ required: "Course name is required" }}
         render={({ field, fieldState: { error } }) => (
           <TextField
             {...field}
-            label="Course Title"
+            label="Course Name"
             required
             fullWidth
-            id="courseName"
+            id="course.courseName"
             error={!!error}
             helperText={error?.message}
           />
@@ -93,7 +93,7 @@ const AddCourseForm = () => {
       />
 
       <Controller
-        name="category"
+        name="course.category"
         control={control}
         render={({ field }) => (
           <TextField
@@ -113,7 +113,7 @@ const AddCourseForm = () => {
       />
 
       <Controller
-        name="target"
+        name="course.target"
         control={control}
         render={({ field, fieldState: { error } }) => (
           <TextField
@@ -121,7 +121,7 @@ const AddCourseForm = () => {
             label="Target Audience"
             required
             fullWidth
-            id="target"
+            id="course.target"
             error={!!error}
             helperText={error?.message}
           />
@@ -129,7 +129,7 @@ const AddCourseForm = () => {
       />
 
       <Controller
-        name="brief"
+        name="course.brief"
         control={control}
         render={({ field, fieldState: { error } }) => (
           <TextField
@@ -137,7 +137,7 @@ const AddCourseForm = () => {
             label="Brief"
             required
             fullWidth
-            id="brief"
+            id="course.brief"
             error={!!error}
             helperText={error?.message}
           />
@@ -145,13 +145,13 @@ const AddCourseForm = () => {
       />
 
       <Controller
-        name="overview"
+        name="course.overview"
         control={control}
         render={({ field }) => (
           <TextField
             {...field}
             label="Overview"
-            id="overview"
+            id="course.overview"
             multiline
             rows={4}
             fullWidth
@@ -308,7 +308,7 @@ const AddCourseForm = () => {
       {checked && (
         <>
           <Controller
-            name="price"
+            name="course.price"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -316,7 +316,7 @@ const AddCourseForm = () => {
                 label="Price"
                 required
                 fullWidth
-                id="price"
+                id="course.price"
                 type="number"
                 error={!!error}
                 helperText={error?.message}
@@ -324,7 +324,7 @@ const AddCourseForm = () => {
             )}
           />
           <Controller
-            name="currency"
+            name="course.currency"
             control={control}
             render={({ field, fieldState: { error } }) => (
               <TextField
@@ -332,7 +332,7 @@ const AddCourseForm = () => {
                 label="Currency"
                 required
                 fullWidth
-                id="currency"
+                id="course.currency"
                 error={!!error}
                 helperText={error?.message}
                 placeholder="e.g., USD, EUR, GBP"

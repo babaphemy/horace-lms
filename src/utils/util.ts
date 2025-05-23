@@ -9,4 +9,5 @@ export const coursefilter: FilterItem[] = [
   { label: "Digital Marketing", value: "digital marketing" },
   { label: "Business", value: "business" },
   { label: "Photography", value: "photography" },
+  { label: "Registered", value: "registered" },
 ]

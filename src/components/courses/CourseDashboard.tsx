@@ -25,7 +25,15 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
-export const categories = ["web"]
+export const categories = [
+  "web",
+  "mobile",
+  "data science",
+  "AI",
+  "ML",
+  "cloud",
+  "finance",
+]
 const isStudent = false
 const tableHeaderCells: string[] = ["Subject", "Class", "Lessons", "Action"]
 const processedSubjects: tCourse[] = [
@@ -34,6 +42,8 @@ const processedSubjects: tCourse[] = [
     author: {
       id: "user-001",
       firstname: "Alice Smith",
+      lastname: "Smith",
+      type: "admin",
       email: "alice@example.com",
       roles: ["admin"],
     },
