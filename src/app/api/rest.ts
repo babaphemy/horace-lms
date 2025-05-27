@@ -10,7 +10,13 @@ import {
   UserDto,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
-import { auth, basePath, PostSettings } from "./setting"
+import {
+  auth,
+  basePath,
+  horacePath,
+  PostSettings,
+  PutSettings,
+} from "./setting"
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
   return resp.json()
@@ -22,8 +28,15 @@ const getAllUsers = async (): Promise<tUser[]> => {
   }
   return resp.json()
 }
-const getUserById = async (id: number): Promise<tUser> => {
-  const resp = await fetch(`${basePath}info/user/byid?usr=${id}`) // TODO: this is wrong endpoint
+const getUserById = async (id: string): Promise<tUser> => {
+  const resp = await fetch(`${basePath}user/${id}`, auth)
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+const doEdit = async (data: tUser) => {
+  const resp = await fetch(`${basePath}user/edit/one`, PutSettings(data))
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -79,11 +92,25 @@ const resetPass = async (data: {
   }
   return resp.text()
 }
+const resetOwnPass = async (data: {
+  token: string
+  email: string
+  password: string
+}) => {
+  const resp = await fetch(
+    `${basePath}user/reset/ownpassword`,
+    PostSettings(data)
+  )
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.text()
+}
 const addSubjectComplete = async (
   subject: CourseComplete
 ): Promise<CourseResponse> => {
   const resp = await fetch(
-    `${basePath}classroom/subject/complete`, //TODO: Create endpoint
+    `${basePath}course/addcomplete`,
     PostSettings(subject)
   )
   if (!resp.ok) {
@@ -121,6 +148,13 @@ const myRegisteredCourses = async (userId: string) => {
     `${basePath}course/courses/my-registered?usr=${userId}`,
     auth
   )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const coursesByAuthor = async (id: string) => {
+  const response = await fetch(`${basePath}course/byauthor/${id}`, auth)
   if (!response.ok) {
     return { error: response.status }
   }
@@ -285,7 +319,7 @@ const uploadVideoToS3 = async (videoBinary: Blob): Promise<string> => {
     method: "POST",
     body: formData,
   }
-  const resp = await fetch(`${basePath}info/s3/video`, headers)
+  const resp = await fetch(`${horacePath}info/s3/video`, headers)
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -301,7 +335,26 @@ const uploadImageToS3 = async (imageBinary: Blob): Promise<string> => {
     method: "PUT",
     body: formData,
   }
-  const resp = await fetch(`${basePath}info/s3/upload`, headers)
+  const resp = await fetch(`${horacePath}info/s3/upload`, headers)
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+const updateDp = async (data: tUser) => {
+  const resp = await fetch(`${basePath}user/upload-photo`, PutSettings(data))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+const manageDraft = async (obj: {
+  id: string
+  draft: boolean
+  courseName: string
+  user: string
+}) => {
+  const resp = await fetch(`${basePath}course/publish`, PutSettings(obj))
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -338,4 +391,9 @@ export {
   uploadVideoToS3,
   verifyEmail,
   login2,
+  coursesByAuthor,
+  manageDraft,
+  resetOwnPass,
+  doEdit,
+  updateDp,
 }

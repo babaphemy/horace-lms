@@ -50,7 +50,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
     <Box>
       <Box sx={similarStyles.card}>
         <Image
-          src={`/img/${thumbnail || "1.webp"}`}
+          src={`${thumbnail || "/img/1.webp"}`}
           alt="a man smiling"
           width={0}
           height={0}
@@ -75,7 +75,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
                   marginRight: "5px",
                 }}
               />
-              Horace
+              {course?.authorCompany || "Horace"}
             </Typography>
             <Tag label={category} />
           </Box>
@@ -101,7 +101,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
                   {author}
                 </Typography>
                 <Typography variant="caption" margin={0} color="primary">
-                  Software Engineer
+                  {course?.authorRole || "Software Engineer"}
                 </Typography>
               </Box>
             </Box>

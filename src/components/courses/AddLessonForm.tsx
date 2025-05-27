@@ -3,6 +3,8 @@ import {
   Add as AddIcon,
   Remove as DeleteIcon,
   ExpandMore as ExpandMoreIcon,
+  Code as CodeIcon,
+  Edit as EditIcon,
 } from "@mui/icons-material"
 import {
   Accordion,
@@ -17,8 +19,10 @@ import {
   Stack,
   TextField,
   Typography,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material"
-import React from "react"
+import React, { useState } from "react"
 import { Controller, useFieldArray, useFormContext } from "react-hook-form"
 import RichEditor from "./Editor"
 import FileUploadZone from "./FileUploadZone"
@@ -34,12 +38,12 @@ const AddLessonForm = () => {
         <Box sx={{ mb: 3 }}>
           <Typography variant="h6">Add Lessons</Typography>
           <Typography variant="body2" color="text.secondary">
-            Add lessons for subject: {watch("courseName")}
+            Add lessons for subject: {watch("course.courseName")}
           </Typography>
         </Box>
 
         {topics.map((topicField: TopicBase, topicIndex: number) => (
-          <TopicAccordion key={topicField.title} topicIndex={topicIndex} />
+          <TopicAccordion key={topicField.module} topicIndex={topicIndex} />
         ))}
       </>
     </Box>
@@ -58,6 +62,7 @@ const TopicAccordion: React.FC<{
     control,
     name: `topics.${topicIndex}.lessons`,
   })
+
   const handleLessonTypeChange = (lessonIndex: number) => {
     setValue(`topics.${topicIndex}.lessons.${lessonIndex}.video`, "")
     setValue(`topics.${topicIndex}.lessons.${lessonIndex}.content`, "")
@@ -126,21 +131,6 @@ const TopicAccordion: React.FC<{
                       )}
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Controller
-                      name={`topics.${topicIndex}.lessons.${lessonIndex}.dueDate`}
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          label="Due Date"
-                          type="date"
-                          InputLabelProps={{ shrink: true }}
-                          fullWidth
-                        />
-                      )}
-                    />
-                  </Grid>
 
                   {showFileUpload && (
                     <Grid size={{ xs: 12 }}>
@@ -161,8 +151,7 @@ const TopicAccordion: React.FC<{
                     </Grid>
                   )}
 
-                  {(lessonType === LESSONTYPE.text ||
-                    lessonType === LESSONTYPE.html) && (
+                  {lessonType === LESSONTYPE.text && (
                     <Grid size={{ xs: 12 }}>
                       <Controller
                         name={`topics.${topicIndex}.lessons.${lessonIndex}.content`}
@@ -181,6 +170,15 @@ const TopicAccordion: React.FC<{
                             />
                           </div>
                         )}
+                      />
+                    </Grid>
+                  )}
+
+                  {lessonType === LESSONTYPE.html && (
+                    <Grid size={{ xs: 12 }}>
+                      <HTMLContentEditor
+                        topicIndex={topicIndex}
+                        lessonIndex={lessonIndex}
                       />
                     </Grid>
                   )}
@@ -225,6 +223,102 @@ const TopicAccordion: React.FC<{
         </Stack>
       </AccordionDetails>
     </Accordion>
+  )
+}
+const HTMLContentEditor: React.FC<{
+  topicIndex: number
+  lessonIndex: number
+}> = ({ topicIndex, lessonIndex }) => {
+  const [editMode, setEditMode] = useState<"visual" | "code">("visual")
+  const { watch, control } = useFormContext()
+
+  const currentContent =
+    watch(`topics.${topicIndex}.lessons.${lessonIndex}.content`) || ""
+
+  return (
+    <Controller
+      name={`topics.${topicIndex}.lessons.${lessonIndex}.content`}
+      control={control}
+      render={({ field }) => (
+        <div>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <Typography variant="subtitle2">HTML Lesson Content</Typography>
+            <ToggleButtonGroup
+              value={editMode}
+              exclusive
+              onChange={(_, newMode) => {
+                if (newMode !== null) {
+                  setEditMode(newMode)
+                }
+              }}
+              size="small"
+            >
+              <ToggleButton value="visual" aria-label="visual editor">
+                <EditIcon sx={{ mr: 1 }} />
+                Visual Editor
+              </ToggleButton>
+              <ToggleButton value="code" aria-label="code editor">
+                <CodeIcon sx={{ mr: 1 }} />
+                HTML Code
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+
+          {editMode === "visual" ? (
+            <RichEditor
+              content={field.value || ""}
+              onUpdate={({ editor }) => {
+                field.onChange(editor.getHTML())
+              }}
+              placeholder="Enter lesson content here using the visual editor..."
+            />
+          ) : (
+            <TextField
+              multiline
+              rows={12}
+              fullWidth
+              value={field.value || ""}
+              onChange={(e) => field.onChange(e.target.value)}
+              placeholder="Paste or type your HTML code here..."
+              variant="outlined"
+              sx={{
+                "& .MuiInputBase-input": {
+                  fontFamily: "monospace",
+                  fontSize: "14px",
+                },
+              }}
+              helperText="You can paste HTML code directly here. Switch to Visual Editor to see the rendered preview."
+            />
+          )}
+
+          {editMode === "code" && currentContent && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                Preview:
+              </Typography>
+              <Paper
+                variant="outlined"
+                sx={{
+                  p: 2,
+                  maxHeight: "300px",
+                  overflow: "auto",
+                  backgroundColor: "#fafafa",
+                }}
+              >
+                <div dangerouslySetInnerHTML={{ __html: currentContent }} />
+              </Paper>
+            </Box>
+          )}
+        </div>
+      )}
+    />
   )
 }
 

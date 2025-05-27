@@ -57,7 +57,7 @@ export const useGetUsers = () => {
   return { allUsers, error, isLoading }
 }
 
-export const useGetUserById = (userId: number) => {
+export const useGetUserById = (userId: string) => {
   const {
     data: user,
     error,

@@ -124,8 +124,6 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
       </Alert>
     )
   }
-
-  // Handle different content types
   switch (lesson.type?.toLowerCase()) {
     case "video":
       return (

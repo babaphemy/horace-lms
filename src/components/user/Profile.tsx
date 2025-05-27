@@ -1,3 +1,4 @@
+"use client"
 import { SET_USER } from "@/context/Action"
 import { AppDpx } from "@/context/AppContext"
 import useUser from "@/hooks/useUser"
@@ -27,7 +28,7 @@ import * as React from "react"
 const Profile = () => {
   const { data: session } = useSession()
   const user = session?.user
-  const isAdmin = user?.roles?.some((role) => role.toLowerCase() === "admin")
+
   const dispatch = React.useContext(AppDpx)
   const { removeUser } = useUser()
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
@@ -148,7 +149,7 @@ const Profile = () => {
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           <Link
-            href={isAdmin ? "/settings/account/" : "/profile/"}
+            href={"/dashboard"}
             fontSize="13px"
             color="inherit"
             underline="none"
@@ -204,12 +205,12 @@ const Profile = () => {
             <AttachMoneyIcon fontSize="small" />
           </ListItemIcon>
           <Link
-            href="/pages/pricing/"
+            href={`/courses/${user?.id}`}
             fontSize="13px"
             color="inherit"
             underline="none"
           >
-            Plan
+            My Courses
           </Link>
         </MenuItem>
 
