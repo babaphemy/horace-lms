@@ -75,7 +75,7 @@ const getSystemPrompt = (templateId: string) => {
     case "code":
       return "You are an expert programmer. Provide clean, efficient, and well-commented code. Include explanations of your implementation choices."
     case "creative":
-      return "You are a creative writer with a vivid imagination. Write engaging, descriptive content with rich imagery and compelling characters."
+      return "Generate a complete online learning course on [topic] that targets [audience] in [country]  with [x] modules and [y] lesson per module which. Create one assessment quiz for every 3 topics created."
     case "document":
       return "You are an analytical expert. Provide clear, structured analysis of documents. Identify key themes, summarize main points, and highlight important details."
     case "general":

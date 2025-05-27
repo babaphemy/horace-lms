@@ -81,7 +81,7 @@ const SubjectCreatePage = () => {
     }
   }, [status, session, router, isLoading])
 
-  const steps = ["Subject Details", "Add Topics", "Add Lessons", "Review"]
+  const steps = ["Subject Details", "Add Modules", "Add Lessons", "Review"]
 
   const handleNext = async () => {
     if (!session?.user?.id) {
