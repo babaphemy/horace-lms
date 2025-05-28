@@ -131,14 +131,13 @@ const LoginComponent = (props: Props) => {
     //? display error or success messages if present in the URL
     if (error) {
       notifyError(decodeURIComponent(error))
-      window.history.replaceState(null, "", window.location.pathname)
     }
 
     if (success) {
       notifySuccess(decodeURIComponent(success))
-      router.push("/")
+      window.open("/", "_self")
     }
-  }, [router])
+  }, [])
 
   return (
     <Box sx={loginStyles.right}>
