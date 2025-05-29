@@ -119,8 +119,11 @@ const addSubjectComplete = async (
   return resp.json()
 }
 
-const fetchCourses = async () => {
-  const response = await fetch(`${basePath}course/courses`, auth)
+const fetchCourses = async (page: number = 0, size: number = 10) => {
+  const response = await fetch(
+    `${basePath}course/courses?page=${page}&size=${size}`,
+    auth
+  )
   if (!response.ok) {
     return { error: response.status }
   }
@@ -145,7 +148,7 @@ const fetchLMS = async (id: string) => {
 }
 const myRegisteredCourses = async (userId: string) => {
   const response = await fetch(
-    `${basePath}course/courses/my-registered?usr=${userId}`,
+    `${basePath}course/courses/my-registered/${userId}`,
     auth
   )
   if (!response.ok) {
