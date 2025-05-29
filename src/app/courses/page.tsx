@@ -32,10 +32,14 @@ const Courses = () => {
 
   const dispatch = useContext(AppDpx)
 
-  const { data, isLoading } = useQuery("usersRegisteredCourses", fetchCourses, {
-    staleTime: 5000,
-    cacheTime: 10,
-  })
+  const { data, isLoading } = useQuery(
+    "usersRegisteredCourses",
+    () => fetchCourses(0, 10),
+    {
+      staleTime: 5000,
+      cacheTime: 10,
+    }
+  )
 
   const handleSearch = debounce(async (query: string) => {
     const fuse = new Fuse<tCourse>(data, {
@@ -56,13 +60,14 @@ const Courses = () => {
   }, 700)
 
   useEffect(() => {
-    if (data?.length > 0) {
-      setFilteredData(data)
-      setAllCourses(data)
-      dispatch({ type: COURSES_SET, data })
+    if (data?.content?.length > 0) {
+      const content = data.content
+      setFilteredData(content)
+      setAllCourses(content)
+      dispatch({ type: COURSES_SET, data: content })
       return
     }
-  }, [data, dispatch])
+  }, [data?.content, dispatch])
 
   return (
     <Box>

@@ -17,10 +17,14 @@ import Footer from "@/components/Footer"
 const Home: NextPage = () => {
   const dispatch = useContext(AppDpx)
 
-  const { data, isLoading } = useQuery("usersAdddoc", fetchCourses, {
-    staleTime: 5000,
-    cacheTime: 10,
-  })
+  const { data, isLoading } = useQuery(
+    "usersAdddoc",
+    () => fetchCourses(0, 10),
+    {
+      staleTime: 5000,
+      cacheTime: 10,
+    }
+  )
 
   if (data) {
     dispatch({ type: COURSES_SET, data })
