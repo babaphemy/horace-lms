@@ -24,7 +24,7 @@ import {
 import { signIn } from "next-auth/react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import React from "react"
+import React, { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import * as yup from "yup"
 
@@ -115,6 +115,30 @@ const LoginComponent = (props: Props) => {
     },
   }
 
+  const handleGoogleSignIn = async () => {
+    try {
+      await signIn("google", { redirect: false })
+    } catch (error) {
+      notifyError(`An error occurred during Google login ${error}`)
+    }
+  }
+
+  useEffect(() => {
+    //? to avoid using useSearchParams from next/navigation
+    const urlParams = new URLSearchParams(window.location.search)
+    const error = urlParams.get("error")
+    const success = urlParams.get("success")
+    //? display error or success messages if present in the URL
+    if (error) {
+      notifyError(decodeURIComponent(error))
+    }
+
+    if (success) {
+      notifySuccess(decodeURIComponent(success))
+      window.open("/", "_self")
+    }
+  }, [])
+
   return (
     <Box sx={loginStyles.right}>
       {Object.keys(errors).length > 0 && (
@@ -126,6 +150,7 @@ const LoginComponent = (props: Props) => {
 
       <Box sx={{ ...loginStyles.socials, ...styles.socials }}>
         <Button
+          onClick={handleGoogleSignIn}
           variant="outlined"
           sx={[loginStyles.center, loginStyles.button]}
           fullWidth
