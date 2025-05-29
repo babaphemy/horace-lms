@@ -22,7 +22,7 @@ import {
 } from "@mui/material"
 import { useSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { JSX, useCallback, useEffect, useState } from "react"
+import { JSX, Suspense, useCallback, useEffect, useState } from "react"
 
 import { FieldError, FieldErrors, FormProvider, useForm } from "react-hook-form"
 import { useMutation, useQuery, useQueryClient } from "react-query"
@@ -53,7 +53,7 @@ const renderErrors = (errors: FieldErrors, parentKey = ""): JSX.Element[] => {
   })
 }
 
-const SubjectCreatePage = () => {
+const SubjectCreateComp = () => {
   const router = useRouter()
   const { data: session, status } = useSession()
   const searchParams = useSearchParams()
@@ -319,6 +319,14 @@ const SubjectCreatePage = () => {
         </FormProvider>
       </Box>
     </Container>
+  )
+}
+
+const SubjectCreatePage = () => {
+  return (
+    <Suspense>
+      <SubjectCreateComp />
+    </Suspense>
   )
 }
 
