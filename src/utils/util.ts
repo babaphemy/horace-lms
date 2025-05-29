@@ -11,3 +11,7 @@ export const coursefilter: FilterItem[] = [
   { label: "Photography", value: "photography" },
   { label: "Registered", value: "registered" },
 ]
+export const apiDocs = {
+  basepath:
+    process.env.NEXT_PUBLIC_API_BASEPATH || "http://localhost:5071/api/v1/",
+}
