@@ -67,7 +67,7 @@ const LoginComponent = (props: Props) => {
   } | null>(null)
 
   useEffect(() => {
-    // @ts-expect-error: next auth already defiend this correctly
+    // @ts-expect-error: next auth already defined this correctly
     if (status === "authenticated" || session?.user?.email) {
       notifySuccess("Login successful! Redirecting...")
       router.push("/dashboard")
