@@ -14,11 +14,11 @@ export type tUser = {
   zip?: string
   dp?: string
   organization?: string
+  name?: string
   firstname: string
   lastname: string
   bio?: string
   roles: (string | undefined)[]
-  type: string
   status?: boolean | string
   token?: string
   updatedOn?: string

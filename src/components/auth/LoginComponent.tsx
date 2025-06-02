@@ -21,7 +21,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import React, { useEffect } from "react"
@@ -54,6 +54,7 @@ type Props = {
   modal?: boolean
 }
 const LoginComponent = (props: Props) => {
+  const { data: session, status } = useSession()
   const { setUser } = useUser()
   const { modal = false } = props
   const dispatch = React.useContext(AppDpx)
@@ -64,6 +65,14 @@ const LoginComponent = (props: Props) => {
     show: boolean
     msg: string
   } | null>(null)
+
+  useEffect(() => {
+    // @ts-expect-error: next auth already defiend this correctly
+    if (status === "authenticated" || session?.user?.email) {
+      notifySuccess("Login successful! Redirecting...")
+      router.push("/dashboard")
+    }
+  }, [status, session?.user?.email, router])
 
   const {
     control,
@@ -117,27 +126,29 @@ const LoginComponent = (props: Props) => {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signIn("google", { redirect: false })
-    } catch (error) {
-      notifyError(`An error occurred during Google login ${error}`)
+      const result = await signIn("google", { redirect: false })
+
+      if (result?.error) {
+        switch (result.error) {
+          case "AccessDenied":
+            notifyError(
+              "Access denied. You may not be authorized to access this application."
+            )
+            break
+          case "OAuthSignin":
+          case "OAuthCallback":
+            notifyError(
+              "Error occurred during Google authentication. Please try again."
+            )
+            break
+          default:
+            notifyError(`Login failed: ${result.error}`)
+        }
+      }
+    } catch {
+      notifyError(`An error occurred during Google login`)
     }
   }
-
-  useEffect(() => {
-    //? to avoid using useSearchParams from next/navigation
-    const urlParams = new URLSearchParams(window.location.search)
-    const error = urlParams.get("error")
-    const success = urlParams.get("success")
-    //? display error or success messages if present in the URL
-    if (error) {
-      notifyError(decodeURIComponent(error))
-    }
-
-    if (success) {
-      notifySuccess(decodeURIComponent(success))
-      window.open("/", "_self")
-    }
-  }, [])
 
   return (
     <Box sx={loginStyles.right}>

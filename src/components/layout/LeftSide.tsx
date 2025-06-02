@@ -45,7 +45,6 @@ const LeftSide: React.FC<SidebarProps> = ({ toogleActive }) => {
   const menuData = useMemo(() => {
     if (navData.length > 0) {
       return navData?.map((item) => {
-        //> filter out nav items that are not allowed for the current user role
         const subNavs =
           item?.sub_nav?.filter((nav) =>
             nav?.allowed_roles.includes(session?.user?.roles[0] ?? "Guest")
