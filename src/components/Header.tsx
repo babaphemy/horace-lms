@@ -269,7 +269,7 @@ const Header = () => {
                         alt={getUserDisplayName(user)}
                         sx={headerStyles.avatar}
                       >
-                        {!user?.image && !user?.image && getUserInitials(user)}
+                        {!user?.image && getUserInitials(user)}
                       </Avatar>
                       <Typography
                         variant="body2"
