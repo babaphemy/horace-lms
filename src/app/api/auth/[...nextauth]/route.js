@@ -1,6 +1,6 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { PostSettings } from "../../setting"
+import { auth, PostSettings } from "../../setting"
 import GoogleProvider from "next-auth/providers/google"
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH
@@ -38,36 +38,37 @@ const handler = NextAuth({
     }),
   ],
   session: {
-    jwt: true,
+    strategy: "jwt",
     maxAge: 60 * 60,
   },
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         try {
-          const res = await fetch(
-            `${basePath}/user/user-by-email?email=${user?.email}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
+          const res = await fetch(`${basePath}user/auser/${user?.email}`, auth)
 
           const userData = await res.json()
 
           if (res?.ok && userData) {
             if (userData.detail) {
-              res.status = 401
-              return `/login?error=${encodeURIComponent("UnAuthorized Login")}`
+              return false
             }
-
-            user = { ...userData }
-            return `/login?success=${encodeURIComponent("Login successful")}`
-          } else return `/login?error=${encodeURIComponent("User not found")}`
-        } catch {
-          return false
+            Object.assign(user, {
+              ...userData,
+              name: userData?.firstname || user?.name || "User",
+              image: userData?.dp || user?.image || "",
+              roles: userData?.roles || ["guest"],
+              firstname: userData?.firstname,
+              lastname: userData?.lastname,
+              originalName: user?.name,
+              originalImage: user?.image,
+            })
+            return true
+          } else {
+            return false
+          }
+        } catch (error) {
+          throw new Error("Error fetching user data from the server" + error)
         }
       }
       return true

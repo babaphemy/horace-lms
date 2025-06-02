@@ -14,6 +14,7 @@ import {
   Menu,
   MenuProps,
   styled,
+  Avatar,
 } from "@mui/material"
 import Image from "next/image"
 import NextLink from "next/link"
@@ -31,6 +32,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { AddOutlined } from "@mui/icons-material"
+import { Session } from "next-auth"
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -75,6 +77,27 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }))
 
+const getUserInitials = (user: Session["user"]) => {
+  if (user?.firstname && user?.lastname) {
+    return `${user.firstname.charAt(0)}${user.lastname.charAt(0)}`.toUpperCase()
+  }
+  if (user?.name) {
+    const nameParts = user.name.split(" ")
+    if (nameParts.length >= 2) {
+      return `${nameParts[0].charAt(0)}${nameParts[1].charAt(0)}`.toUpperCase()
+    }
+    return user.name.charAt(0).toUpperCase()
+  }
+  if (user?.email) {
+    return user.email.charAt(0).toUpperCase()
+  }
+  return "U"
+}
+
+const getUserDisplayName = (user: Session["user"]) => {
+  return user?.firstname || user?.name || user?.email?.split("@")[0] || "User"
+}
+
 const Header = () => {
   const router = useRouter()
   const { data: session } = useSession()
@@ -94,9 +117,8 @@ const Header = () => {
   const handleLogout = () => {
     dispatch({ type: USER_RESET, payload: null })
     localStorage.removeItem("horaceUser")
-    handleClose("/login")
+    handleClose("/logout")
   }
-
   return (
     <>
       <TopBg />
@@ -242,12 +264,18 @@ const Header = () => {
                     sx={headerStyles.menuButton}
                   >
                     <Box display="flex" alignItems="center">
+                      <Avatar
+                        src={user?.image || "/img/coffee.png"}
+                        alt={getUserDisplayName(user)}
+                        sx={headerStyles.avatar}
+                      >
+                        {!user?.image && getUserInitials(user)}
+                      </Avatar>
                       <Typography
                         variant="body2"
                         sx={headerStyles.menuButtonName}
                       >
-                        {user?.firstname + " " + user?.lastname ||
-                          user?.email?.split("@")[0]}
+                        {getUserDisplayName(user)}
                       </Typography>
                     </Box>
                     <KeyboardArrowDownIcon fontSize="small" />
@@ -311,6 +339,7 @@ const Header = () => {
 }
 
 export default Header
+
 const headerStyles = {
   container: {
     marginTop: 2,
@@ -453,5 +482,14 @@ const headerStyles = {
     fontSize: "8pt",
     px: 1,
     textTransform: "capitalize",
+  },
+  avatar: {
+    width: 28,
+    height: 28,
+    marginRight: 1,
+    fontSize: "10px",
+    backgroundColor: "#00A9C1",
+    color: "white",
+    fontWeight: "bold",
   },
 }

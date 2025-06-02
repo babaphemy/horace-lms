@@ -35,7 +35,7 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               "media-src 'self' https://essl.b-cdn.net https://horacevids.s3.amazonaws.com",
-              "img-src 'self' femi.b-cdn.net essl.b-cdn.net data: blob: *.youtube.com *.ytimg.com essluploads.s3.amazonaws.com essluploads2.s3.amazonaws.com",
+              "img-src 'self' femi.b-cdn.net essl.b-cdn.net data: blob: *.youtube.com *.ytimg.com essluploads.s3.amazonaws.com essluploads2.s3.amazonaws.com *.googleusercontent.com",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googletagmanager.com *.youtube.com *.stripe.com *.googleads.g.doubleclick.net",
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "font-src 'self' fonts.gstatic.com",
