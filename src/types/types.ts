@@ -12,6 +12,7 @@ export type tUser = {
   city?: string
   state?: string
   zip?: string
+  type: string // e.g., "admin", "student", "instructor"
   dp?: string
   organization?: string
   name?: string

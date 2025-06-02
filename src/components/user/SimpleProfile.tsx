@@ -50,7 +50,7 @@ import {
 import { useSession } from "next-auth/react"
 import { notifyError, notifyInfo, notifySuccess } from "@/utils/notification"
 import * as yup from "yup"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { tUser } from "@/types/types"
 import { useRouter } from "next/navigation"
@@ -311,7 +311,7 @@ const SimpleProfile = () => {
     setEditMode(!editMode)
   }
 
-  const onProfileSubmit = (data: tUser) => {
+  const onProfileSubmit: SubmitHandler<tUser> = (data) => {
     if (!userData) return
 
     const updatedUser: tUser = {
