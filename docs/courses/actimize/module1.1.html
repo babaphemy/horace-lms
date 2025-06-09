@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Actimize Course Overview</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f8f9fa;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .course-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .course-header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .course-header h2 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        opacity: 0.9;
+      }
+
+      .module-description {
+        font-size: 1.1em;
+        opacity: 0.8;
+      }
+
+      .course-nav {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .course-nav ul {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .nav-link {
+        text-decoration: none;
+        color: #667eea;
+        padding: 10px 20px;
+        border: 2px solid #667eea;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        background-color: #667eea;
+        color: white;
+      }
+
+      .content-section {
+        background: white;
+        margin-bottom: 30px;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .content-section h3 {
+        font-size: 2em;
+        color: #333;
+        margin-bottom: 25px;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      .learning-objective {
+        background: #e8f2ff;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-radius: 0 8px 8px 0;
+      }
+
+      .learning-objective h4 {
+        color: #667eea;
+        margin-bottom: 15px;
+      }
+
+      .content-block {
+        margin-bottom: 30px;
+      }
+
+      .key-features {
+        margin-top: 25px;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+      }
+
+      .feature-card {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+      }
+
+      .feature-card h6 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+      }
+
+      .info-box {
+        background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 30px 0;
+      }
+
+      .info-box h5 {
+        margin-bottom: 10px;
+        color: #2d3436;
+      }
+
+      .component-card {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .component-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .component-header h4 {
+        margin: 0;
+        font-size: 1.3em;
+      }
+
+      .component-badge {
+        background: rgba(255, 255, 255, 0.3);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8em;
+      }
+
+      .component-content {
+        padding: 25px;
+      }
+
+      .component-content ul {
+        margin: 15px 0;
+        padding-left: 20px;
+      }
+
+      .use-case {
+        background: #e8f2ff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        border-left: 4px solid #667eea;
+      }
+
+      .workflow-steps {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 30px 0;
+      }
+
+      .workflow-step {
+        display: flex;
+        align-items: center;
+        background: white;
+        border: 2px solid #667eea;
+        border-radius: 12px;
+        padding: 20px;
+        min-width: 200px;
+        flex: 1;
+      }
+
+      .step-number {
+        background: #667eea;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-weight: bold;
+      }
+
+      .step-content h5 {
+        color: #667eea;
+        margin-bottom: 8px;
+      }
+
+      .workflow-arrow {
+        font-size: 1.5em;
+        color: #667eea;
+        font-weight: bold;
+      }
+
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-top: 25px;
+      }
+
+      .benefit-item {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        text-align: center;
+        border: 1px solid #e9ecef;
+      }
+
+      .benefit-item h5 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 1.1em;
+      }
+
+      .scenario-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .scenario-card h4 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 1.4em;
+      }
+
+      .scenario-details ul {
+        margin: 15px 0;
+        padding-left: 20px;
+      }
+
+      .outcome {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+        color: #155724;
+      }
+
+      .quiz-container {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 12px;
+        margin-top: 25px;
+      }
+
+      .question-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #e9ecef;
+      }
+
+      .question-card h4 {
+        color: #667eea;
+        margin-bottom: 15px;
+      }
+
+      .quiz-options {
+        margin-top: 15px;
+      }
+
+      .quiz-options label {
+        display: block;
+        margin: 10px 0;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+
+      .quiz-options label:hover {
+        background-color: #e8f2ff;
+      }
+
+      .check-answers {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 8px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: transform 0.3s;
+      }
+
+      .check-answers:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .quiz-results {
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 8px;
+      }
+
+      .next-steps {
+        background: #e8f2ff;
+        padding: 25px;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+        margin-top: 30px;
+      }
+
+      .next-steps h4 {
+        color: #667eea;
+        margin-bottom: 15px;
+      }
+
+      .course-footer {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .progress-bar {
+        background: #e9ecef;
+        height: 8px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        height: 100%;
+        transition: width 0.3s ease;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        .course-header {
+          padding: 25px;
+        }
+
+        .course-header h1 {
+          font-size: 2em;
+        }
+
+        .content-section {
+          padding: 25px;
+        }
+
+        .workflow-steps {
+          flex-direction: column;
+        }
+
+        .workflow-arrow {
+          transform: rotate(90deg);
+        }
+
+        .course-nav ul {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <main class="course-content">
+        <section id="overview" class="content-section">
+          <h3>Actimize Framework Overview</h3>
+          <div class="learning-objective">
+            <h4>Learning Objectives</h4>
+            <ul>
+              <li>Understand the purpose and scope of the Actimize platform</li>
+              <li>
+                Identify the key challenges Actimize addresses in financial
+                crime prevention
+              </li>
+              <li>Recognize the modular architecture approach</li>
+            </ul>
+          </div>
+
+          <div class="content-block">
+            <h4>What is Actimize?</h4>
+            <p>
+              Actimize is a comprehensive financial crime risk management
+              platform developed by NICE that provides integrated solutions for
+              anti-money laundering (AML), fraud detection, and regulatory
+              compliance. The platform uses advanced analytics, machine
+              learning, and real-time monitoring to help financial institutions
+              detect, investigate, and prevent financial crimes.
+            </p>
+
+            <div class="key-features">
+              <h5>Key Platform Features:</h5>
+              <div class="feature-grid">
+                <div class="feature-card">
+                  <h6>Real-time Monitoring</h6>
+                  <p>
+                    Continuous transaction surveillance and behavioral analysis
+                  </p>
+                </div>
+                <div class="feature-card">
+                  <h6>Risk Scoring</h6>
+                  <p>Dynamic risk assessment using multiple data sources</p>
+                </div>
+                <div class="feature-card">
+                  <h6>Case Management</h6>
+                  <p>Integrated workflow for investigation and reporting</p>
+                </div>
+                <div class="feature-card">
+                  <h6>Regulatory Reporting</h6>
+                  <p>
+                    Automated compliance reporting for various jurisdictions
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <h5>💡 Did You Know?</h5>
+            <p>
+              Actimize processes over 2 billion transactions daily across more
+              than 100 countries, helping financial institutions maintain
+              compliance while reducing false positives by up to 50%.
+            </p>
+          </div>
+        </section>
+
+        <section id="components" class="content-section">
+          <h3>Core Actimize Components</h3>
+
+          <div class="component-overview">
+            <p>
+              The Actimize platform consists of several specialized modules that
+              work together to provide comprehensive financial crime prevention.
+              Each component serves a specific purpose while integrating
+              seamlessly with others.
+            </p>
+          </div>
+
+          <div class="component-details">
+            <div class="component-card">
+              <div class="component-header">
+                <h4>ERCM - Enterprise Risk Case Manager</h4>
+                <span class="component-badge">Case Management</span>
+              </div>
+              <div class="component-content">
+                <p>
+                  <strong>Purpose:</strong> Centralized case management and
+                  investigation platform
+                </p>
+                <h5>Key Features:</h5>
+                <ul>
+                  <li>Unified case workflow management</li>
+                  <li>Investigation tools and evidence collection</li>
+                  <li>Collaboration features for compliance teams</li>
+                  <li>Audit trail and documentation</li>
+                  <li>Integration with external data sources</li>
+                </ul>
+                <div class="use-case">
+                  <strong>Typical Use Case:</strong> When a suspicious
+                  transaction is flagged by RCM, ERCM creates a case, assigns it
+                  to an investigator, and manages the entire investigation
+                  lifecycle from initial review to final disposition.
+                </div>
+              </div>
+            </div>
+
+            <div class="component-card">
+              <div class="component-header">
+                <h4>RCM - Real-time Compliance Manager</h4>
+                <span class="component-badge">Transaction Monitoring</span>
+              </div>
+              <div class="component-content">
+                <p>
+                  <strong>Purpose:</strong> Real-time transaction monitoring and
+                  suspicious activity detection
+                </p>
+                <h5>Key Features:</h5>
+                <ul>
+                  <li>Real-time transaction screening</li>
+                  <li>Pattern recognition and anomaly detection</li>
+                  <li>Customizable monitoring rules</li>
+                  <li>Risk scoring algorithms</li>
+                  <li>Cross-channel transaction correlation</li>
+                </ul>
+                <div class="use-case">
+                  <strong>Typical Use Case:</strong> Monitoring wire transfers
+                  for unusual patterns, such as structuring transactions just
+                  below reporting thresholds or rapid movement of funds across
+                  multiple accounts.
+                </div>
+              </div>
+            </div>
+
+            <div class="component-card">
+              <div class="component-header">
+                <h4>SAM - Suspicious Activity Manager</h4>
+                <span class="component-badge">Regulatory Reporting</span>
+              </div>
+              <div class="component-content">
+                <p>
+                  <strong>Purpose:</strong> Automated suspicious activity
+                  reporting and regulatory compliance
+                </p>
+                <h5>Key Features:</h5>
+                <ul>
+                  <li>SAR (Suspicious Activity Report) generation</li>
+                  <li>Regulatory template management</li>
+                  <li>Multi-jurisdiction compliance support</li>
+                  <li>Quality assurance workflows</li>
+                  <li>Regulatory deadline tracking</li>
+                </ul>
+                <div class="use-case">
+                  <strong>Typical Use Case:</strong> Automatically generating
+                  and filing SARs when investigations conclude that suspicious
+                  activity has occurred, ensuring compliance with regulatory
+                  timelines and formatting requirements.
+                </div>
+              </div>
+            </div>
+
+            <div class="component-card">
+              <div class="component-header">
+                <h4>CDD - Customer Due Diligence</h4>
+                <span class="component-badge">Customer Risk Assessment</span>
+              </div>
+              <div class="component-content">
+                <p>
+                  <strong>Purpose:</strong> Customer risk assessment and ongoing
+                  due diligence
+                </p>
+                <h5>Key Features:</h5>
+                <ul>
+                  <li>Customer risk profiling</li>
+                  <li>Enhanced due diligence workflows</li>
+                  <li>PEP (Politically Exposed Person) screening</li>
+                  <li>Sanctions and watchlist checking</li>
+                  <li>Periodic risk reviews and updates</li>
+                </ul>
+                <div class="use-case">
+                  <strong>Typical Use Case:</strong> Assessing the risk level of
+                  a new high-net-worth customer by analyzing their background,
+                  source of funds, expected transaction patterns, and
+                  cross-referencing against sanctions lists.
+                </div>
+              </div>
+            </div>
+
+            <div class="component-card">
+              <div class="component-header">
+                <h4>WLF - Watchlist Filtering</h4>
+                <span class="component-badge">Screening & Sanctions</span>
+              </div>
+              <div class="component-content">
+                <p>
+                  <strong>Purpose:</strong> Real-time screening against
+                  sanctions lists and watchlists
+                </p>
+                <h5>Key Features:</h5>
+                <ul>
+                  <li>Multi-source watchlist integration</li>
+                  <li>Fuzzy matching algorithms</li>
+                  <li>False positive reduction</li>
+                  <li>Real-time and batch screening</li>
+                  <li>White-listing and exception management</li>
+                </ul>
+                <div class="use-case">
+                  <strong>Typical Use Case:</strong> Screening all incoming wire
+                  transfer beneficiaries against OFAC sanctions lists in
+                  real-time, blocking transactions that match sanctioned
+                  entities while minimizing false positive matches.
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

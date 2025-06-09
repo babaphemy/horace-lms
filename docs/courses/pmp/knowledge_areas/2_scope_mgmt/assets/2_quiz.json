@@ -1,0 +1,104 @@
+{
+  "quiz": [
+    {
+      "question": "In an Agile project, how is scope managed to accommodate evolving requirements?",
+      "options": [
+        "By freezing the scope baseline at the start of the project",
+        "By using a Product Backlog that is continuously refined",
+        "By implementing a strict Integrated Change Control process",
+        "By delivering all scope items in a single release"
+      ],
+      "correct_answer": "By using a Product Backlog that is continuously refined"
+    },
+    {
+      "question": "What is the primary purpose of Rolling Wave Planning in Agile scope management?",
+      "options": [
+        "To define all project details upfront",
+        "To progressively elaborate work as it becomes clearer",
+        "To prevent scope changes during the project lifecycle",
+        "To ensure all deliverables are completed in one iteration"
+      ],
+      "correct_answer": "To progressively elaborate work as it becomes clearer"
+    },
+    {
+      "question": "Which Agile artifact is most commonly used to manage scope changes?",
+      "options": [
+        "Scope Baseline",
+        "Product Backlog",
+        "Integrated Change Control Register",
+        "Work Breakdown Structure (WBS)"
+      ],
+      "correct_answer": "Product Backlog"
+    },
+    {
+      "question": "How does the Definition of Done (DoD) contribute to scope management in Agile projects?",
+      "options": [
+        "It freezes the scope baseline to prevent changes",
+        "It ensures completed work meets predefined acceptance criteria",
+        "It limits the scope to high-priority tasks only",
+        "It eliminates the need for stakeholder feedback"
+      ],
+      "correct_answer": "It ensures completed work meets predefined acceptance criteria"
+    },
+    {
+      "question": "During a Sprint Review, a stakeholder requests a new feature. How should the team handle this scope change?",
+      "options": [
+        "Reject the request to avoid scope creep",
+        "Add the feature to the Product Backlog for prioritization",
+        "Immediately implement the feature in the current sprint",
+        "Freeze the scope baseline to prevent further changes"
+      ],
+      "correct_answer": "Add the feature to the Product Backlog for prioritization"
+    },
+    {
+      "question": "What is the role of frequent feedback loops in Agile scope management?",
+      "options": [
+        "To finalize the scope baseline early in the project",
+        "To ensure deliverables align with evolving stakeholder needs",
+        "To prevent any changes to the project scope",
+        "To eliminate the need for scope verification"
+      ],
+      "correct_answer": "To ensure deliverables align with evolving stakeholder needs"
+    },
+    {
+      "question": "Which of the following is a key benefit of incremental delivery in Agile scope management?",
+      "options": [
+        "It eliminates the need for scope planning",
+        "It allows stakeholders to evaluate progress and provide feedback",
+        "It prevents scope changes during the project lifecycle",
+        "It ensures all deliverables are completed in one iteration"
+      ],
+      "correct_answer": "It allows stakeholders to evaluate progress and provide feedback"
+    },
+    {
+      "question": "How does Agile governance differ from traditional Integrated Change Control (ICC) in managing scope changes?",
+      "options": [
+        "Agile governance uses formal approval boards for scope changes",
+        "Agile governance integrates scope changes through backlog refinement",
+        "Agile governance prevents scope changes during the project lifecycle",
+        "Agile governance freezes the scope baseline at the start of the project"
+      ],
+      "correct_answer": "Agile governance integrates scope changes through backlog refinement"
+    },
+    {
+      "question": "What is the primary focus of scope management in Agile projects?",
+      "options": [
+        "Delivering all planned scope items in a single release",
+        "Ensuring flexibility to adapt to changing requirements",
+        "Freezing the scope baseline to prevent changes",
+        "Defining all project details upfront"
+      ],
+      "correct_answer": "Ensuring flexibility to adapt to changing requirements"
+    },
+    {
+      "question": "Which Agile event is most commonly used to validate scope alignment with stakeholder expectations?",
+      "options": [
+        "Sprint Planning",
+        "Sprint Review",
+        "Daily Standup",
+        "Retrospective"
+      ],
+      "correct_answer": "Sprint Review"
+    }
+  ]
+}

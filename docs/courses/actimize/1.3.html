@@ -1,0 +1,95 @@
+<section id="assessment" class="content-section">
+  <h3>Knowledge Check</h3>
+
+  <div class="assessment-intro">
+    <p>
+      Test your understanding of Actimize components and their integration with
+      these interactive questions.
+    </p>
+  </div>
+
+  <div class="quiz-container">
+    <div class="question-card">
+      <h4>Question 1: Component Functions</h4>
+      <p>
+        Which Actimize component would be primarily responsible for generating
+        and filing Suspicious Activity Reports (SARs)?
+      </p>
+      <div class="quiz-options">
+        <label><input type="radio" name="q1" value="a" /> A) ERCM</label>
+        <label><input type="radio" name="q1" value="b" /> B) RCM</label>
+        <label><input type="radio" name="q1" value="c" /> C) SAM</label>
+        <label><input type="radio" name="q1" value="d" /> D) WLF</label>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <h4>Question 2: Integration Scenario</h4>
+      <p>
+        A customer's transaction triggers multiple components. In what order
+        would they typically be involved?
+      </p>
+      <div class="quiz-options">
+        <label
+          ><input type="radio" name="q2" value="a" /> A) WLF → CDD → RCM → ERCM
+          → SAM</label
+        >
+        <label
+          ><input type="radio" name="q2" value="b" /> B) RCM → WLF → CDD → SAM →
+          ERCM</label
+        >
+        <label
+          ><input type="radio" name="q2" value="c" /> C) CDD → RCM → WLF → ERCM
+          → SAM</label
+        >
+        <label
+          ><input type="radio" name="q2" value="d" /> D) The order depends on
+          the specific transaction type</label
+        >
+      </div>
+    </div>
+
+    <div class="question-card">
+      <h4>Question 3: Real-world Application</h4>
+      <p>
+        Which component combination would be most effective for detecting
+        trade-based money laundering?
+      </p>
+      <div class="quiz-options">
+        <label
+          ><input type="radio" name="q3" value="a" /> A) WLF + SAM only</label
+        >
+        <label
+          ><input type="radio" name="q3" value="b" /> B) RCM + CDD + ERCM</label
+        >
+        <label
+          ><input type="radio" name="q3" value="c" /> C) CDD + WLF only</label
+        >
+        <label
+          ><input type="radio" name="q3" value="d" /> D) All components working
+          together</label
+        >
+      </div>
+    </div>
+
+    <button class="check-answers" onclick="checkAnswers()">
+      Check Answers
+    </button>
+    <div id="quiz-results" class="quiz-results"></div>
+  </div>
+
+  <div class="next-steps">
+    <h4>Next Steps</h4>
+    <p>
+      Now that you understand the Actimize framework and its components, you're
+      ready to dive deeper into technical implementation details. The next
+      modules will cover:
+    </p>
+    <ul>
+      <li>Technical architecture and system requirements</li>
+      <li>API integration and data flows</li>
+      <li>Custom rule development</li>
+      <li>Performance optimization techniques</li>
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,52 @@
+export const apiResponse = [
+  {
+    id: 1,
+    title: "Add Course",
+    response: {
+      id: "683555ca8b3fa57320178255",
+      user: null,
+      courseName: "Mobile App Development with React Native",
+      category: "mobile",
+      target: "beginner, intermediate",
+      brief:
+        "This is a hands-on course that introduces the concept of mobile application development using React Native.",
+      overview: "In this lesson, you will learn the following:",
+      price: 1000.1,
+      tax: 10.1,
+      thumbnail: null,
+      draft: false,
+      currency: "USD",
+      createdOn: "2025-05-27T01:03:54.285048",
+      updatedOn: "2025-05-27",
+    },
+  },
+  {
+    id: 2,
+    title: "Add module",
+    response: {
+      id: "683559cd58939245fb44d05f",
+      module: "Introduction",
+      description: "What is React Native? Why should I use it?",
+      orderIndex: 1,
+      lessons: null,
+      cid: "683555ca8b3fa57320178255",
+      createdOn: "2025-05-27T01:21:01.871626",
+      updatedOn: "2025-05-27T01:21:01.836492",
+    },
+  },
+  {
+    id: 3,
+    title: "Add lesson",
+    response: {
+      id: "68355e227221c23a2c8a2047",
+      title: "Welcome to class",
+      video: "https://essl.b-cdn.net/Features.mp4",
+      content: null,
+      type: "video",
+      orderIndex: 1,
+      tid: "683559cd58939245fb44d05f",
+      createdOn: "2025-05-27T01:39:30.967536",
+      updatedOn: "2025-05-27T01:39:30.926636",
+    },
+  },
+]
