@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
+import NextAuth, { NextAuthOptions, Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import { auth, PostSettings } from "../../setting"
@@ -81,12 +81,13 @@ const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, account }) {
       if (account?.userData) {
-        token.accessToken = account.userData.token
-        token.id = account.userData.id
-        token.roles = account.userData.roles
+        const { token: accToken, id, roles } = account.userData
+        token.accessToken = accToken
+        token.id = id
+        token.roles = roles
         token.user = account.userData
       } else if (user) {
-        token.accessToken = user.token || user.timestamp
+        token.accessToken = user.token || ""
         token.id = user.id
         token.roles = user.roles || ["Guest"]
         token.user = user
@@ -95,7 +96,7 @@ const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       session.accessToken = token?.accessToken
-      session.user = token?.user
+      session.user = token?.user as Session["user"]
       return session
     },
   },

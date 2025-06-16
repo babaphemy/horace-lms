@@ -16,7 +16,7 @@ const useUser = () => {
       const user: UserDto = {
         roles: roles || ["GUEST"],
         id: session.user.id,
-        email: session.user.email,
+        email: session?.user?.email || "",
         firstname: session?.user?.firstname || "",
         lastname: session?.user?.name || "",
         password: "",
