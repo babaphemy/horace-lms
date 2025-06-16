@@ -2,6 +2,7 @@ import {
   CardDto,
   CourseComplete,
   CourseResponse,
+  orgDto,
   tInterview,
   TransactionData,
   Tranx,
@@ -54,7 +55,16 @@ const loginUser = async (data: {
   return resp.json()
 }
 
+const createOrg = async (data: orgDto) => {
+  const resp = await fetch(`${basePath}org/add`, PostSettings(data))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+
 const registerUser = async (data: UserDto) => {
+  data.organizationId = "NA"
   const resp = await fetch(`${basePath}user/add`, PostSettings(data))
   if (!resp.ok) {
     throw new Error(resp.statusText)
@@ -277,9 +287,9 @@ const getAllNavigationItems = async () => {
 
   return resp.json()
 }
-const getSideNavItems = async (role: string, acitve: boolean) => {
+const getSideNavItems = async (role: string, active: boolean) => {
   const resp = await fetch(
-    `${basePath}rbac/menu/?active=${acitve}&role=${role}`
+    `${basePath}rbac/menu/?active=${active}&role=${role}`
   )
 
   if (!resp.ok) {
@@ -369,7 +379,10 @@ export {
   addSubjectComplete,
   addUserCourse,
   contactUs,
+  coursesByAuthor,
+  createOrg,
   createPaymentIntent,
+  doEdit,
   doToken,
   fetchCourse,
   fetchCourses,
@@ -383,20 +396,18 @@ export {
   getUsers,
   handlePay,
   isCourseReg,
+  login2,
   loginUser,
+  manageDraft,
   myRegisteredCourses,
   paystacktx,
   portalAuth,
   registerUser,
+  resetOwnPass,
   resetPass,
   submitInterview,
+  updateDp,
   uploadImageToS3,
   uploadVideoToS3,
   verifyEmail,
-  login2,
-  coursesByAuthor,
-  manageDraft,
-  resetOwnPass,
-  doEdit,
-  updateDp,
 }

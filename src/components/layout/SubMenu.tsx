@@ -1,14 +1,9 @@
 import { styled } from "@mui/material/styles"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import React, { memo, useEffect, useState } from "react"
+import { memo, useEffect, useState } from "react"
 import styles from "./SubMenu.module.css"
 
-export interface TIcon {
-  type: string
-  name: string
-  path: string
-}
 export interface TSubNav {
   active: boolean
   allowed_roles: string[]
@@ -16,12 +11,11 @@ export interface TSubNav {
   path: string
   title: string
 }
-export interface TNavBar<T> {
+
+export interface TNavBar {
   active: boolean
   allowed_roles: string[]
-  created_at: string
-  updated_at: string
-  icon: T | null
+  icon: JSX.Element
   id: number
   iconClosed?: JSX.Element
   iconOpened?: JSX.Element
@@ -30,12 +24,13 @@ export interface TNavBar<T> {
   title: string
   sub_nav?: TSubNav[]
 }
+
 const SidebarLabel = styled("span")(() => ({
   position: "relative",
   top: "-3px",
 }))
 
-const SubMenuComponent = ({ item }: { item: TNavBar<React.JSX.Element> }) => {
+const SubMenuComponent = ({ item }: { item: TNavBar }) => {
   const [subnav, setSubnav] = useState(false)
   const showSubnav = () => setSubnav(!subnav)
   const [currentPath, setCurrentPath] = useState("")
@@ -45,17 +40,33 @@ const SubMenuComponent = ({ item }: { item: TNavBar<React.JSX.Element> }) => {
     setCurrentPath(theCurrentPath)
   }, [theCurrentPath])
 
+  const renderIcon = (icon: JSX.Element | string | null) => {
+    if (!icon) return null
+
+    if (typeof icon === "string") {
+      return <span className="icon-text">{icon}</span>
+    }
+    return icon
+  }
+
+  const handleLinkClick = (e: React.MouseEvent) => {
+    if (item.sub_nav) {
+      e.preventDefault()
+      showSubnav()
+    }
+  }
+
   return (
     <>
       <Link
         href={item.path}
-        onClick={item.sub_nav && showSubnav}
+        onClick={handleLinkClick}
         className={`${styles.sidebarLink} ${
-          currentPath == item.path && "sidebarLinkActive"
+          currentPath === item.path ? styles.sidebarLinkActive : ""
         }`}
       >
-        <div>
-          {item.icon}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {renderIcon(item.icon)}
           <SidebarLabel className="ml-1">{item.title}</SidebarLabel>
         </div>
         <div>
@@ -67,16 +78,16 @@ const SubMenuComponent = ({ item }: { item: TNavBar<React.JSX.Element> }) => {
         </div>
       </Link>
       {subnav &&
-        item.sub_nav?.map((item, index) => {
+        item.sub_nav?.map((subItem, index) => {
           return (
             <Link
-              href={item.path}
+              href={subItem.path}
               key={index}
               className={`${styles.sidebarLink2} ${
-                currentPath == item.path && "sidebarLinkActive2"
+                currentPath === subItem.path ? styles.sidebarLinkActive2 : ""
               }`}
             >
-              {item.title}
+              {subItem.title}
             </Link>
           )
         })}

@@ -40,12 +40,18 @@ const DynamicThumbnail = ({
       .substring(0, 2)
       .toUpperCase()
   }
+  const resolveThumbnailUrl = () => {
+    if (thumbnail.startsWith("https://")) {
+      return thumbnail
+    }
+    return `img/${thumbnail}`
+  }
 
   return (
     <Box sx={cardStyles.image}>
       {thumbnail && !imageError ? (
         <Image
-          src={`${thumbnail}`}
+          src={resolveThumbnailUrl()}
           width={400}
           height={250}
           alt={title || "Thumbnail image"}

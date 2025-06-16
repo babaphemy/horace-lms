@@ -1,4 +1,4 @@
-import { FilterItem } from "@/app/courses/page"
+import { FilterItem } from "@/app/(main)/courses/page"
 
 export const coursefilter: FilterItem[] = [
   { label: "All Courses", value: "all" },
@@ -12,6 +12,5 @@ export const coursefilter: FilterItem[] = [
   { label: "Registered", value: "registered" },
 ]
 export const apiDocs = {
-  basepath:
-    process.env.NEXT_PUBLIC_API_BASEPATH || "http://localhost:5071/api/v1/",
+  basepath: process.env.NEXT_PUBLIC_BASEPATH || "http://localhost:5071/api/v1/",
 }
