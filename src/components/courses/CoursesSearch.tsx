@@ -1,4 +1,4 @@
-import { FilterItem } from "@/app/courses/page"
+import { FilterItem } from "@/app/(main)/courses/page"
 import { courseStyles } from "@/styles/courseStyles"
 import { tCourseLte } from "@/types/types"
 import { coursefilter } from "@/utils/util"

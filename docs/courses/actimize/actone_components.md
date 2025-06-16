@@ -1,0 +1,6 @@
+| Component                             | Role                                                             | Relationship with ActOne                                                                           |
+| ------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **IFM** (Integrated Fraud Management) | Detects fraud in real time                                       | Sends fraud alerts into ActOne for investigation                                                   |
+| **AML** (Anti-Money Laundering)       | Detects suspicious activities and supports regulatory compliance | Sends AML alerts (e.g., via SAM) into ActOne                                                       |
+| **RCM** (Risk Case Manager)           | Legacy case management platform used with Actimize modules       | **Being replaced by ActOne** in modern deployments                                                 |
+| **ActOne**                            | Unified case and alert management                                | **Receives alerts from IFM, AML, Market Surveillance, etc.**. Centralizes investigation workflows. |

@@ -39,7 +39,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googletagmanager.com *.youtube.com *.stripe.com *.googleads.g.doubleclick.net",
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "font-src 'self' fonts.gstatic.com",
-              "connect-src 'self' *.googletagmanager.com *.google-analytics.com https://*.google.com https://horacelms.com http://localhost:8000 http://localhost:5071 https://essluploads.s3.amazonaws.com https://troveapi.horacelearning.us https://treasureapi.horacelearning.us *.horacelearning.us https://al-ihsan.horacelearning.com *.horacelearning.com *.s3.amazonaws.com https://essl.b-cdn.net",
+              "connect-src 'self' *.googletagmanager.com *.google-analytics.com https://*.google.com https://horacelms.com http://localhost:8000 http://localhost:5071 https://essluploads.s3.amazonaws.com https://troveapi.horacelearning.us https://treasureapi.horacelearning.us *.horacelearning.us https://al-ihsan.horacelearning.com *.horacelearning.com *.s3.amazonaws.com https://essl.b-cdn.net https://robiatschools.com",
               "frame-src 'self' *.youtube.com *.youtube-nocookie.com *.stripe.com *.td.doubleclick.net *.googletagmanager.com",
               "frame-ancestors 'none'",
             ].join("; "),

@@ -27,6 +27,21 @@ export type tUser = {
   photo?: string
   gender?: string
 }
+export interface orgDto {
+  id?: string
+  name: string
+  description?: string
+  logo?: string
+  website?: string
+  address?: string
+  phone?: string
+  email?: string
+  country?: string
+  state?: string
+  city?: string
+  zip?: string
+  createdBy?: string
+}
 export interface ProfileFormData {
   firstname: string
   lastname: string
@@ -287,7 +302,7 @@ export type UserDto = {
   firstname: string
   lastname: string
   country?: string
-  organization?: string
+  organizationId?: string
   password: string
   email: string
   phone?: string
