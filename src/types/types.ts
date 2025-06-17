@@ -476,3 +476,34 @@ export interface TransactionItem {
   modifiedOn: string | null
 }
 export type TableClickType = "delete" | "edit" | "view"
+export type CodeBlockProps = {
+  children: React.ReactNode
+  language?: string
+  title?: string
+  copyText?: string
+  copyToClipboard: (text: string, id: string) => void
+  copiedCode?: string
+}
+export type BadgeProps = {
+  children: React.ReactNode
+  variant?:
+    | "default"
+    | "post"
+    | "get"
+    | "put"
+    | "delete"
+    | "success"
+    | "error"
+    | "warning"
+}
+export type AlertProps = {
+  children: React.ReactNode
+  type?: "info" | "warning" | "error" | "success"
+  icon?: React.ElementType
+}
+export type ApiEndpointProps = {
+  method: string
+  path: string
+  description: string
+  children?: React.ReactNode
+}
