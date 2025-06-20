@@ -1,4 +1,4 @@
-import { Book, GridView, Settings } from "@mui/icons-material"
+import { Api, Book, GridView, Settings } from "@mui/icons-material"
 import ClearIcon from "@mui/icons-material/Clear"
 import { Box } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
@@ -116,6 +116,16 @@ const menuData: TNavBar[] = [
   },
   {
     id: 3,
+    title: "Api Docs",
+    allowed_roles: ["User"],
+    icon: <Api />,
+    active: true,
+    order: 0,
+    sub_nav: [],
+    path: "/apidocs",
+  },
+  {
+    id: 4,
     title: "Settings",
     path: "#",
     icon: <Settings />,

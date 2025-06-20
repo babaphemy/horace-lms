@@ -1,3 +1,4 @@
+"use client"
 import { AppProvider } from "@/context/AppContext"
 import ToastProvider from "@/providers/toast-provider"
 import { muiTheme } from "@/styles/theme"

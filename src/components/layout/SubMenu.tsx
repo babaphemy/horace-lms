@@ -56,11 +56,15 @@ const SubMenuComponent = ({ item }: { item: TNavBar }) => {
     }
   }
 
+  const goToDoc = () => {
+    window.open("/apidocs")
+  }
+
   return (
     <>
       <Link
         href={item.path}
-        onClick={handleLinkClick}
+        onClick={item.path === "/apidocs" ? goToDoc : handleLinkClick}
         className={`${styles.sidebarLink} ${
           currentPath === item.path ? styles.sidebarLinkActive : ""
         }`}
