@@ -70,6 +70,7 @@ const badgeVariant = {
   success: { background: "#dcfce7", color: "#166534" },
   error: { background: "#fee2e2", color: "#dc2626" },
   warning: { background: "#fef3c7", color: "#92400e" },
+  info: { background: "#dbeafe", color: "#1d4ed8" },
 }
 const LMStypes = {
   info: { background: "#eff6ff", borderColor: "#3b82f6", color: "#1e40af" },
