@@ -1170,6 +1170,108 @@ export default function BeautifulApiDocs() {
               </ApiEndpoint>
             </div>
 
+            <div id="edit-course" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Edit3 size={20} />
+                Edit Course
+              </h3>
+
+              <p>Edit a course in the system.</p>
+
+              <ApiEndpoint
+                method="POST"
+                path="/api/v1/course/add"
+                description="Create a new course"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "id": "string",
+  "user": "string",
+  "courseName": "string",
+  "brief": "string",
+  "overview": "string",
+  "thumbnail": "string",
+  "category": "string",
+  "currency": "string",
+  "draft": boolean,
+  "cost": number
+}`}
+                </CodeBlock>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Parameters
+                  </h5>
+                  <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>user</code> - ID of the course author{" "}
+                      <Badge variant="error">required</Badge>
+                    </li>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>id</code> - ID of the course to be edited{" "}
+                      <Badge variant="error">required</Badge>
+                    </li>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>draft</code> - Set to <code>true</code> to save as
+                      draft, <code>false</code> to publish
+                    </li>
+                  </ul>
+                </div>
+
+                <CodeBlock
+                  language="bash"
+                  title="Example Request"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`curl -X 'POST' \\
+  '{basepath}/api/v1/course/add' \\
+  -H 'accept: */*' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "user": "684e665d59f9a83e5140d977",
+    "courseName": "Game Theory",
+    "brief": "This is a great course on how to improve your game.",
+    "overview": "<p>This course provides a decent introduction to game development.</p>",
+    "thumbnail": "",
+    "category": "web",
+    "currency": "NGN",
+    "draft": true,
+    "cost": 40000
+  }'`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
             {/* Add Module */}
             <div id="add-module" style={{ marginBottom: "48px" }}>
               <h3
@@ -1201,7 +1303,6 @@ export default function BeautifulApiDocs() {
                   copyToClipboard={copyToClipboard}
                 >
                   {`{
-  "id": "string",
   "module": "string",
   "description": "string",
   "orderIndex": 1073741824,
@@ -1241,6 +1342,90 @@ export default function BeautifulApiDocs() {
                     Parameters
                   </h5>
                   <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>cid</code> - ID of the course
+                      <Badge variant="error">required</Badge>
+                    </li>
+                  </ul>
+                </div>
+              </ApiEndpoint>
+            </div>
+
+            {/* Edit Module */}
+            <div id="edit-module" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Edit3 size={20} />
+                Add Module
+              </h3>
+
+              <p>Edit the module of a course.</p>
+
+              <ApiEndpoint
+                method="POST"
+                path="/api/v1/course/module"
+                description="Add a module to a course"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+                "id": "string",
+                "module": "string",
+                "description": "string",
+                "orderIndex": 1073741824,
+                "lessons": [
+                  {
+                    "id": "string",
+                    "title": "string",
+                    "video": "string",
+                    "content": "string",
+                    "type": "string",
+                    "orderIndex": 1073741824
+                  }
+                ],
+                "cid": "string",
+                "createdOn": "2025-06-20T23:22:14.464Z",
+                "updatedOn": "2025-06-20T23:22:14.464Z"
+                }
+                `}
+                </CodeBlock>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Parameters
+                  </h5>
+                  <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>id</code> - ID of the module
+                      <Badge variant="error">required</Badge>
+                    </li>
                     <li style={{ marginBottom: "8px", color: "#4b5563" }}>
                       <code>cid</code> - ID of the course
                       <Badge variant="error">required</Badge>
@@ -1480,6 +1665,82 @@ export default function BeautifulApiDocs() {
   }
 ]`}
                 </CodeBlock>
+              </ApiEndpoint>
+            </div>
+            {/* course registration */}
+            <div id="course-registration" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <UserPlus size={20} />
+                Course Registration
+              </h3>
+
+              <p>Register a course for a user.</p>
+
+              <ApiEndpoint
+                method="POST"
+                path="/api/v1/reg/add"
+                description="Add a course for a user"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+               {
+  
+  "user": "string",
+  "comment": "string",
+  "fileName": "string",
+  "count": 1073741824,
+  "like": 1073741824,
+  "share": 1073741824,
+  "star": 0.1,
+  "price": 0.1,
+  "tax": 0.1,
+  "activeStep": 9007199254740991
+}
+
+                }
+                `}
+                </CodeBlock>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Parameters
+                  </h5>
+                  <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>user</code> - ID of the user
+                      <Badge variant="error">required</Badge>
+                    </li>
+                  </ul>
+                </div>
               </ApiEndpoint>
             </div>
             {/* my courses */}
