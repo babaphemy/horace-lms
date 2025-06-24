@@ -309,7 +309,7 @@ const Login = (props: Props) => {
 
 const LoginComponent = (props: Props) => {
   return (
-    <Suspense>
+    <Suspense fallback={<Typography>Loading...</Typography>}>
       <Login {...props} />
     </Suspense>
   )
