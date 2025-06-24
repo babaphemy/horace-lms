@@ -1000,8 +1000,76 @@ export default function BeautifulApiDocs() {
               </ApiEndpoint>
             </div>
 
-            {/* Coming Soon Items */}
-            <div
+            {/*  Change Role */}
+            <div id="change-role" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Settings size={20} />
+                Change Role
+              </h3>
+
+              <p>Update the role of user.</p>
+
+              <ApiEndpoint
+                method="PUT"
+                path="/api/v1/user/change-role"
+                description="Update the role of user"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+                    "id": "string",
+                    "firstname": "string",
+                    "lastname": "string",
+                    "country": "string",
+                    "password": "string",
+                    "bio": "string",
+                    "organizationId": "string",
+                    "address": "string",
+                    "city": "string",
+                    "state": "string",
+                    "zip": "string",
+                    "phone": "string",
+                    "email": "string",
+                    "type": "string",
+                    "updatedOn": "2025-06-24T21:01:16.749Z",
+                    "modifiedOn": "2025-06-24T21:01:16.749Z",
+                    "createdOn": "2025-06-24T21:01:16.749Z",
+                    "token": "string",
+                    "dp": "string",
+                    "status": true,
+                    "roles": [
+                      "string"
+                    ],
+                    "message": "string",
+                    "courses": [
+                      "string"
+                    ],
+                    "rating": 1073741824,
+                    "reviews": [
+                      "string"
+                    ]
+                  }`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/* Coming Soon Items  --> Did not completely remove this part of the code for easy 
+            resuability when there is another coming soon feature*/}
+            {/* <div
               style={{
                 margin: "40px 0",
                 padding: "24px",
@@ -1044,7 +1112,7 @@ export default function BeautifulApiDocs() {
                   <span>Change Role</span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </section>
 
           {/* Course Management Section */}
