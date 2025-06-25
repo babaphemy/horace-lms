@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       data: std,
-      message: `${std} created successfully!`,
+      message: `Payment for ${std.schoolName} created successfully!`,
     })
   } catch (error) {
     return NextResponse.json(
