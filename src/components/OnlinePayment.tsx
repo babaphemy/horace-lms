@@ -77,7 +77,7 @@ const OnlinePayment = () => {
     setIsLoading(true)
 
     try {
-      const response = await fetch("/api/payment-activation", {
+      const response = await fetch("/api/payment-setup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -297,8 +297,7 @@ const OnlinePayment = () => {
                   </Typography>
                   <Typography variant="body2" sx={{ mt: 1 }}>
                     Fees will be added to the customer&apos;s payment amount.
-                    Customers will see &apos; Your School via Horace
-                    Learning&apos; as the payment recipient.
+                    Customers will see Horace as the payment processor.
                   </Typography>
                 </Alert>
               )}
