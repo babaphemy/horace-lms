@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/useMobile"
 import { Menu, Search, X } from "lucide-react"
 
 const Header = ({
@@ -11,6 +12,7 @@ const Header = ({
   searchTerm: string
   setSearchTerm: (_term: string) => void
 }) => {
+  const isMobile = useIsMobile(768)
   return (
     <header
       style={{
