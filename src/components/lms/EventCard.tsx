@@ -26,7 +26,7 @@ const EventCard = ({ upcomingEvents }: { upcomingEvents: Event[] }) => {
         </Box>
         <List sx={{ p: 0 }}>
           {upcomingEvents?.map((event: Event, index: number) => (
-            <React.Fragment key={index}>
+            <React.Fragment key={event.id}>
               <ListItem sx={{ px: 0 }}>
                 <ListItemAvatar>
                   <Avatar
