@@ -495,15 +495,26 @@ export type BadgeProps = {
     | "success"
     | "error"
     | "warning"
+    | "info"
 }
 export type AlertProps = {
   children: React.ReactNode
   type?: "info" | "warning" | "error" | "success"
   icon?: React.ElementType
 }
+
+export type ParameterProps = {
+  name: string
+  type: string
+  required?: boolean
+  description?: string
+  children?: React.ReactNode
+}
+
 export type ApiEndpointProps = {
   method: string
   path: string
   description: string
   children?: React.ReactNode
+  parameters?: ParameterProps[]
 }

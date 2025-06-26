@@ -6,6 +6,7 @@ import CodeIcon from "@mui/icons-material/Code"
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile"
 import LightbulbIcon from "@mui/icons-material/Lightbulb"
 import SendIcon from "@mui/icons-material/Send"
+import { redirect } from "next/navigation"
 import {
   Box,
   Button,
@@ -20,6 +21,7 @@ import {
   useTheme,
 } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
+import { useSession } from "next-auth/react"
 import Head from "next/head"
 import { useEffect, useRef, useState } from "react"
 import ReactMarkdown from "react-markdown"
@@ -92,6 +94,13 @@ export default function Home() {
   const [selectedTemplate, setSelectedTemplate] = useState("")
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const theme = useTheme()
+  const { status } = useSession()
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      redirect("/login?redirect=/ai")
+    }
+  }, [status])
 
   useEffect(() => {
     scrollToBottom()
