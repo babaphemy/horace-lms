@@ -44,11 +44,29 @@ export default function BeautifulAPIDocsPage() {
     "user-management": true,
     "course-management": true,
   })
+  const [isMobile, setIsMobile] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+
+  // Check if we're on client side and handle mobile detection
+  useEffect(() => {
+    setIsClient(true)
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text)
-    setCopiedCode(id)
-    setTimeout(() => setCopiedCode(""), 2000)
+    if (typeof window !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+      setCopiedCode(id)
+      setTimeout(() => setCopiedCode(""), 2000)
+    }
   }
 
   const toggleSection = (sectionId: string) => {
@@ -59,6 +77,8 @@ export default function BeautifulAPIDocsPage() {
   }
 
   const scrollToSection = (sectionId: string) => {
+    if (typeof window === "undefined") return
+
     const element = document.getElementById(sectionId)
     if (element) {
       const headerOffset = 100
@@ -71,13 +91,15 @@ export default function BeautifulAPIDocsPage() {
       })
 
       setActiveSection(sectionId)
-      if (window.innerWidth <= 768) {
+      if (isMobile) {
         setSidebarOpen(false)
       }
     }
   }
 
   useEffect(() => {
+    if (!isClient) return
+
     const observerOptions = {
       root: null,
       rootMargin: "-100px 0px -50% 0px",
@@ -100,15 +122,15 @@ export default function BeautifulAPIDocsPage() {
     return () => {
       sections.forEach((section) => observer.unobserve(section))
     }
-  }, [])
+  }, [isClient])
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent | globalThis.KeyboardEvent) => {
+    if (!isClient) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey) {
         if (event.key === "k") {
-          if (typeof event.preventDefault === "function") {
-            event.preventDefault()
-          }
+          event.preventDefault()
           ;(
             document.querySelector(".search-input") as HTMLInputElement | null
           )?.focus()
@@ -118,7 +140,24 @@ export default function BeautifulAPIDocsPage() {
 
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [])
+  }, [isClient])
+
+  // Don't render until client-side hydration is complete
+  if (!isClient) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
+        <div style={{ color: "white", fontSize: "18px" }}>Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -156,8 +195,7 @@ export default function BeautifulAPIDocsPage() {
             top: "80px",
             height: "calc(100vh - 80px)",
             boxShadow: "4px 0 20px rgba(0, 0, 0, 0.05)",
-            display:
-              window.innerWidth <= 768 && !sidebarOpen ? "none" : "block",
+            display: isMobile && !sidebarOpen ? "none" : "block",
           }}
         >
           <div
