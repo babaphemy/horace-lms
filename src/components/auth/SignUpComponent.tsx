@@ -75,14 +75,15 @@ const SignUpComponent = (props: Props) => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     reset,
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues,
+    mode: "onChange",
   })
 
-  const { mutate } = useMutation(registerUser, {
+  const { mutate, isLoading } = useMutation(registerUser, {
     onSuccess: () => {
       notifySuccess(
         "Registration successful! Please check your email for more info."
@@ -127,6 +128,7 @@ const SignUpComponent = (props: Props) => {
     }
     router.push("/login")
   }
+  const canSubmit = isValid && checked && !isLoading
   return (
     <Box sx={loginStyles.right}>
       <Typography variant="h4" sx={[loginStyles.center, loginStyles.title]}>
@@ -350,7 +352,7 @@ const SignUpComponent = (props: Props) => {
         >
           <Checkbox checked={checked} onChange={handleCheck} />
           <Typography variant="body2">
-            I agree to the{" "}
+            *I agree to the{" "}
             <Link href="#" underline="hover">
               Terms of Service
             </Link>{" "}
@@ -363,13 +365,13 @@ const SignUpComponent = (props: Props) => {
         <Button
           sx={[loginStyles.button, loginStyles.submit]}
           variant="contained"
-          disabled={!checked}
+          disabled={!checked || !canSubmit}
           fullWidth
           type="submit"
           aria-label="REGISTER"
           value="legacy"
         >
-          Register
+          {isLoading ? "Registering..." : "Register"}
         </Button>
       </Box>
       <Typography

@@ -1,7 +1,7 @@
 "use client"
-import { createOrg } from "@/app/api/rest"
+import { createOrg, userOrganization } from "@/app/api/rest"
 import { orgDto } from "@/types/types"
-import { notifyError } from "@/utils/notification"
+import { notifyError, notifySuccess } from "@/utils/notification"
 import {
   Business,
   Email,
@@ -12,7 +12,6 @@ import {
   Save,
 } from "@mui/icons-material"
 import {
-  Alert,
   Avatar,
   Box,
   Button,
@@ -25,30 +24,54 @@ import {
   TextField,
   Typography,
 } from "@mui/material"
-import React, { useState } from "react"
+import { useSession } from "next-auth/react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
+import { useMutation, useQuery } from "react-query"
 
 const OrgPage = () => {
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const { data: session, status } = useSession()
+  const userId = session?.user?.id
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
 
-  // Initialize with the provided data
-  const defaultValues: Partial<orgDto> = {
-    id: "684e58d4df81cc6605736c85",
-    name: "ESSL",
-    description: "Everlasting Systems and Solutions",
-    logo: "",
-    website: "",
-    address: "12603 Mill Ridge Cypress",
-    phone: "",
-    email: "office@myeverlasting.net",
-    country: "USA",
-    state: "TX",
-    city: "Fulshear",
-    zip: "77429",
-    createdBy: "admin@essl.net",
-  }
+  const { data, isLoading } = useQuery({
+    queryFn: () => userOrganization(userId as string),
+    queryKey: ["userOrganization", userId],
+    enabled: !!userId && status === "authenticated",
+  })
+
+  const { mutate, isLoading: submitting } = useMutation({
+    mutationFn: createOrg,
+    onSuccess: () => {
+      setLogoPreview(null)
+      notifySuccess("Organization settings updated successfully!")
+    },
+    onError: (error: Error) => {
+      notifyError(
+        error?.message ||
+          "Organization with this name already exists!, or an error occured."
+      )
+    },
+  })
+
+  const defaultValues = useMemo(
+    (): Partial<orgDto> => ({
+      id: data?.id,
+      name: data?.name || "",
+      description: data?.description || "Everlasting Systems and Solutions",
+      logo: data?.logo || "",
+      website: data?.website || "",
+      address: data?.address || "",
+      phone: data?.phone || "",
+      email: data?.email || "office@myeverlasting.net",
+      country: data?.country || "USA",
+      state: data?.state || "TX",
+      city: data?.city || "Fulshear",
+      zip: data?.zip || "77429",
+      createdBy: data?.createdBy || userId,
+    }),
+    [data, userId]
+  )
 
   const {
     control,
@@ -61,22 +84,17 @@ const OrgPage = () => {
     mode: "onBlur",
   })
 
-  const onSubmit = async (data: orgDto) => {
-    setLoading(true)
-    setSuccess(false)
-    await createOrg(data)
+  useEffect(() => {
+    reset(defaultValues)
+  }, [defaultValues, reset])
 
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      setSuccess(true)
-      setTimeout(() => setSuccess(false), 3000)
-    } catch {
-      notifyError("Error saving organization:")
-    } finally {
-      setLoading(false)
+  const onSubmit = async (orgData: orgDto) => {
+    orgData.createdBy = userId
+    if (!orgData.createdBy) {
+      notifyError("You must be logged in to update organization settings.")
+      return
     }
+    mutate(orgData)
   }
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,12 +111,10 @@ const OrgPage = () => {
   const handleReset = () => {
     reset()
     setLogoPreview(null)
-    setSuccess(false)
   }
 
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", p: 3 }}>
-      {/* Header */}
       <Paper
         elevation={0}
         sx={{ p: 3, mb: 3, bgcolor: "primary.main", color: "white" }}
@@ -112,20 +128,13 @@ const OrgPage = () => {
             <Typography variant="body1" sx={{ opacity: 0.9 }}>
               Manage your organization&apos;s profile and contact information
             </Typography>
+            {isLoading && <CircularProgress size={24} sx={{ mt: 1 }} />}
           </Box>
         </Box>
       </Paper>
 
-      {/* Success Alert */}
-      {success && (
-        <Alert severity="success" sx={{ mb: 3 }}>
-          Organization settings updated successfully!
-        </Alert>
-      )}
-
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
-          {/* Logo and Basic Info */}
           <Grid size={{ xs: 12, md: 4 }}>
             <Card>
               <CardContent sx={{ textAlign: "center", p: 3 }}>
@@ -177,7 +186,6 @@ const OrgPage = () => {
             </Card>
           </Grid>
 
-          {/* Form Fields */}
           <Grid size={{ xs: 12, md: 8 }}>
             <Card>
               <CardContent sx={{ p: 3 }}>
@@ -313,7 +321,6 @@ const OrgPage = () => {
             </Card>
           </Grid>
 
-          {/* Address Information */}
           <Grid size={{ xs: 12 }}>
             <Card>
               <CardContent sx={{ p: 3 }}>
@@ -415,13 +422,12 @@ const OrgPage = () => {
             </Card>
           </Grid>
 
-          {/* Action Buttons */}
           <Grid size={{ xs: 12 }}>
             <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
               <Button
                 variant="outlined"
                 onClick={handleReset}
-                disabled={loading || !isDirty}
+                disabled={submitting || !isDirty}
               >
                 Reset Changes
               </Button>
@@ -429,11 +435,13 @@ const OrgPage = () => {
               <Button
                 type="submit"
                 variant="contained"
-                disabled={loading || !isDirty}
-                startIcon={loading ? <CircularProgress size={20} /> : <Save />}
+                disabled={submitting || !isDirty}
+                startIcon={
+                  submitting ? <CircularProgress size={20} /> : <Save />
+                }
                 sx={{ minWidth: 140 }}
               >
-                {loading ? "Saving..." : "Save Changes"}
+                {submitting ? "Saving..." : "Save Changes"}
               </Button>
             </Box>
           </Grid>
