@@ -29,7 +29,18 @@ const authOptions: NextAuthOptions = {
           if (user.detail) {
             return null
           }
-          return user
+          // Ensure the user object has consistent structure
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.firstname || user.name || "Guest",
+            token: user.token || "",
+            roles: user.roles || ["Guest"],
+            image: user.dp || user.image || null,
+            // Include any other fields you need
+            firstname: user.firstname,
+            lastname: user.lastname,
+          }
         } else {
           return null
         }
@@ -56,7 +67,6 @@ const authOptions: NextAuthOptions = {
       if (account?.provider === "google") {
         try {
           const res = await fetch(`${basePath}user/auser/${user?.email}`, auth)
-
           const userData = await res.json()
 
           if (res?.ok && userData && !userData.detail) {
@@ -67,8 +77,9 @@ const authOptions: NextAuthOptions = {
               token: userData.token || "",
               roles: userData.roles || ["Guest"],
               image: userData.dp || user.image || null,
+              firstname: userData.firstname,
+              lastname: userData.lastname,
             }
-
             return true
           } else {
             return false
@@ -81,22 +92,34 @@ const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, account }) {
       if (account?.userData) {
-        const { token: accToken, id, roles } = account.userData
+        const { token: accToken, ...userData } = account.userData
         token.accessToken = accToken
-        token.id = id
-        token.roles = roles
-        token.user = account.userData
+        token.id = userData.id
+        token.roles = userData.roles
+        token.user = userData
       } else if (user) {
         token.accessToken = user.token || ""
         token.id = user.id
         token.roles = user.roles || ["Guest"]
-        token.user = user
+        token.user = {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          roles: user.roles,
+          image: user.image,
+          firstname: user.firstname,
+          lastname: user.lastname,
+        }
       }
       return token
     },
     async session({ session, token }) {
       session.accessToken = token?.accessToken
-      session.user = token?.user as Session["user"]
+      session.user = {
+        ...session.user,
+        ...token?.user,
+        id: token?.id,
+      } as Session["user"]
       return session
     },
   },

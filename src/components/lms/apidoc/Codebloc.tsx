@@ -3,6 +3,7 @@ import { Check, Copy } from "lucide-react"
 
 const CodeBlock = ({
   children,
+  language = "bash",
   title,
   copyText,
   copiedCode = "",
@@ -69,6 +70,7 @@ const CodeBlock = ({
       }}
     >
       <code
+        className={`language-${language}`}
         style={{
           color: "#e2e8f0",
           fontFamily: "Monaco, Menlo, Ubuntu Mono, monospace",
@@ -81,4 +83,5 @@ const CodeBlock = ({
     </pre>
   </div>
 )
+
 export default CodeBlock

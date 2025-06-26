@@ -51,6 +51,22 @@ export default function BeautifulApiDocs() {
     "user-management": true,
     "course-management": true,
   })
+  const [isMobile, setIsMobile] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+
+  // Check if we're on client side and handle mobile detection
+  useEffect(() => {
+    setIsClient(true)
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -59,9 +75,11 @@ export default function BeautifulApiDocs() {
   }, [status])
 
   const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text)
-    setCopiedCode(id)
-    setTimeout(() => setCopiedCode(""), 2000)
+    if (typeof window !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(text)
+      setCopiedCode(id)
+      setTimeout(() => setCopiedCode(""), 2000)
+    }
   }
 
   const toggleSection = (sectionId: string) => {
@@ -72,28 +90,29 @@ export default function BeautifulApiDocs() {
   }
 
   const scrollToSection = (sectionId: string) => {
-    if (typeof window !== undefined) {
-      const element = document.getElementById(sectionId)
-      if (element) {
-        const headerOffset = 100
-        const elementPosition = element.getBoundingClientRect().top
-        const offsetPosition =
-          elementPosition + window.pageYOffset - headerOffset
+    if (typeof window === "undefined") return
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: "smooth",
-        })
+    const element = document.getElementById(sectionId)
+    if (element) {
+      const headerOffset = 100
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
 
-        setActiveSection(sectionId)
-        if (window.innerWidth <= 768) {
-          setSidebarOpen(false)
-        }
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      })
+
+      setActiveSection(sectionId)
+      if (isMobile) {
+        setSidebarOpen(false)
       }
     }
   }
 
   useEffect(() => {
+    if (!isClient) return
+
     const observerOptions = {
       root: null,
       rootMargin: "-100px 0px -50% 0px",
@@ -116,9 +135,11 @@ export default function BeautifulApiDocs() {
     return () => {
       sections.forEach((section) => observer.unobserve(section))
     }
-  }, [])
+  }, [isClient])
 
   useEffect(() => {
+    if (!isClient) return
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey) {
         if (event.key === "k") {
@@ -132,7 +153,24 @@ export default function BeautifulApiDocs() {
 
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [])
+  }, [isClient])
+
+  // Don't render until client-side hydration is complete
+  if (!isClient) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
+        <div style={{ color: "white", fontSize: "18px" }}>Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -170,10 +208,7 @@ export default function BeautifulApiDocs() {
             top: "80px",
             height: "calc(100vh - 80px)",
             boxShadow: "4px 0 20px rgba(0, 0, 0, 0.05)",
-            display:
-              window !== undefined && window.innerWidth <= 768 && !sidebarOpen
-                ? "none"
-                : "block",
+            display: isMobile && !sidebarOpen ? "none" : "block",
           }}
         >
           <div

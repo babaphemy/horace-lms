@@ -67,6 +67,7 @@ const Header = ({
               size={16}
             />
             <input
+              className="search-input"
               type="text"
               placeholder="Search documentation... (⌘K)"
               value={searchTerm}

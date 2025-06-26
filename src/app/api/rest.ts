@@ -374,7 +374,26 @@ const manageDraft = async (obj: {
   return resp.json()
 }
 
+const userOrganization = async (userId: string) => {
+  const response = await fetch(`${basePath}user/org/${userId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+const addUserToOrganization = async (userId: string, orgId: string) => {
+  const response = await fetch(
+    `${basePath}org/${orgId}`,
+    PutSettings({ id: orgId })
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 export {
+  addUserToOrganization,
   addReview,
   addSubjectComplete,
   addUserCourse,
@@ -409,5 +428,6 @@ export {
   updateDp,
   uploadImageToS3,
   uploadVideoToS3,
+  userOrganization,
   verifyEmail,
 }
