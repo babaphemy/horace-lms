@@ -106,7 +106,7 @@ export default function Home() {
 
   const checkOllamaConnection = async () => {
     try {
-      const response = await fetch("http://192.168.12.112:11434/api/tags", {
+      const response = await fetch("http://localhost:11434/api/tags", {
         method: "GET",
       })
 
@@ -116,12 +116,12 @@ export default function Home() {
 
       const data = await response.json()
 
-      const mistralModel = data.models.find(
-        (model: OllamaModel) => model.name === "mistral"
+      const phi3Model = data.models.find(
+        (model: OllamaModel) => model.name === "phi3:latest"
       )
-      if (!mistralModel) {
+      if (!phi3Model) {
         notifyError(
-          "Mistral model not found in Ollama. Please run: ollama pull mistral"
+          "Phi3 model not found in Ollama. Please run: ollama pull phi3"
         )
       }
     } catch {
@@ -159,13 +159,13 @@ export default function Home() {
       }
 
       // Connect to Ollama API (running locally)
-      const response = await fetch("http://192.168.12.112:11434/api/generate", {
+      const response = await fetch("http://localhost:11434/api/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "mistral", // Use the Mistral model
+          model: "phi3:latest",
           prompt: promptText,
           stream: true,
           options: {
