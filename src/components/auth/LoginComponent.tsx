@@ -96,7 +96,6 @@ const LoginComponent = (props: Props) => {
 
       if (response?.status === 200) {
         setUser()
-        notifySuccess("Login successful")
         router.push("/")
       } else {
         notifyError("Invalid credentials or account not active!")

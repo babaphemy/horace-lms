@@ -166,7 +166,7 @@ const DashboardPage = () => {
     <Container maxWidth="xl" sx={{ py: 3 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
-          Welcome back, {session?.user?.firstname}! 👋
+          Welcome back, {session?.user?.firstname || "Horace User"}! 👋
         </Typography>
         <Typography variant="body1" color="text.secondary">
           Here&apos;s what&apos;s happening with your courses today

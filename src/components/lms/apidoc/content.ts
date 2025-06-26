@@ -1,0 +1,92 @@
+import {
+  Book,
+  Shield,
+  Search,
+  Users,
+  Settings,
+  PlayCircle,
+  FileText,
+  AlertCircle,
+  Upload,
+  Edit3,
+  UserPlus,
+  Trash2,
+  RotateCcw,
+  Image as ImageIcon,
+  Plus,
+  BookOpen,
+  GraduationCap,
+  Activity,
+  Building,
+} from "lucide-react"
+const tableOfContents = [
+  { id: "overview", label: "Overview", icon: Book },
+  { id: "authentication", label: "Authentication", icon: Shield },
+  {
+    id: "user-management",
+    label: "User Management",
+    icon: Users,
+    children: [
+      { id: "user-signup", label: "User Sign-up", icon: UserPlus },
+      { id: "reset-password", label: "Reset Password", icon: RotateCcw },
+      { id: "edit-user", label: "Edit User", icon: Edit3 },
+      { id: "upload-photo", label: "Upload Photo", icon: ImageIcon },
+      { id: "delete-user", label: "Delete User", icon: Trash2 },
+      { id: "change-role", label: "Change Role", icon: Settings },
+    ],
+  },
+  {
+    id: "course-management",
+    label: "Course Management",
+    icon: GraduationCap,
+    children: [
+      { id: "create-course", label: "Create Course", icon: Plus },
+      { id: "edit-course", label: "Edit Course", icon: Edit3 },
+      { id: "add-module", label: "Add Module", icon: BookOpen },
+      { id: "edit-module", label: "Edit Module", icon: Edit3 },
+      { id: "upload-assets", label: "Upload Assets", icon: Upload },
+      { id: "add-lesson", label: "Add Lesson", icon: PlayCircle },
+      { id: "org-courses", label: "Organization Courses", icon: Building },
+      { id: "my-drafts", label: "My Drafts", icon: FileText },
+      {
+        id: "course-registration",
+        label: "Course Registration",
+        icon: UserPlus,
+      },
+      { id: "my-courses", label: "My Courses", icon: Book },
+      { id: "course-by-id", label: "Course by ID", icon: Search },
+      { id: "courses-by-author", label: "Courses by Author", icon: Users },
+    ],
+  },
+  { id: "error-codes", label: "Error Codes", icon: AlertCircle },
+  { id: "rate-limiting", label: "Rate Limiting", icon: Activity },
+]
+const badgeVariant = {
+  default: { background: "#f1f5f9", color: "#64748b" },
+  post: { background: "#dcfce7", color: "#166534" },
+  get: { background: "#dbeafe", color: "#1d4ed8" },
+  put: { background: "#fef3c7", color: "#92400e" },
+  delete: { background: "#fee2e2", color: "#dc2626" },
+  success: { background: "#dcfce7", color: "#166534" },
+  error: { background: "#fee2e2", color: "#dc2626" },
+  warning: { background: "#fef3c7", color: "#92400e" },
+}
+const LMStypes = {
+  info: { background: "#eff6ff", borderColor: "#3b82f6", color: "#1e40af" },
+  warning: {
+    background: "#fffbeb",
+    borderColor: "#f59e0b",
+    color: "#92400e",
+  },
+  error: {
+    background: "#fef2f2",
+    borderColor: "#ef4444",
+    color: "#dc2626",
+  },
+  success: {
+    background: "#f0fdf4",
+    borderColor: "#22c55e",
+    color: "#166534",
+  },
+}
+export { tableOfContents, badgeVariant, LMStypes }
