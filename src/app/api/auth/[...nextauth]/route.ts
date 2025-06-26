@@ -40,7 +40,6 @@ const authOptions: NextAuthOptions = {
             // Include any other fields you need
             firstname: user.firstname,
             lastname: user.lastname,
-            country: user.country,
           }
         } else {
           return null
@@ -80,7 +79,6 @@ const authOptions: NextAuthOptions = {
               image: userData.dp || user.image || null,
               firstname: userData.firstname,
               lastname: userData.lastname,
-              country: userData.country,
             }
             return true
           } else {
@@ -111,7 +109,6 @@ const authOptions: NextAuthOptions = {
           image: user.image,
           firstname: user.firstname,
           lastname: user.lastname,
-          country: user.country,
         }
       }
       return token
