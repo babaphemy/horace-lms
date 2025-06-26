@@ -85,7 +85,7 @@ const Header = ({
 
           <button
             style={{
-              display: window.innerWidth <= 768 ? "block" : "none",
+              display: isMobile ? "block" : "none",
               background: "none",
               border: "none",
               cursor: "pointer",
