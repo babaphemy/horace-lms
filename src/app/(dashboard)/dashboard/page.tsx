@@ -1,44 +1,44 @@
 "use client"
 import {
+  activities,
+  dashboardStat,
+  events,
+  recentCourses,
+} from "@/app/api/rest"
+import ActivityCard from "@/components/lms/ActivityCard"
+import EventCard from "@/components/lms/EventCard"
+import StatsGrid from "@/components/lms/StatsGrid"
+import { Activity, Event, tCourse } from "@/types/types"
+import {
   Analytics,
   Assignment,
-  CalendarToday,
   MoreVert,
-  Notifications,
   People,
   Person,
-  School,
   Star,
-  Timer,
-  TrendingUp,
   VideoLibrary,
 } from "@mui/icons-material"
 import {
-  Avatar,
   Box,
   Button,
   Card,
   CardContent,
   Chip,
   Container,
-  Divider,
   Grid,
   IconButton,
-  LinearProgress,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Menu,
   MenuItem,
   Paper,
   Typography,
 } from "@mui/material"
 import { useSession } from "next-auth/react"
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
+import { useQuery } from "react-query"
 
 const DashboardPage = () => {
   const { data: session } = useSession()
+  const userId = session?.user?.id
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -49,118 +49,35 @@ const DashboardPage = () => {
     setAnchorEl(null)
   }
 
-  const stats = [
-    {
-      title: "Total Courses",
-      value: "4",
-      change: "+12%",
-      icon: <School sx={{ fontSize: 32, color: "#1976d2" }} />,
-      color: "#e3f2fd",
-    },
-    {
-      title: "Active Students",
-      value: "7",
-      change: "+8%",
-      icon: <People sx={{ fontSize: 32, color: "#388e3c" }} />,
-      color: "#e8f5e8",
-    },
-    {
-      title: "Completed Lessons",
-      value: "6",
-      change: "+23%",
-      icon: <Assignment sx={{ fontSize: 32, color: "#f57c00" }} />,
-      color: "#fff3e0",
-    },
-    {
-      title: "Revenue",
-      value: "$450",
-      change: "+15%",
-      icon: <TrendingUp sx={{ fontSize: 32, color: "#7b1fa2" }} />,
-      color: "#f3e5f5",
-    },
-  ]
+  const { data: recentActivity } = useQuery({
+    queryFn: () => activities(userId as string),
+    queryKey: ["recentActivity", userId],
+    enabled: !!userId,
+  })
+  const { data: upcomingEvents } = useQuery({
+    queryFn: () => events(userId as string),
+    queryKey: ["upcomingEvents", userId],
+    enabled: !!userId,
+  })
+  const dateRange = useMemo(() => {
+    const today = new Date()
+    const fourWeeksAgo = new Date()
+    fourWeeksAgo.setDate(today.getDate() - 28)
 
-  const recentCourses = [
-    {
-      id: 1,
-      title: "Advanced React Development",
-      thumbnail: "https://via.placeholder.com/60x40/1976d2/ffffff?text=React",
-      progress: 75,
-      students: 156,
-      rating: 4.8,
-      status: "Published",
-    },
-    {
-      id: 2,
-      title: "UI/UX Design Fundamentals",
-      thumbnail: "https://via.placeholder.com/60x40/f57c00/ffffff?text=UI",
-      progress: 45,
-      students: 89,
-      rating: 4.6,
-      status: "Draft",
-    },
-    {
-      id: 3,
-      title: "JavaScript Masterclass",
-      thumbnail: "https://via.placeholder.com/60x40/388e3c/ffffff?text=JS",
-      progress: 90,
-      students: 234,
-      rating: 4.9,
-      status: "Published",
-    },
-  ]
-
-  const upcomingEvents = [
-    {
-      title: "Live Q&A Session",
-      time: "2:00 PM Today",
-      course: "React Development",
-      attendees: 45,
-    },
-    {
-      title: "Course Review Meeting",
-      time: "Tomorrow 10:00 AM",
-      course: "UI/UX Design",
-      attendees: 8,
-    },
-    {
-      title: "Student Presentation",
-      time: "Friday 3:00 PM",
-      course: "JavaScript",
-      attendees: 23,
-    },
-  ]
-
-  const recentActivity = [
-    {
-      user: "Sarah Johnson",
-      action: "completed",
-      course: "React Hooks Module",
-      time: "2 hours ago",
-      avatar: "SJ",
-    },
-    {
-      user: "Mike Chen",
-      action: "enrolled in",
-      course: "Advanced JavaScript",
-      time: "3 hours ago",
-      avatar: "MC",
-    },
-    {
-      user: "Emma Wilson",
-      action: "submitted assignment for",
-      course: "UI/UX Design",
-      time: "5 hours ago",
-      avatar: "EW",
-    },
-    {
-      user: "David Brown",
-      action: "left a 5-star review for",
-      course: "React Development",
-      time: "1 day ago",
-      avatar: "DB",
-    },
-  ]
+    return {
+      start: fourWeeksAgo.toISOString().slice(0, 19),
+      end: today.toISOString().slice(0, 19),
+    }
+  }, [])
+  const { data: recents } = useQuery({
+    queryFn: () => recentCourses(dateRange.start, dateRange.end),
+    queryKey: ["recentCourses", dateRange.start, dateRange.end],
+  })
+  const { data: stats } = useQuery({
+    queryFn: () => dashboardStat(userId as string),
+    queryKey: ["dashboardStat", userId],
+    enabled: !!userId,
+  })
 
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
@@ -168,67 +85,11 @@ const DashboardPage = () => {
         <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
           Welcome back, {session?.user?.firstname || "Horace User"}! 👋
         </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Here&apos;s what&apos;s happening with your courses today
-        </Typography>
       </Box>
 
-      {/* Stats Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        {stats.map((stat, index) => (
-          <Grid size={{ xs: 12, sm: 6, lg: 3 }} key={index}>
-            <Card
-              sx={{
-                height: "100%",
-                background: `linear-gradient(135deg, ${stat.color} 0%, ${stat.color}88 100%)`,
-                border: "none",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-              }}
-            >
-              <CardContent>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box>
-                    <Typography variant="h4" component="div" fontWeight="bold">
-                      {stat.value}
-                    </Typography>
-                    <Typography
-                      color="text.secondary"
-                      variant="body2"
-                      sx={{ mb: 1 }}
-                    >
-                      {stat.title}
-                    </Typography>
-                    <Chip
-                      label={stat.change}
-                      size="small"
-                      color="success"
-                      sx={{ fontSize: "0.75rem" }}
-                    />
-                  </Box>
-                  <Box
-                    sx={{
-                      p: 1.5,
-                      borderRadius: 2,
-                      backgroundColor: "rgba(255,255,255,0.8)",
-                    }}
-                  >
-                    {stat.icon}
-                  </Box>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      <StatsGrid stats={stats} />
 
       <Grid container spacing={3}>
-        {/* Recent Courses */}
         <Grid size={{ xs: 12, lg: 8 }}>
           <Card sx={{ mb: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
             <CardContent>
@@ -243,12 +104,14 @@ const DashboardPage = () => {
                 <Typography variant="h6" component="h2" fontWeight="bold">
                   Your Courses
                 </Typography>
-                <Button variant="outlined" size="small">
-                  View All
-                </Button>
+                {stats?.totalCourses && (
+                  <Button variant="outlined" size="small">
+                    View All
+                  </Button>
+                )}
               </Box>
 
-              {recentCourses.map((course) => (
+              {recents?.map((course: tCourse) => (
                 <Box key={course.id} sx={{ mb: 3, "&:last-child": { mb: 0 } }}>
                   <Box
                     sx={{
@@ -261,7 +124,7 @@ const DashboardPage = () => {
                     <Box
                       component="img"
                       src={course.thumbnail}
-                      alt={course.title}
+                      alt={course.courseName}
                       sx={{
                         width: 60,
                         height: 40,
@@ -279,16 +142,12 @@ const DashboardPage = () => {
                         }}
                       >
                         <Typography variant="subtitle1" fontWeight="medium">
-                          {course.title}
+                          {course.courseName}
                         </Typography>
                         <Chip
                           label={course.status}
                           size="small"
-                          color={
-                            course.status === "Published"
-                              ? "success"
-                              : "warning"
-                          }
+                          color={course.status ? "success" : "warning"}
                           variant="outlined"
                         />
                       </Box>
@@ -311,7 +170,7 @@ const DashboardPage = () => {
                             sx={{ fontSize: 16, color: "text.secondary" }}
                           />
                           <Typography variant="body2" color="text.secondary">
-                            {course.students} students
+                            {course.assetCount.students} students
                           </Typography>
                         </Box>
                         <Box
@@ -323,11 +182,11 @@ const DashboardPage = () => {
                         >
                           <Star sx={{ fontSize: 16, color: "#ffc107" }} />
                           <Typography variant="body2" color="text.secondary">
-                            {course.rating}
+                            {course.assetCount.rating}
                           </Typography>
                         </Box>
                       </Box>
-                      <Box
+                      {/* <Box
                         sx={{ display: "flex", alignItems: "center", gap: 1 }}
                       >
                         <LinearProgress
@@ -338,21 +197,20 @@ const DashboardPage = () => {
                         <Typography variant="body2" color="text.secondary">
                           {course.progress}%
                         </Typography>
-                      </Box>
+                      </Box> */}
                     </Box>
                     <IconButton onClick={handleMenuClick}>
                       <MoreVert />
                     </IconButton>
                   </Box>
-                  {course.id !== recentCourses[recentCourses.length - 1].id && (
+                  {/* {course.id !== recentCourses[recentCourses.length - 1].id && (
                     <Divider />
-                  )}
+                  )} */}
                 </Box>
               ))}
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
           <Card sx={{ boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
             <CardContent>
               <Typography
@@ -441,97 +299,12 @@ const DashboardPage = () => {
           </Card>
         </Grid>
 
-        {/* Sidebar */}
         <Grid size={{ xs: 12, lg: 4 }}>
-          {/* Upcoming Events */}
-          <Card sx={{ mb: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
-            <CardContent>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}
-              >
-                <CalendarToday color="primary" />
-                <Typography variant="h6" component="h2" fontWeight="bold">
-                  Upcoming Events
-                </Typography>
-              </Box>
-              <List sx={{ p: 0 }}>
-                {upcomingEvents.map((event, index) => (
-                  <React.Fragment key={index}>
-                    <ListItem sx={{ px: 0 }}>
-                      <ListItemAvatar>
-                        <Avatar
-                          sx={{
-                            bgcolor: "primary.light",
-                            width: 32,
-                            height: 32,
-                          }}
-                        >
-                          <Timer sx={{ fontSize: 16 }} />
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={event.title}
-                        secondary={
-                          <Box>
-                            <Typography variant="body2" color="text.secondary">
-                              {event.time}
-                            </Typography>
-                            <Typography variant="body2" color="primary">
-                              {event.course} • {event.attendees} attendees
-                            </Typography>
-                          </Box>
-                        }
-                      />
-                    </ListItem>
-                    {index < upcomingEvents.length - 1 && (
-                      <Divider variant="inset" component="li" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
+          <EventCard upcomingEvents={upcomingEvents as Event[]} />
 
-          {/* Recent Activity */}
-          <Card sx={{ boxShadow: "0 4px 20px rgba(0,0,0,0.08)" }}>
-            <CardContent>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}
-              >
-                <Notifications color="secondary" />
-                <Typography variant="h6" component="h2" fontWeight="bold">
-                  Recent Activity
-                </Typography>
-              </Box>
-              <List sx={{ p: 0 }}>
-                {recentActivity.map((activity, index) => (
-                  <React.Fragment key={index}>
-                    <ListItem sx={{ px: 0 }}>
-                      <ListItemAvatar>
-                        <Avatar
-                          sx={{ width: 32, height: 32, fontSize: "0.875rem" }}
-                        >
-                          {activity.avatar}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={
-                          <Typography variant="body2">
-                            <strong>{activity.user}</strong> {activity.action}{" "}
-                            <strong>{activity.course}</strong>
-                          </Typography>
-                        }
-                        secondary={activity.time}
-                      />
-                    </ListItem>
-                    {index < recentActivity.length - 1 && (
-                      <Divider variant="inset" component="li" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
+          <ActivityCard
+            recentActivity={recentActivity?.content as Activity[]}
+          />
         </Grid>
       </Grid>
 

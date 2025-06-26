@@ -243,6 +243,8 @@ export type tCourse = {
   draft: boolean
   posts?: tPost[]
   assetCount: {
+    students: number
+    rating: number
     topicCount: number
     lessonCount: number
     labCount: number
@@ -517,4 +519,31 @@ export type ApiEndpointProps = {
   description: string
   children?: React.ReactNode
   parameters?: ParameterProps[]
+}
+export type Stat = {
+  totalCourses: number
+  activeStudents: number
+  completedLessons: number
+  revenue: number
+}
+export interface Event {
+  id?: string
+  userId: string
+  organizationId: string
+  title: string
+  startTime: string
+  course?: string
+  createdOn?: string
+  modifiedOn?: string
+  attendees?: number
+}
+export interface Activity {
+  id?: string
+  userId: string
+  activityType: string
+  action: string
+  description?: string
+  organizationId: string
+  createdOn?: string
+  modifiedOn?: string
 }

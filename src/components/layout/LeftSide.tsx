@@ -116,12 +116,11 @@ const menuData: TNavBar[] = [
   },
   {
     id: 3,
-    title: "Api Docs",
+    title: "API Docs",
     allowed_roles: ["User"],
     icon: <Api />,
     active: true,
     order: 0,
-    sub_nav: [],
     path: "/apidocs",
   },
   {
