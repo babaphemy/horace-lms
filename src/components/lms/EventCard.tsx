@@ -47,7 +47,8 @@ const EventCard = ({ upcomingEvents }: { upcomingEvents: Event[] }) => {
                         {event.startTime}
                       </Typography>
                       <Typography variant="body2" color="primary">
-                        {event.course} • {event?.attendees} attendees
+                        {event?.course ?? ""} • {event?.attendees ?? 0}
+                        attendees
                       </Typography>
                     </Box>
                   }
