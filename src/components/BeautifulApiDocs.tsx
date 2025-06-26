@@ -24,6 +24,10 @@ import {
   Plus,
   GraduationCap,
   Activity,
+  BookOpen,
+  Search,
+  FileText,
+  Building,
 } from "lucide-react"
 import { tableOfContents } from "@/components/lms/apidoc/content"
 import CodeBlock from "@/components/lms/apidoc/Codebloc"
@@ -32,8 +36,11 @@ import Alert from "@/components/lms/apidoc/Alert"
 import Table from "@/components/lms/apidoc/Table"
 import ApiEndpoint from "@/components/lms/apidoc/ApiEndpoint"
 import Header from "@/components/lms/apidoc/Header"
+import { useSession } from "next-auth/react"
+import { redirect } from "next/navigation"
 
-export default function BeautifulAPIDocsPage() {
+export default function BeautifulApiDocs() {
+  const { status } = useSession()
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [copiedCode, setCopiedCode] = useState("")
@@ -60,6 +67,12 @@ export default function BeautifulAPIDocsPage() {
 
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      redirect("/login?redirect=/apidocs")
+    }
+  }, [status])
 
   const copyToClipboard = (text: string, id: string) => {
     if (typeof window !== "undefined" && navigator.clipboard) {
@@ -132,7 +145,7 @@ export default function BeautifulAPIDocsPage() {
         if (event.key === "k") {
           event.preventDefault()
           ;(
-            document.querySelector(".search-input") as HTMLInputElement | null
+            document.querySelector(".search-input") as HTMLInputElement
           )?.focus()
         }
       }
@@ -926,8 +939,172 @@ export default function BeautifulAPIDocsPage() {
               </ApiEndpoint>
             </div>
 
-            {/* Coming Soon Items */}
-            <div
+            {/** upload user photo */}
+            <div id="upload-photo" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <ImageIcon size={20} />
+                Upload Photo for a user
+              </h3>
+
+              <p>Upload photo.</p>
+
+              <ApiEndpoint
+                method="PUT"
+                path="/api/v1/user/upload-photo"
+                description="Update photo for a user"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "userId": "string",
+  "filePath": "string"
+}`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/* delete user */}
+            <div id="delete-user" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Trash2 size={20} />
+                Delete User
+              </h3>
+
+              <p>Delete user data.</p>
+
+              <ApiEndpoint
+                method="DELETE"
+                path="/api/v1/user/deluser/{usr}"
+                description="Delete user data by ID"
+                parameters={[
+                  {
+                    name: "usr",
+                    type: "string",
+                    required: true,
+                    description: "ID of the user to delete",
+                  },
+                ]}
+              >
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 8px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Response
+                  </h5>
+                  <p>
+                    Returns status: <Badge variant="success">TRUE</Badge> or{" "}
+                    <Badge variant="error">FALSE</Badge>
+                  </p>
+                </div>
+              </ApiEndpoint>
+            </div>
+
+            {/*  Change Role */}
+            <div id="change-role" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Settings size={20} />
+                Change Role
+              </h3>
+
+              <p>Update the role of user.</p>
+
+              <ApiEndpoint
+                method="PUT"
+                path="/api/v1/user/change-role"
+                description="Update the role of user"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+                    "id": "string",
+                    "firstname": "string",
+                    "lastname": "string",
+                    "country": "string",
+                    "password": "string",
+                    "bio": "string",
+                    "organizationId": "string",
+                    "address": "string",
+                    "city": "string",
+                    "state": "string",
+                    "zip": "string",
+                    "phone": "string",
+                    "email": "string",
+                    "type": "string",
+                    "updatedOn": "2025-06-24T21:01:16.749Z",
+                    "modifiedOn": "2025-06-24T21:01:16.749Z",
+                    "createdOn": "2025-06-24T21:01:16.749Z",
+                    "token": "string",
+                    "dp": "string",
+                    "status": true,
+                    "roles": [
+                      "string"
+                    ],
+                    "message": "string",
+                    "courses": [
+                      "string"
+                    ],
+                    "rating": 1073741824,
+                    "reviews": [
+                      "string"
+                    ]
+                  }`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/* Coming Soon Items  --> Did not completely remove this part of the code for easy 
+            resuability when there is another coming soon feature*/}
+            {/* <div
               style={{
                 margin: "40px 0",
                 padding: "24px",
@@ -957,36 +1134,7 @@ export default function BeautifulAPIDocsPage() {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "10px",
-                    padding: "12px",
-                    background: "rgba(255, 255, 255, 0.5)",
-                    borderRadius: "8px",
-                    color: "#667eea",
-                    fontWeight: "500",
-                  }}
-                >
-                  <ImageIcon size={20} />
-                  <span>Upload Photo (DP)</span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    padding: "12px",
-                    background: "rgba(255, 255, 255, 0.5)",
-                    borderRadius: "8px",
-                    color: "#667eea",
-                    fontWeight: "500",
-                  }}
-                >
-                  <Trash2 size={20} />
-                  <span>Delete User</span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
+                    width: "fit-content",
                     gap: "10px",
                     padding: "12px",
                     background: "rgba(255, 255, 255, 0.5)",
@@ -999,7 +1147,7 @@ export default function BeautifulAPIDocsPage() {
                   <span>Change Role</span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </section>
 
           {/* Course Management Section */}
@@ -1121,6 +1269,921 @@ export default function BeautifulAPIDocsPage() {
     "draft": true,
     "cost": 40000
   }'`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            <div id="edit-course" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Edit3 size={20} />
+                Edit Course
+              </h3>
+
+              <p>Edit a course in the system.</p>
+
+              <ApiEndpoint
+                method="POST"
+                path="/api/v1/course/add"
+                description="Create a new course"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "id": "string",
+  "user": "string",
+  "courseName": "string",
+  "brief": "string",
+  "overview": "string",
+  "thumbnail": "string",
+  "category": "string",
+  "currency": "string",
+  "draft": boolean,
+  "cost": number
+}`}
+                </CodeBlock>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Parameters
+                  </h5>
+                  <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>user</code> - ID of the course author{" "}
+                      <Badge variant="error">required</Badge>
+                    </li>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>id</code> - ID of the course to be edited{" "}
+                      <Badge variant="error">required</Badge>
+                    </li>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>draft</code> - Set to <code>true</code> to save as
+                      draft, <code>false</code> to publish
+                    </li>
+                  </ul>
+                </div>
+
+                <CodeBlock
+                  language="bash"
+                  title="Example Request"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`curl -X 'POST' \\
+  '{basepath}/api/v1/course/add' \\
+  -H 'accept: */*' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "user": "684e665d59f9a83e5140d977",
+    "courseName": "Game Theory",
+    "brief": "This is a great course on how to improve your game.",
+    "overview": "<p>This course provides a decent introduction to game development.</p>",
+    "thumbnail": "",
+    "category": "web",
+    "currency": "NGN",
+    "draft": true,
+    "cost": 40000
+  }'`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/* Add Module */}
+            <div id="add-module" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <BookOpen size={20} />
+                Add Module
+              </h3>
+
+              <p>Add module to a course.</p>
+
+              <ApiEndpoint
+                method="POST"
+                path="/api/v1/course/module"
+                description="Add a module to a course"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "module": "string",
+  "description": "string",
+  "orderIndex": 1073741824,
+  "lessons": [
+    {
+      "id": "string",
+      "title": "string",
+      "video": "string",
+      "content": "string",
+      "type": "string",
+      "orderIndex": 1073741824
+    }
+  ],
+  "cid": "string",
+  "createdOn": "2025-06-20T23:22:14.464Z",
+  "updatedOn": "2025-06-20T23:22:14.464Z"
+}
+`}
+                </CodeBlock>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Parameters
+                  </h5>
+                  <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>cid</code> - ID of the course
+                      <Badge variant="error">required</Badge>
+                    </li>
+                  </ul>
+                </div>
+              </ApiEndpoint>
+            </div>
+
+            {/* Edit Module */}
+            <div id="edit-module" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Edit3 size={20} />
+                Add Module
+              </h3>
+
+              <p>Edit the module of a course.</p>
+
+              <ApiEndpoint
+                method="POST"
+                path="/api/v1/course/module"
+                description="Add a module to a course"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+                "id": "string",
+                "module": "string",
+                "description": "string",
+                "orderIndex": 1073741824,
+                "lessons": [
+                  {
+                    "id": "string",
+                    "title": "string",
+                    "video": "string",
+                    "content": "string",
+                    "type": "string",
+                    "orderIndex": 1073741824
+                  }
+                ],
+                "cid": "string",
+                "createdOn": "2025-06-20T23:22:14.464Z",
+                "updatedOn": "2025-06-20T23:22:14.464Z"
+                }
+                `}
+                </CodeBlock>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Parameters
+                  </h5>
+                  <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>id</code> - ID of the module
+                      <Badge variant="error">required</Badge>
+                    </li>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>cid</code> - ID of the course
+                      <Badge variant="error">required</Badge>
+                    </li>
+                  </ul>
+                </div>
+              </ApiEndpoint>
+            </div>
+
+            {/*organization courses */}
+            <div id="org-courses" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Building size={20} />
+                Organization Courses
+              </h3>
+
+              <p>Get the courses for an organization</p>
+
+              <ApiEndpoint
+                method="GET"
+                path="/api/v1/course/org-courses"
+                description="Get organization courses"
+                parameters={[
+                  {
+                    name: "page",
+                    type: "integer",
+
+                    description: "(query) Page number for pagination",
+                  },
+                  {
+                    name: "size",
+                    type: "integer",
+
+                    description: "(query) Number of courses per page",
+                  },
+                  {
+                    name: "orgId",
+                    type: "string",
+                    required: true,
+                    description: "(query) ID of the organization",
+                  },
+                ]}
+              >
+                <CodeBlock
+                  language="json"
+                  title="Sample Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "totalElements": 9007199254740991,
+  "totalPages": 1073741824,
+  "first": true,
+  "last": true,
+  "size": 1073741824,
+  "content": [
+    {
+      "author": "string",
+      "authorRole": "string",
+      "authorCompany": "string",
+      "id": "string",
+      "courseName": "string",
+      "brief": "string",
+      "overview": "string",
+      "createdOn": "2025-06-21T00:00:00.682Z",
+      "updatedOn": "2025-06-21",
+      "thumbnail": "string",
+      "category": "string",
+      "currency": "string",
+      "totalSteps": 1073741824,
+      "activeStep": 1073741824,
+      "students": 1073741824,
+      "curriculum": {
+        "topic": [
+          {
+            "id": "string",
+            "courseId": "string",
+            "title": "string",
+            "description": "string",
+            "orderIndex": 1073741824,
+            "createdOn": "2025-06-21T00:00:00.682Z",
+            "updatedOn": "2025-06-21T00:00:00.682Z",
+            "lessons": [
+              {
+                "id": "string",
+                "topicId": "string",
+                "title": "string",
+                "type": "string",
+                "video": "string",
+                "content": "string",
+                "orderIndex": 1073741824,
+                "createdOn": "2025-06-21T00:00:00.682Z",
+                "updatedOn": "2025-06-21T00:00:00.682Z"
+              }
+            ]
+          }
+        ],
+        "requirement": [
+          "string"
+        ],
+        "objective": [
+          "string"
+        ]
+      },
+      "draft": true,
+      "cost": 0.1,
+      "posts": [
+        {
+          "id": "string",
+          "user": "string",
+          "message": "string",
+          "type": "string",
+          "course": "string",
+          "createdOn": "2025-06-21T00:00:00.682Z",
+          "modifiedOn": "2025-06-21T00:00:00.682Z",
+          "like": 1073741824,
+          "share": 1073741824,
+          "rating": 1073741824
+        }
+      ]
+    }
+  ],
+  "number": 1073741824,
+  "sort": {
+    "empty": true,
+    "sorted": true,
+    "unsorted": true
+  },
+  "numberOfElements": 1073741824,
+  "pageable": {
+    "offset": 9007199254740991,
+    "sort": {
+      "empty": true,
+      "sorted": true,
+      "unsorted": true
+    },
+    "paged": true,
+    "pageNumber": 1073741824,
+    "pageSize": 1073741824,
+    "unpaged": true
+  },
+  "empty": true
+}`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/* my drafts */}
+            <div id="my-drafts" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <FileText size={20} />
+                My Drafts
+              </h3>
+
+              <p>Get user&apos;s draft</p>
+
+              <ApiEndpoint
+                method="GET"
+                path="/api/v1/course/mydrafts/{usr}"
+                description="Get drafted course by user ID"
+                parameters={[
+                  {
+                    name: "usr",
+                    type: "number",
+                    required: true,
+                    description: "ID of the user",
+                  },
+                ]}
+              >
+                <CodeBlock
+                  language="json"
+                  title="Sample Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`[
+  {
+    "id": "string",
+    "author": {
+      "id": "string",
+      "firstname": "string",
+      "lastname": "string",
+      "address": "string",
+      "city": "string",
+      "state": "string",
+      "zip": "string",
+      "phone": "string",
+      "country": "string",
+      "bio": "string",
+      "organizationId": "string",
+      "email": "string",
+      "password": "string",
+      "token": "string",
+      "dp": "string",
+      "active": true,
+      "createdOn": "2025-06-21T00:10:35.638Z",
+      "modifiedOn": "2025-06-21T00:10:35.638Z",
+      "lastLogin": "2025-06-21",
+      "roles": [
+        "string"
+      ]
+    },
+    "courseName": "string",
+    "category": "string",
+    "target": "string",
+    "brief": "string",
+    "overview": "string",
+    "price": 0.1,
+    "tax": 0.1,
+    "createdOn": "2025-06-21T00:10:35.638Z",
+    "thumbnail": "string",
+    "updatedOn": "2025-06-21",
+    "totalSteps": 1073741824,
+    "draft": true,
+    "currency": "string",
+    "organizationId": "string"
+  }
+]`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+            {/* course registration */}
+            <div id="course-registration" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <UserPlus size={20} />
+                Course Registration
+              </h3>
+
+              <p>Register a course for a user.</p>
+
+              <ApiEndpoint
+                method="POST"
+                path="/api/v1/reg/add"
+                description="Add a course for a user"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+               {
+  
+  "user": "string",
+  "comment": "string",
+  "fileName": "string",
+  "count": 1073741824,
+  "like": 1073741824,
+  "share": 1073741824,
+  "star": 0.1,
+  "price": 0.1,
+  "tax": 0.1,
+  "activeStep": 9007199254740991
+}
+
+                }
+                `}
+                </CodeBlock>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Parameters
+                  </h5>
+                  <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>user</code> - ID of the user
+                      <Badge variant="error">required</Badge>
+                    </li>
+                  </ul>
+                </div>
+              </ApiEndpoint>
+            </div>
+            {/* my courses */}
+            <div id="my-courses" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Book size={20} />
+                My Courses
+              </h3>
+
+              <p>Get the courses that user have registered for</p>
+
+              <ApiEndpoint
+                method="GET"
+                path="/api/v1/course/courses/my-registered/{usr}"
+                description="Get courses by author ID"
+                parameters={[
+                  {
+                    name: "usr",
+                    type: "number",
+                    required: true,
+                    description: "ID of the user",
+                  },
+                ]}
+              >
+                <CodeBlock
+                  language="json"
+                  title="Sample Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`[
+  {
+    "author": "string",
+    "authorRole": "string",
+    "authorCompany": "string",
+    "id": "string",
+    "courseName": "string",
+    "brief": "string",
+    "overview": "string",
+    "createdOn": "2025-06-21T00:11:37.943Z",
+    "updatedOn": "2025-06-21",
+    "thumbnail": "string",
+    "category": "string",
+    "currency": "string",
+    "totalSteps": 1073741824,
+    "activeStep": 1073741824,
+    "students": 1073741824,
+    "curriculum": {
+      "topic": [
+        {
+          "id": "string",
+          "courseId": "string",
+          "title": "string",
+          "description": "string",
+          "orderIndex": 1073741824,
+          "createdOn": "2025-06-21T00:11:37.943Z",
+          "updatedOn": "2025-06-21T00:11:37.943Z",
+          "lessons": [
+            {
+              "id": "string",
+              "topicId": "string",
+              "title": "string",
+              "type": "string",
+              "video": "string",
+              "content": "string",
+              "orderIndex": 1073741824,
+              "createdOn": "2025-06-21T00:11:37.943Z",
+              "updatedOn": "2025-06-21T00:11:37.943Z"
+            }
+          ]
+        }
+      ],
+      "requirement": [
+        "string"
+      ],
+      "objective": [
+        "string"
+      ]
+    },
+    "draft": true,
+    "cost": 0.1,
+    "posts": [
+      {
+        "id": "string",
+        "user": "string",
+        "message": "string",
+        "type": "string",
+        "course": "string",
+        "createdOn": "2025-06-21T00:11:37.943Z",
+        "modifiedOn": "2025-06-21T00:11:37.943Z",
+        "like": 1073741824,
+        "share": 1073741824,
+        "rating": 1073741824
+      }
+    ]
+  }
+]`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/*course by id */}
+            <div id="course-by-id" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Search size={20} />
+                Course by ID
+              </h3>
+
+              <p>Get a course by its ID.</p>
+
+              <ApiEndpoint
+                method="GET"
+                path="/api/v1/course/{cid}"
+                description="Get course by ID"
+                parameters={[
+                  {
+                    name: "cid",
+                    type: "number",
+                    required: true,
+                    description: "ID of the course to retrieve",
+                  },
+                  {
+                    name: "userId",
+                    type: "number",
+
+                    description: "(query) ID of the user requesting the course",
+                  },
+                ]}
+              >
+                <CodeBlock
+                  language="json"
+                  title="Sample Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "courseId": "string",
+  "courseName": "string",
+  "overview": "string",
+  "currency": "string",
+  "author": {
+    "id": "string",
+    "firstname": "string",
+    "lastname": "string",
+    "country": "string",
+    "password": "string",
+    "email": "string",
+    "type": "string",
+    "updatedOn": "2025-06-21T00:14:17.511Z",
+    "token": "string",
+    "dp": "string",
+    "status": true,
+    "roles": [
+      "string"
+    ],
+    "message": "string",
+    "courses": [
+      "string"
+    ],
+    "rating": 0.1,
+    "reviews": [
+      "string"
+    ]
+  },
+  "category": "string",
+  "target": "string",
+  "curriculum": {
+    "topic": [
+      {
+        "id": "string",
+        "courseId": "string",
+        "title": "string",
+        "description": "string",
+        "orderIndex": 1073741824,
+        "createdOn": "2025-06-21T00:14:17.511Z",
+        "updatedOn": "2025-06-21T00:14:17.511Z",
+        "lessons": [
+          {
+            "id": "string",
+            "topicId": "string",
+            "title": "string",
+            "type": "string",
+            "video": "string",
+            "content": "string",
+            "orderIndex": 1073741824,
+            "createdOn": "2025-06-21T00:14:17.511Z",
+            "updatedOn": "2025-06-21T00:14:17.511Z"
+          }
+        ]
+      }
+    ],
+    "requirement": [
+      "string"
+    ],
+    "objective": [
+      "string"
+    ]
+  },
+  "brief": "string",
+  "price": 0.1,
+  "tax": 0.1,
+  "posts": [
+    {
+      "id": "string",
+      "user": "string",
+      "message": "string",
+      "type": "string",
+      "course": "string",
+      "createdOn": "2025-06-21T00:14:17.511Z",
+      "modifiedOn": "2025-06-21T00:14:17.511Z",
+      "like": 1073741824,
+      "share": 1073741824,
+      "rating": 1073741824
+    }
+  ],
+  "signed": [
+    {
+      "additionalProp1": "string",
+      "additionalProp2": "string",
+      "additionalProp3": "string"
+    }
+  ],
+  "assetCount": {
+    "additionalProp1": 1073741824,
+    "additionalProp2": 1073741824,
+    "additionalProp3": 1073741824
+  },
+  "createdOn": "2025-06-21T00:14:17.511Z",
+  "thumbnail": "string",
+  "updatedOn": "2025-06-21",
+  "totalSteps": 1073741824,
+  "draft": true,
+  "registered": true
+}`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/*course by author */}
+            <div id="courses-by-author" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Users size={20} />
+                Courses by Author
+              </h3>
+
+              <p>Get courses by author ID.</p>
+
+              <ApiEndpoint
+                method="GET"
+                path="/api/v1/course/byauthor/{aid}"
+                description="Get courses by author ID"
+                parameters={[
+                  {
+                    name: "aid",
+                    type: "number",
+                    required: true,
+                    description:
+                      "ID of the author of the courses to be retrieved",
+                  },
+                ]}
+              >
+                <CodeBlock
+                  language="json"
+                  title="Sample Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`[
+  {
+    "id": "string",
+    "author": {
+      "id": "string",
+      "firstname": "string",
+      "lastname": "string",
+      "address": "string",
+      "city": "string",
+      "state": "string",
+      "zip": "string",
+      "phone": "string",
+      "country": "string",
+      "bio": "string",
+      "organizationId": "string",
+      "email": "string",
+      "password": "string",
+      "token": "string",
+      "dp": "string",
+      "active": true,
+      "createdOn": "2025-06-21T00:13:07.809Z",
+      "modifiedOn": "2025-06-21T00:13:07.809Z",
+      "lastLogin": "2025-06-21",
+      "roles": [
+        "string"
+      ]
+    },
+    "courseName": "string",
+    "category": "string",
+    "target": "string",
+    "brief": "string",
+    "overview": "string",
+    "price": 0.1,
+    "tax": 0.1,
+    "createdOn": "2025-06-21T00:13:07.809Z",
+    "thumbnail": "string",
+    "updatedOn": "2025-06-21",
+    "totalSteps": 1073741824,
+    "draft": true,
+    "currency": "string",
+    "organizationId": "string"
+  }
+]`}
                 </CodeBlock>
               </ApiEndpoint>
             </div>

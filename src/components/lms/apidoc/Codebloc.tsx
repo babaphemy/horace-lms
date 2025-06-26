@@ -16,7 +16,10 @@ const CodeBlock = ({
       overflow: "hidden",
       margin: "20px 0",
       boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+      maxHeight: "400px",
+      overflowY: "scroll",
     }}
+    className="no-scrollbar"
   >
     {title && (
       <div
@@ -26,6 +29,8 @@ const CodeBlock = ({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          position: "sticky",
+          top: 0,
         }}
       >
         <span style={{ color: "#e2e8f0", fontSize: "14px", fontWeight: "500" }}>

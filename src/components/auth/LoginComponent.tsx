@@ -23,8 +23,8 @@ import {
 } from "@mui/material"
 import { signIn, useSession } from "next-auth/react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
-import React, { useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import React, { Suspense, useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import * as yup from "yup"
 
@@ -53,8 +53,9 @@ type loginProps = {
 type Props = {
   modal?: boolean
 }
-const LoginComponent = (props: Props) => {
+const Login = (props: Props) => {
   const { data: session, status } = useSession()
+  const params = useSearchParams()
   const { setUser } = useUser()
   const { modal = false } = props
   const dispatch = React.useContext(AppDpx)
@@ -65,14 +66,16 @@ const LoginComponent = (props: Props) => {
     show: boolean
     msg: string
   } | null>(null)
+  const redirectFrom = params.get("redirect")
 
   useEffect(() => {
     // @ts-expect-error: next auth already defined this correctly
     if (status === "authenticated" || session?.user?.email) {
       notifySuccess("Login successful! Redirecting...")
-      router.push("/dashboard")
+
+      router.push(redirectFrom || "/dashboard")
     }
-  }, [status, session?.user?.email, router])
+  }, [status, session?.user?.email, router, redirectFrom])
 
   const {
     control,
@@ -300,6 +303,14 @@ const LoginComponent = (props: Props) => {
         Don&apos;t have an account? Sign Up
       </Typography>
     </Box>
+  )
+}
+
+const LoginComponent = (props: Props) => {
+  return (
+    <Suspense fallback={<Typography>Loading...</Typography>}>
+      <Login {...props} />
+    </Suspense>
   )
 }
 

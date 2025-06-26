@@ -1,11 +1,13 @@
 import { ApiEndpointProps, BadgeProps } from "@/types/types"
 import Badge from "./Badge"
+import Parameter from "./Parameter"
 
 const ApiEndpoint = ({
   method,
   path,
   description,
   children,
+  parameters,
 }: ApiEndpointProps) => (
   <div
     style={{
@@ -52,6 +54,19 @@ const ApiEndpoint = ({
         {description}
       </p>
     </div>
+
+    {parameters && parameters.length > 0 && (
+      <div style={{ padding: "20px", borderBottom: "1px solid #e2e8f0" }}>
+        <h4
+          style={{ margin: "0 0 16px 0", color: "#1e293b", fontSize: "16px" }}
+        >
+          Parameters
+        </h4>
+        {parameters.map((param, index) => (
+          <Parameter key={index} {...param} />
+        ))}
+      </div>
+    )}
     <div style={{ padding: "20px" }}>{children}</div>
   </div>
 )
