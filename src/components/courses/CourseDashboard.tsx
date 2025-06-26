@@ -73,6 +73,8 @@ const processedSubjects: tCourse[] = [
       quizCount: 4,
       downloadCount: 2,
       noteCount: 10,
+      rating: 5,
+      students: 109,
     },
   },
 ]

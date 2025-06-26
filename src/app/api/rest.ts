@@ -187,6 +187,23 @@ const isCourseReg = async (id: string) => {
   }
   return response.json()
 }
+const recentCourses = async (startDate: string, endDate: string) => {
+  const response = await fetch(
+    `${basePath}course/range/${startDate}/${endDate}`,
+    auth
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const dashboardStat = async (userId: string) => {
+  const response = await fetch(`${basePath}user/dashboard/${userId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
 const contactUs = async (data: {
   firstname: string
   lastname: string
@@ -392,7 +409,23 @@ const addUserToOrganization = async (userId: string, orgId: string) => {
   return response.json()
 }
 
+const activities = async (userId: string) => {
+  const response = await fetch(`${basePath}activity/user/${userId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+const events = async (userId: string) => {
+  const response = await fetch(`${basePath}event/${userId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 export {
+  activities,
   addUserToOrganization,
   addReview,
   addSubjectComplete,
@@ -401,8 +434,10 @@ export {
   coursesByAuthor,
   createOrg,
   createPaymentIntent,
+  dashboardStat,
   doEdit,
   doToken,
+  events,
   fetchCourse,
   fetchCourses,
   fetcher,
@@ -421,6 +456,7 @@ export {
   myRegisteredCourses,
   paystacktx,
   portalAuth,
+  recentCourses,
   registerUser,
   resetOwnPass,
   resetPass,
