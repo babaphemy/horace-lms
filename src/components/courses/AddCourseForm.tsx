@@ -41,8 +41,6 @@ const AddCourseForm = () => {
         setImagePreview(reader.result as string)
       }
       reader.readAsDataURL(file)
-
-      // Upload to S3 - simply pass the file as it is a Blob
       const uploadUrl = await uploadImageToS3(file)
 
       setValue("thumbnail", uploadUrl)

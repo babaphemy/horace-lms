@@ -1,3 +1,4 @@
+"use client"
 import { Api, Book, GridView, Settings } from "@mui/icons-material"
 import ClearIcon from "@mui/icons-material/Clear"
 import { Box } from "@mui/material"
@@ -7,6 +8,8 @@ import Image from "next/image"
 import Link from "next/link"
 import React from "react"
 import SubMenu, { TNavBar } from "./SubMenu"
+import { useSession } from "next-auth/react"
+import { AccessRoles } from "@/utils/util"
 
 const SidebarNav = styled("nav")(() => ({
   background: "#fff",
@@ -32,6 +35,15 @@ interface SidebarProps {
 }
 
 const LeftSide: React.FC<SidebarProps> = ({ toogleActive }) => {
+  const { data: session } = useSession()
+  const allowedMenu = menuData.filter((item: TNavBar) => {
+    const userRoles = session?.user?.roles || [AccessRoles.USER]
+    const hasPermission = item.allowed_roles.some((role) =>
+      userRoles.includes(role)
+    )
+    return hasPermission && item.active
+  })
+
   return (
     <Box className="leftSidebarDark">
       <SidebarNav className="LeftSidebarNav">
@@ -67,8 +79,8 @@ const LeftSide: React.FC<SidebarProps> = ({ toogleActive }) => {
               <ClearIcon />
             </IconButton>
           </Box>
-          {menuData.map((item, index: number) => {
-            return <SubMenu item={item} key={index} />
+          {allowedMenu.map((item) => {
+            return <SubMenu item={item} key={item.id} />
           })}
         </SidebarWrap>
       </SidebarNav>
@@ -82,7 +94,7 @@ const menuData: TNavBar[] = [
   {
     id: 1,
     title: "Dashboard",
-    allowed_roles: ["User"],
+    allowed_roles: [AccessRoles.USER],
     icon: <GridView />,
     active: true,
     order: 0,
@@ -92,7 +104,7 @@ const menuData: TNavBar[] = [
   {
     id: 2,
     title: "Courses",
-    allowed_roles: ["Instructor"],
+    allowed_roles: [AccessRoles.INSTRUCTOR, AccessRoles.ADMIN],
     icon: <Book />,
     active: true,
     order: 1,
@@ -100,14 +112,14 @@ const menuData: TNavBar[] = [
       {
         title: "Add",
         path: "/dashboard/courses/add",
-        allowed_roles: ["Admin"],
+        allowed_roles: [AccessRoles.ADMIN, AccessRoles.INSTRUCTOR],
         active: true,
         order: 0,
       },
       {
         title: "My Courses",
         path: "/dashboard/courses",
-        allowed_roles: ["Admin"],
+        allowed_roles: [AccessRoles.ADMIN],
         active: true,
         order: 1,
       },
@@ -117,7 +129,7 @@ const menuData: TNavBar[] = [
   {
     id: 3,
     title: "API Docs",
-    allowed_roles: ["User"],
+    allowed_roles: [AccessRoles.ADMIN, AccessRoles.INSTRUCTOR],
     icon: <Api />,
     active: true,
     order: 0,
@@ -128,42 +140,42 @@ const menuData: TNavBar[] = [
     title: "Settings",
     path: "#",
     icon: <Settings />,
-    allowed_roles: ["Admin"],
+    allowed_roles: [AccessRoles.ADMIN],
     active: true,
     order: 2,
     sub_nav: [
       {
         title: "Account",
         path: "/settings/account/",
-        allowed_roles: ["Admin"],
+        allowed_roles: [AccessRoles.ADMIN],
         active: true,
         order: 0,
       },
       {
         title: "Security",
         path: "/settings/security/",
-        allowed_roles: ["Admin"],
+        allowed_roles: [AccessRoles.ADMIN],
         active: true,
         order: 1,
       },
       {
         title: "Privacy Policy",
         path: "/dashboard/settings/privacy-policy/",
-        allowed_roles: ["Admin"],
+        allowed_roles: [AccessRoles.ADMIN],
         active: true,
         order: 2,
       },
       {
         title: "Organization",
         path: "/dashboard/settings/org/",
-        allowed_roles: ["Admin"],
+        allowed_roles: [AccessRoles.ADMIN],
         active: true,
         order: 3,
       },
       {
         title: "Logout",
         path: "/authentication/logout/",
-        allowed_roles: ["Admin"],
+        allowed_roles: [AccessRoles.ADMIN],
         active: true,
         order: 4,
       },

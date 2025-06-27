@@ -170,7 +170,7 @@ const DashboardPage = () => {
                             sx={{ fontSize: 16, color: "text.secondary" }}
                           />
                           <Typography variant="body2" color="text.secondary">
-                            {course.assetCount.students} students
+                            {course?.assetCount?.students || 0} students
                           </Typography>
                         </Box>
                         <Box
@@ -182,7 +182,7 @@ const DashboardPage = () => {
                         >
                           <Star sx={{ fontSize: 16, color: "#ffc107" }} />
                           <Typography variant="body2" color="text.secondary">
-                            {course.assetCount.rating}
+                            {course?.assetCount?.rating}
                           </Typography>
                         </Box>
                       </Box>
