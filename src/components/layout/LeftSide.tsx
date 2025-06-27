@@ -78,8 +78,8 @@ const LeftSide: React.FC<SidebarProps> = ({ toogleActive }) => {
               <ClearIcon />
             </IconButton>
           </Box>
-          {allowedMenu.map((item, index: number) => {
-            return <SubMenu item={item} key={index} />
+          {allowedMenu.map((item) => {
+            return <SubMenu item={item} key={item.id} />
           })}
         </SidebarWrap>
       </SidebarNav>
