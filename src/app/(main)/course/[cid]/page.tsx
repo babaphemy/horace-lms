@@ -1,13 +1,11 @@
 "use client"
 import { addUserCourse, fetchCourse } from "@/app/api/rest"
-import Header from "@/components/Header"
 import SimilarCard from "@/components/SimilarCard"
 import ModalLogin from "@/components/auth/ModalLogin"
 import SignUpLogin from "@/components/auth/ModalSignUp"
 import CourseObjectives from "@/components/courses/CourseObjectives"
 import { ReviewModal } from "@/components/courses/CourseReview"
 import CourseHeader from "@/components/layout/CourseHeader"
-import FooterLte from "@/components/layout/FooterLte"
 import PaymentModal from "@/components/payment/PaymentModal"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx, Appcontext } from "@/context/AppContext"
@@ -185,8 +183,6 @@ const Detailb = () => {
 
   return (
     <>
-      <Header />
-
       <CourseHeader courseProps={headerProps} />
       <Container
         maxWidth="lg"
@@ -390,7 +386,6 @@ const Detailb = () => {
       <SignUpLogin />
       <PaymentModal course={data} />
       <ReviewModal userId={user?.id || ""} courseId={courseId} />
-      <FooterLte />
     </>
   )
 }
