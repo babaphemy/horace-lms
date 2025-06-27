@@ -130,7 +130,7 @@ export default function Home() {
       )
       if (!phi3Model) {
         notifyError(
-          "Phi3 model not found in Ollama. Please run: ollama pull phi3"
+          "Phi3 model not found in Ollama. Please run: ollama pull phi3:latest"
         )
       }
     } catch {
