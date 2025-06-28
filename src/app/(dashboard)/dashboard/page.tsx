@@ -33,19 +33,33 @@ import {
   Typography,
 } from "@mui/material"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import React, { useMemo, useState } from "react"
 import { useQuery } from "react-query"
 
 const DashboardPage = () => {
+  const router = useRouter()
   const { data: session } = useSession()
   const userId = session?.user?.id
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLElement>,
+    cid: string
+  ) => {
     setAnchorEl(event.currentTarget)
+    setSelectedCourseId(cid)
   }
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (type: string) => {
+    switch (type) {
+      case "edit":
+        router.push(`/dashboard/courses/${selectedCourseId}`)
+        break
+      default:
+        break
+    }
     setAnchorEl(null)
   }
 
@@ -199,7 +213,7 @@ const DashboardPage = () => {
                         </Typography>
                       </Box> */}
                     </Box>
-                    <IconButton onClick={handleMenuClick}>
+                    <IconButton onClick={(e) => handleMenuClick(e, course.id)}>
                       <MoreVert />
                     </IconButton>
                   </Box>
@@ -308,16 +322,21 @@ const DashboardPage = () => {
         </Grid>
       </Grid>
 
-      {/* Menu */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleMenuClose}>Edit Course</MenuItem>
-        <MenuItem onClick={handleMenuClose}>View Analytics</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Manage Students</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Course Settings</MenuItem>
+        <MenuItem onClick={() => handleMenuClose("edit")}>Edit Course</MenuItem>
+        <MenuItem onClick={() => handleMenuClose("analytics")}>
+          View Analytics
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuClose("students")}>
+          Manage Students
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuClose("settings")}>
+          Course Settings
+        </MenuItem>
       </Menu>
     </Container>
   )

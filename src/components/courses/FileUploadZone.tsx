@@ -1,4 +1,4 @@
-import { LESSONTYPE } from "@/types/types"
+import { LESSONTYPE, Uploader } from "@/types/types"
 import {
   InsertDriveFile as FileIcon,
   VideoFile as VideoFileIcon,
@@ -13,17 +13,12 @@ import {
 } from "@mui/material"
 import { useDropzone } from "react-dropzone"
 
-import { uploadVideoToS3, uploadImageToS3 } from "@/app/api/rest"
 import { notifyError, notifySuccess } from "@/utils/notification"
 import React from "react"
 import { useFormContext } from "react-hook-form"
+import { getPresignedUrl } from "@/app/api/rest"
 
-type FileUploadProps = {
-  lessonIndex: number
-  topicIndex: number
-  lessonType: string
-  currentFile?: string
-}
+const UPLOAD_TIMEOUT_MS = 300000
 
 const VIDEO_TYPES = {
   "video/mp4": [".mp4"],
@@ -49,6 +44,56 @@ const DOCUMENT_TYPES = {
   ],
 }
 
+const uploadFileWithProgress = async (
+  file: File,
+  presignedUrl: string,
+  onProgress: (_progress: number) => void
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+
+    xhr.upload.addEventListener("progress", (e) => {
+      if (e.lengthComputable) {
+        const progress = Math.round((e.loaded / e.total) * 100)
+        onProgress(progress)
+      }
+    })
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        onProgress(100)
+        resolve(presignedUrl.split("?")[0])
+      } else {
+        reject(
+          new Error(
+            `Upload failed with status: ${xhr.status} - ${xhr.statusText}`
+          )
+        )
+      }
+    }
+
+    xhr.onerror = () => {
+      reject(new Error("Network error occurred during upload"))
+    }
+
+    xhr.ontimeout = () => {
+      reject(new Error("Upload timed out"))
+    }
+
+    xhr.timeout = UPLOAD_TIMEOUT_MS
+    xhr.open("PUT", presignedUrl)
+    xhr.setRequestHeader("Content-Type", file.type)
+    xhr.send(file)
+  })
+}
+
+type FileUploadProps = {
+  lessonIndex: number
+  topicIndex: number
+  lessonType: string
+  currentFile?: string
+}
+
 const FileUploadZone: React.FC<FileUploadProps> = ({
   lessonIndex,
   topicIndex,
@@ -63,21 +108,27 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
   )
 
   const acceptedTypes =
-    lessonType === LESSONTYPE.video ? VIDEO_TYPES : DOCUMENT_TYPES
+    lessonType === LESSONTYPE.VIDEO ? VIDEO_TYPES : DOCUMENT_TYPES
 
   const handleFileUpload = async (file: File) => {
     setUploading(true)
     setUploadProgress(0)
 
     try {
-      const uploadFunction =
-        lessonType === LESSONTYPE.video ? uploadVideoToS3 : uploadImageToS3
+      const uploader: Uploader = {
+        filename: file.name,
+        filetype: file.type,
+      }
 
-      const filePath: string = await uploadFunction(file)
+      const { url: presignedUrl } = await getPresignedUrl(uploader)
+      const filePath = await uploadFileWithProgress(
+        file,
+        presignedUrl,
+        setUploadProgress
+      )
 
-      // Set the appropriate field based on lesson type
       const fieldName =
-        lessonType === LESSONTYPE.video
+        lessonType === LESSONTYPE.VIDEO
           ? `topics.${topicIndex}.lessons.${lessonIndex}.video`
           : `topics.${topicIndex}.lessons.${lessonIndex}.content`
 
@@ -111,13 +162,12 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
 
   const removeFile = () => {
     const fieldName =
-      lessonType === LESSONTYPE.video
+      lessonType === LESSONTYPE.VIDEO
         ? `topics.${topicIndex}.lessons.${lessonIndex}.video`
         : `topics.${topicIndex}.lessons.${lessonIndex}.content`
 
     setValue(fieldName, "")
     setUploadedFile("")
-    // TODO: Call API to delete file from S3 if needed
   }
 
   return (
@@ -162,7 +212,7 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
             </Box>
           ) : (
             <>
-              {lessonType === LESSONTYPE.video ? (
+              {lessonType === LESSONTYPE.VIDEO ? (
                 <VideoFileIcon
                   sx={{ fontSize: 48, color: "primary.main", mb: 2 }}
                 />
@@ -194,7 +244,7 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            {lessonType === LESSONTYPE.video ? (
+            {lessonType === LESSONTYPE.VIDEO ? (
               <VideoFileIcon sx={{ mr: 2, color: "primary.main" }} />
             ) : (
               <FileIcon sx={{ mr: 2, color: "primary.main" }} />
@@ -228,4 +278,5 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
     </Box>
   )
 }
+
 export default FileUploadZone

@@ -1,10 +1,12 @@
 "use client"
-import { Box } from "@mui/material"
 import { useParams } from "next/navigation"
+import CourseEditor from "@/components/lms/courseEditor/CourseEditor"
+import { useSession } from "next-auth/react"
 
-const EditCoursePage = () => {
+export default function EditCoursePage() {
+  const { data: session } = useSession()
   const params = useParams()
-  const { cid } = params
-  return <Box>Edit Course {cid}</Box>
+  const { id } = params
+
+  return <CourseEditor id={id as string} userId={session?.user.id as string} />
 }
-export default EditCoursePage

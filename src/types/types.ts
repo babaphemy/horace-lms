@@ -115,12 +115,15 @@ export type tCurriculum = {
   requirement?: string[]
 }
 export enum LESSONTYPE {
-  video = "video",
-  document = "document",
-  html = "html",
-  pdf = "pdf",
-  quiz = "quiz",
-  text = "text",
+  VIDEO = "VIDEO",
+  DOCUMENT = "DOCUMENT",
+  HTML = "HTML",
+  PDF = "PDF",
+  QUIZ = "QUIZ",
+  TEXT = "TEXT",
+  ASSIGNMENT = "ASSIGNMENT",
+  PRESENTATION = "PRESENTATION",
+  OTHER = "OTHER",
 }
 export interface CourseCreate {
   id?: string
@@ -546,4 +549,9 @@ export interface Activity {
   organizationId: string
   createdOn?: string
   modifiedOn?: string
+}
+export type Uploader = {
+  filename: string
+  filetype: string
+  expiration?: number | null
 }

@@ -141,7 +141,7 @@ const SubjectCreateComp = () => {
           lessons: [
             {
               title: "",
-              type: LESSONTYPE.text,
+              type: LESSONTYPE.TEXT,
               orderIndex: undefined,
               video: "",
               content: "",
@@ -188,7 +188,7 @@ const SubjectCreateComp = () => {
                     updatedOn: new Date(),
                     id: lesson.id,
                     title: lesson.title || "",
-                    type: lesson.type || LESSONTYPE.text,
+                    type: lesson.type || LESSONTYPE.TEXT,
                     content: lesson.content || "",
                     video: lesson.video || "",
                   })) || baseDefaults.topics[0].lessons,

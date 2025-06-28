@@ -92,3 +92,34 @@ export const curriculumMapSchema = yup.object().shape({
   requirement: yup.array().of(yup.string()).optional(),
   objective: yup.array().of(yup.string()).optional(),
 })
+export const courseSchema = yup.object().shape({
+  user: yup.string().required("User ID is required"),
+  courseName: yup.string().required("Course name is required"),
+  category: yup.string().required("Category is required"),
+  target: yup.string().required("Target audience is required"),
+  brief: yup.string().required("Brief description is required"),
+  overview: yup.string().required("Overview is required"),
+  price: yup
+    .number()
+    .min(0, "Price must be positive")
+    .required("Price is required"),
+  tax: yup.number().min(0, "Tax must be positive").required("Tax is required"),
+  currency: yup.string().required("Currency is required"),
+  cost: yup.number().optional(),
+})
+
+export const topicSchema = yup.object().shape({
+  module: yup.string().required("Module name is required"),
+  description: yup.string().required("Description is required"),
+  dueDate: yup.date().required("Due date is required"),
+})
+
+export const lessonSchema = yup.object().shape({
+  title: yup.string().required("Lesson title is required"),
+  video: yup.string().optional(),
+  orderIndex: yup.number().optional().integer("Order index must be an integer"),
+  type: yup
+    .mixed<LESSONTYPE>()
+    .oneOf(Object.values(LESSONTYPE), "Invalid lesson type"),
+  content: yup.string().required("Content is required"),
+})

@@ -1,6 +1,7 @@
 import {
   CardDto,
   CourseComplete,
+  CourseCreate,
   CourseResponse,
   orgDto,
   tInterview,
@@ -8,6 +9,7 @@ import {
   Tranx,
   tReview,
   tUser,
+  Uploader,
   UserDto,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
@@ -115,6 +117,13 @@ const resetOwnPass = async (data: {
     throw new Error(resp.statusText)
   }
   return resp.text()
+}
+const addCourseDetail = async (course: CourseCreate): Promise<CourseCreate> => {
+  const resp = await fetch(`${basePath}course/add`, PostSettings(course))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
 }
 const addSubjectComplete = async (
   subject: CourseComplete
@@ -378,6 +387,33 @@ const updateDp = async (data: tUser) => {
   }
   return resp.json()
 }
+const getPresignedUrl = async (uploader: Uploader) => {
+  const resp = await fetch(
+    `${basePath}info/s3/presigned`,
+    PostSettings(uploader)
+  )
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+
+const uploadPresignedUrl = async (
+  file: File,
+  presignedUrl: string
+): Promise<string> => {
+  const response = await fetch(presignedUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": file.type,
+    },
+    body: file,
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to upload file: ${response.statusText}`)
+  }
+  return presignedUrl.split("?")[0] // Return the URL without query parameters
+}
 const manageDraft = async (obj: {
   id: string
   draft: boolean
@@ -425,6 +461,7 @@ const events = async (userId: string) => {
 }
 
 export {
+  addCourseDetail,
   activities,
   addUserToOrganization,
   addReview,
@@ -442,6 +479,7 @@ export {
   fetchCourses,
   fetcher,
   fetchLMS,
+  getPresignedUrl,
   getAllNavigationItems,
   getAllUsers,
   getCourseLecture,
@@ -464,6 +502,7 @@ export {
   updateDp,
   uploadImageToS3,
   uploadVideoToS3,
+  uploadPresignedUrl,
   userOrganization,
   verifyEmail,
 }
