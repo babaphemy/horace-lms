@@ -1,13 +1,17 @@
 import {
   CardDto,
   CourseComplete,
+  CourseCreate,
   CourseResponse,
+  LessonDto,
   orgDto,
   tInterview,
+  TopicDto,
   TransactionData,
   Tranx,
   tReview,
   tUser,
+  Uploader,
   UserDto,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
@@ -116,6 +120,13 @@ const resetOwnPass = async (data: {
   }
   return resp.text()
 }
+const addCourseDetail = async (course: CourseCreate): Promise<CourseCreate> => {
+  const resp = await fetch(`${basePath}course/add`, PostSettings(course))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
 const addSubjectComplete = async (
   subject: CourseComplete
 ): Promise<CourseResponse> => {
@@ -221,6 +232,13 @@ const contactUs = async (data: {
   }
   return response.text()
 }
+const addTopic = async (data: TopicDto): Promise<TopicDto> => {
+  const response = await fetch(`${basePath}course/module`, PostSettings(data))
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 const getCourseLecture = async (data: {
   id: string
   user: string
@@ -229,6 +247,16 @@ const getCourseLecture = async (data: {
   const response = await fetch(`${basePath}course/lecture`, PostSettings(data))
   if (!response.ok) {
     return { error: response.status }
+  }
+  return response.json()
+}
+const addLecture = async (data: LessonDto): Promise<LessonDto> => {
+  const response = await fetch(
+    `${basePath}course/module/lesson`,
+    PostSettings(data)
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
   }
   return response.json()
 }
@@ -378,6 +406,33 @@ const updateDp = async (data: tUser) => {
   }
   return resp.json()
 }
+const getPresignedUrl = async (uploader: Uploader) => {
+  const resp = await fetch(
+    `${basePath}info/s3/presigned`,
+    PostSettings(uploader)
+  )
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+
+const uploadPresignedUrl = async (
+  file: File,
+  presignedUrl: string
+): Promise<string> => {
+  const response = await fetch(presignedUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": file.type,
+    },
+    body: file,
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to upload file: ${response.statusText}`)
+  }
+  return presignedUrl.split("?")[0] // Return the URL without query parameters
+}
 const manageDraft = async (obj: {
   id: string
   draft: boolean
@@ -425,6 +480,9 @@ const events = async (userId: string) => {
 }
 
 export {
+  addCourseDetail,
+  addTopic,
+  addLecture,
   activities,
   addUserToOrganization,
   addReview,
@@ -442,6 +500,7 @@ export {
   fetchCourses,
   fetcher,
   fetchLMS,
+  getPresignedUrl,
   getAllNavigationItems,
   getAllUsers,
   getCourseLecture,
@@ -464,6 +523,7 @@ export {
   updateDp,
   uploadImageToS3,
   uploadVideoToS3,
+  uploadPresignedUrl,
   userOrganization,
   verifyEmail,
 }

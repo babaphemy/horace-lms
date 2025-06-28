@@ -175,41 +175,43 @@ const ReviewSubjectForm = () => {
                     <Typography variant="subtitle2" color="text.secondary">
                       Lessons ({topic.lessons?.length || 0})
                     </Typography>
-                    {topic.lessons?.length > 0 ? (
-                      topic.lessons.map((lesson, lessonIndex: number) => (
-                        <Box key={lessonIndex} sx={{ ml: 2, mt: 1 }}>
-                          <Typography variant="body2">
-                            • {lesson.title}
-                            {lesson.dueDate &&
-                              ` (Due: ${new Date(
-                                lesson.dueDate
-                              ).toLocaleDateString()})`}
-                          </Typography>
-                          {lesson.content ? (
-                            <Box
-                              sx={{
-                                mt: 0.5,
-                                mb: 1.5,
-                                pl: 1,
-                                borderLeft: "2px solid",
-                                borderColor: "divider",
-                                fontSize: "0.875rem",
-                              }}
-                              dangerouslySetInnerHTML={{
-                                __html: lesson.content,
-                              }}
-                            />
-                          ) : (
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ ml: 1 }}
-                            >
-                              No description provided
+                    {(topic.lessons ?? []).length > 0 ? (
+                      (topic.lessons ?? []).map(
+                        (lesson, lessonIndex: number) => (
+                          <Box key={lessonIndex} sx={{ ml: 2, mt: 1 }}>
+                            <Typography variant="body2">
+                              • {lesson.title}
+                              {lesson.dueDate &&
+                                ` (Due: ${new Date(
+                                  lesson.dueDate
+                                ).toLocaleDateString()})`}
                             </Typography>
-                          )}
-                        </Box>
-                      ))
+                            {lesson.content ? (
+                              <Box
+                                sx={{
+                                  mt: 0.5,
+                                  mb: 1.5,
+                                  pl: 1,
+                                  borderLeft: "2px solid",
+                                  borderColor: "divider",
+                                  fontSize: "0.875rem",
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: lesson.content,
+                                }}
+                              />
+                            ) : (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ ml: 1 }}
+                              >
+                                No description provided
+                              </Typography>
+                            )}
+                          </Box>
+                        )
+                      )
                     ) : (
                       <Typography
                         variant="body2"

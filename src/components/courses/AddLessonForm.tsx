@@ -82,8 +82,8 @@ const TopicAccordion: React.FC<{
               `topics.${topicIndex}.lessons.${lessonIndex}.type`
             )
             const showFileUpload =
-              lessonType === LESSONTYPE.video ||
-              lessonType === LESSONTYPE.document
+              lessonType === LESSONTYPE.VIDEO ||
+              lessonType === LESSONTYPE.DOCUMENT
 
             return (
               <Paper key={lessonField.id} variant="outlined" sx={{ p: 2 }}>
@@ -139,7 +139,7 @@ const TopicAccordion: React.FC<{
                         topicIndex={topicIndex}
                         lessonType={lessonType}
                         currentFile={
-                          lessonType === LESSONTYPE.video
+                          lessonType === LESSONTYPE.VIDEO
                             ? watch(
                                 `topics.${topicIndex}.lessons.${lessonIndex}.video`
                               )
@@ -151,7 +151,7 @@ const TopicAccordion: React.FC<{
                     </Grid>
                   )}
 
-                  {lessonType === LESSONTYPE.text && (
+                  {lessonType === LESSONTYPE.TEXT && (
                     <Grid size={{ xs: 12 }}>
                       <Controller
                         name={`topics.${topicIndex}.lessons.${lessonIndex}.content`}
@@ -174,7 +174,7 @@ const TopicAccordion: React.FC<{
                     </Grid>
                   )}
 
-                  {lessonType === LESSONTYPE.html && (
+                  {lessonType === LESSONTYPE.HTML && (
                     <Grid size={{ xs: 12 }}>
                       <HTMLContentEditor
                         topicIndex={topicIndex}
@@ -211,7 +211,7 @@ const TopicAccordion: React.FC<{
               appendLesson({
                 tid: "",
                 title: "",
-                type: LESSONTYPE.text,
+                type: LESSONTYPE.TEXT,
                 content: "",
                 video: "",
                 dueDate: new Date(),
