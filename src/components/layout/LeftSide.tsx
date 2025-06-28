@@ -94,11 +94,14 @@ const menuData: TNavBar[] = [
   {
     id: 1,
     title: "Dashboard",
-    allowed_roles: [AccessRoles.USER],
+    allowed_roles: [
+      AccessRoles.USER,
+      AccessRoles.ADMIN,
+      AccessRoles.INSTRUCTOR,
+    ],
     icon: <GridView />,
     active: true,
     order: 0,
-    sub_nav: [],
     path: "/dashboard",
   },
   {
