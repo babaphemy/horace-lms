@@ -90,7 +90,7 @@ const uploadFileWithProgress = async (
 type FileUploadProps = {
   lessonIndex: number
   topicIndex: number
-  lessonType: string
+  lessonType: LESSONTYPE
   currentFile?: string
 }
 
