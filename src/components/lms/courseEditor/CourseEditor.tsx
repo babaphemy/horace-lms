@@ -312,6 +312,10 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         return <Quiz />
       case LESSONTYPE.ASSIGNMENT:
         return <Assignment />
+      case LESSONTYPE.PRESENTATION:
+        return <Assignment /> // Placeholder icon for PRESENTATION
+      case LESSONTYPE.OTHER:
+        return <Article /> // Placeholder icon for OTHER
       default:
         return <Article />
     }
