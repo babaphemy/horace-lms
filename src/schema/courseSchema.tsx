@@ -123,6 +123,7 @@ export const lessonSchema = yup.object().shape({
   orderIndex: yup.number().optional().integer("Order index must be an integer"),
   type: yup
     .mixed<LESSONTYPE>()
-    .oneOf(Object.values(LESSONTYPE), "Invalid lesson type"),
+    .oneOf(Object.values(LESSONTYPE), "Invalid lesson type")
+    .required("Lesson type is required"),
   content: yup.string().required("Content is required"),
 })
