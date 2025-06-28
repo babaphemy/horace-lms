@@ -26,13 +26,24 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 export const categories = [
-  "web",
-  "mobile",
-  "data science",
+  "Web",
+  "Mobile",
+  "Data Science",
   "AI",
   "ML",
-  "cloud",
-  "finance",
+  "Cloud Computing",
+  "Finance",
+  "Social",
+  "Health",
+  "Education",
+  "Arts",
+  "Business",
+  "Engineering",
+  "Humanities",
+  "Languages",
+  "Psychology",
+  "History",
+  "Other",
 ]
 const isStudent = false
 const tableHeaderCells: string[] = ["Subject", "Class", "Lessons", "Action"]

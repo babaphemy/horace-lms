@@ -43,7 +43,7 @@ import {
   Quiz,
   Assignment,
 } from "@mui/icons-material"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, FormProvider } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import {
@@ -55,6 +55,7 @@ import {
 import { notifyError, notifyInfo, notifySuccess } from "@/utils/notification"
 import { courseSchema, lessonSchema, topicSchema } from "@/schema/courseSchema"
 import { CourseCreate, LessonDto, LESSONTYPE, TopicDto } from "@/types/types"
+import FileUploadZone from "@/components/courses/FileUploadZone"
 
 interface CourseEditorProps {
   id: string
@@ -317,9 +318,9 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       case LESSONTYPE.ASSIGNMENT:
         return <Assignment />
       case LESSONTYPE.PRESENTATION:
-        return <Assignment /> // Placeholder icon for PRESENTATION
+        return <Assignment />
       case LESSONTYPE.OTHER:
-        return <Article /> // Placeholder icon for OTHER
+        return <Article />
       default:
         return <Article />
     }
@@ -803,76 +804,137 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
           {editingLesson ? "Edit Lesson" : "Add New Lesson"}
         </DialogTitle>
         <DialogContent>
-          <Box component="form" sx={{ mt: 2 }}>
-            <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 8 }}>
-                <Controller
-                  name="title"
-                  control={lessonForm.control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      label="Lesson Title"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Controller
-                  name="type"
-                  control={lessonForm.control}
-                  render={({ field, fieldState }) => (
-                    <FormControl fullWidth error={!!fieldState.error}>
-                      <InputLabel>Lesson Type</InputLabel>
-                      <Select {...field} label="Lesson Type">
-                        <MenuItem value={LESSONTYPE.TEXT}>Text</MenuItem>
-                        <MenuItem value={LESSONTYPE.VIDEO}>Video</MenuItem>
+          <FormProvider {...lessonForm}>
+            <Box component="form" sx={{ mt: 2 }}>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, md: 8 }}>
+                  <Controller
+                    name="title"
+                    control={lessonForm.control}
+                    render={({ field, fieldState }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        label="Lesson Title"
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Controller
+                    name="type"
+                    control={lessonForm.control}
+                    render={({ field, fieldState }) => (
+                      <FormControl fullWidth error={!!fieldState.error}>
+                        <InputLabel>Lesson Type</InputLabel>
+                        <Select {...field} label="Lesson Type">
+                          <MenuItem value={LESSONTYPE.TEXT}>Text</MenuItem>
+                          <MenuItem value={LESSONTYPE.VIDEO}>Video</MenuItem>
+                          <MenuItem value={LESSONTYPE.QUIZ}>Quiz</MenuItem>
+                          <MenuItem value={LESSONTYPE.PRESENTATION}>
+                            Presentation
+                          </MenuItem>
+                          <MenuItem value={LESSONTYPE.DOCUMENT}>
+                            Document
+                          </MenuItem>
+                          <MenuItem value={LESSONTYPE.ASSIGNMENT}>
+                            Assignment
+                          </MenuItem>
+                          <MenuItem value={LESSONTYPE.OTHER}>Other</MenuItem>
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
 
-                        <MenuItem value={LESSONTYPE.QUIZ}>Quiz</MenuItem>
-                        <MenuItem value={LESSONTYPE.ASSIGNMENT}>
-                          Assignment
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  )}
-                />
+                {/* File Upload Zone for Videos and Documents */}
+                <Grid size={{ xs: 12 }}>
+                  <Controller
+                    name="type"
+                    control={lessonForm.control}
+                    render={({ field }) => {
+                      const lessonType = field.value
+
+                      // Show file upload for video and document types
+                      if (
+                        lessonType === LESSONTYPE.VIDEO ||
+                        lessonType === LESSONTYPE.DOCUMENT ||
+                        lessonType === LESSONTYPE.PRESENTATION
+                      ) {
+                        return (
+                          <FileUploadZone
+                            lessonIndex={0} // Using 0 since we're editing single lesson
+                            topicIndex={0} // Using 0 since we're editing single lesson
+                            lessonType={lessonType}
+                            currentFile={
+                              lessonType === LESSONTYPE.VIDEO
+                                ? lessonForm.getValues("video")
+                                : lessonForm.getValues("content")
+                            }
+                          />
+                        )
+                      }
+                      return <></>
+                    }}
+                  />
+                </Grid>
+
+                {/* Manual Video URL input (alternative to file upload) */}
+                <Grid size={{ xs: 12 }}>
+                  <Controller
+                    name="video"
+                    control={lessonForm.control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        label="Video URL (optional - alternative to file upload)"
+                        placeholder="https://..."
+                        helperText="You can either upload a video file above or provide a URL here"
+                      />
+                    )}
+                  />
+                </Grid>
+
+                {/* Text content for non-video lessons */}
+                <Grid size={{ xs: 12 }}>
+                  <Controller
+                    name="type"
+                    control={lessonForm.control}
+                    render={({ field: typeField }) => (
+                      <Controller
+                        name="content"
+                        control={lessonForm.control}
+                        render={({ field: contentField, fieldState }) => {
+                          // Show text content field for non-video lessons or as additional content
+                          if (typeField.value !== LESSONTYPE.VIDEO) {
+                            return (
+                              <TextField
+                                {...contentField}
+                                fullWidth
+                                multiline
+                                rows={6}
+                                label="Lesson Content"
+                                error={!!fieldState.error}
+                                helperText={
+                                  fieldState.error?.message ||
+                                  "Enter the lesson content or upload a document above"
+                                }
+                              />
+                            )
+                          }
+                          // Always return a React element (empty fragment) instead of null
+                          return <></>
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
               </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Controller
-                  name="video"
-                  control={lessonForm.control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      label="Video URL (optional)"
-                      placeholder="https://..."
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Controller
-                  name="content"
-                  control={lessonForm.control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      multiline
-                      rows={6}
-                      label="Lesson Content"
-                      error={!!fieldState.error}
-                      helperText={fieldState.error?.message}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-          </Box>
+            </Box>
+          </FormProvider>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setLessonDialogOpen(false)}>Cancel</Button>
