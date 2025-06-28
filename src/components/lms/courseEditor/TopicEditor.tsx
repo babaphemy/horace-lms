@@ -1,6 +1,7 @@
 import { useFormContext, useFieldArray } from "react-hook-form"
 import { Box, Button, TextField } from "@mui/material"
 import LessonEditor from "./LessonEditor"
+import { LESSONTYPE } from "@/types/types"
 
 export default function TopicEditor({
   index,
