@@ -249,6 +249,7 @@ const DashboardPage = () => {
                         transform: "translateY(-2px)",
                       },
                     }}
+                    onClick={() => router.push("/dashboard/courses/add")}
                   >
                     <VideoLibrary sx={{ fontSize: 32, mb: 1 }} />
                     <Typography variant="body2">Create Course</Typography>
