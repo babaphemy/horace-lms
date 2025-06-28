@@ -249,7 +249,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     setEditingTopicIndex(topicIndex)
     setEditingLessonIndex(-1)
     lessonForm.reset({
-      tid: courseData?.curriculum.topic[topicIndex].id || "",
+      tid: courseData?.curriculum.topic[topicIndex].id,
       title: "",
       type: LESSONTYPE.TEXT,
       content: "",
@@ -267,7 +267,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     setEditingTopicIndex(topicIndex)
     setEditingLessonIndex(lessonIndex)
     lessonForm.reset({
-      tid: lesson.tid,
+      tid: courseData?.curriculum.topic[topicIndex].id,
       title: lesson.title,
       type: lesson.type as LESSONTYPE,
       content: lesson.content,

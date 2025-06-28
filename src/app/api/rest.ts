@@ -251,7 +251,10 @@ const getCourseLecture = async (data: {
   return response.json()
 }
 const addLecture = async (data: LessonDto): Promise<LessonDto> => {
-  const response = await fetch(`${basePath}module/lesson`, PostSettings(data))
+  const response = await fetch(
+    `${basePath}course/module/lesson`,
+    PostSettings(data)
+  )
   if (!response.ok) {
     throw new Error(response.statusText)
   }
