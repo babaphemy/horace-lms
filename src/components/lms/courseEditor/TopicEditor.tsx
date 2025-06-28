@@ -43,7 +43,7 @@ export default function TopicEditor({
         onClick={() =>
           append({
             title: "",
-            type: "text",
+            type: LESSONTYPE.TEXT,
             orderIndex: fields.length,
             content: "",
             video: "",
