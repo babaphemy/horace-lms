@@ -109,7 +109,10 @@ export const courseSchema = yup.object().shape({
 })
 
 export const topicSchema = yup.object().shape({
-  module: yup.string().required("Module name is required"),
+  id: yup.string().optional(),
+  cid: yup.string().required("Course ID is required"),
+  title: yup.string(),
+  module: yup.string(),
   description: yup.string().required("Description is required"),
   dueDate: yup.date().required("Due date is required"),
 })

@@ -171,13 +171,13 @@ export type TopicBase = {
 }
 export type TopicDto = {
   id?: string
-  module: string
+  module?: string
   title?: string
   description: string
   cid: string
   courseId?: string
   orderIndex?: number
-  lessons: LessonDto[]
+  lessons?: LessonDto[]
   dueDate?: Date
   createdOn?: Date
   updatedOn?: Date

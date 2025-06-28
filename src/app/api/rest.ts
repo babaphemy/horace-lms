@@ -5,6 +5,7 @@ import {
   CourseResponse,
   orgDto,
   tInterview,
+  TopicDto,
   TransactionData,
   Tranx,
   tReview,
@@ -229,6 +230,13 @@ const contactUs = async (data: {
     throw new Error(response.statusText)
   }
   return response.text()
+}
+const addTopic = async (data: TopicDto): Promise<TopicDto> => {
+  const response = await fetch(`${basePath}course/module`, PostSettings(data))
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
 }
 const getCourseLecture = async (data: {
   id: string
@@ -462,6 +470,7 @@ const events = async (userId: string) => {
 
 export {
   addCourseDetail,
+  addTopic,
   activities,
   addUserToOrganization,
   addReview,

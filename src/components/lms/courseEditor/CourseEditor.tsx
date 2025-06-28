@@ -46,32 +46,10 @@ import {
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useMutation, useQuery, useQueryClient } from "react-query"
-import { addCourseDetail, fetchCourse } from "@/app/api/rest"
+import { addCourseDetail, addTopic, fetchCourse } from "@/app/api/rest"
 import { notifyError, notifyInfo, notifySuccess } from "@/utils/notification"
 import { courseSchema, lessonSchema, topicSchema } from "@/schema/courseSchema"
-import { CourseCreate, LESSONTYPE } from "@/types/types"
-
-interface Lesson {
-  id?: string
-  title: string
-  type: LESSONTYPE
-  orderIndex?: number
-  video: string
-  content: string
-  createdOn: Date
-  updatedOn: Date
-}
-
-interface Topic {
-  id?: string
-  module: string
-  description: string
-  orderIndex?: number
-  lessons: Lesson[]
-  dueDate: Date
-  createdOn: Date
-  updatedOn: Date
-}
+import { CourseCreate, LessonDto, LESSONTYPE, TopicDto } from "@/types/types"
 
 interface CourseEditorProps {
   id: string
@@ -86,8 +64,8 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
   const [topicDialogOpen, setTopicDialogOpen] = useState(false)
   const [lessonDialogOpen, setLessonDialogOpen] = useState(false)
 
-  const [editingTopic, setEditingTopic] = useState<Topic | null>(null)
-  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null)
+  const [editingTopic, setEditingTopic] = useState<TopicDto | null>(null)
+  const [editingLesson, setEditingLesson] = useState<LessonDto | null>(null)
   const [editingTopicIndex, setEditingTopicIndex] = useState<number>(-1)
   const [editingLessonIndex, setEditingLessonIndex] = useState<number>(-1)
 
@@ -128,15 +106,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     }
   }, [courseData, courseForm, userId])
 
-  const topicForm = useForm({
-    resolver: yupResolver(topicSchema),
-    defaultValues: {
-      module: "",
-      description: "",
-      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 3)),
-    },
-  })
-
   const lessonForm = useForm({
     resolver: yupResolver(lessonSchema),
     defaultValues: {
@@ -170,69 +139,85 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     data.user = userId
     mutate(data)
   }
-
+  const topicForm = useForm({
+    resolver: yupResolver(topicSchema),
+    defaultValues: {
+      cid: id,
+      module: "",
+      title: "",
+      description: "",
+      dueDate: new Date(new Date().setMonth(new Date().getMonth() + 3)),
+    },
+  })
   const handleAddTopic = () => {
     setEditingTopic(null)
     setEditingTopicIndex(-1)
     topicForm.reset({
+      cid: id,
       module: "",
+      title: "",
       description: "",
       dueDate: new Date(new Date().setMonth(new Date().getMonth() + 3)),
     })
     setTopicDialogOpen(true)
   }
 
-  const handleEditTopic = (topic: Topic, index: number) => {
+  const handleEditTopic = (topic: TopicDto, index: number) => {
     setEditingTopic(topic)
     setEditingTopicIndex(index)
     topicForm.reset({
-      module: topic.module,
+      cid: id,
+      module: topic.module || topic.title,
+      title: topic.title || topic.module,
       description: topic.description,
       dueDate: topic.dueDate,
     })
     setTopicDialogOpen(true)
   }
 
-  const handleSaveTopic = async (data: Topic) => {
-    if (!courseData) return
-
-    setSaving(true)
-    try {
-      const newTopic: Topic = {
-        id: editingTopic?.id || `topic-${Date.now()}`,
-        module: data.module,
-        description: data.description,
-        dueDate: data.dueDate,
-        orderIndex:
-          editingTopicIndex >= 0
-            ? editingTopicIndex + 1
-            : courseData.curriculum.topic.length + 1,
-        lessons: editingTopic?.lessons || [],
-        createdOn: editingTopic?.createdOn || new Date(),
-        updatedOn: new Date(),
-      }
-
-      let updatedTopics
-      if (editingTopicIndex >= 0) {
-        updatedTopics = [...courseData.curriculum.topic]
-        updatedTopics[editingTopicIndex] = newTopic
-      } else {
-        updatedTopics = [...courseData.curriculum.topic, newTopic]
-      }
-
+  const { mutate: addEditTopic } = useMutation({
+    mutationFn: addTopic,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["course", id] })
+      notifySuccess("Topic updated successfully")
       setTopicDialogOpen(false)
-    } catch {
-      notifyError("Failed to save topic:")
-    } finally {
       setSaving(false)
+      return
+    },
+    onError: () => {
+      notifyError("Failed to update topic, please retry!")
+      setSaving(false)
+      return
+    },
+  })
+
+  const handleSaveTopic = async (data: TopicDto) => {
+    if (!courseData || !id) {
+      notifyError("Course data or ID is missing")
+      return
     }
+    setSaving(true)
+    const newTopic: TopicDto = {
+      id: editingTopic?.id,
+      cid: id,
+      module: data.module || data.title,
+      title: data.title || data.module,
+      description: data.description,
+      dueDate: data.dueDate,
+      orderIndex:
+        editingTopicIndex >= 0
+          ? editingTopicIndex + 1
+          : courseData.curriculum.topic.length + 1,
+      lessons: editingTopic?.lessons,
+    }
+    addEditTopic(newTopic)
   }
 
   const handleDeleteTopic = (_index: number) => {
-    if (!courseData) return
+    if (!courseData || !id) return
 
     const updatedTopics = courseData.curriculum.topic.filter(
-      (_: Topic, i: number) => i !== _index
+      (_: TopicDto, i: number) => i !== _index
     )
     notifyInfo(updatedTopics.length + " topics remaining")
   }
@@ -251,7 +236,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
   }
 
   const handleEditLesson = (
-    lesson: Lesson,
+    lesson: LessonDto,
     topicIndex: number,
     lessonIndex: number
   ) => {
@@ -260,20 +245,21 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     setEditingLessonIndex(lessonIndex)
     lessonForm.reset({
       title: lesson.title,
-      type: lesson.type,
+      type: lesson.type as LESSONTYPE,
       content: lesson.content,
       video: lesson.video,
     })
     setLessonDialogOpen(true)
   }
 
-  const handleSaveLesson = async (data: Lesson) => {
+  const handleSaveLesson = async (data: LessonDto) => {
     if (!courseData || editingTopicIndex < 0) return
 
     setSaving(true)
     try {
-      const newLesson: Lesson = {
+      const newLesson: LessonDto = {
         id: editingLesson?.id || `lesson-${Date.now()}`,
+        tid: courseData.curriculum.topic[editingTopicIndex].id,
         title: data.title,
         type: data.type,
         content: data.content,
@@ -311,7 +297,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     const updatedTopics = [...courseData.curriculum.topic]
     const targetTopic = { ...updatedTopics[topicIndex] }
     targetTopic.lessons = targetTopic.lessons.filter(
-      (_: Lesson, i: number) => i !== lessonIndex
+      (_: LessonDto, i: number) => i !== lessonIndex
     )
     updatedTopics[topicIndex] = targetTopic
   }
@@ -415,7 +401,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                 <Chip label={`Target: ${courseData.target}`} />
                 <Chip label={`${courseData.curriculum.topic.length} Topics`} />
                 <Chip
-                  label={`${courseData.curriculum.topic.reduce((acc: number, topic: Topic) => acc + topic.lessons.length, 0)} Lessons`}
+                  label={`${courseData.curriculum.topic.reduce((acc: number, topic: TopicDto) => acc + (topic?.lessons?.length ?? 0), 0)} Lessons`}
                 />
               </Box>
             </Grid>
@@ -452,125 +438,129 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         </Button>
       </Box>
 
-      {courseData.curriculum.topic.map((topic: Topic, topicIndex: number) => (
-        <Accordion
-          key={topic.id || topicIndex}
-          expanded={expandedTopic === `topic-${topicIndex}`}
-          onChange={() =>
-            setExpandedTopic(
-              expandedTopic === `topic-${topicIndex}`
-                ? false
-                : `topic-${topicIndex}`
-            )
-          }
-          sx={{ mb: 2 }}
-        >
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Box display="flex" alignItems="center" width="100%" mr={2}>
-              <DragIndicator sx={{ mr: 2, color: "text.secondary" }} />
-              <Box flexGrow={1}>
-                <Typography variant="h6" fontWeight="bold">
-                  {topic.module}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {topic.lessons.length} lessons • Due:{" "}
-                  {new Date(topic.dueDate).toLocaleDateString()}
-                </Typography>
-              </Box>
-              <Box display="flex" gap={1}>
-                <IconButton
-                  size="small"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleEditTopic(topic, topicIndex)
-                  }}
-                >
-                  <Edit />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  color="error"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDeleteTopic(topicIndex)
-                  }}
-                >
-                  <Delete />
-                </IconButton>
-              </Box>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box>
-              <Typography variant="body2" color="text.secondary" paragraph>
-                {topic.description}
-              </Typography>
-
-              <Divider sx={{ my: 2 }} />
-
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                mb={2}
-              >
-                <Typography variant="h6">
-                  Lessons ({topic.lessons.length})
-                </Typography>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<Add />}
-                  onClick={() => handleAddLesson(topicIndex)}
-                >
-                  Add Lesson
-                </Button>
-              </Box>
-
-              <List>
-                {topic.lessons.map((lesson, lessonIndex) => (
-                  <ListItem
-                    key={lesson.id || lessonIndex}
-                    sx={{
-                      border: "1px solid #e0e0e0",
-                      borderRadius: 1,
-                      mb: 1,
-                      "&:hover": { backgroundColor: "#f5f5f5" },
+      {courseData.curriculum.topic.map(
+        (topic: TopicDto, topicIndex: number) => (
+          <Accordion
+            key={topic.id || topicIndex}
+            expanded={expandedTopic === `topic-${topicIndex}`}
+            onChange={() =>
+              setExpandedTopic(
+                expandedTopic === `topic-${topicIndex}`
+                  ? false
+                  : `topic-${topicIndex}`
+              )
+            }
+            sx={{ mb: 2 }}
+          >
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Box display="flex" alignItems="center" width="100%" mr={2}>
+                <DragIndicator sx={{ mr: 2, color: "text.secondary" }} />
+                <Box flexGrow={1}>
+                  <Typography variant="h6" fontWeight="bold">
+                    {topic.module}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {topic?.lessons?.length} lessons • Due:{" "}
+                    {topic?.dueDate
+                      ? new Date(topic.dueDate).toLocaleDateString()
+                      : "No due date"}
+                  </Typography>
+                </Box>
+                <Box display="flex" gap={1}>
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleEditTopic(topic, topicIndex)
                     }}
                   >
-                    <Box display="flex" alignItems="center" mr={2}>
-                      {getLessonIcon(lesson.type)}
-                    </Box>
-                    <ListItemText
-                      primary={lesson.title}
-                      secondary={`Type: ${lesson.type} • Updated: ${new Date(lesson.updatedOn).toLocaleDateString()}`}
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        size="small"
-                        onClick={() =>
-                          handleEditLesson(lesson, topicIndex, lessonIndex)
-                        }
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() =>
-                          handleDeleteLesson(topicIndex, lessonIndex)
-                        }
-                      >
-                        <Delete />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </AccordionDetails>
-        </Accordion>
-      ))}
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    color="error"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteTopic(topicIndex)
+                    }}
+                  >
+                    <Delete />
+                  </IconButton>
+                </Box>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box>
+                <Typography variant="body2" color="text.secondary" paragraph>
+                  {topic.description}
+                </Typography>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  mb={2}
+                >
+                  <Typography variant="h6">
+                    Lessons ({topic?.lessons?.length})
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={<Add />}
+                    onClick={() => handleAddLesson(topicIndex)}
+                  >
+                    Add Lesson
+                  </Button>
+                </Box>
+
+                <List>
+                  {topic?.lessons?.map((lesson, lessonIndex) => (
+                    <ListItem
+                      key={lesson.id || lessonIndex}
+                      sx={{
+                        border: "1px solid #e0e0e0",
+                        borderRadius: 1,
+                        mb: 1,
+                        "&:hover": { backgroundColor: "#f5f5f5" },
+                      }}
+                    >
+                      <Box display="flex" alignItems="center" mr={2}>
+                        {getLessonIcon(lesson.type as LESSONTYPE)}
+                      </Box>
+                      <ListItemText
+                        primary={lesson.title}
+                        secondary={`Type: ${lesson.type} • Updated: ${lesson.updatedOn ? new Date(lesson.updatedOn).toLocaleDateString() : "N/A"}`}
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            handleEditLesson(lesson, topicIndex, lessonIndex)
+                          }
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() =>
+                            handleDeleteLesson(topicIndex, lessonIndex)
+                          }
+                        >
+                          <Delete />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        )
+      )}
 
       <Dialog open={courseDialogOpen} maxWidth="md" fullWidth>
         <DialogTitle>Edit Course Details</DialogTitle>
@@ -729,7 +719,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
             <Grid container spacing={3}>
               <Grid size={{ xs: 12 }}>
                 <Controller
-                  name="module"
+                  name="title"
                   control={topicForm.control}
                   render={({ field, fieldState }) => (
                     <TextField
@@ -790,7 +780,9 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
           <Button
             variant="contained"
             onClick={topicForm.handleSubmit(handleSaveTopic)}
-            disabled={saving}
+            disabled={
+              saving || Object.keys(topicForm.formState.errors).length > 0
+            }
           >
             {saving ? <CircularProgress size={20} /> : "Save"}
           </Button>
