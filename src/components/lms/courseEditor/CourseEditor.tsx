@@ -46,7 +46,12 @@ import {
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useMutation, useQuery, useQueryClient } from "react-query"
-import { addCourseDetail, addTopic, fetchCourse } from "@/app/api/rest"
+import {
+  addCourseDetail,
+  addLecture,
+  addTopic,
+  fetchCourse,
+} from "@/app/api/rest"
 import { notifyError, notifyInfo, notifySuccess } from "@/utils/notification"
 import { courseSchema, lessonSchema, topicSchema } from "@/schema/courseSchema"
 import { CourseCreate, LessonDto, LESSONTYPE, TopicDto } from "@/types/types"
@@ -109,8 +114,9 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
   const lessonForm = useForm({
     resolver: yupResolver(lessonSchema),
     defaultValues: {
+      tid: "",
       title: "",
-      type: LESSONTYPE.TEXT,
+      type: LESSONTYPE.TEXT as LESSONTYPE,
       content: "",
       video: "",
     },
@@ -219,14 +225,31 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     const updatedTopics = courseData.curriculum.topic.filter(
       (_: TopicDto, i: number) => i !== _index
     )
-    notifyInfo(updatedTopics.length + " topics remaining")
+    notifyInfo(updatedTopics.length + " modules remaining")
   }
+
+  const { mutate: addEditLesson } = useMutation({
+    mutationFn: addLecture,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["course", id] })
+      notifySuccess("Lesson updated successfully")
+      setLessonDialogOpen(false)
+      setSaving(false)
+      return
+    },
+    onError: () => {
+      notifyError("Failed to update lesson, please retry!")
+      setSaving(false)
+      return
+    },
+  })
 
   const handleAddLesson = (topicIndex: number) => {
     setEditingLesson(null)
     setEditingTopicIndex(topicIndex)
     setEditingLessonIndex(-1)
     lessonForm.reset({
+      tid: courseData?.curriculum.topic[topicIndex].id || "",
       title: "",
       type: LESSONTYPE.TEXT,
       content: "",
@@ -244,6 +267,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     setEditingTopicIndex(topicIndex)
     setEditingLessonIndex(lessonIndex)
     lessonForm.reset({
+      tid: lesson.tid,
       title: lesson.title,
       type: lesson.type as LESSONTYPE,
       content: lesson.content,
@@ -254,41 +278,21 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
 
   const handleSaveLesson = async (data: LessonDto) => {
     if (!courseData || editingTopicIndex < 0) return
-
     setSaving(true)
-    try {
-      const newLesson: LessonDto = {
-        id: editingLesson?.id || `lesson-${Date.now()}`,
-        tid: courseData.curriculum.topic[editingTopicIndex].id,
-        title: data.title,
-        type: data.type,
-        content: data.content,
-        video: data.video || "",
-        orderIndex:
-          editingLessonIndex >= 0
-            ? editingLessonIndex + 1
-            : courseData.curriculum.topic[editingTopicIndex].lessons.length + 1,
-        createdOn: editingLesson?.createdOn || new Date(),
-        updatedOn: new Date(),
-      }
-
-      const updatedTopics = [...courseData.curriculum.topic]
-      const targetTopic = { ...updatedTopics[editingTopicIndex] }
-
-      if (editingLessonIndex >= 0) {
-        targetTopic.lessons = [...targetTopic.lessons]
-        targetTopic.lessons[editingLessonIndex] = newLesson
-      } else {
-        targetTopic.lessons = [...targetTopic.lessons, newLesson]
-      }
-
-      updatedTopics[editingTopicIndex] = targetTopic
-      setLessonDialogOpen(false)
-    } catch {
-      notifyError("Failed to save lesson:")
-    } finally {
-      setSaving(false)
+    const newLesson: LessonDto = {
+      id: editingLesson?.id,
+      tid: courseData.curriculum.topic[editingTopicIndex].id,
+      title: data.title,
+      type: data.type,
+      content: data.content,
+      video: data.video || "",
+      orderIndex:
+        editingLessonIndex >= 0
+          ? editingLessonIndex + 1
+          : courseData.curriculum.topic[editingTopicIndex].lessons.length + 1,
     }
+    addEditLesson(newLesson)
+    setLessonDialogOpen(false)
   }
 
   const handleDeleteLesson = (topicIndex: number, lessonIndex: number) => {
@@ -399,7 +403,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
               <Box display="flex" gap={2} flexWrap="wrap">
                 <Chip label={`Category: ${courseData.category}`} />
                 <Chip label={`Target: ${courseData.target}`} />
-                <Chip label={`${courseData.curriculum.topic.length} Topics`} />
+                <Chip label={`${courseData.curriculum.topic.length} Modules`} />
                 <Chip
                   label={`${courseData.curriculum.topic.reduce((acc: number, topic: TopicDto) => acc + (topic?.lessons?.length ?? 0), 0)} Lessons`}
                 />
@@ -426,7 +430,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         mb={3}
       >
         <Typography variant="h5" fontWeight="bold">
-          Course Topics ({courseData.curriculum.topic.length})
+          Course Modules ({courseData.curriculum.topic.length})
         </Typography>
         <Button
           variant="contained"
@@ -434,7 +438,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
           onClick={handleAddTopic}
           size="large"
         >
-          Add New Topic
+          Add New Module
         </Button>
       </Box>
 

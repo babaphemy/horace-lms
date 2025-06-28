@@ -3,6 +3,7 @@ import {
   CourseComplete,
   CourseCreate,
   CourseResponse,
+  LessonDto,
   orgDto,
   tInterview,
   TopicDto,
@@ -249,6 +250,13 @@ const getCourseLecture = async (data: {
   }
   return response.json()
 }
+const addLecture = async (data: LessonDto): Promise<LessonDto> => {
+  const response = await fetch(`${basePath}module/lesson`, PostSettings(data))
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 const addReview = async (data: tReview) => {
   const response = await fetch(`${basePath}post/addmeta`, PostSettings(data))
   if (!response.ok) {
@@ -471,6 +479,7 @@ const events = async (userId: string) => {
 export {
   addCourseDetail,
   addTopic,
+  addLecture,
   activities,
   addUserToOrganization,
   addReview,

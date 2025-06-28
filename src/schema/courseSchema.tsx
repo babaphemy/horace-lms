@@ -118,11 +118,13 @@ export const topicSchema = yup.object().shape({
 })
 
 export const lessonSchema = yup.object().shape({
+  tid: yup.string().required("Topic ID is required"),
   title: yup.string().required("Lesson title is required"),
   video: yup.string().optional(),
   orderIndex: yup.number().optional().integer("Order index must be an integer"),
   type: yup
     .mixed<LESSONTYPE>()
-    .oneOf(Object.values(LESSONTYPE), "Invalid lesson type"),
+    .oneOf(Object.values(LESSONTYPE), "Invalid lesson type")
+    .required("Lesson type is required"),
   content: yup.string().required("Content is required"),
 })
