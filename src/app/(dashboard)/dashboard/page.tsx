@@ -196,7 +196,7 @@ const DashboardPage = () => {
                 <Typography variant="h6" component="h2" fontWeight="bold">
                   Your Courses
                 </Typography>
-                {recents?.length && (
+                {recents?.length > 0 && (
                   <Button variant="outlined" size="small">
                     View All
                   </Button>
