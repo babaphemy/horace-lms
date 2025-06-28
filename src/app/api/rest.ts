@@ -267,6 +267,13 @@ const addReview = async (data: tReview) => {
   }
   return response.json()
 }
+const addThumbnail = async (data: CourseCreate) => {
+  const response = await fetch(`${basePath}course/thumbnail`, PutSettings(data))
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 const handlePay = async (obj: CardDto) => {
   const apikey = process.env.NEXT_PUBLIC_stripe_pub || ""
   const stripeInit = loadStripe(apikey)
@@ -408,7 +415,7 @@ const updateDp = async (data: tUser) => {
 }
 const getPresignedUrl = async (uploader: Uploader) => {
   const resp = await fetch(
-    `${basePath}info/s3/presigned`,
+    `${horacePath}info/s3/presigned`,
     PostSettings(uploader)
   )
   if (!resp.ok) {
@@ -481,6 +488,7 @@ const events = async (userId: string) => {
 
 export {
   addCourseDetail,
+  addThumbnail,
   addTopic,
   addLecture,
   activities,

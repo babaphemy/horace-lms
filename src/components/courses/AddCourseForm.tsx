@@ -35,7 +35,6 @@ const AddCourseForm = () => {
     setUploading(true)
 
     try {
-      // Create preview
       const reader = new FileReader()
       reader.onloadend = () => {
         setImagePreview(reader.result as string)
@@ -156,16 +155,14 @@ const AddCourseForm = () => {
           />
         )}
       />
-
-      {/* Image Upload with Dropzone */}
       <Controller
         name="file"
         control={control}
-        rules={{ required: "Course display image is required" }}
+        rules={{ required: "Display image is required" }}
         render={({ fieldState: { error } }) => (
           <Box>
             <Typography variant="subtitle1" gutterBottom>
-              Course Display Image *
+              Display Image *
             </Typography>
 
             {!imagePreview ? (
