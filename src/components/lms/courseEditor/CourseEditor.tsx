@@ -848,16 +848,12 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                     )}
                   />
                 </Grid>
-
-                {/* File Upload Zone for Videos and Documents */}
                 <Grid size={{ xs: 12 }}>
                   <Controller
                     name="type"
                     control={lessonForm.control}
                     render={({ field }) => {
                       const lessonType = field.value
-
-                      // Show file upload for video and document types
                       if (
                         lessonType === LESSONTYPE.VIDEO ||
                         lessonType === LESSONTYPE.DOCUMENT ||
@@ -865,8 +861,10 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                       ) {
                         return (
                           <FileUploadZone
-                            lessonIndex={0} // Using 0 since we're editing single lesson
-                            topicIndex={0} // Using 0 since we're editing single lesson
+                            lessonIndex={
+                              editingLessonIndex >= 0 ? editingLessonIndex : -1
+                            }
+                            topicIndex={editingTopicIndex}
                             lessonType={lessonType}
                             currentFile={
                               lessonType === LESSONTYPE.VIDEO

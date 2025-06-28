@@ -4,11 +4,14 @@ import {
   dashboardStat,
   events,
   recentCourses,
+  addThumbnail,
+  uploadImageToS3,
 } from "@/app/api/rest"
 import ActivityCard from "@/components/lms/ActivityCard"
 import EventCard from "@/components/lms/EventCard"
 import StatsGrid from "@/components/lms/StatsGrid"
 import { Activity, Event, tCourse } from "@/types/types"
+import { notifyError, notifySuccess } from "@/utils/notification"
 import {
   Analytics,
   Assignment,
@@ -17,6 +20,8 @@ import {
   Person,
   Star,
   VideoLibrary,
+  PhotoCamera,
+  Edit,
 } from "@mui/icons-material"
 import {
   Box,
@@ -31,18 +36,27 @@ import {
   MenuItem,
   Paper,
   Typography,
+  CircularProgress,
+  Tooltip,
 } from "@mui/material"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import React, { useMemo, useState } from "react"
-import { useQuery } from "react-query"
+import Image from "next/image"
+import React, { useMemo, useState, useRef } from "react"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+import PlaceholderSVG from "@/components/lms/courseEditor/PlaceholderSvg"
 
 const DashboardPage = () => {
   const router = useRouter()
   const { data: session } = useSession()
   const userId = session?.user?.id
+  const queryClient = useQueryClient()
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [uploadingCourseId, setUploadingCourseId] = useState<string | null>(
+    null
+  )
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLElement>,
@@ -57,10 +71,70 @@ const DashboardPage = () => {
       case "edit":
         router.push(`/dashboard/courses/${selectedCourseId}`)
         break
+      case "thumbnail":
+        handleThumbnailUpload()
+        break
       default:
         break
     }
     setAnchorEl(null)
+  }
+
+  const handleThumbnailUpload = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
+
+  const { mutate: updateThumbnail } = useMutation({
+    mutationFn: addThumbnail,
+    onSuccess: () => {
+      notifySuccess("Thumbnail uploaded successfully!")
+      queryClient.invalidateQueries(["recentCourses"])
+      setUploadingCourseId(null)
+    },
+    onError: () => {
+      notifyError("Failed to upload thumbnail. Please try again.")
+      setUploadingCourseId(null)
+    },
+  })
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+    if (!file || !selectedCourseId) return
+
+    if (!file.type.startsWith("image/")) {
+      notifyError("Please select a valid image file")
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      notifyError("Image size must be less than 5MB")
+      return
+    }
+
+    setUploadingCourseId(selectedCourseId)
+
+    try {
+      const uploadUrl = await uploadImageToS3(file)
+      updateThumbnail({
+        id: selectedCourseId,
+        thumbnail: uploadUrl,
+        courseName: "",
+        user: userId || "",
+        overview: "",
+      })
+    } catch {
+      notifyError("Failed to upload image. Please try again.")
+      setUploadingCourseId(null)
+    }
+
+    // Reset file input
+    if (event.target) {
+      event.target.value = ""
+    }
   }
 
   const { data: recentActivity } = useQuery({
@@ -68,11 +142,13 @@ const DashboardPage = () => {
     queryKey: ["recentActivity", userId],
     enabled: !!userId,
   })
+
   const { data: upcomingEvents } = useQuery({
     queryFn: () => events(userId as string),
     queryKey: ["upcomingEvents", userId],
     enabled: !!userId,
   })
+
   const dateRange = useMemo(() => {
     const today = new Date()
     const fourWeeksAgo = new Date()
@@ -83,10 +159,12 @@ const DashboardPage = () => {
       end: today.toISOString().slice(0, 19),
     }
   }, [])
+
   const { data: recents } = useQuery({
     queryFn: () => recentCourses(dateRange.start, dateRange.end),
     queryKey: ["recentCourses", dateRange.start, dateRange.end],
   })
+
   const { data: stats } = useQuery({
     queryFn: () => dashboardStat(userId as string),
     queryKey: ["dashboardStat", userId],
@@ -118,7 +196,7 @@ const DashboardPage = () => {
                 <Typography variant="h6" component="h2" fontWeight="bold">
                   Your Courses
                 </Typography>
-                {stats?.totalCourses && (
+                {recents?.length > 0 && (
                   <Button variant="outlined" size="small">
                     View All
                   </Button>
@@ -136,16 +214,64 @@ const DashboardPage = () => {
                     }}
                   >
                     <Box
-                      component="img"
-                      src={course.thumbnail}
-                      alt={course.courseName}
                       sx={{
+                        position: "relative",
                         width: 60,
                         height: 40,
                         borderRadius: 1,
-                        objectFit: "cover",
+                        overflow: "hidden",
+                        cursor: "pointer",
+                        "&:hover .upload-overlay": {
+                          opacity: 1,
+                        },
                       }}
-                    />
+                      onClick={() => {
+                        setSelectedCourseId(course.id)
+                        handleThumbnailUpload()
+                      }}
+                    >
+                      {course.thumbnail ? (
+                        <Image
+                          src={course.thumbnail}
+                          alt={course.courseName}
+                          fill
+                          style={{
+                            objectFit: "cover",
+                          }}
+                          sizes="60px"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.style.display = "none"
+                          }}
+                        />
+                      ) : (
+                        <PlaceholderSVG />
+                      )}
+
+                      <Box
+                        className="upload-overlay"
+                        sx={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          backgroundColor: "rgba(0,0,0,0.5)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          opacity: 0,
+                          transition: "opacity 0.2s ease",
+                        }}
+                      >
+                        {uploadingCourseId === course.id ? (
+                          <CircularProgress size={20} sx={{ color: "white" }} />
+                        ) : (
+                          <PhotoCamera sx={{ color: "white", fontSize: 20 }} />
+                        )}
+                      </Box>
+                    </Box>
+
                     <Box sx={{ flexGrow: 1 }}>
                       <Box
                         sx={{
@@ -200,26 +326,16 @@ const DashboardPage = () => {
                           </Typography>
                         </Box>
                       </Box>
-                      {/* <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <LinearProgress
-                          variant="determinate"
-                          value={course.progress}
-                          sx={{ flexGrow: 1, height: 6, borderRadius: 3 }}
-                        />
-                        <Typography variant="body2" color="text.secondary">
-                          {course.progress}%
-                        </Typography>
-                      </Box> */}
                     </Box>
-                    <IconButton onClick={(e) => handleMenuClick(e, course.id)}>
-                      <MoreVert />
-                    </IconButton>
+
+                    <Tooltip title="Course options">
+                      <IconButton
+                        onClick={(e) => handleMenuClick(e, course.id)}
+                      >
+                        <MoreVert />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
-                  {/* {course.id !== recentCourses[recentCourses.length - 1].id && (
-                    <Divider />
-                  )} */}
                 </Box>
               ))}
             </CardContent>
@@ -316,29 +432,41 @@ const DashboardPage = () => {
 
         <Grid size={{ xs: 12, lg: 4 }}>
           <EventCard upcomingEvents={upcomingEvents as Event[]} />
-
           <ActivityCard
             recentActivity={recentActivity?.content as Activity[]}
           />
         </Grid>
       </Grid>
-
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
+        onClose={() => handleMenuClose("")}
       >
-        <MenuItem onClick={() => handleMenuClose("edit")}>Edit Course</MenuItem>
+        <MenuItem onClick={() => handleMenuClose("edit")}>
+          <Edit sx={{ mr: 1, fontSize: 18 }} />
+          Edit Course
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuClose("thumbnail")}>
+          <PhotoCamera sx={{ mr: 1, fontSize: 18 }} />
+          Change Thumbnail
+        </MenuItem>
         <MenuItem onClick={() => handleMenuClose("analytics")}>
+          <Analytics sx={{ mr: 1, fontSize: 18 }} />
           View Analytics
         </MenuItem>
         <MenuItem onClick={() => handleMenuClose("students")}>
+          <People sx={{ mr: 1, fontSize: 18 }} />
           Manage Students
         </MenuItem>
-        <MenuItem onClick={() => handleMenuClose("settings")}>
-          Course Settings
-        </MenuItem>
       </Menu>
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileUpload}
+        accept="image/*"
+        style={{ display: "none" }}
+      />
     </Container>
   )
 }

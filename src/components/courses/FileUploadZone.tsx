@@ -106,7 +106,6 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
   const [uploadedFile, setUploadedFile] = React.useState<string>(
     currentFile || ""
   )
-
   const acceptedTypes =
     lessonType === LESSONTYPE.VIDEO ? VIDEO_TYPES : DOCUMENT_TYPES
 
@@ -127,10 +126,7 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
         setUploadProgress
       )
 
-      const fieldName =
-        lessonType === LESSONTYPE.VIDEO
-          ? `topics.${topicIndex}.lessons.${lessonIndex}.video`
-          : `topics.${topicIndex}.lessons.${lessonIndex}.content`
+      const fieldName = lessonType === LESSONTYPE.VIDEO ? "video" : "content"
 
       setValue(fieldName, filePath)
       setUploadedFile(filePath)
