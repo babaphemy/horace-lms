@@ -260,6 +260,18 @@ const addLecture = async (data: LessonDto): Promise<LessonDto> => {
   }
   return response.json()
 }
+const deleteLecture = async (id: string): Promise<void> => {
+  const response = await fetch(`${basePath}course/module/lesson/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 const addReview = async (data: tReview) => {
   const response = await fetch(`${basePath}post/addmeta`, PostSettings(data))
   if (!response.ok) {
@@ -440,6 +452,18 @@ const uploadPresignedUrl = async (
   }
   return presignedUrl.split("?")[0] // Return the URL without query parameters
 }
+const deleteObject = async (key: string): Promise<void> => {
+  const response = await fetch(`${horacePath}info/s3object?key=${key}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ key }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to delete object: ${response.statusText}`)
+  }
+}
 const manageDraft = async (obj: {
   id: string
   draft: boolean
@@ -503,6 +527,8 @@ export {
   dashboardStat,
   doEdit,
   doToken,
+  deleteLecture,
+  deleteObject,
   events,
   fetchCourse,
   fetchCourses,

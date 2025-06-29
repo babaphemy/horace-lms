@@ -16,7 +16,7 @@ import { useDropzone } from "react-dropzone"
 import { notifyError, notifySuccess } from "@/utils/notification"
 import React from "react"
 import { useFormContext } from "react-hook-form"
-import { getPresignedUrl } from "@/app/api/rest"
+import { deleteObject, getPresignedUrl } from "@/app/api/rest"
 
 const UPLOAD_TIMEOUT_MS = 300000
 
@@ -156,11 +156,10 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
       },
     })
 
-  const removeFile = () => {
-    const fieldName =
-      lessonType === LESSONTYPE.VIDEO
-        ? `topics.${topicIndex}.lessons.${lessonIndex}.video`
-        : `topics.${topicIndex}.lessons.${lessonIndex}.content`
+  const removeFile = async () => {
+    if (!uploadedFile) return
+    await deleteObject(uploadedFile)
+    const fieldName = lessonType === LESSONTYPE.VIDEO ? "video" : "content"
 
     setValue(fieldName, "")
     setUploadedFile("")

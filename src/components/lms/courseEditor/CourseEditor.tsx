@@ -29,7 +29,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
 } from "@mui/material"
 import {
   ExpandMore,
@@ -50,6 +49,8 @@ import {
   addCourseDetail,
   addLecture,
   addTopic,
+  deleteLecture,
+  deleteObject,
   fetchCourse,
 } from "@/app/api/rest"
 import { notifyError, notifyInfo, notifySuccess } from "@/utils/notification"
@@ -296,15 +297,16 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     setLessonDialogOpen(false)
   }
 
-  const handleDeleteLesson = (topicIndex: number, lessonIndex: number) => {
-    if (!courseData) return
-
-    const updatedTopics = [...courseData.curriculum.topic]
-    const targetTopic = { ...updatedTopics[topicIndex] }
-    targetTopic.lessons = targetTopic.lessons.filter(
-      (_: LessonDto, i: number) => i !== lessonIndex
-    )
-    updatedTopics[topicIndex] = targetTopic
+  const handleDeleteLesson = async (
+    id: string,
+    video: string,
+    content: string
+  ) => {
+    if (!courseData || !id) return
+    await deleteLecture(id)
+    await deleteObject(video)
+    await deleteObject(content)
+    queryClient.invalidateQueries({ queryKey: ["course", courseData.id] })
   }
 
   const getLessonIcon = (type: LESSONTYPE) => {
@@ -535,6 +537,31 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                         mb: 1,
                         "&:hover": { backgroundColor: "#f5f5f5" },
                       }}
+                      secondaryAction={
+                        <>
+                          <IconButton
+                            size="small"
+                            onClick={() =>
+                              handleEditLesson(lesson, topicIndex, lessonIndex)
+                            }
+                          >
+                            <Edit />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() =>
+                              handleDeleteLesson(
+                                lesson.id as string,
+                                lesson.video as string,
+                                lesson.content as string
+                              )
+                            }
+                          >
+                            <Delete />
+                          </IconButton>
+                        </>
+                      }
                     >
                       <Box display="flex" alignItems="center" mr={2}>
                         {getLessonIcon(lesson.type as LESSONTYPE)}
@@ -543,25 +570,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                         primary={lesson.title}
                         secondary={`Type: ${lesson.type} • Updated: ${lesson.updatedOn ? new Date(lesson.updatedOn).toLocaleDateString() : "N/A"}`}
                       />
-                      <ListItemSecondaryAction>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            handleEditLesson(lesson, topicIndex, lessonIndex)
-                          }
-                        >
-                          <Edit />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() =>
-                            handleDeleteLesson(topicIndex, lessonIndex)
-                          }
-                        >
-                          <Delete />
-                        </IconButton>
-                      </ListItemSecondaryAction>
                     </ListItem>
                   ))}
                 </List>

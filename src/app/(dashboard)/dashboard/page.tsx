@@ -102,6 +102,7 @@ const DashboardPage = () => {
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    // TODO: if replace image delete old image from S3
     const file = event.target.files?.[0]
     if (!file || !selectedCourseId) return
 
