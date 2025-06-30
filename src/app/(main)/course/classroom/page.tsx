@@ -4,14 +4,11 @@ import {
   Box,
   Typography,
   Button,
-  Card,
   Chip,
   TextField,
   Grid,
-  Paper,
   IconButton,
   LinearProgress,
-  styled,
   Tabs,
   Tab,
   CircularProgress,
@@ -22,36 +19,18 @@ import {
   NoteAltOutlined,
   FolderOutlined,
 } from "@mui/icons-material"
-import Header from "@/components/Header"
 import FooterLte from "@/components/layout/FooterLte"
 import { useSearchParams } from "next/navigation"
 import { useQuery } from "react-query"
-import { fetchLMS } from "@/app/api/rest"
+import { fetchCourse } from "@/app/api/rest"
 import ContentCard, { Lesson } from "@/components/classroom/ContentCard"
 import LessonContent from "@/components/classroom/LessonContent"
-
-const MainCard = styled(Card)(({ theme }) => ({
-  borderRadius: 24,
-  overflow: "hidden",
-  boxShadow: theme.shadows[3],
-  maxWidth: 1200,
-  margin: "0 auto",
-}))
-const ContentContainer = styled(Box)(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  overflow: "hidden",
-  marginBottom: theme.spacing(3),
-}))
-
-const MaterialItem = styled(Paper)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: theme.spacing(1, 2),
-  backgroundColor: theme.palette.grey[100],
-  marginBottom: theme.spacing(1),
-}))
+import { useSession } from "next-auth/react"
+import {
+  ContentContainer,
+  MainCard,
+  MaterialItem,
+} from "@/components/classroom/StyledComponents"
 
 interface TabPanelProps {
   children?: React.ReactNode
@@ -76,21 +55,25 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const ClassroomPage = () => {
+  const { data: session } = useSession()
   const searchParams = useSearchParams()
   const id = searchParams?.get("courseId")
   const [tabValue, setTabValue] = useState(0)
   const { data, isLoading, error } = useQuery({
-    queryKey: ["course", id],
-    queryFn: () => fetchLMS(id as string),
+    queryKey: ["course", id, session?.user?.id],
+    queryFn: () => fetchCourse(id as string, session?.user?.id as string),
     refetchOnWindowFocus: false,
-    enabled: !!id,
+    enabled: !!id && !!session?.user?.id,
   })
   const [currentLesson, setCurrentLesson] = React.useState(
-    data?.topics[0]?.lessons[0]
+    data?.curriculum?.topic[0]?.lessons[0]
   )
   useEffect(() => {
-    if (data?.topics?.length > 0 && data.topics[0]?.lessons?.length > 0) {
-      setCurrentLesson(data.topics[0].lessons[0])
+    if (
+      data?.curriculum?.topic?.length > 0 &&
+      data.curriculum.topic[0]?.lessons?.length > 0
+    ) {
+      setCurrentLesson(data.curriculum.topic[0].lessons[0])
     }
   }, [data])
 
@@ -132,7 +115,6 @@ const ClassroomPage = () => {
 
   return (
     <Box>
-      <Header />
       <MainCard>
         <Grid container>
           <Grid size={{ xs: 12, md: 8 }}>
@@ -202,7 +184,6 @@ const ClassroomPage = () => {
                   />
                 </Tabs>
 
-                {/* Notes Panel */}
                 <TabPanel value={tabValue} index={1}>
                   <Box>
                     <Typography variant="subtitle1" gutterBottom>
@@ -228,7 +209,6 @@ const ClassroomPage = () => {
                   </Box>
                 </TabPanel>
 
-                {/* Materials Panel */}
                 <TabPanel value={tabValue} index={2}>
                   <Box>
                     <Typography variant="subtitle1" gutterBottom>
@@ -296,7 +276,7 @@ const ClassroomPage = () => {
               </Box>
 
               <ContentCard
-                topics={data.topics}
+                topics={data?.curriculum?.topic || []}
                 currentLessonId={currentLesson?.id}
                 handleSelect={handleLessonSelect}
               />

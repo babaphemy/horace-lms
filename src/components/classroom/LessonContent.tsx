@@ -17,6 +17,8 @@ import {
   PlayCircle,
   Share,
 } from "@mui/icons-material"
+import VideoPlaceholderSVG from "../lms/VideoPlaceholderSVG"
+import ReactPlayer from "react-player"
 interface HTMLLessonProps {
   lesson: {
     content?: string
@@ -128,24 +130,43 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
     case "video":
       return (
         <VideoPlaceholder>
-          {lesson.video ? (
-            <Box component="video" controls width="100%" height="100%">
-              <source src={lesson.video} type="video/mp4" />
-              Your browser does not support the video tag.
-            </Box>
+          {lesson.id ? (
+            <ReactPlayer
+              url={`http://localhost:8000/stream/${lesson.id}`}
+              width="100%"
+              height="100%"
+              controls={true}
+              loop={true}
+              config={{
+                file: {
+                  attributes: {
+                    controlsList: "nodownload",
+                    defer: true,
+                  },
+                },
+              }}
+            />
           ) : (
+            // <Box
+            //   component="video"
+            //   controls
+            //   width="100%"
+            //   height="100%"
+            //   onError={(e) => {
+            //     console.error("Video error:", e)
+            //     console.error("Video error details:", e.target.error)
+            //   }}
+            //   onLoadStart={() => console.log("Video loading started")}
+            //   onCanPlay={() => console.log("Video can play")}
+            // >
+            //   <source
+            //     src={`http://localhost:8000/stream/${lesson.id}`}
+            //     type="video/mp4"
+            //   />
+            //   Your browser does not support the video streamer.
+            // </Box>
             <>
-              <Box
-                component="img"
-                src="/api/placeholder/800/450" // Placeholder - replace with actual thumbnail
-                alt={lesson.title || "Course thumbnail"}
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  opacity: 0.8,
-                }}
-              />
+              <VideoPlaceholderSVG title={lesson?.title || ""} />
               <Box
                 sx={{
                   position: "absolute",

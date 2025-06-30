@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  DialogContentText,
   MenuItem,
   Select,
   FormControl,
@@ -41,6 +42,7 @@ import {
   Article,
   Quiz,
   Assignment,
+  Warning,
 } from "@mui/icons-material"
 import { useForm, Controller, FormProvider } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -62,6 +64,16 @@ interface CourseEditorProps {
   id: string
   userId: string
 }
+
+interface DeleteConfirmation {
+  open: boolean
+  type: "topic" | "lesson"
+  item?: TopicDto | LessonDto
+  index?: number
+  topicIndex?: number
+  lessonIndex?: number
+}
+
 const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
   const queryClient = useQueryClient()
   const [saving, setSaving] = useState(false)
@@ -70,6 +82,11 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
   const [courseDialogOpen, setCourseDialogOpen] = useState(false)
   const [topicDialogOpen, setTopicDialogOpen] = useState(false)
   const [lessonDialogOpen, setLessonDialogOpen] = useState(false)
+  const [deleteConfirmation, setDeleteConfirmation] =
+    useState<DeleteConfirmation>({
+      open: false,
+      type: "topic",
+    })
 
   const [editingTopic, setEditingTopic] = useState<TopicDto | null>(null)
   const [editingLesson, setEditingLesson] = useState<LessonDto | null>(null)
@@ -128,7 +145,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     mutationFn: addCourseDetail,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subjects"] })
-      notifySuccess("Course editted successfully")
+      notifySuccess("Course edited successfully")
       courseForm.reset()
       setCourseDialogOpen(false)
       return
@@ -138,6 +155,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       return
     },
   })
+
   const handleSaveCourse = async (data: CourseCreate) => {
     if (!id || !userId) {
       notifyError("Course ID and User ID are required")
@@ -147,6 +165,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     data.user = userId
     mutate(data)
   }
+
   const topicForm = useForm({
     resolver: yupResolver(topicSchema),
     defaultValues: {
@@ -157,6 +176,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       dueDate: new Date(new Date().setMonth(new Date().getMonth() + 3)),
     },
   })
+
   const handleAddTopic = () => {
     setEditingTopic(null)
     setEditingTopicIndex(-1)
@@ -221,13 +241,26 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     addEditTopic(newTopic)
   }
 
-  const handleDeleteTopic = (_index: number) => {
-    if (!courseData || !id) return
+  const handleDeleteTopicClick = (topic: TopicDto, index: number) => {
+    setDeleteConfirmation({
+      open: true,
+      type: "topic",
+      item: topic,
+      index: index,
+    })
+  }
+
+  const handleConfirmTopicDelete = () => {
+    if (!courseData || !id || deleteConfirmation.index === undefined) return
 
     const updatedTopics = courseData.curriculum.topic.filter(
-      (_: TopicDto, i: number) => i !== _index
+      (_: TopicDto, i: number) => i !== deleteConfirmation.index
     )
-    notifyInfo(updatedTopics.length + " modules remaining")
+    notifyInfo(
+      `Module "${deleteConfirmation.item?.title}" deleted. ${updatedTopics.length} modules remaining`
+    )
+
+    setDeleteConfirmation({ open: false, type: "topic" })
   }
 
   const { mutate: addEditLesson } = useMutation({
@@ -297,16 +330,55 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     setLessonDialogOpen(false)
   }
 
-  const handleDeleteLesson = async (
-    id: string,
-    video: string,
-    content: string
+  const handleDeleteLessonClick = (
+    lesson: LessonDto,
+    topicIndex: number,
+    lessonIndex: number
   ) => {
-    if (!courseData || !id) return
-    await deleteLecture(id)
-    await deleteObject(video)
-    await deleteObject(content)
-    queryClient.invalidateQueries({ queryKey: ["course", courseData.id] })
+    setDeleteConfirmation({
+      open: true,
+      type: "lesson",
+      item: lesson,
+      topicIndex: topicIndex,
+      lessonIndex: lessonIndex,
+    })
+  }
+
+  const { mutate: deleteLessonMutation, isLoading: deletingLesson } =
+    useMutation({
+      mutationFn: async (lessonData: {
+        id: string
+        video: string
+        content: string
+      }) => {
+        await deleteLecture(lessonData.id)
+        if (lessonData.video) await deleteObject(lessonData.video)
+        if (lessonData.content) await deleteObject(lessonData.content)
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["course", id] })
+        notifySuccess("Lesson deleted successfully")
+        setDeleteConfirmation({ open: false, type: "lesson" })
+      },
+      onError: () => {
+        notifyError("Failed to delete lesson")
+        setDeleteConfirmation({ open: false, type: "lesson" })
+      },
+    })
+
+  const handleConfirmLessonDelete = () => {
+    const lesson = deleteConfirmation.item as LessonDto
+    if (!lesson?.id) return
+
+    deleteLessonMutation({
+      id: lesson.id,
+      video: lesson.video || "",
+      content: lesson.content || "",
+    })
+  }
+
+  const handleCancelDelete = () => {
+    setDeleteConfirmation({ open: false, type: "topic" })
   }
 
   const getLessonIcon = (type: LESSONTYPE) => {
@@ -492,7 +564,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                     color="error"
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleDeleteTopic(topicIndex)
+                      handleDeleteTopicClick(topic, topicIndex)
                     }}
                   >
                     <Delete />
@@ -551,14 +623,19 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                             size="small"
                             color="error"
                             onClick={() =>
-                              handleDeleteLesson(
-                                lesson.id as string,
-                                lesson.video as string,
-                                lesson.content as string
+                              handleDeleteLessonClick(
+                                lesson,
+                                topicIndex,
+                                lessonIndex
                               )
                             }
+                            disabled={deletingLesson}
                           >
-                            <Delete />
+                            {deletingLesson ? (
+                              <CircularProgress size={16} />
+                            ) : (
+                              <Delete />
+                            )}
                           </IconButton>
                         </>
                       }
@@ -579,6 +656,89 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         )
       )}
 
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteConfirmation.open}
+        onClose={handleCancelDelete}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Warning color="warning" />
+          Confirm Deletion
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {deleteConfirmation.type === "topic" ? (
+              <>
+                Are you sure you want to delete the module{" "}
+                <strong>&quot;{deleteConfirmation.item?.title}&quot;</strong>
+                ?
+                <br />
+                <br />
+                This action will also delete:
+                <ul>
+                  <li>
+                    All lessons within this module (
+                    {(deleteConfirmation.item as TopicDto)?.lessons?.length ||
+                      0}{" "}
+                    lessons)
+                  </li>
+                  <li>All associated files and content</li>
+                </ul>
+                <Alert severity="warning" sx={{ mt: 2 }}>
+                  This action cannot be undone!
+                </Alert>
+              </>
+            ) : (
+              <>
+                Are you sure you want to delete the lesson{" "}
+                <strong>
+                  &quot;{(deleteConfirmation.item as LessonDto)?.title}&quot;
+                </strong>
+                ?
+                <br />
+                <br />
+                This action will also delete:
+                <ul>
+                  <li>All lesson content</li>
+                  <li>Associated video and document files</li>
+                </ul>
+                <Alert severity="warning" sx={{ mt: 2 }}>
+                  This action cannot be undone!
+                </Alert>
+              </>
+            )}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} variant="outlined">
+            Cancel
+          </Button>
+          <Button
+            onClick={
+              deleteConfirmation.type === "topic"
+                ? handleConfirmTopicDelete
+                : handleConfirmLessonDelete
+            }
+            variant="contained"
+            color="error"
+            startIcon={<Delete />}
+            disabled={deletingLesson}
+          >
+            {deletingLesson ? (
+              <>
+                <CircularProgress size={16} sx={{ mr: 1 }} />
+                Deleting...
+              </>
+            ) : (
+              "Delete Permanently"
+            )}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Course Edit Dialog */}
       <Dialog open={courseDialogOpen} maxWidth="md" fullWidth>
         <DialogTitle>Edit Course Details</DialogTitle>
         <DialogContent>
@@ -904,7 +1064,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                   />
                 </Grid>
 
-                {/* Text content for non-video lessons */}
                 <Grid size={{ xs: 12 }}>
                   <Controller
                     name="type"
@@ -914,7 +1073,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                         name="content"
                         control={lessonForm.control}
                         render={({ field: contentField, fieldState }) => {
-                          // Show text content field for non-video lessons or as additional content
                           if (typeField.value !== LESSONTYPE.VIDEO) {
                             return (
                               <TextField
@@ -931,7 +1089,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                               />
                             )
                           }
-                          // Always return a React element (empty fragment) instead of null
+
                           return <></>
                         }}
                       />

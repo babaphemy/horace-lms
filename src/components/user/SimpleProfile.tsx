@@ -231,7 +231,7 @@ const SimpleProfile = () => {
         lastname: data.lastname || "",
         email: data.email || "",
         phone: data.phone || "",
-        organization: data.organization || "",
+        organization: data.organizationId || "",
         roles: data.roles || [""],
         type: data.roles[0] || "",
         bio: data.bio || "",
@@ -251,7 +251,7 @@ const SimpleProfile = () => {
         lastname: userData.lastname || "",
         email: userData.email || "",
         phone: userData.phone || "",
-        organization: userData.organization || "",
+        organization: userData.organizationId || "",
         roles: userData.roles || [""],
         type: userData.roles[0] || "",
         bio: userData.bio || "",
@@ -296,7 +296,7 @@ const SimpleProfile = () => {
           lastname: userData.lastname || "",
           email: userData.email || "",
           phone: userData.phone || "",
-          organization: userData.organization || "",
+          organization: userData.organizationId || "",
           roles: userData.roles || [""],
           type: userData.roles[0] || "",
           bio: userData.bio || "",
@@ -314,9 +314,12 @@ const SimpleProfile = () => {
   const onProfileSubmit: SubmitHandler<tUser> = (data) => {
     if (!userData) return
 
+    const orgId = data.organizationId ? data.organizationId.split("_")[0] : ""
+
     const updatedUser: tUser = {
       ...userData,
       ...data,
+      organizationId: orgId,
     }
 
     editUser(updatedUser)

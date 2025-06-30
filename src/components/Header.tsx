@@ -297,7 +297,7 @@ const Header = () => {
                       Dashboard
                     </MenuItem>
                     <MenuItem
-                      onClick={() => handleClose("/dashboard/profile")}
+                      onClick={() => handleClose("/dashboard/profile/")}
                       disableRipple
                     >
                       <Person2Icon />

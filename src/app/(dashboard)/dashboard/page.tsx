@@ -432,7 +432,7 @@ const DashboardPage = () => {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 4 }}>
-          <EventCard upcomingEvents={upcomingEvents as Event[]} />
+          <EventCard upcomingEvents={upcomingEvents?.content as Event[]} />
           <ActivityCard
             recentActivity={recentActivity?.content as Activity[]}
           />

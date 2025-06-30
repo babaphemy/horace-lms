@@ -18,6 +18,7 @@ import { loadStripe } from "@stripe/stripe-js"
 import {
   auth,
   basePath,
+  DeleteSettings,
   horacePath,
   PostSettings,
   PutSettings,
@@ -41,7 +42,7 @@ const getUserById = async (id: string): Promise<tUser> => {
   return resp.json()
 }
 const doEdit = async (data: tUser) => {
-  const resp = await fetch(`${basePath}user/edit/one`, PutSettings(data))
+  const resp = await fetch(`${basePath}user/edit`, PutSettings(data))
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -152,7 +153,9 @@ const fetchCourses = async (page: number = 0, size: number = 10) => {
 }
 const fetchCourse = async (id: string, userid?: string) => {
   const response = await fetch(
-    userid ? `${basePath}course/${id}/${userid}` : `${basePath}course/${id}`,
+    userid
+      ? `${basePath}course/summary/${id}?userId=${userid}`
+      : `${basePath}course/${id}`,
     auth
   )
   if (!response.ok) {
@@ -170,6 +173,16 @@ const fetchLMS = async (id: string) => {
 const myRegisteredCourses = async (userId: string) => {
   const response = await fetch(
     `${basePath}course/courses/my-registered/${userId}`,
+    auth
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const isRegistered = async (userId: string, courseId: string) => {
+  const response = await fetch(
+    `${basePath}reg/isreg/${userId}/${courseId}`,
     auth
   )
   if (!response.ok) {
@@ -261,12 +274,10 @@ const addLecture = async (data: LessonDto): Promise<LessonDto> => {
   return response.json()
 }
 const deleteLecture = async (id: string): Promise<void> => {
-  const response = await fetch(`${basePath}course/module/lesson/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  const response = await fetch(
+    `${basePath}course/module/lesson/${id}`,
+    DeleteSettings({ id })
+  )
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -503,7 +514,7 @@ const activities = async (userId: string) => {
   return response.json()
 }
 const events = async (userId: string) => {
-  const response = await fetch(`${basePath}event/${userId}`, auth)
+  const response = await fetch(`${basePath}event/user/${userId}`, auth)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -543,6 +554,7 @@ export {
   getUsers,
   handlePay,
   isCourseReg,
+  isRegistered,
   login2,
   loginUser,
   manageDraft,

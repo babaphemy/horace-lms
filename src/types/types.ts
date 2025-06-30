@@ -15,6 +15,7 @@ export type tUser = {
   type: string // e.g., "admin", "student", "instructor"
   dp?: string
   organization?: string
+  organizationId?: string
   name?: string
   firstname: string
   lastname: string

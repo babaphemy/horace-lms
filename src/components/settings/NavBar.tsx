@@ -10,10 +10,13 @@ const NavBar = () => {
       <nav className={styles.topNavStyle}>
         <ul>
           <li className={pathname.includes("account") ? styles.active : ""}>
-            <Link href="/settings/account">Organization</Link>
+            <Link href="/dashboard/settings/org">Organization</Link>
           </li>
           <li className={pathname.includes("security") ? styles.active : ""}>
             <Link href="/settings/security">Change Password</Link>
+          </li>
+          <li className={pathname.includes("profile") ? styles.active : ""}>
+            <Link href="/dashboard/profile">Profile</Link>
           </li>
           <li
             className={pathname.includes("privacy-policy") ? styles.active : ""}
