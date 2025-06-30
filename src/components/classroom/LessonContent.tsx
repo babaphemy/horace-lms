@@ -132,7 +132,7 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
         <VideoPlaceholder>
           {lesson.id ? (
             <ReactPlayer
-              url={`http://localhost:8000/stream/${lesson.id}`}
+              url={`https://horacelms.com/stream/${lesson.id}`}
               width="100%"
               height="100%"
               controls={true}
