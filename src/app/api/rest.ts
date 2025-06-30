@@ -281,7 +281,6 @@ const deleteLecture = async (id: string): Promise<void> => {
   if (!response.ok) {
     throw new Error(response.statusText)
   }
-  return response.json()
 }
 const addReview = async (data: tReview) => {
   const response = await fetch(`${basePath}post/addmeta`, PostSettings(data))
