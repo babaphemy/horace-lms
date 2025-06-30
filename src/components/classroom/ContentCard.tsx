@@ -32,6 +32,7 @@ export interface Lesson {
 interface Topic {
   id: string
   module: string
+  title: string
   description: string
   cid: string | null
   orderIndex: number
@@ -116,7 +117,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
                       />
                     )}
                     <Typography variant="caption" fontWeight="medium">
-                      {idx + 1}: {topic.module}
+                      {idx + 1}: {topic?.module || topic?.title}
                     </Typography>
                   </Box>
 

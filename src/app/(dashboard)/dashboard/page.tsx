@@ -102,6 +102,7 @@ const DashboardPage = () => {
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    // TODO: if replace image delete old image from S3
     const file = event.target.files?.[0]
     if (!file || !selectedCourseId) return
 
@@ -431,7 +432,7 @@ const DashboardPage = () => {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 4 }}>
-          <EventCard upcomingEvents={upcomingEvents as Event[]} />
+          <EventCard upcomingEvents={upcomingEvents?.content as Event[]} />
           <ActivityCard
             recentActivity={recentActivity?.content as Activity[]}
           />

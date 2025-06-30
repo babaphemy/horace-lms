@@ -59,11 +59,11 @@ const Detailb = () => {
 
   const { data } = useQuery(
     ["acourse", cid, user?.id],
-    () => fetchCourse(cid as string, user?.id),
+    () => fetchCourse(cid as string, user?.id as string),
     {
       staleTime: 5000,
       cacheTime: 10,
-      enabled: !!cid,
+      enabled: !!cid && !!user?.id,
     }
   )
 
@@ -136,7 +136,7 @@ const Detailb = () => {
     }
 
     if (user?.id) {
-      if (price > 0) {
+      if (price < 1) {
         addCourseToUser.mutate({ ...payload, user: String(payload.user) })
       } else {
         dispatch({

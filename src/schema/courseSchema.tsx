@@ -126,5 +126,5 @@ export const lessonSchema = yup.object().shape({
     .mixed<LESSONTYPE>()
     .oneOf(Object.values(LESSONTYPE), "Invalid lesson type")
     .required("Lesson type is required"),
-  content: yup.string().required("Content is required"),
+  content: yup.string(),
 })

@@ -149,7 +149,7 @@ const menuData: TNavBar[] = [
     sub_nav: [
       {
         title: "Account",
-        path: "/settings/account/",
+        path: "/dashboard/settings/",
         allowed_roles: [AccessRoles.ADMIN],
         active: true,
         order: 0,

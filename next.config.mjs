@@ -20,6 +20,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "material-ui.com",
+      },
+      {
+        protocol: "https",
         hostname: "essl.b-cdn.net",
       },
     ],
@@ -34,8 +38,8 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "media-src 'self' https://essl.b-cdn.net https://horacevids.s3.amazonaws.com",
-              "img-src 'self' femi.b-cdn.net essl.b-cdn.net data: blob: *.youtube.com *.ytimg.com essluploads.s3.amazonaws.com essluploads2.s3.amazonaws.com *.googleusercontent.com *.google.com https://google.com *.googleadservices.com *.doubleclick.net",
+              "media-src 'self' https://essl.b-cdn.net https://horacevids.s3.amazonaws.com http://localhost:8000 https://horacelms.com",
+              "img-src 'self' femi.b-cdn.net essl.b-cdn.net data: blob: *.youtube.com *.ytimg.com essluploads.s3.amazonaws.com essluploads2.s3.amazonaws.com *.googleusercontent.com *.google.com https://google.com *.googleadservices.com *.doubleclick.net https://material-ui.com",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googletagmanager.com *.youtube.com *.stripe.com *.googleads.g.doubleclick.net *.googleadservices.com *.google.com https://google.com",
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "font-src 'self' fonts.gstatic.com",
