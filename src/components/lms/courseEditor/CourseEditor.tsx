@@ -207,13 +207,13 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     mutationFn: addTopic,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["course", id] })
-      notifySuccess("Topic updated successfully")
+      notifySuccess("Module updated successfully")
       setTopicDialogOpen(false)
       setSaving(false)
       return
     },
     onError: () => {
-      notifyError("Failed to update topic, please retry!")
+      notifyError("Failed to update module, please retry!")
       setSaving(false)
       return
     },

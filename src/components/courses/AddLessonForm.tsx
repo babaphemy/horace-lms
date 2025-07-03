@@ -218,7 +218,7 @@ const TopicAccordion: React.FC<{
               })
             }
           >
-            Add Lesson to Topic
+            Add Lesson to Module
           </Button>
         </Stack>
       </AccordionDetails>
