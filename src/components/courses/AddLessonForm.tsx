@@ -27,7 +27,6 @@ import { Controller, useFieldArray, useFormContext } from "react-hook-form"
 import RichEditor from "./Editor"
 import FileUploadZone from "./FileUploadZone"
 
-// TODO: Delete video when remove lesson
 const AddLessonForm = () => {
   const { watch } = useFormContext()
 
