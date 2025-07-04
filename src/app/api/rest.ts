@@ -85,7 +85,11 @@ const verifyEmail = async (email: string) => {
   return resp.text()
 }
 
-const doToken = async (data: { email: string; type: string }) => {
+const doToken = async (data: {
+  email: string
+  type: string
+  organizationId: string
+}) => {
   const resp = await fetch(`${basePath}user/dotoken`, PostSettings(data))
 
   if (!resp.ok) {
@@ -100,6 +104,7 @@ const resetPass = async (data: {
   email: string
   password: string | number
   type: string
+  organizationId: string
 }) => {
   const resp = await fetch(`${basePath}user/reset/password`, PostSettings(data))
   if (!resp.ok) {
