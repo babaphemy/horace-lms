@@ -24,6 +24,8 @@ interface HTMLLessonProps {
     content?: string
   }
 }
+const streamUrl =
+  process.env.NEXT_PUBLIC_STREAM_URL || "https://horacelms.com/stream"
 const HTMLLesson: React.FC<HTMLLessonProps> = ({ lesson }) => {
   return (
     <DocumentContainer>
@@ -132,7 +134,7 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
         <VideoPlaceholder>
           {lesson.id ? (
             <ReactPlayer
-              url={`https://horacelms.com/stream/${lesson.id}`}
+              url={`${streamUrl}/${lesson.id}`}
               width="100%"
               height="100%"
               controls={true}
@@ -147,24 +149,6 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
               }}
             />
           ) : (
-            // <Box
-            //   component="video"
-            //   controls
-            //   width="100%"
-            //   height="100%"
-            //   onError={(e) => {
-            //     console.error("Video error:", e)
-            //     console.error("Video error details:", e.target.error)
-            //   }}
-            //   onLoadStart={() => console.log("Video loading started")}
-            //   onCanPlay={() => console.log("Video can play")}
-            // >
-            //   <source
-            //     src={`http://localhost:8000/stream/${lesson.id}`}
-            //     type="video/mp4"
-            //   />
-            //   Your browser does not support the video streamer.
-            // </Box>
             <>
               <VideoPlaceholderSVG title={lesson?.title || ""} />
               <Box

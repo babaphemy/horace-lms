@@ -224,6 +224,7 @@ export type LessonDto = {
   content?: string
   orderIndex?: number
   dueDate?: Date
+  assetKey?: string
   createdOn?: Date
   updatedOn?: Date
 }
