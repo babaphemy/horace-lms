@@ -216,9 +216,13 @@ const isCourseReg = async (id: string) => {
   }
   return response.json()
 }
-const recentCourses = async (startDate: string, endDate: string) => {
+const recentCourses = async (
+  startDate: string,
+  endDate: string,
+  organizationId?: string
+) => {
   const response = await fetch(
-    `${basePath}course/range/${startDate}/${endDate}`,
+    `${basePath}course/range/${startDate}/${endDate}${organizationId ? `?orgId=${organizationId}` : ""}`,
     auth
   )
   if (!response.ok) {
