@@ -429,7 +429,7 @@ const DashboardPage = () => {
                     }}
                   >
                     <Assignment sx={{ fontSize: 32, mb: 1 }} />
-                    <Typography variant="body2">Create Assignment</Typography>
+                    <Typography variant="body2">Assignment</Typography>
                   </Paper>
                 </Grid>
               </Grid>
