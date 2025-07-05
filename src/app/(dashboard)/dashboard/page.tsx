@@ -149,6 +149,11 @@ const DashboardPage = () => {
     queryKey: ["upcomingEvents", userId],
     enabled: !!userId,
   })
+  const { data: stats } = useQuery({
+    queryFn: () => dashboardStat(userId as string),
+    queryKey: ["dashboardStat", userId],
+    enabled: !!userId,
+  })
 
   const dateRange = useMemo(() => {
     const today = new Date()
@@ -162,14 +167,15 @@ const DashboardPage = () => {
   }, [])
 
   const { data: recents } = useQuery({
-    queryFn: () => recentCourses(dateRange.start, dateRange.end),
-    queryKey: ["recentCourses", dateRange.start, dateRange.end],
-  })
-
-  const { data: stats } = useQuery({
-    queryFn: () => dashboardStat(userId as string),
-    queryKey: ["dashboardStat", userId],
-    enabled: !!userId,
+    queryFn: () =>
+      recentCourses(dateRange.start, dateRange.end, stats?.organizationId),
+    queryKey: [
+      "recentCourses",
+      dateRange.start,
+      dateRange.end,
+      stats?.organizationId,
+    ],
+    enabled: !!stats?.organizationId,
   })
 
   return (
