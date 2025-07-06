@@ -561,7 +561,7 @@ export type OrganizationMember = {
     name: string
     email: string
     role: string
-    avatar?: string
+    dp?: string
     joinedDate: string
     status: "active" | "inactive" | "pending"
     description?: string,

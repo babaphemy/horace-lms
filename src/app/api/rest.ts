@@ -526,6 +526,22 @@ const fetchOrganizationMembers = async (orgId: string): Promise<OrganizationMemb
   if (!response.ok) {
     throw new Error(response.statusText)
   }
+  const data = await response.json()
+
+  // 👇 Add a defensive check
+  if (!Array.isArray(data.content)) {
+    console.error("Expected an array in data.content but got:", data)
+    return []
+  }
+
+  return data.content // ✅ return just the array
+}
+
+const fetchUserOrganization = async (userId: string): Promise<orgDto> => {
+  const response = await fetch(`${basePath}user/org/${userId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
   return response.json()
 }
 
@@ -581,4 +597,5 @@ export {
   userOrganization,
   verifyEmail,
   fetchOrganizationMembers,
+  fetchUserOrganization,
 }
