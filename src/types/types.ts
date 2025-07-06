@@ -556,3 +556,24 @@ export type Uploader = {
   filetype: string
   expiration?: number | null
 }
+export type OrganizationMember = {
+    id: string
+    name: string
+    email: string
+    role: string
+    avatar?: string
+    joinedDate: string
+    status: "active" | "inactive" | "pending"
+    description?: string,
+    logo: string,
+    website: string,
+    address?: string,
+    phone: string,
+    country?: string,
+    state?: string,
+    city?: string,
+    zip?: string,
+    createdBy: string,
+    updatedOn?: string,
+    createdOn?: string
+  }

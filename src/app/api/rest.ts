@@ -13,6 +13,7 @@ import {
   tUser,
   Uploader,
   UserDto,
+  OrganizationMember,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -520,6 +521,14 @@ const events = async (userId: string) => {
   return response.json()
 }
 
+const fetchOrganizationMembers = async (orgId: string): Promise<OrganizationMember[]> => {
+  const response = await fetch(`${basePath}user/org-users/${orgId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 export {
   addCourseDetail,
   addThumbnail,
@@ -571,4 +580,5 @@ export {
   uploadPresignedUrl,
   userOrganization,
   verifyEmail,
+  fetchOrganizationMembers,
 }
