@@ -7,6 +7,7 @@ import Link from "next/link"
 
 const CoursesPage = () => {
   const { data: session } = useSession()
+
   return (
     <Box sx={{ p: 3, backgroundColor: "#f5f7fa", minHeight: "100vh" }}>
       <Box
