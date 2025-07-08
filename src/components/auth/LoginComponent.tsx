@@ -72,10 +72,13 @@ const Login = (props: Props) => {
     // @ts-expect-error: next auth already defined this correctly
     if (status === "authenticated" || session?.user?.email) {
       notifySuccess("Login successful! Redirecting...")
-      if (session?.user?.roles?.includes("STUDENT")) {
-        router.push("/")
+      if (
+        session?.user?.roles?.includes("ADMIN") ||
+        session?.user?.roles?.includes("INSTRUCTOR")
+      ) {
+        router.push("/dashboard")
       } else {
-        router.push(redirectFrom || "/dashboard")
+        router.push(redirectFrom || "/courses")
       }
     }
   }, [status, session?.user?.email, session?.user?.roles, router, redirectFrom])
