@@ -521,20 +521,21 @@ const events = async (userId: string) => {
   return response.json()
 }
 
-const fetchOrganizationMembers = async (orgId: string): Promise<OrganizationMember[]> => {
+const fetchOrganizationMembers = async (
+  orgId: string
+): Promise<OrganizationMember[]> => {
   const response = await fetch(`${basePath}user/org-users/${orgId}`, auth)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
   const data = await response.json()
 
-  // 👇 Add a defensive check
   if (!Array.isArray(data.content)) {
-    console.error("Expected an array in data.content but got:", data)
+    throw new Error("Expected an array in data.content but got:", data)
     return []
   }
 
-  return data.content // ✅ return just the array
+  return data.content
 }
 
 const fetchUserOrganization = async (userId: string): Promise<orgDto> => {
