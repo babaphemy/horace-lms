@@ -11,11 +11,11 @@ import {
   CloudDownload,
   Code,
   Comment,
-  DescriptionOutlined,
   Favorite,
   PictureAsPdf,
   PlayCircle,
   Share,
+  Visibility,
 } from "@mui/icons-material"
 import VideoPlaceholderSVG from "../lms/VideoPlaceholderSVG"
 import ReactPlayer from "react-player"
@@ -293,50 +293,34 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
       )
 
     case "pdf":
+    case "document":
+      const documentUrl = `${process.env.NEXT_PUBLIC_HORACE}stream/document/${lesson.id}`
       return (
         <PDFPreview>
           <PictureAsPdf sx={{ fontSize: 60, color: "#f44336", mb: 2 }} />
           <Typography variant="h6" gutterBottom>
-            {lesson.title || "PDF Document"}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" mb={3}>
-            PDF document preview
-          </Typography>
-          {lesson.content && (
-            <Button
-              variant="contained"
-              startIcon={<CloudDownload />}
-              href={lesson.content}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Open PDF
-            </Button>
-          )}
-        </PDFPreview>
-      )
-
-    case "document":
-      return (
-        <PDFPreview>
-          <DescriptionOutlined sx={{ fontSize: 60, color: "#2196f3", mb: 2 }} />
-          <Typography variant="h6" gutterBottom>
             {lesson.title || "Document"}
           </Typography>
-          <Typography variant="body2" color="text.secondary" mb={3}>
-            Document preview not available
-          </Typography>
-          {lesson.content && (
+          <Box sx={{ display: "flex", gap: 2 }}>
             <Button
               variant="contained"
-              startIcon={<CloudDownload />}
-              href={lesson.content}
+              startIcon={<Visibility />}
+              href={documentUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Download Document
+              View Document
             </Button>
-          )}
+            <Button
+              variant="outlined"
+              startIcon={<CloudDownload />}
+              href={`${documentUrl}?download=true`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download
+            </Button>
+          </Box>
         </PDFPreview>
       )
 
