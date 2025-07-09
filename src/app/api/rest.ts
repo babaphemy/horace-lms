@@ -510,7 +510,7 @@ const getTeamMembers = async (orgId: string, page: number) => {
     auth
   )
   if (!response.ok) {
-    throw new Error(response.statusText)
+    throw new Error(`Failed to fetch team members for orgId ${orgId} at endpoint ${basePath}user/org-users/${orgId}?page=${page}&size=10: ${response.statusText}`)
   }
   return response.json()
 }
