@@ -56,7 +56,7 @@ import {
   deleteTopic,
   fetchCourse,
 } from "@/app/api/rest"
-import { notifyError, notifySuccess } from "@/utils/notification"
+import { notifyError, notifyInfo, notifySuccess } from "@/utils/notification"
 import { courseSchema, lessonSchema, topicSchema } from "@/schema/courseSchema"
 import { CourseCreate, LessonDto, LESSONTYPE, TopicDto } from "@/types/types"
 import FileUploadZone from "@/components/courses/FileUploadZone"
@@ -282,6 +282,16 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     deleteTopicMutation({
       id: topic.id,
     })
+    if (!courseData || !id || deleteConfirmation.index === undefined) return
+
+    const updatedTopics = courseData.curriculum.topic.filter(
+      (_: TopicDto, i: number) => i !== deleteConfirmation.index
+    )
+    notifyInfo(
+      `Module "${deleteConfirmation.item?.title}" deleted. ${updatedTopics.length} modules remaining`
+    )
+
+    setDeleteConfirmation({ open: false, type: "topic" })
   }
 
   const { mutate: addEditLesson } = useMutation({
