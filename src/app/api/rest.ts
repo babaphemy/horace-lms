@@ -274,6 +274,16 @@ const addLecture = async (data: LessonDto): Promise<LessonDto> => {
   }
   return response.json()
 }
+
+const deleteTopic = async (id: string): Promise<void> => {
+  const response = await fetch(
+    `${basePath}course/module/${id}`,
+    DeleteSettings({ id })
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+}
 const deleteLecture = async (id: string): Promise<void> => {
   const response = await fetch(
     `${basePath}course/module/lesson/${id}`,
@@ -564,6 +574,7 @@ export {
   doEdit,
   doToken,
   deleteLecture,
+  deleteTopic,
   deleteObject,
   events,
   fetchCourse,

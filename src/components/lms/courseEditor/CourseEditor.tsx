@@ -53,9 +53,10 @@ import {
   addTopic,
   deleteLecture,
   deleteObject,
+  deleteTopic,
   fetchCourse,
 } from "@/app/api/rest"
-import { notifyError, notifyInfo, notifySuccess } from "@/utils/notification"
+import { notifyError, notifySuccess } from "@/utils/notification"
 import { courseSchema, lessonSchema, topicSchema } from "@/schema/courseSchema"
 import { CourseCreate, LessonDto, LESSONTYPE, TopicDto } from "@/types/types"
 import FileUploadZone from "@/components/courses/FileUploadZone"
@@ -241,7 +242,31 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     addEditTopic(newTopic)
   }
 
+  const { mutate: deleteTopicMutation, isLoading: deletingTopic } = useMutation(
+    {
+      mutationFn: async (topicData: { id: string }) => {
+        await deleteTopic(topicData.id)
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["course", id] })
+        notifySuccess("Module deleted successfully")
+        setDeleteConfirmation({ open: false, type: "topic" })
+      },
+      onError: () => {
+        notifyError("Failed to delete module")
+        setDeleteConfirmation({ open: false, type: "topic" })
+      },
+    }
+  )
+
   const handleDeleteTopicClick = (topic: TopicDto, index: number) => {
+    if (topic.lessons && topic.lessons.length > 0) {
+      notifyError(
+        "You cannot delete a module that already has lessons. Please remove the lessons first."
+      )
+      return
+    }
+
     setDeleteConfirmation({
       open: true,
       type: "topic",
@@ -251,16 +276,12 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
   }
 
   const handleConfirmTopicDelete = () => {
-    if (!courseData || !id || deleteConfirmation.index === undefined) return
+    const topic = deleteConfirmation.item as TopicDto
+    if (!topic?.id) return
 
-    const updatedTopics = courseData.curriculum.topic.filter(
-      (_: TopicDto, i: number) => i !== deleteConfirmation.index
-    )
-    notifyInfo(
-      `Module "${deleteConfirmation.item?.title}" deleted. ${updatedTopics.length} modules remaining`
-    )
-
-    setDeleteConfirmation({ open: false, type: "topic" })
+    deleteTopicMutation({
+      id: topic.id,
+    })
   }
 
   const { mutate: addEditLesson } = useMutation({
@@ -552,22 +573,21 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                 <Box display="flex" gap={1}>
                   <IconButton
                     size="small"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleEditTopic(topic, topicIndex)
-                    }}
+                    onClick={() => handleEditTopic(topic, topicIndex)}
                   >
                     <Edit />
                   </IconButton>
                   <IconButton
                     size="small"
                     color="error"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleDeleteTopicClick(topic, topicIndex)
-                    }}
+                    onClick={() => handleDeleteTopicClick(topic, topicIndex)}
+                    disabled={deletingTopic}
                   >
-                    <Delete />
+                    {deletingTopic ? (
+                      <CircularProgress size={16} />
+                    ) : (
+                      <Delete />
+                    )}
                   </IconButton>
                 </Box>
               </Box>
@@ -672,8 +692,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
             {deleteConfirmation.type === "topic" ? (
               <>
                 Are you sure you want to delete the module{" "}
-                <strong>&quot;{deleteConfirmation.item?.title}&quot;</strong>
-                ?
+                <strong>&quot;{deleteConfirmation.item?.title}&quot;</strong>?
                 <br />
                 <br />
                 This action will also delete:
@@ -724,9 +743,9 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
             variant="contained"
             color="error"
             startIcon={<Delete />}
-            disabled={deletingLesson}
+            disabled={deletingLesson || deletingTopic}
           >
-            {deletingLesson ? (
+            {deletingLesson || deletingTopic ? (
               <>
                 <CircularProgress size={16} sx={{ mr: 1 }} />
                 Deleting...
