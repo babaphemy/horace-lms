@@ -16,7 +16,6 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import boy from "@/assets/img/illustrate-2.webp"
 import logo from "@/assets/img/logo.webp"
-import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 // export const metadata = generateMetadata({
 //   title: "Horace Learning Management Solution",
@@ -26,7 +25,6 @@ const AboutUs = () => {
   const router = useRouter()
   return (
     <Box>
-      <Header />
       <Container>
         <Box className="flex flex-col items-center justify-center space-y-[20px] mb-5">
           <Typography

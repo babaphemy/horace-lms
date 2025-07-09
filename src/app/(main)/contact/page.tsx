@@ -1,6 +1,5 @@
 "use client"
 import Footer from "@/components/Footer"
-import Header from "@/components/Header"
 import Map from "@/components/Map"
 import { tContact } from "@/types/types"
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -94,7 +93,6 @@ const ContactUs = () => {
   const emailAddress = "office@horacelearning.com"
   return (
     <Box>
-      <Header />
       <Container>
         <Box>
           <Typography variant="h3" sx={{ fontWeight: "bold", my: 1 }}>
