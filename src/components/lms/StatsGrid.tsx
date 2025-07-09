@@ -9,28 +9,28 @@ const StatsGrid = ({ stats }: { stats: Stat | null }) => {
       title: "Total Courses",
       icon: <Book size={24} />,
       color: "#3B82F6",
-      format: (value: number) => value.toLocaleString(),
+      format: (value: number) => value?.toLocaleString(),
     },
     {
       key: "activeStudents" as keyof Stat,
       title: "Active Students",
       icon: <Users size={24} />,
       color: "#10B981",
-      format: (value: number) => value.toLocaleString(),
+      format: (value: number) => value?.toLocaleString(),
     },
     {
       key: "completedLessons" as keyof Stat,
       title: "Completed Lessons",
       icon: <CheckCircle size={24} />,
       color: "#8B5CF6",
-      format: (value: number) => value.toLocaleString(),
+      format: (value: number) => value?.toLocaleString(),
     },
     {
       key: "revenue" as keyof Stat,
       title: "Revenue",
       icon: <DollarSign size={24} />,
       color: "#F59E0B",
-      format: (value: number) => `$${value.toLocaleString()}`,
+      format: (value: number) => `$${value?.toLocaleString()}`,
     },
   ]
 

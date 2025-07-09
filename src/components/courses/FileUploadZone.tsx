@@ -119,7 +119,8 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
         filetype: file.type,
       }
 
-      const { url: presignedUrl } = await getPresignedUrl(uploader)
+      const { url: presignedUrl, key: fileKey } =
+        await getPresignedUrl(uploader)
       const filePath = await uploadFileWithProgress(
         file,
         presignedUrl,
@@ -129,6 +130,7 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
       const fieldName = lessonType === LESSONTYPE.VIDEO ? "video" : "content"
 
       setValue(fieldName, filePath)
+      setValue("assetKey", fileKey)
       setUploadedFile(filePath)
       clearErrors(fieldName)
       notifySuccess(`${lessonType} uploaded successfully!`)

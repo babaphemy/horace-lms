@@ -3,7 +3,6 @@ import { SET_USER } from "@/context/Action"
 import { AppDpx } from "@/context/AppContext"
 import useUser from "@/hooks/useUser"
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney"
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline"
 import Logout from "@mui/icons-material/Logout"
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import PersonIcon from "@mui/icons-material/Person"
@@ -149,7 +148,7 @@ const Profile = () => {
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           <Link
-            href={"/dashboard"}
+            href={"/dashboard/profile/"}
             fontSize="13px"
             color="inherit"
             underline="none"
@@ -163,7 +162,7 @@ const Profile = () => {
             <MailOutlineIcon fontSize="small" />
           </ListItemIcon>
           <Link
-            href="/email/inbox/"
+            href="/dashboard/notification/"
             fontSize="13px"
             color="inherit"
             underline="none"
@@ -174,24 +173,10 @@ const Profile = () => {
 
         <MenuItem>
           <ListItemIcon sx={{ mr: "-8px", mt: "-3px" }}>
-            <ChatBubbleOutlineIcon fontSize="small" />
-          </ListItemIcon>
-          <Link
-            href="/apps/chat/"
-            fontSize="13px"
-            color="inherit"
-            underline="none"
-          >
-            Chat
-          </Link>
-        </MenuItem>
-
-        <MenuItem>
-          <ListItemIcon sx={{ mr: "-8px", mt: "-3px" }}>
             <Settings fontSize="small" />
           </ListItemIcon>
           <Link
-            href="/settings/account/"
+            href="/dashboard/settings/"
             fontSize="13px"
             color="inherit"
             underline="none"

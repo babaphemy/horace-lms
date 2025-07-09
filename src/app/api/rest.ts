@@ -86,7 +86,11 @@ const verifyEmail = async (email: string) => {
   return resp.text()
 }
 
-const doToken = async (data: { email: string; type: string }) => {
+const doToken = async (data: {
+  email: string
+  type: string
+  organizationId: string
+}) => {
   const resp = await fetch(`${basePath}user/dotoken`, PostSettings(data))
 
   if (!resp.ok) {
@@ -101,6 +105,7 @@ const resetPass = async (data: {
   email: string
   password: string | number
   type: string
+  organizationId: string
 }) => {
   const resp = await fetch(`${basePath}user/reset/password`, PostSettings(data))
   if (!resp.ok) {
@@ -212,9 +217,13 @@ const isCourseReg = async (id: string) => {
   }
   return response.json()
 }
-const recentCourses = async (startDate: string, endDate: string) => {
+const recentCourses = async (
+  startDate: string,
+  endDate: string,
+  organizationId?: string
+) => {
   const response = await fetch(
-    `${basePath}course/range/${startDate}/${endDate}`,
+    `${basePath}course/range/${startDate}/${endDate}${organizationId ? `?orgId=${organizationId}` : ""}`,
     auth
   )
   if (!response.ok) {
@@ -505,10 +514,21 @@ const userOrganization = async (userId: string) => {
   }
   return response.json()
 }
-const addUserToOrganization = async (userId: string, orgId: string) => {
+
+const getTeamMembers = async (orgId: string, page: number) => {
+  const response = await fetch(
+    `${basePath}user/org-users/${orgId}?page=${page}&size=10`,
+    auth
+  )
+  if (!response.ok) {
+    throw new Error(`Failed to fetch team members for orgId ${orgId} at endpoint ${basePath}user/org-users/${orgId}?page=${page}&size=10: ${response.statusText}`)
+  }
+  return response.json()
+}
+const addUserToOrganization = async (email: string, orgId: string) => {
   const response = await fetch(
     `${basePath}org/${orgId}`,
-    PutSettings({ id: orgId })
+    PutSettings({ id: orgId, email })
   )
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -608,6 +628,7 @@ export {
   uploadPresignedUrl,
   userOrganization,
   verifyEmail,
+  getTeamMembers,
   fetchOrganizationMembers,
   fetchUserOrganization,
 }

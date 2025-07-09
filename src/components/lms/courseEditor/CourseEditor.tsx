@@ -310,6 +310,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       type: LESSONTYPE.TEXT,
       content: "",
       video: "",
+      assetKey: "",
     })
     setLessonDialogOpen(true)
   }
@@ -342,6 +343,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       type: data.type,
       content: data.content,
       video: data.video || "",
+      assetKey: data.assetKey || "",
       orderIndex:
         editingLessonIndex >= 0
           ? editingLessonIndex + 1

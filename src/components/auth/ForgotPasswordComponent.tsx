@@ -43,6 +43,7 @@ type forgotPassProps = {
   token: string
   password: string
   confirmPassword: string
+  organizationId?: string
 }
 
 type Props = {
@@ -109,6 +110,7 @@ const ForgotPasswordComponent = (props: Props) => {
       token: data.token,
       password: data.password,
       type: "USER",
+      organizationId: "Horace",
     })
   }
 
@@ -130,6 +132,7 @@ const ForgotPasswordComponent = (props: Props) => {
     tokenMutation.mutate({
       email: emailInput,
       type: "USER",
+      organizationId: "Horace",
     })
   }
 

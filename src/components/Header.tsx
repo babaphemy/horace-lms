@@ -102,6 +102,8 @@ const Header = () => {
   const router = useRouter()
   const { data: session } = useSession()
   const user = session?.user
+  const isAdmin = user?.roles?.includes("ADMIN")
+  const isInstructor = user?.roles?.includes("INSTRUCTOR")
   const [open, setOpen] = React.useState(false)
   const dispatch = useContext(AppDpx)
 
@@ -289,13 +291,15 @@ const Header = () => {
                     open={openMenu}
                     onClose={() => handleClose()}
                   >
-                    <MenuItem
-                      onClick={() => handleClose("/dashboard")}
-                      disableRipple
-                    >
-                      <DashboardIcon />
-                      Dashboard
-                    </MenuItem>
+                    {(isAdmin || isInstructor) && (
+                      <MenuItem
+                        onClick={() => handleClose("/dashboard")}
+                        disableRipple
+                      >
+                        <DashboardIcon />
+                        Dashboard
+                      </MenuItem>
+                    )}
                     <MenuItem
                       onClick={() => handleClose("/dashboard/profile/")}
                       disableRipple

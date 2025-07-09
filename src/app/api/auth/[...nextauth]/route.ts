@@ -29,7 +29,6 @@ const authOptions: NextAuthOptions = {
           if (user.detail) {
             return null
           }
-          // Ensure the user object has consistent structure
           return {
             id: user.id,
             email: user.email,
@@ -37,7 +36,6 @@ const authOptions: NextAuthOptions = {
             token: user.token || "",
             roles: user.roles || ["Guest"],
             image: user.dp || user.image || null,
-            // Include any other fields you need
             firstname: user.firstname,
             lastname: user.lastname,
           }
