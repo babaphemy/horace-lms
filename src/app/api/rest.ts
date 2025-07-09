@@ -13,6 +13,7 @@ import {
   tUser,
   Uploader,
   UserDto,
+  OrganizationMember,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -282,6 +283,16 @@ const addLecture = async (data: LessonDto): Promise<LessonDto> => {
   }
   return response.json()
 }
+
+const deleteTopic = async (id: string): Promise<void> => {
+  const response = await fetch(
+    `${basePath}course/module/${id}`,
+    DeleteSettings({ id })
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+}
 const deleteLecture = async (id: string): Promise<void> => {
   const response = await fetch(
     `${basePath}course/module/lesson/${id}`,
@@ -540,6 +551,31 @@ const events = async (userId: string) => {
   return response.json()
 }
 
+const fetchOrganizationMembers = async (
+  orgId: string
+): Promise<OrganizationMember[]> => {
+  const response = await fetch(`${basePath}user/org-users/${orgId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  const data = await response.json()
+
+  if (!Array.isArray(data.content)) {
+    throw new Error("Expected an array in data.content but got:", data)
+    return []
+  }
+
+  return data.content
+}
+
+const fetchUserOrganization = async (userId: string): Promise<orgDto> => {
+  const response = await fetch(`${basePath}user/org/${userId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 export {
   addCourseDetail,
   addThumbnail,
@@ -558,6 +594,7 @@ export {
   doEdit,
   doToken,
   deleteLecture,
+  deleteTopic,
   deleteObject,
   events,
   fetchCourse,
@@ -592,4 +629,6 @@ export {
   userOrganization,
   verifyEmail,
   getTeamMembers,
+  fetchOrganizationMembers,
+  fetchUserOrganization,
 }

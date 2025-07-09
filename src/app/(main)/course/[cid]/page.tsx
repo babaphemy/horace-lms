@@ -122,6 +122,7 @@ const Detailb = () => {
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
       notifySuccess("You are now enrolled!")
+      queryClient.invalidateQueries(["acourse", cid, user?.id])
     },
     onError: (error) => {
       notifyError("Enrollment Failed, Please Try Again!")

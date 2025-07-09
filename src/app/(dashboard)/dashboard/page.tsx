@@ -213,8 +213,10 @@ const DashboardPage = () => {
                 )}
               </Box>
 
+
               {recents?.map((course: tCourse) => (
                 <>
+
                   <Box
                     key={course.id}
                     sx={{ mb: 3, "&:last-child": { mb: 0 } }}
@@ -356,6 +358,7 @@ const DashboardPage = () => {
                       </Tooltip>
                     </Box>
                   </Box>
+                  
                   <Menu
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
@@ -382,6 +385,7 @@ const DashboardPage = () => {
                   </Menu>
                 </>
               ))}
+
             </CardContent>
           </Card>
 
