@@ -503,10 +503,21 @@ const userOrganization = async (userId: string) => {
   }
   return response.json()
 }
-const addUserToOrganization = async (userId: string, orgId: string) => {
+
+const getTeamMembers = async (orgId: string, page: number) => {
+  const response = await fetch(
+    `${basePath}user/org-users/${orgId}?page=${page}&size=10`,
+    auth
+  )
+  if (!response.ok) {
+    throw new Error(`Failed to fetch team members for orgId ${orgId} at endpoint ${basePath}user/org-users/${orgId}?page=${page}&size=10: ${response.statusText}`)
+  }
+  return response.json()
+}
+const addUserToOrganization = async (email: string, orgId: string) => {
   const response = await fetch(
     `${basePath}org/${orgId}`,
-    PutSettings({ id: orgId })
+    PutSettings({ id: orgId, email })
   )
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -580,4 +591,5 @@ export {
   uploadPresignedUrl,
   userOrganization,
   verifyEmail,
+  getTeamMembers,
 }
