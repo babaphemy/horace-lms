@@ -38,7 +38,7 @@ import ReactPlayer from "react-player"
 import React, { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
-import { notifyError, notifySuccess, notifyWarn } from "@/utils/notification"
+import { notifyError, notifyWarn } from "@/utils/notification"
 import Curriculum from "@/components/courses/Curriculum"
 import { useSession } from "next-auth/react"
 
@@ -135,9 +135,6 @@ const Detailb = () => {
     assetCount || {}
 
   const addCourseToUser = useMutation(addUserCourse, {
-    onSuccess: () => {
-      notifySuccess("You are now enrolled!")
-    },
     onError: (error) => {
       notifyError("Enrollment Failed, Please Try Again!")
       throw error
