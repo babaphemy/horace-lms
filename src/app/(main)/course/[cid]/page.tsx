@@ -100,8 +100,6 @@ const Detailb = () => {
   } = data || {}
 
   useEffect(() => {
-    queryClient.invalidateQueries("acourse")
-
     const fuse = new Fuse(courses, {
       keys: ["category", "courseName", "brief"],
       includeScore: false,
