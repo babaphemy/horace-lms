@@ -31,45 +31,75 @@ import {
   Paper,
   Rating,
   Typography,
+  CircularProgress,
 } from "@mui/material"
 import Fuse from "fuse.js"
 import ReactPlayer from "react-player"
 import React, { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
-import { useParams, useRouter } from "next/navigation"
-import { notifyError, notifySuccess } from "@/utils/notification"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { notifyError, notifySuccess, notifyWarn } from "@/utils/notification"
 import Curriculum from "@/components/courses/Curriculum"
 import { useSession } from "next-auth/react"
-// export const metadata = generateMetadata({
-//   title: "Horace Learning Management Solution | Horace Courses",
-//   description:
-//     "Horace Online Courses. Learning Management Solution and a complete school management system for all schools",
-// })
+
 const Detailb = () => {
   const { courses } = React.useContext(Appcontext)
-  const { data: session } = useSession()
-  const user = session?.user
+  const { data: session, status } = useSession()
+  const sessionUser = session?.user
+  const searchParams = useSearchParams()
+  const encodedUid = searchParams.get("userId")
+  const decodedUid = React.useMemo(() => {
+    if (!encodedUid) return null
+
+    try {
+      const decoded = atob(encodedUid)
+      return decoded
+    } catch {
+      notifyError("Invalid user ID format.")
+      return null
+    }
+  }, [encodedUid])
   const params = useParams()
   const { cid } = params
   const dispatch = React.useContext(AppDpx)
-  // const [regCourse, setRegCourse] = React.useState<boolean>(false)
   const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([])
   const queryClient = useQueryClient()
   const router = useRouter()
+  const userId = decodedUid || sessionUser?.id || null
+
+  useEffect(() => {
+    if (status !== "loading" && !userId) {
+      notifyWarn("You need to log in to access this course.")
+      router.push("/login")
+      return
+    }
+  }, [userId, status, router])
 
   const { data } = useQuery(
-    ["acourse", cid, user?.id],
-    () => fetchCourse(cid as string, user?.id as string),
+    ["acourse", cid, userId],
+    () => fetchCourse(cid as string, userId as string),
     {
       staleTime: 5000,
       cacheTime: 10,
-      enabled: !!cid && !!user?.id,
+      enabled: !!cid && !!userId,
     }
   )
+  const {
+    courseId,
+    courseName,
+    overview,
+    target,
+    curriculum,
+    brief,
+    category,
+    updatedOn,
+    price,
+    posts,
+    assetCount,
+    registered,
+  } = data || {}
 
   useEffect(() => {
-    queryClient.invalidateQueries("acourse")
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const fuse = new Fuse(courses, {
       keys: ["category", "courseName", "brief"],
       includeScore: false,
@@ -87,24 +117,7 @@ const Detailb = () => {
         setSimilarCourses(courses.slice(0, 2))
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cid, data])
-
-  const {
-    courseId,
-    courseName,
-    overview,
-    target,
-    curriculum,
-    brief,
-    category,
-    updatedOn,
-    price,
-    posts,
-    assetCount,
-    registered,
-  } = data || {}
+  }, [cid, data, queryClient, courseName, category, courses])
 
   const calculatedRating = () => {
     let total = 0
@@ -113,9 +126,11 @@ const Detailb = () => {
     })
     return total / posts?.length
   }
+
   const author = `${data?.author?.firstname || "Horace"} ${
     data?.author?.lastname || "Instructor"
   }`
+
   const { lessonCount, downloadCount, quizCount, labCount, noteCount } =
     assetCount || {}
 
@@ -131,23 +146,43 @@ const Detailb = () => {
   })
 
   const handleJoinClass = () => {
-    const payload = {
-      id: courseId,
-      user: user?.id,
+    if (!userId) {
+      dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
+      return
     }
 
-    if (user?.id) {
-      if (price < 1) {
-        addCourseToUser.mutate({ ...payload, user: String(payload.user) })
-      } else {
-        dispatch({
-          type: MODAL_SET,
-          data: { open: true, type: "payment" },
-        })
-      }
-    } else {
-      dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
+    const payload = {
+      id: courseId,
+      user: userId,
     }
+
+    if (price < 1) {
+      addCourseToUser.mutate({ ...payload, user: String(payload.user) })
+    } else {
+      dispatch({
+        type: MODAL_SET,
+        data: { open: true, type: "payment" },
+      })
+    }
+  }
+
+  // Show loading while checking authentication
+  if (status === "loading") {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="50vh"
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  // Don't render if no user ID (will redirect)
+  if (!userId) {
+    return null
   }
 
   const headerProps = {
@@ -163,6 +198,7 @@ const Detailb = () => {
     updatedOn,
     posts,
   }
+
   const objProps = {
     target,
     overview,
@@ -176,6 +212,7 @@ const Detailb = () => {
     handleJoinClass,
     registered,
   }
+
   const firstVideo = curriculum?.topic
     ?.flatMap((topic: TopicDto) => topic.lessons || [])
     ?.find(
@@ -372,10 +409,6 @@ const Detailb = () => {
           </Typography>
         </div>
         <Grid container spacing={2}>
-          {/* <Grid item xs={12} md={6}>
-            <SimilarCard />
-          </Grid> */}
-
           {similarCourses?.map((course) => (
             <Grid size={{ xs: 12, md: 6 }} key={course.id}>
               <SimilarCard course={course} />
@@ -386,7 +419,7 @@ const Detailb = () => {
       <ModalLogin />
       <SignUpLogin />
       <PaymentModal course={data} />
-      <ReviewModal userId={user?.id || ""} courseId={courseId} />
+      <ReviewModal userId={userId || ""} courseId={courseId} />
     </>
   )
 }
