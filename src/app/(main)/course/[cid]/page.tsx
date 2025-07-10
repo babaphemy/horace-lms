@@ -38,7 +38,7 @@ import ReactPlayer from "react-player"
 import React, { useEffect } from "react"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
-import { notifyError, notifyWarn } from "@/utils/notification"
+import { notifyError, notifySuccess, notifyWarn } from "@/utils/notification"
 import Curriculum from "@/components/courses/Curriculum"
 import { useSession } from "next-auth/react"
 
@@ -139,6 +139,9 @@ const Detailb = () => {
       notifyError("Enrollment Failed, Please Try Again!")
       throw error
     },
+    onSuccess: () => {
+      notifySuccess("Successfully Enrolled!")
+    },
   })
 
   const handleJoinClass = () => {
@@ -153,7 +156,7 @@ const Detailb = () => {
     }
 
     if (price < 1) {
-      addCourseToUser.mutate({ ...payload, user: String(userId) })
+      addCourseToUser.mutate(payload)
     } else {
       dispatch({
         type: MODAL_SET,
@@ -162,7 +165,6 @@ const Detailb = () => {
     }
   }
 
-  // Show loading while checking authentication
   if (status === "loading") {
     return (
       <Box
