@@ -137,7 +137,7 @@ const Detailb = () => {
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
       notifySuccess("You are now enrolled!")
-      queryClient.invalidateQueries(["acourse", cid, user?.id])
+      queryClient.invalidateQueries(["acourse", cid, userId])
     },
     onError: (error) => {
       notifyError("Enrollment Failed, Please Try Again!")
@@ -157,7 +157,7 @@ const Detailb = () => {
     }
 
     if (price < 1) {
-      addCourseToUser.mutate({ ...payload, user: String(payload.user) })
+      addCourseToUser.mutate(payload)
     } else {
       dispatch({
         type: MODAL_SET,
@@ -166,7 +166,6 @@ const Detailb = () => {
     }
   }
 
-  // Show loading while checking authentication
   if (status === "loading") {
     return (
       <Box
@@ -179,8 +178,6 @@ const Detailb = () => {
       </Box>
     )
   }
-
-  // Don't render if no user ID (will redirect)
   if (!userId) {
     return null
   }
