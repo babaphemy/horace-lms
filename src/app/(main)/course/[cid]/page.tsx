@@ -178,8 +178,6 @@ const Detailb = () => {
       </Box>
     )
   }
-
-  // Don't render if no user ID (will redirect)
   if (!userId) {
     return null
   }
