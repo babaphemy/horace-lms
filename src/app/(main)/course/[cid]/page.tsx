@@ -135,12 +135,13 @@ const Detailb = () => {
     assetCount || {}
 
   const addCourseToUser = useMutation(addUserCourse, {
+    onSuccess: () => {
+      notifySuccess("You are now enrolled!")
+      queryClient.invalidateQueries(["acourse", cid, userId])
+    },
     onError: (error) => {
       notifyError("Enrollment Failed, Please Try Again!")
       throw error
-    },
-    onSuccess: () => {
-      notifySuccess("Successfully Enrolled!")
     },
   })
 

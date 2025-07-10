@@ -13,6 +13,7 @@ import {
   tUser,
   Uploader,
   UserDto,
+  OrganizationMember,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -282,6 +283,16 @@ const addLecture = async (data: LessonDto): Promise<LessonDto> => {
   }
   return response.json()
 }
+
+const deleteTopic = async (id: string): Promise<void> => {
+  const response = await fetch(
+    `${basePath}course/module/${id}`,
+    DeleteSettings({ id })
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+}
 const deleteLecture = async (id: string): Promise<void> => {
   const response = await fetch(
     `${basePath}course/module/lesson/${id}`,
@@ -503,10 +514,23 @@ const userOrganization = async (userId: string) => {
   }
   return response.json()
 }
-const addUserToOrganization = async (userId: string, orgId: string) => {
+
+const getTeamMembers = async (orgId: string, page: number) => {
+  const response = await fetch(
+    `${basePath}user/org-users/${orgId}?page=${page}&size=10`,
+    auth
+  )
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch team members for orgId ${orgId} at endpoint ${basePath}user/org-users/${orgId}?page=${page}&size=10: ${response.statusText}`
+    )
+  }
+  return response.json()
+}
+const addUserToOrganization = async (email: string, orgId: string) => {
   const response = await fetch(
     `${basePath}org/${orgId}`,
-    PutSettings({ id: orgId })
+    PutSettings({ id: orgId, email })
   )
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -523,6 +547,31 @@ const activities = async (userId: string) => {
 }
 const events = async (userId: string) => {
   const response = await fetch(`${basePath}event/user/${userId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
+const fetchOrganizationMembers = async (
+  orgId: string
+): Promise<OrganizationMember[]> => {
+  const response = await fetch(`${basePath}user/org-users/${orgId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  const data = await response.json()
+
+  if (!Array.isArray(data.content)) {
+    throw new Error("Expected an array in data.content but got:", data)
+    return []
+  }
+
+  return data.content
+}
+
+const fetchUserOrganization = async (userId: string): Promise<orgDto> => {
+  const response = await fetch(`${basePath}user/org/${userId}`, auth)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -547,6 +596,7 @@ export {
   doEdit,
   doToken,
   deleteLecture,
+  deleteTopic,
   deleteObject,
   events,
   fetchCourse,
@@ -580,4 +630,7 @@ export {
   uploadPresignedUrl,
   userOrganization,
   verifyEmail,
+  getTeamMembers,
+  fetchOrganizationMembers,
+  fetchUserOrganization,
 }

@@ -495,7 +495,7 @@ export default function BeautifulApiDocs() {
                   }}
                   onClick={() =>
                     copyToClipboard(
-                      "https://lms.horacelearning.com/api/v1",
+                      "https://robiatschools.com/api/v1/",
                       "base-url"
                     )
                   }

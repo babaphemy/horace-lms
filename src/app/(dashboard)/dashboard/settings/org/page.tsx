@@ -25,6 +25,7 @@ import {
   Typography,
 } from "@mui/material"
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import React, { useEffect, useMemo, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { useMutation, useQuery } from "react-query"
@@ -32,6 +33,7 @@ import { useMutation, useQuery } from "react-query"
 const OrgPage = () => {
   const { data: session, status } = useSession()
   const userId = session?.user?.id
+  const router = useRouter()
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
 
   const { data, isLoading } = useQuery({
@@ -119,17 +121,40 @@ const OrgPage = () => {
         elevation={0}
         sx={{ p: 3, mb: 3, bgcolor: "primary.main", color: "white" }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Business sx={{ fontSize: 32 }} />
-          <Box>
-            <Typography variant="h4" component="h1" fontWeight="bold">
-              Organization Settings
-            </Typography>
-            <Typography variant="body1" sx={{ opacity: 0.9 }}>
-              Manage your organization&apos;s profile and contact information
-            </Typography>
-            {isLoading && <CircularProgress size={24} sx={{ mt: 1 }} />}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Business sx={{ fontSize: 32 }} />
+            <Box>
+              <Typography variant="h4" component="h1" fontWeight="bold">
+                Organization Settings
+              </Typography>
+              <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                Manage your organization&apos;s profile and contact information
+              </Typography>
+              {isLoading && <CircularProgress size={24} sx={{ mt: 1 }} />}
+            </Box>
           </Box>
+
+          {data?.id && (
+            <Button
+              sx={{
+                bgcolor: "white",
+              }}
+              variant="outlined"
+              onClick={() =>
+                router.push(`/dashboard/settings/team/${data?.id}`)
+              }
+            >
+              Team Members
+            </Button>
+          )}
         </Box>
       </Paper>
 

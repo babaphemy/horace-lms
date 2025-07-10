@@ -1,5 +1,5 @@
 "use client"
-import { Api, Book, GridView, Settings } from "@mui/icons-material"
+import { Api, Book, GridView, Settings, People } from "@mui/icons-material"
 import ClearIcon from "@mui/icons-material/Clear"
 import { Box } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
@@ -183,5 +183,14 @@ const menuData: TNavBar[] = [
         order: 4,
       },
     ],
+  },
+  {
+    id: 5,
+    title: "Organization Members",
+    icon: <People />,
+    path: "/dashboard/settings/org/members/",
+    allowed_roles: [AccessRoles.ADMIN],
+    active: true,
+    order: 5,
   },
 ]
