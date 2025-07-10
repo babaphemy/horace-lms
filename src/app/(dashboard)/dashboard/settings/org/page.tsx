@@ -144,6 +144,9 @@ const OrgPage = () => {
 
           {data?.id && (
             <Button
+              sx={{
+                bgcolor: "white",
+              }}
               variant="outlined"
               onClick={() =>
                 router.push(`/dashboard/settings/team/${data?.id}`)
