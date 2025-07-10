@@ -156,7 +156,7 @@ const Detailb = () => {
     }
 
     if (price < 1) {
-      addCourseToUser.mutate({ ...payload, user: String(payload.user) })
+      addCourseToUser.mutate({ ...payload, user: String(userId) })
     } else {
       dispatch({
         type: MODAL_SET,
