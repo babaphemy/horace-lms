@@ -1,5 +1,5 @@
 "use client"
-import { createOrg, userOrganization } from "@/app/api/rest"
+import { createOrg, updateOrg, userOrganization } from "@/app/api/rest"
 import { orgDto } from "@/types/types"
 import { notifyError, notifySuccess } from "@/utils/notification"
 import {
@@ -56,6 +56,19 @@ const OrgPage = () => {
     },
   })
 
+  const updateMutation = useMutation({
+    mutationFn: updateOrg,
+    onSuccess: () => {
+      setLogoPreview(null)
+      notifySuccess("Organization settings updated successfully!")
+    },
+    onError: (error: Error) => {
+      notifyError(
+        error?.message || "Something is wrong, please try again later!!."
+      )
+    },
+  })
+
   const defaultValues = useMemo(
     (): Partial<orgDto> => ({
       id: data?.id,
@@ -71,6 +84,7 @@ const OrgPage = () => {
       city: data?.city || "Fulshear",
       zip: data?.zip || "77429",
       createdBy: data?.createdBy || userId,
+      learnUrl: data?.learnUrl || "",
     }),
     [data, userId]
   )
@@ -96,7 +110,13 @@ const OrgPage = () => {
       notifyError("You must be logged in to update organization settings.")
       return
     }
-    mutate(orgData)
+    if (data?.id) {
+      //? update existing organization
+      updateMutation.mutate({ data: orgData, id: data.id })
+    } else {
+      //? add new organization
+      mutate(orgData)
+    }
   }
 
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,6 +164,9 @@ const OrgPage = () => {
 
           {data?.id && (
             <Button
+              sx={{
+                bgcolor: "white",
+              }}
               variant="outlined"
               onClick={() =>
                 router.push(`/dashboard/settings/team/${data?.id}`)
@@ -271,24 +294,6 @@ const OrgPage = () => {
                       )}
                     />
                   </Grid>
-
-                  <Grid size={{ xs: 12 }}>
-                    <Controller
-                      name="description"
-                      control={control}
-                      render={({ field }) => (
-                        <TextField
-                          {...field}
-                          fullWidth
-                          label="Description"
-                          multiline
-                          rows={3}
-                          placeholder="Brief description of your organization"
-                        />
-                      )}
-                    />
-                  </Grid>
-
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <Controller
                       name="phone"
@@ -334,6 +339,53 @@ const OrgPage = () => {
                           }}
                           error={!!errors.website}
                           helperText={errors.website?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <Controller
+                      name="learnUrl"
+                      control={control}
+                      rules={{
+                        pattern: {
+                          value:
+                            /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
+                          message: "Invalid URL",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          label="Learning Url"
+                          placeholder="https://www.example.com"
+                          InputProps={{
+                            startAdornment: (
+                              <Language
+                                sx={{ mr: 1, color: "text.secondary" }}
+                              />
+                            ),
+                          }}
+                          error={!!errors.learnUrl}
+                          helperText={errors.learnUrl?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid size={{ xs: 12 }}>
+                    <Controller
+                      name="description"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          label="Description"
+                          multiline
+                          rows={3}
+                          placeholder="Brief description of your organization"
                         />
                       )}
                     />
@@ -449,7 +501,7 @@ const OrgPage = () => {
               <Button
                 variant="outlined"
                 onClick={handleReset}
-                disabled={submitting || !isDirty}
+                disabled={submitting || !isDirty || updateMutation.isLoading}
               >
                 Reset Changes
               </Button>
@@ -457,13 +509,19 @@ const OrgPage = () => {
               <Button
                 type="submit"
                 variant="contained"
-                disabled={submitting || !isDirty}
+                disabled={submitting || !isDirty || updateMutation.isLoading}
                 startIcon={
-                  submitting ? <CircularProgress size={20} /> : <Save />
+                  submitting || updateMutation.isLoading ? (
+                    <CircularProgress size={20} />
+                  ) : (
+                    <Save />
+                  )
                 }
                 sx={{ minWidth: 140 }}
               >
-                {submitting ? "Saving..." : "Save Changes"}
+                {submitting || updateMutation.isLoading
+                  ? "Saving..."
+                  : "Save Changes"}
               </Button>
             </Box>
           </Grid>

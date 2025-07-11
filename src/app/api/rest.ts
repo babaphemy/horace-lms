@@ -69,6 +69,17 @@ const createOrg = async (data: orgDto) => {
   return resp.json()
 }
 
+const updateOrg = async (data: { data: orgDto; id: string }) => {
+  const resp = await fetch(
+    `${basePath}org/update/${data.id}`,
+    PutSettings(data.data)
+  )
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+
 const registerUser = async (data: UserDto) => {
   data.organizationId = "NA"
   const resp = await fetch(`${basePath}user/add`, PostSettings(data))
@@ -521,7 +532,9 @@ const getTeamMembers = async (orgId: string, page: number) => {
     auth
   )
   if (!response.ok) {
-    throw new Error(`Failed to fetch team members for orgId ${orgId} at endpoint ${basePath}user/org-users/${orgId}?page=${page}&size=10: ${response.statusText}`)
+    throw new Error(
+      `Failed to fetch team members for orgId ${orgId} at endpoint ${basePath}user/org-users/${orgId}?page=${page}&size=10: ${response.statusText}`
+    )
   }
   return response.json()
 }
@@ -631,4 +644,5 @@ export {
   getTeamMembers,
   fetchOrganizationMembers,
   fetchUserOrganization,
+  updateOrg,
 }
