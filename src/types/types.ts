@@ -36,6 +36,7 @@ export interface orgDto {
   website?: string
   address?: string
   phone?: string
+  learnUrl?: string
   email?: string
   country?: string
   state?: string
