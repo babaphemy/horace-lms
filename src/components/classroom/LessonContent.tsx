@@ -15,11 +15,16 @@ import {
   PictureAsPdf,
   PlayCircle,
   Share,
-  Visibility,
 } from "@mui/icons-material"
 import VideoPlaceholderSVG from "../lms/VideoPlaceholderSVG"
 import ReactPlayer from "react-player"
 import Image from "next/image"
+import dynamic from "next/dynamic"
+
+const PdfViewer = dynamic(() => import("./PdfViewer"), {
+  ssr: false,
+  loading: () => <div>Loading PDF viewer...</div>,
+})
 
 interface HTMLLessonProps {
   lesson: {
@@ -297,30 +302,21 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
       const documentUrl = `${process.env.NEXT_PUBLIC_HORACE}stream/document/${lesson.id}`
       return (
         <PDFPreview>
-          <PictureAsPdf sx={{ fontSize: 60, color: "#f44336", mb: 2 }} />
-          <Typography variant="h6" gutterBottom>
-            {lesson.title || "Document"}
-          </Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Button
-              variant="contained"
-              startIcon={<Visibility />}
-              href={documentUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View Document
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<CloudDownload />}
-              href={`${documentUrl}?download=true`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Download
-            </Button>
-          </Box>
+          {lesson.id ? (
+            <>
+              <PdfViewer url={documentUrl} />
+            </>
+          ) : (
+            <>
+              <PictureAsPdf sx={{ fontSize: 60, color: "#f44336", mb: 2 }} />
+              <Typography variant="h6" gutterBottom>
+                {lesson.title || "PDF Document"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" mb={3}>
+                No PDF content available
+              </Typography>
+            </>
+          )}
         </PDFPreview>
       )
 
