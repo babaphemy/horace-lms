@@ -18,6 +18,7 @@ import {
   GraduationCap,
   Activity,
   Building,
+  UserMinus,
 } from "lucide-react"
 const tableOfContents = [
   { id: "overview", label: "Overview", icon: Book },
@@ -52,6 +53,11 @@ const tableOfContents = [
         id: "course-registration",
         label: "Course Registration",
         icon: UserPlus,
+      },
+      {
+        id: "course-deregistration",
+        label: "Course Deregistration",
+        icon: UserMinus,
       },
       { id: "my-courses", label: "My Courses", icon: Book },
       { id: "course-by-id", label: "Course by ID", icon: Search },
