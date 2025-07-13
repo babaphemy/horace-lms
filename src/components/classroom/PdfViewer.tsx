@@ -49,6 +49,7 @@ export default function PdfViewer({ url }: { url: string }) {
           size="small"
           onClick={handlePrevious}
           disabled={currentPage <= 1 || isLoading}
+          aria-label="Previous page"
         >
           <ChevronLeft />
         </IconButton>
@@ -61,15 +62,26 @@ export default function PdfViewer({ url }: { url: string }) {
           size="small"
           onClick={handleNext}
           disabled={currentPage >= (numPages || 1) || isLoading}
+          aria-label="Next page"
         >
           <ChevronRight />
         </IconButton>
 
-        <IconButton size="small" onClick={handleZoomIn} disabled={isLoading}>
+        <IconButton
+          size="small"
+          onClick={handleZoomIn}
+          disabled={isLoading}
+          aria-label="Zoom in"
+        >
           <ZoomIn />
         </IconButton>
 
-        <IconButton size="small" onClick={handleZoomOut} disabled={isLoading}>
+        <IconButton
+          size="small"
+          onClick={handleZoomOut}
+          disabled={isLoading}
+          aria-label="Zoom out"
+        >
           <ZoomOut />
         </IconButton>
       </PDFControls>
