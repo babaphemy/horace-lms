@@ -287,9 +287,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     const updatedTopics = courseData.curriculum.topic.filter(
       (_: TopicDto, i: number) => i !== deleteConfirmation.index
     )
-    notifyInfo(
-      `Module "${deleteConfirmation.item?.title}" deleted. ${updatedTopics.length} modules remaining`
-    )
+    // Notification logic moved to the onSuccess callback of deleteTopicMutation
 
     setDeleteConfirmation({ open: false, type: "topic" })
   }
