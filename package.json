@@ -41,7 +41,7 @@
     "mobile-detect": "^1.4.5",
     "next": "15.1.6",
     "next-auth": "^4.24.11",
-    "pdfjs-dist": "^5.3.31",
+    "pdfjs-dist": "^5.3.93",
     "perfect-scrollbar": "^1.5.5",
     "react": "^18",
     "react-cookie": "^8.0.1",
