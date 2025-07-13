@@ -3,22 +3,22 @@
 import { join } from "path"
 import { readFileSync } from "fs"
 
+//? Path to the PDF.js worker script
+const workerPath = join(
+  //? current working directory
+  process.cwd(),
+  //? path to the worker script
+  "node_modules",
+  "pdfjs-dist",
+  "legacy",
+  "build",
+  "pdf.worker.min.mjs"
+)
+
+//? Read the worker script content at module load time
+const workerContent = readFileSync(workerPath, "utf8")
+
 export function GET() {
-  //? Path to the PDF.js worker script
-  const workerPath = join(
-    //? current working directory
-    process.cwd(),
-    //? path to the worker script
-    "node_modules",
-    "pdfjs-dist",
-    "legacy",
-    "build",
-    "pdf.worker.min.mjs"
-  )
-
-  //? Read the worker script content
-  const workerContent = readFileSync(workerPath, "utf8")
-
   //? Return the worker script as a response
   return new Response(workerContent, {
     headers: {
