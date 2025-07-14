@@ -351,6 +351,7 @@ const Detailb = () => {
                         onClick={() =>
                           router.push("/course/classroom?courseId=" + courseId)
                         }
+                        disabled={!sessionUser}
                       >
                         Go To Class
                       </Button>
