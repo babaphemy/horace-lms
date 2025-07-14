@@ -19,6 +19,7 @@ import {
   Activity,
   Building,
   UserMinus,
+  GitCompareArrows,
 } from "lucide-react"
 const tableOfContents = [
   { id: "overview", label: "Overview", icon: Book },
@@ -66,6 +67,7 @@ const tableOfContents = [
   },
   { id: "error-codes", label: "Error Codes", icon: AlertCircle },
   { id: "rate-limiting", label: "Rate Limiting", icon: Activity },
+  { id: "course-redirect", label: "Course Redirect", icon: GitCompareArrows },
 ]
 const badgeVariant = {
   default: { background: "#f1f5f9", color: "#64748b" },

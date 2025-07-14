@@ -30,6 +30,7 @@ import {
   Building,
   UserMinus,
   GitCompareArrows,
+  Settings2Icon,
 } from "lucide-react"
 import { tableOfContents } from "@/components/lms/apidoc/content"
 import CodeBlock from "@/components/lms/apidoc/Codebloc"
@@ -2626,7 +2627,7 @@ export default function BeautifulApiDocs() {
           </section>
 
           {/* Course Redirect Section */}
-          <section id="rate-limiting" style={{ marginBottom: "64px" }}>
+          <section id="course-redirect" style={{ marginBottom: "64px" }}>
             <h2
               style={{
                 fontSize: "28px",
@@ -2706,19 +2707,39 @@ export default function BeautifulApiDocs() {
                   handle course redirects.{" "}
                 </p>
 
-                <CodeBlock
-                  language="bash"
-                  title=""
-                  copiedCode={copiedCode}
-                  copyToClipboard={copyToClipboard}
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f1eef6",
+                    borderRadius: "8px",
+                  }}
                 >
-                  {`
-  https://clientwebsite.com/course/<courseId>?userId=<base64UserId>
-
-
-  NOTE: Replace <courseId> and <base64UserId> with actual values.
-                      `}
-                </CodeBlock>
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Example LEARNURL
+                  </h5>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >{`https://clientwebsite.com/course/<courseId>?userId=<base64UserId>`}</p>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >{`NOTE: Replace <courseId> and <base64UserId> with actual values.`}</p>
+                </div>
 
                 <p
                   style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
@@ -2731,20 +2752,21 @@ export default function BeautifulApiDocs() {
                 >
                   {" "}
                   The page must be able to accept courseID and userID in the
-                  path e.g
-                  https://lms.horacelearning.com/course/68618b37f6f42d164a767938?userId=Njg2MWU1YjNmNmY0MmQxNjRhNzY3OTNl{" "}
+                  path e.g{" "}
                 </p>
 
-                <CodeBlock
-                  language="bash"
-                  title="Example"
-                  copiedCode={copiedCode}
-                  copyToClipboard={copyToClipboard}
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f1eef6",
+                    borderRadius: "8px",
+                  }}
                 >
-                  {`
- https://lms.horacelearning.com/course/68618b37f6f42d164a767938?userId=Njg2MWU1YjNmNmY0MmQxNjRhNzY3OTNl
-                      `}
-                </CodeBlock>
+                  <p>
+                    https://lms.horacelearning.com/course/68618b37f6f42d164a767938?userId=Njg2MWU1YjNmNmY0MmQxNjRhNzY3OTNl
+                  </p>
+                </div>
 
                 <h4
                   style={{
@@ -2754,7 +2776,7 @@ export default function BeautifulApiDocs() {
                     fontWeight: "600",
                   }}
                 >
-                  Here:
+                  In the example above,
                 </h4>
                 <p
                   style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
@@ -2795,70 +2817,140 @@ export default function BeautifulApiDocs() {
                   </li>
                 </ul>
               </div>
-              <div style={{ padding: "20px" }}>EMPTY</div>
-            </div>
-            <div>
-              <h4>Lesson Types</h4>
-              <Table
-                headers={["Type", "Description"]}
-                data={[
-                  ["video", "Video content"],
-                  ["document", "Document files"],
-                  ["html", "HTML content"],
-                  ["pdf", "PDF documents"],
-                  ["quiz", "Interactive quizzes"],
-                  ["text", "Text-based lessons"],
-                ]}
-              />
-
-              <CodeBlock
-                language="json"
-                title="Request Body"
-                copiedCode={copiedCode}
-                copyToClipboard={copyToClipboard}
-              >
-                {`{
-  "title": "string",
-  "content": "string",
-  "type": "video|document|html|pdf|quiz|text",
-  "video": "string",
-  "orderIndex": number,
-  "tid": "string"
-}`}
-              </CodeBlock>
 
               <div
                 style={{
-                  margin: "20px 0",
-                  padding: "16px",
-                  background: "#f8fafc",
-                  borderRadius: "8px",
+                  padding: "20px",
+                  borderBottom: "1px solid #e2e8f0",
                 }}
               >
-                <h5
+                <h3
                   style={{
-                    margin: "0 0 12px 0",
-                    color: "#374151",
-                    fontSize: "14px",
+                    fontSize: "22px",
                     fontWeight: "600",
+                    color: "#334155",
+                    marginBottom: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
                   }}
                 >
-                  Parameters
-                </h5>
-                <ul style={{ margin: "0", paddingLeft: "20px" }}>
-                  <li style={{ marginBottom: "8px", color: "#4b5563" }}>
-                    <code>video</code> - Only used when <code>type</code> is
-                    &quot;video&quot;. Path to uploaded video file
-                  </li>
-                  <li style={{ marginBottom: "8px", color: "#4b5563" }}>
-                    <code>tid</code> - Module ID where the lesson will be
-                    attached
-                  </li>
-                  <li style={{ marginBottom: "8px", color: "#4b5563" }}>
-                    <code>orderIndex</code> - Controls lesson order within the
-                    module
-                  </li>
-                </ul>
+                  Frontend Behavior
+                </h3>
+                <div>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    1. Retrieve `courseId` and `userId` from the URL path or
+                    query.
+                  </p>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    2. Decode userId from base64:
+                  </p>
+                  <CodeBlock
+                    language="javascript"
+                    copiedCode={copiedCode}
+                    copyToClipboard={copyToClipboard}
+                  >
+                    {`
+const encodedUid = searchParams.get("userId");
+const decodedUid = atob(encodedUid);
+`}
+                  </CodeBlock>
+
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {" "}
+                    3. Fetch the course summary using the decoded userId:{" "}
+                  </p>
+                  <CodeBlock
+                    language="javascript"
+                    copiedCode={copiedCode}
+                    copyToClipboard={copyToClipboard}
+                  >
+                    {`
+const response = await fetch(\`\${basePath}\course/\${courseId}?userId=\${decodedUid}\`);
+`}
+                  </CodeBlock>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {" "}
+                    4. Display the course details and registration button.{" "}
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "48px", padding: "20px" }}>
+                <h3
+                  style={{
+                    fontSize: "22px",
+                    fontWeight: "600",
+                    color: "#334155",
+                    marginBottom: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <Settings2Icon size={20} />
+                  Organization Update API
+                </h3>
+                <ApiEndpoint
+                  method="PUT"
+                  path="/api/v1/org/update/{id}"
+                  description="To update the LearnURL for an organization:"
+                >
+                  <h4>Request Body</h4>
+                  <CodeBlock
+                    language="json"
+                    title="Request Body"
+                    copiedCode={copiedCode}
+                    copyToClipboard={copyToClipboard}
+                  >
+                    {`{
+  "id": "string",
+  "learnURL": "https://clientwebsite.com/course"
+}`}
+                  </CodeBlock>
+
+                  <h4>Example Request</h4>
+                  <CodeBlock
+                    language="bash"
+                    title="cURL Example"
+                    copiedCode={copiedCode}
+                    copyToClipboard={copyToClipboard}
+                  >
+                    {`curl -X 'PUT' \\
+  'http://localhost:5071/api/v1/org/update/684e58d4df81cc6605736c85' \\
+  -H 'accept: */*' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "id": "684e58d4df81cc6605736c85",
+    "learnURL": "https://clientwebsite.com/course"
+  }'
+`}
+                  </CodeBlock>
+                </ApiEndpoint>
               </div>
             </div>
           </section>
