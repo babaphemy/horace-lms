@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import {
   Card,
   CardContent,
@@ -56,11 +56,11 @@ const ContentCard: React.FC<ContentCardProps> = ({
     [key: string]: boolean
   }>({})
 
-  React.useEffect(() => {
-    if (topics.length > 0) {
-      setExpandedTopics({ [topics[0].id]: true })
-    }
-  }, [topics])
+  // React.useEffect(() => {
+  //   if (topics.length > 0) {
+  //     setExpandedTopics({ [topics[0].id]: true })
+  //   }
+  // }, [topics])
 
   const handleTopicToggle = (topicId: string) => {
     setExpandedTopics((prev) => ({
@@ -80,6 +80,40 @@ const ContentCard: React.FC<ContentCardProps> = ({
         return <FiberManualRecord sx={{ color: "primary.main", fontSize: 8 }} />
     }
   }
+
+  const sortedModules = useMemo(() => {
+    if (topics.length === 0) return []
+
+    return [...topics].sort((a, b) => a.orderIndex - b.orderIndex)
+  }, [topics])
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const assetString = localStorage.getItem("currentLesson")
+      if (sortedModules.length > 0 && assetString) {
+        const assetData = JSON.parse(assetString) as Lesson
+
+        setExpandedTopics({ [assetData?.id]: true })
+
+        const found = sortedModules?.find((md) =>
+          md?.lessons?.some((l) => l.id === assetData?.id)
+        )
+
+        if (found) {
+          setExpandedTopics({ [found.id]: true })
+        }
+      } else {
+        if (sortedModules.length === 0) return
+        // Expand first module by default
+        setExpandedTopics({ [sortedModules[0].id]: true })
+
+        // Expand first lesson of first module by default
+        if (sortedModules[0].lessons && sortedModules[0].lessons.length > 0) {
+          setExpandedTopics({ [sortedModules[0].lessons[0].id]: true })
+        }
+      }
+    }
+  }, [sortedModules])
 
   return (
     <Card sx={{ mb: 3 }}>
