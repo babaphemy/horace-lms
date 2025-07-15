@@ -81,8 +81,20 @@ const ClassroomPage = () => {
     setTabValue(newValue)
   }
 
+  React.useEffect(() => {
+    if (typeof window !== undefined) {
+      const assetString = localStorage.getItem("currentLesson")
+      if (assetString) {
+        const assetData = JSON.parse(assetString) as Lesson
+
+        setCurrentLesson(assetData)
+      }
+    }
+  }, [])
+
   const handleLessonSelect = (lesson: Lesson) => {
     setCurrentLesson(lesson)
+    localStorage.setItem("currentLesson", JSON.stringify(lesson))
   }
 
   const lessonMaterials = {
