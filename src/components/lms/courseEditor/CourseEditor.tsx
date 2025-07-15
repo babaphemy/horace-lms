@@ -282,6 +282,10 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     deleteTopicMutation({
       id: topic.id,
     })
+    if (!courseData || !id || deleteConfirmation.index === undefined) return
+    // Notification logic moved to the onSuccess callback of deleteTopicMutation
+
+    setDeleteConfirmation({ open: false, type: "topic" })
   }
 
   const { mutate: addEditLesson } = useMutation({

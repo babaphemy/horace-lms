@@ -18,6 +18,8 @@ import {
   GraduationCap,
   Activity,
   Building,
+  UserMinus,
+  GitCompareArrows,
 } from "lucide-react"
 const tableOfContents = [
   { id: "overview", label: "Overview", icon: Book },
@@ -53,6 +55,11 @@ const tableOfContents = [
         label: "Course Registration",
         icon: UserPlus,
       },
+      {
+        id: "course-deregistration",
+        label: "Course Deregistration",
+        icon: UserMinus,
+      },
       { id: "my-courses", label: "My Courses", icon: Book },
       { id: "course-by-id", label: "Course by ID", icon: Search },
       { id: "courses-by-author", label: "Courses by Author", icon: Users },
@@ -60,6 +67,7 @@ const tableOfContents = [
   },
   { id: "error-codes", label: "Error Codes", icon: AlertCircle },
   { id: "rate-limiting", label: "Rate Limiting", icon: Activity },
+  { id: "course-redirect", label: "Course Redirect", icon: GitCompareArrows },
 ]
 const badgeVariant = {
   default: { background: "#f1f5f9", color: "#64748b" },

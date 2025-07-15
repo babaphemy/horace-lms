@@ -28,6 +28,9 @@ import {
   Search,
   FileText,
   Building,
+  UserMinus,
+  GitCompareArrows,
+  Settings2Icon,
 } from "lucide-react"
 import { tableOfContents } from "@/components/lms/apidoc/content"
 import CodeBlock from "@/components/lms/apidoc/Codebloc"
@@ -1800,23 +1803,20 @@ export default function BeautifulApiDocs() {
                   copiedCode={copiedCode}
                   copyToClipboard={copyToClipboard}
                 >
-                  {`{
-               {
-  
-  "user": "string",
-  "comment": "string",
-  "fileName": "string",
-  "count": 1073741824,
-  "like": 1073741824,
-  "share": 1073741824,
-  "star": 0.1,
-  "price": 0.1,
-  "tax": 0.1,
-  "activeStep": 9007199254740991
-}
-
-                }
-                `}
+                  {`   {
+     {
+        "user": "string",
+        "comment": "string",
+        "fileName": "string",
+        "count": 1073741824,
+        "like": 1073741824,
+        "share": 1073741824,
+        "star": 0.1,
+        "price": 0.1,
+        "tax": 0.1,
+        "activeStep": 9007199254740991
+      }
+    }`}
                 </CodeBlock>
 
                 <div
@@ -1846,6 +1846,89 @@ export default function BeautifulApiDocs() {
                 </div>
               </ApiEndpoint>
             </div>
+
+            {/* course deregistration */}
+            <div id="course-deregistration" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <UserMinus size={20} />
+                Course Deregistration
+              </h3>
+
+              <p>Deregister a course for a user.</p>
+
+              <ApiEndpoint
+                method="PUT"
+                path="/api/v1/reg/remove"
+                description="Remove a course for a user"
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "id": "string",
+  "user": "string"
+}`}
+                </CodeBlock>
+
+                <CodeBlock
+                  language="bash"
+                  title="Example Request"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`
+  curl -X 'PUT' \\
+  'http://localhost:5071/api/v1/reg/remove' \\ 
+  -H 'accept: /' \\
+  -H 'Content-Type: application/json' \\
+  -d '{ 
+    "id": "686fbea1e29e333073f4d1f2", 
+    "user": "6861dc54f6f42d164a76793b"
+     }'
+                      `}
+                </CodeBlock>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f8fafc",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Parameters
+                  </h5>
+                  <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                    <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                      <code>user</code> - ID of the user
+                      <Badge variant="error">required</Badge>
+                    </li>
+                  </ul>
+                </div>
+              </ApiEndpoint>
+            </div>
+
             {/* my courses */}
             <div id="my-courses" style={{ marginBottom: "48px" }}>
               <h3
@@ -2541,6 +2624,335 @@ export default function BeautifulApiDocs() {
                 <code>X-RateLimit-Reset</code> - Time when limit resets
               </li>
             </ul>
+          </section>
+
+          {/* Course Redirect Section */}
+          <section id="course-redirect" style={{ marginBottom: "64px" }}>
+            <h2
+              style={{
+                fontSize: "28px",
+                fontWeight: "700",
+                color: "#1e293b",
+                marginBottom: "16px",
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                paddingBottom: "12px",
+                borderBottom: "3px solid #e2e8f0",
+              }}
+            >
+              <GitCompareArrows size={24} />
+              Course Redirect
+            </h2>
+
+            <p>
+              To enable seamless course access for users, configure the Course
+              Redirect as follows:
+            </p>
+
+            <div
+              style={{
+                background: "white",
+                border: "1px solid #e2e8f0",
+                borderRadius: "12px",
+                margin: "24px 0",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  background: "#f8fafc",
+                  padding: "20px",
+                  borderBottom: "1px solid #e2e8f0",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginBottom: "8px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontSize: "22px",
+                      fontWeight: "600",
+                      color: "#334155",
+                      marginBottom: "16px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    Admin Configuration
+                  </h3>
+                </div>
+                <p
+                  style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
+                >
+                  1. Log in to the Horace LMS Dashboard as an Admin.
+                </p>
+                <p
+                  style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
+                >
+                  2. Navigate to Organization Settings.
+                </p>
+                <p
+                  style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
+                >
+                  {" "}
+                  3. Set the `LearnURL` field to your client site URL that will
+                  handle course redirects.{" "}
+                </p>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f1eef6",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <h5
+                    style={{
+                      margin: "0 0 12px 0",
+                      color: "#374151",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Example LEARNURL
+                  </h5>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >{`https://clientwebsite.com/course/<courseId>?userId=<base64UserId>`}</p>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >{`NOTE: Replace <courseId> and <base64UserId> with actual values.`}</p>
+                </div>
+
+                <p
+                  style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
+                >
+                  {" "}
+                  This is a valid/existing page on the client’s website.{" "}
+                </p>
+                <p
+                  style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
+                >
+                  {" "}
+                  The page must be able to accept courseID and userID in the
+                  path e.g{" "}
+                </p>
+
+                <div
+                  style={{
+                    margin: "20px 0",
+                    padding: "16px",
+                    background: "#f1eef6",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <p>
+                    https://lms.horacelearning.com/course/68618b37f6f42d164a767938?userId=Njg2MWU1YjNmNmY0MmQxNjRhNzY3OTNl
+                  </p>
+                </div>
+
+                <h4
+                  style={{
+                    margin: "0 0 12px 0",
+                    color: "#374151",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  In the example above,
+                </h4>
+                <p
+                  style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
+                >
+                  {" "}
+                  68618b37f6f42d164a767938 → Course ID{" "}
+                </p>
+                <p
+                  style={{ color: "#222222", margin: "10px", fontSize: "16px" }}
+                >
+                  {" "}
+                  Njg2MWU1YjNmNmY0MmQxNjRhNzY3OTNl → Base64 encoded User ID{" "}
+                </p>
+              </div>
+
+              <div
+                style={{ padding: "20px", borderBottom: "1px solid #e2e8f0" }}
+              >
+                <h4
+                  style={{
+                    margin: "0 0 12px 0",
+                    color: "#374151",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Parameters
+                </h4>
+                <ul style={{ margin: "0", paddingLeft: "20px" }}>
+                  <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                    <code>courseId</code> - ID of the course the user is
+                    redirected to. <Badge variant="error">required</Badge>
+                  </li>
+                  <li style={{ marginBottom: "8px", color: "#4b5563" }}>
+                    <code>userId</code> - Base64 encoded ID of the user
+                    accessing it.
+                    <Badge variant="error">required</Badge>
+                  </li>
+                </ul>
+              </div>
+
+              <div
+                style={{
+                  padding: "20px",
+                  borderBottom: "1px solid #e2e8f0",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "22px",
+                    fontWeight: "600",
+                    color: "#334155",
+                    marginBottom: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  Frontend Behavior
+                </h3>
+                <div>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    1. Retrieve `courseId` and `userId` from the URL path or
+                    query.
+                  </p>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    2. Decode userId from base64:
+                  </p>
+                  <CodeBlock
+                    language="javascript"
+                    copiedCode={copiedCode}
+                    copyToClipboard={copyToClipboard}
+                  >
+                    {`
+const encodedUid = searchParams.get("userId");
+const decodedUid = atob(encodedUid);
+`}
+                  </CodeBlock>
+
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {" "}
+                    3. Fetch the course summary using the decoded userId:{" "}
+                  </p>
+                  <CodeBlock
+                    language="javascript"
+                    copiedCode={copiedCode}
+                    copyToClipboard={copyToClipboard}
+                  >
+                    {`
+const response = await fetch(\`\${basePath}\course/\${courseId}?userId=\${decodedUid}\`);
+`}
+                  </CodeBlock>
+                  <p
+                    style={{
+                      color: "#222222",
+                      margin: "10px",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {" "}
+                    4. Display the course details and registration button.{" "}
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: "48px", padding: "20px" }}>
+                <h3
+                  style={{
+                    fontSize: "22px",
+                    fontWeight: "600",
+                    color: "#334155",
+                    marginBottom: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <Settings2Icon size={20} />
+                  Organization Update API
+                </h3>
+                <ApiEndpoint
+                  method="PUT"
+                  path="/api/v1/org/update/{id}"
+                  description="To update the LearnURL for an organization:"
+                >
+                  <h4>Request Body</h4>
+                  <CodeBlock
+                    language="json"
+                    title="Request Body"
+                    copiedCode={copiedCode}
+                    copyToClipboard={copyToClipboard}
+                  >
+                    {`{
+  "id": "string",
+  "learnURL": "https://clientwebsite.com/course"
+}`}
+                  </CodeBlock>
+
+                  <h4>Example Request</h4>
+                  <CodeBlock
+                    language="bash"
+                    title="cURL Example"
+                    copiedCode={copiedCode}
+                    copyToClipboard={copyToClipboard}
+                  >
+                    {`curl -X 'PUT' \\
+  'http://localhost:5071/api/v1/org/update/684e58d4df81cc6605736c85' \\
+  -H 'accept: */*' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+    "id": "684e58d4df81cc6605736c85",
+    "learnURL": "https://clientwebsite.com/course"
+  }'
+`}
+                  </CodeBlock>
+                </ApiEndpoint>
+              </div>
+            </div>
           </section>
 
           {/* Support Section */}
