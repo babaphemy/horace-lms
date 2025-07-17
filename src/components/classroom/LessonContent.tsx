@@ -20,6 +20,8 @@ import VideoPlaceholderSVG from "../lms/VideoPlaceholderSVG"
 import ReactPlayer from "react-player"
 import Image from "next/image"
 import dynamic from "next/dynamic"
+import { useEffect, useRef, useState } from "react"
+import { throttle } from "lodash"
 
 const PdfViewer = dynamic(() => import("./PdfViewer"), {
   ssr: false,
@@ -215,6 +217,73 @@ const getContentType = (lesson: Lesson): string => {
 }
 
 const LessonContent = ({ lesson }: { lesson: Lesson }) => {
+  const [currentTime, setCurrentTime] = useState(0)
+
+  const [isReady, setIsReady] = useState(false)
+
+  const playerRef = useRef<ReactPlayer>(null)
+  const [shouldPlayAfterSeek, setShouldPlayAfterSeek] = useState(false)
+
+  const throttledSaveProgress = throttle((id: string, time: number) => {
+    localStorage.setItem(`videoProgress_${id}`, time.toString())
+  }, 1000)
+
+  //? save progress
+  const saveProgress = (time: number) => {
+    if (lesson?.id) {
+      throttledSaveProgress(lesson.id, time)
+    }
+  }
+
+  //? get saved progress
+
+  useEffect(() => {
+    if (lesson?.id && getContentType(lesson) === "video") {
+      const savedProgress = localStorage.getItem(`videoProgress_${lesson.id}`)
+      if (savedProgress) {
+        const time = parseFloat(savedProgress)
+        setCurrentTime(time)
+        setShouldPlayAfterSeek(true)
+      } else {
+        setCurrentTime(0)
+      }
+      setIsReady(false)
+    }
+  }, [lesson])
+
+  //? Seek to saved position when player is ready
+  useEffect(() => {
+    if (isReady && playerRef.current && currentTime > 0) {
+      playerRef.current.seekTo(currentTime, "seconds")
+
+      setTimeout(() => {
+        if (shouldPlayAfterSeek) {
+          playerRef.current?.getInternalPlayer()?.play()
+        }
+      }, 500)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReady, shouldPlayAfterSeek])
+
+  //? progress update
+  const handleProgress = (state: { playedSeconds: number }) => {
+    setCurrentTime(state.playedSeconds)
+
+    saveProgress(state.playedSeconds)
+  }
+
+  //?  when video ends
+  const handleEnded = () => {
+    if (lesson?.id) {
+      localStorage.removeItem(`videoProgress_${lesson.id}`)
+      setCurrentTime(0)
+    }
+  }
+
+  const handleReady = () => {
+    setIsReady(true)
+  }
+
   if (!lesson) {
     return (
       <Alert severity="info">
@@ -231,11 +300,19 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
         <VideoPlaceholder>
           {lesson.id ? (
             <ReactPlayer
+              key={lesson.id}
+              ref={playerRef}
               url={`${streamUrl}/${lesson.id}`}
               width="100%"
               height="100%"
               controls={true}
+              onProgress={handleProgress}
+              onEnded={handleEnded}
+              progressInterval={1000}
+              onReady={handleReady}
               loop={true}
+              playing={true}
+              played={currentTime}
               config={{
                 file: {
                   attributes: {
