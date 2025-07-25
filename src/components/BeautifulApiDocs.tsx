@@ -31,6 +31,10 @@ import {
   UserMinus,
   GitCompareArrows,
   Settings2Icon,
+  Receipt,
+  Settings2,
+  View,
+  DownloadIcon,
 } from "lucide-react"
 import { tableOfContents } from "@/components/lms/apidoc/content"
 import CodeBlock from "@/components/lms/apidoc/Codebloc"
@@ -2952,6 +2956,328 @@ const response = await fetch(\`\${basePath}\course/\${courseId}?userId=\${decode
                   </CodeBlock>
                 </ApiEndpoint>
               </div>
+            </div>
+          </section>
+
+          {/* Invoice Management API */}
+
+          <section id="invoice-management" style={{ marginBottom: "64px" }}>
+            <h2
+              style={{
+                fontSize: "28px",
+                fontWeight: "700",
+                color: "#1e293b",
+                marginBottom: "16px",
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                paddingBottom: "12px",
+                borderBottom: "3px solid #e2e8f0",
+              }}
+            >
+              <GitCompareArrows size={24} />
+              Invoice Management API
+            </h2>
+
+            {/* 1. Add Transaction */}
+            <div id="add-tranx" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Receipt size={20} />
+                Add Transaction
+              </h3>
+              <ApiEndpoint
+                method="POST"
+                path="/api/v1//tranx/store"
+                description="Creates a new transaction in the system. Each transaction is assigned a unique txnref."
+              >
+                <CodeBlock
+                  language="json"
+                  title="Request Body"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "amount": 0,
+  "description": "string",
+  "currency": "NGN",
+  "payee_id": 0,
+  "first_name": "string",
+  "last_name": "string",
+  "email": "user@example.com",
+  "phone": "string",
+  "detail": {},
+  "tranx_type": "OTHERS",
+  "receipt": "string",
+  "ref": 0,
+  "isp": "ISW",
+  "stripe_payment_method": "string",
+  "status": "Pending",
+  "createdOn": "2025-07-25T04:00:41.687Z",
+  "modifiedOn": "2025-07-25T04:00:41.687Z",
+  "callback_url": "https://example.com/",
+  "stripeId": "string",
+  "payee": {
+    "first_name": "string",
+    "last_name": "string",
+    "is_active": false,
+    "roles": [
+      "Admin"
+    ],
+    "socialmedia": "string",
+    "gender": "Male",
+    "token": "string",
+    "username": "string",
+    "attendance_token": "string",
+    "subclass": "string",
+    "id": 0,
+    "timestamp": "2025-07-24T15:12:47.410917",
+    "email": "user@example.com",
+    "phone_number": "string",
+    "status": "New",
+    "address": {
+      "street": "string",
+      "city": "string",
+      "state": "string",
+      "zip_code": "string",
+      "email": "user@example.com",
+      "phone_number": "string",
+      "country": "string",
+      "id": 0
+    },
+    "dp": "string"
+  },
+  "tranx_items": [
+    {
+      "tranx_ref": 0,
+      "item_name": "string",
+      "item_description": "string",
+      "item_amount": 0,
+      "item_currency": "string"
+    }
+  ]
+}`}
+                </CodeBlock>
+
+                <CodeBlock
+                  language="bash"
+                  title="Example Request"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`
+  curl -X 'PUT' \\
+  'http://localhost:5071/api/v1/tranx/store' \\ 
+  -H 'accept: /' \\
+  -H 'Content-Type: application/json' \\
+  -d '{
+  "amount": 0,
+  "description": "string",
+  "currency": "NGN",
+  "payee_id": 0,
+  "first_name": "string",
+  "last_name": "string",
+  "email": "user@example.com",
+  "phone": "string",
+  "detail": {},
+  "tranx_type": "OTHERS",
+  "receipt": "string",
+  "ref": 0,
+  "isp": "ISW",
+  "stripe_payment_method": "string",
+  "status": "Pending",
+  "createdOn": "2025-07-25T04:00:41.687Z",
+  "modifiedOn": "2025-07-25T04:00:41.687Z",
+  "callback_url": "https://example.com/",
+  "stripeId": "string",
+  "payee": {
+    "first_name": "string",
+    "last_name": "string",
+    "is_active": false,
+    "roles": [
+      "Admin"
+    ],
+    "socialmedia": "string",
+    "gender": "Male",
+    "token": "string",
+    "username": "string",
+    "attendance_token": "string",
+    "subclass": "string",
+    "id": 0,
+    "timestamp": "2025-07-24T15:12:47.410917",
+    "email": "user@example.com",
+    "phone_number": "string",
+    "status": "New",
+    "address": {
+      "street": "string",
+      "city": "string",
+      "state": "string",
+      "zip_code": "string",
+      "email": "user@example.com",
+      "phone_number": "string",
+      "country": "string",
+      "id": 0
+    },
+    "dp": "string"
+  },
+  "tranx_items": [
+    {
+      "tranx_ref": 0,
+      "item_name": "string",
+      "item_description": "string",
+      "item_amount": 0,
+      "item_currency": "string"
+    }
+  ]
+}'
+                      `}
+                </CodeBlock>
+
+                <CodeBlock
+                  language="json"
+                  title="Example Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`{
+  "txn_ref": 0,
+  "payee_id": 0,
+  "payee_email": "user@example.com"
+}`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/* 2. Make Invoice for Transaction */}
+            <div id="make-invoice" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <Settings2 size={20} />
+                Make Invoice for Transaction
+              </h3>
+
+              <ApiEndpoint
+                method="GET"
+                path="/api/v1/tranx/invoice/{txnref}"
+                description="Generates an invoice for a specific transaction."
+                parameters={[
+                  {
+                    name: "txnref",
+                    type: "string",
+                    required: true,
+                    description: "The reference code of the transaction.",
+                  },
+                ]}
+              >
+                <CodeBlock
+                  language="json"
+                  title="Sample Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`true`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/* 3. View Invoice */}
+            <div id="view-invoice" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <View size={20} />
+                View Invoice
+              </h3>
+
+              <ApiEndpoint
+                method="GET"
+                path="/api/v1/tranx/view-invoice/{ref_id}"
+                description="Retrieves and displays a generated invoice in a browser-friendly format (HTML/PDF preview)."
+                parameters={[
+                  {
+                    name: "ref_id",
+                    type: "string",
+                    required: true,
+                    description: "The unique invoice ID.",
+                  },
+                ]}
+              >
+                <CodeBlock
+                  language="json"
+                  title="Sample Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`"string"`}
+                </CodeBlock>
+              </ApiEndpoint>
+            </div>
+
+            {/* 4. Download Invoice */}
+            <div id="download-invoice" style={{ marginBottom: "48px" }}>
+              <h3
+                style={{
+                  fontSize: "22px",
+                  fontWeight: "600",
+                  color: "#334155",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <DownloadIcon size={20} />
+                Download Invoice
+              </h3>
+
+              <ApiEndpoint
+                method="GET"
+                path="/api/v1/tranx/download-invoice/{ref_id}"
+                description="Retrieves and displays a generated invoice in a browser-friendly format (HTML/PDF preview)."
+                parameters={[
+                  {
+                    name: "ref_id",
+                    type: "string",
+                    required: true,
+                    description: "The unique invoice ID.",
+                  },
+                ]}
+              >
+                <CodeBlock
+                  language="json"
+                  title="Sample Response"
+                  copiedCode={copiedCode}
+                  copyToClipboard={copyToClipboard}
+                >
+                  {`"string"`}
+                </CodeBlock>
+              </ApiEndpoint>
             </div>
           </section>
 

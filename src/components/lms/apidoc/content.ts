@@ -20,6 +20,10 @@ import {
   Building,
   UserMinus,
   GitCompareArrows,
+  Receipt,
+  Settings2,
+  View,
+  DownloadIcon,
 } from "lucide-react"
 const tableOfContents = [
   { id: "overview", label: "Overview", icon: Book },
@@ -68,6 +72,17 @@ const tableOfContents = [
   { id: "error-codes", label: "Error Codes", icon: AlertCircle },
   { id: "rate-limiting", label: "Rate Limiting", icon: Activity },
   { id: "course-redirect", label: "Course Redirect", icon: GitCompareArrows },
+  {
+    id: "invoice-management",
+    label: "Invoice Management",
+    icon: Receipt,
+    children: [
+      { id: "add-tranx", label: "Add Transaction", icon: Receipt },
+      { id: "make-invoice", label: "Make Invoice", icon: Settings2 },
+      { id: "view-invoice", label: "View Invoice", icon: View },
+      { id: "download-invoice", label: "Download Invoice", icon: DownloadIcon },
+    ],
+  },
 ]
 const badgeVariant = {
   default: { background: "#f1f5f9", color: "#64748b" },
