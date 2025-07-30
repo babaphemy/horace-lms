@@ -2,6 +2,7 @@ import { Box, Chip, Typography } from "@mui/material"
 type Data = {
   courseName?: string
   target?: string
+  category?: string
 }
 const LessonHead = ({ data }: { data: Data }) => {
   return (

@@ -13,7 +13,9 @@ import {
   MainCard,
 } from "@/components/classroom/StyledComponents"
 import LessonHead from "@/components/classroom/LessonHead"
-import LessonResources from "@/components/classroom/LessonResources"
+import LessonResources, {
+  LessonMaterial,
+} from "@/components/classroom/LessonResources"
 import { useLessonProgress } from "@/hooks/useLessonProgress"
 import { LessonDto, TopicDto } from "@/types/types"
 
@@ -63,12 +65,7 @@ const ClassroomPage = () => {
     setTabValue(newValue)
   }
 
-  const lessonMaterials = {
-    [currentLesson?.id || "default"]: [
-      { id: 1, name: "Introduction Slides.pdf", size: "2.5 MB" },
-      { id: 2, name: "Getting Started Guide.pdf", size: "1.8 MB" },
-    ],
-  }
+  const lessonMaterials: LessonMaterial[] = []
   if (isLoading) {
     return (
       <Box

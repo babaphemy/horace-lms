@@ -14,7 +14,7 @@ import {
 } from "@mui/material"
 import { MaterialItem } from "./StyledComponents"
 import { LessonDto } from "@/types/types"
-type LessonMaterial = {
+export type LessonMaterial = {
   id: string
   name: string
   size: string
