@@ -98,6 +98,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     queryKey: ["course", id],
     queryFn: () => fetchCourse(id),
     enabled: !!id,
+    refetchOnWindowFocus: false,
   })
 
   const courseForm = useForm({
@@ -139,6 +140,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       type: LESSONTYPE.TEXT as LESSONTYPE,
       content: "",
       video: "",
+      extension: "",
     },
   })
 
@@ -315,6 +317,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       content: "",
       video: "",
       assetKey: "",
+      extension: "",
     })
     setLessonDialogOpen(true)
   }
@@ -333,6 +336,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       type: lesson.type as LESSONTYPE,
       content: lesson.content,
       video: lesson.video,
+      extension: lesson?.extension || "",
     })
     setLessonDialogOpen(true)
   }
@@ -346,6 +350,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       title: data.title,
       type: data.type,
       content: data.content,
+      extension: data.extension || "",
       video: data.video || "",
       assetKey: data.assetKey || "",
       orderIndex:
@@ -682,7 +687,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         )
       )}
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteConfirmation.open}
         onClose={handleCancelDelete}
@@ -763,7 +767,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         </DialogActions>
       </Dialog>
 
-      {/* Course Edit Dialog */}
       <Dialog open={courseDialogOpen} maxWidth="md" fullWidth>
         <DialogTitle>Edit Course Details</DialogTitle>
         <DialogContent>
@@ -991,7 +994,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         </DialogActions>
       </Dialog>
 
-      {/* Lesson Edit Dialog */}
       <Dialog open={lessonDialogOpen} maxWidth="md" fullWidth>
         <DialogTitle>
           {editingLesson ? "Edit Lesson" : "Add New Lesson"}
@@ -1021,7 +1023,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                     control={lessonForm.control}
                     render={({ field, fieldState }) => (
                       <FormControl fullWidth error={!!fieldState.error}>
-                        <InputLabel>Lesson Type</InputLabel>
+                        <InputLabel>Lesson Type </InputLabel>
                         <Select {...field} label="Lesson Type">
                           <MenuItem value={LESSONTYPE.TEXT}>Text</MenuItem>
                           <MenuItem value={LESSONTYPE.VIDEO}>Video</MenuItem>
@@ -1129,7 +1131,9 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
           <Button onClick={() => setLessonDialogOpen(false)}>Cancel</Button>
           <Button
             variant="contained"
-            onClick={lessonForm.handleSubmit(handleSaveLesson)}
+            onClick={lessonForm.handleSubmit((data) => {
+              handleSaveLesson(data)
+            })}
             disabled={saving}
           >
             {saving ? <CircularProgress size={20} /> : "Save"}

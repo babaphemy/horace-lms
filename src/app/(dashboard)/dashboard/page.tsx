@@ -168,8 +168,7 @@ const DashboardPage = () => {
   }, [])
 
   const { data: recents } = useQuery({
-    queryFn: () =>
-      recentCourses(dateRange.start, dateRange.end, stats?.organizationId),
+    queryFn: () => recentCourses(0, 10, stats?.organizationId),
     queryKey: [
       "recentCourses",
       dateRange.start,

@@ -121,9 +121,7 @@ const PopularCard = ({ data }: courseProp) => {
             <Box sx={cardStyles.numbers}>
               <FavoriteIcon color="primary" />
               <Typography variant="body2" sx={cardStyles.between}>
-                <Typography variant="body2" sx={{ ml: 1 }}>
-                  {`${countStudent()} students`}
-                </Typography>
+                {`${countStudent()} students`}
               </Typography>
             </Box>
           </Box>

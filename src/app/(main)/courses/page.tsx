@@ -19,11 +19,6 @@ export type FilterItem = {
   value: string
 }
 
-// export const metadata = generateMetadata({
-//   title: "Horace Learning Management Solution | Horace Courses",
-//   description:
-//     "Horace Online Courses. STEM focused online courses for all ages",
-// });
 const Courses = () => {
   const [allCourses, setAllCourses] = useState([])
   const [filteredData, setFilteredData] = useState<tCourseLte[] | []>([])

@@ -221,6 +221,7 @@ export type LessonDto = {
   tid: string
   title: string
   video?: string
+  extension?: string
   type: string
   content?: string
   orderIndex?: number
