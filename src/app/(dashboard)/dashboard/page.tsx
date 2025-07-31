@@ -213,11 +213,8 @@ const DashboardPage = () => {
               </Box>
 
               {recents?.map((course: tCourse) => (
-                <>
-                  <Box
-                    key={course.id}
-                    sx={{ mb: 3, "&:last-child": { mb: 0 } }}
-                  >
+                <Box key={course.id}>
+                  <Box sx={{ mb: 3, "&:last-child": { mb: 0 } }}>
                     <Box
                       sx={{
                         display: "flex",
@@ -380,7 +377,7 @@ const DashboardPage = () => {
                       Manage Students
                     </MenuItem>
                   </Menu>
-                </>
+                </Box>
               ))}
             </CardContent>
           </Card>

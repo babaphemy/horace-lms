@@ -572,7 +572,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                 <DragIndicator sx={{ mr: 2, color: "text.secondary" }} />
                 <Box flexGrow={1}>
                   <Typography variant="h6" fontWeight="bold">
-                    {topic.module}
+                    {topic.title || topic.module}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {topic?.lessons?.length} lessons • Due:{" "}
@@ -1073,56 +1073,51 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                     }}
                   />
                 </Grid>
+                {lessonForm.watch("type") === LESSONTYPE.VIDEO && (
+                  <Grid size={{ xs: 12 }}>
+                    <Controller
+                      name="video"
+                      disabled
+                      control={lessonForm.control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          label="Video URL (optional - alternative to file upload)"
+                          placeholder="https://..."
+                          helperText="You can either upload a video file above or provide a URL here"
+                        />
+                      )}
+                    />
+                  </Grid>
+                )}
 
-                {/* Manual Video URL input (alternative to file upload) */}
-                <Grid size={{ xs: 12 }}>
-                  <Controller
-                    name="video"
-                    control={lessonForm.control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        label="Video URL (optional - alternative to file upload)"
-                        placeholder="https://..."
-                        helperText="You can either upload a video file above or provide a URL here"
-                      />
-                    )}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12 }}>
-                  <Controller
-                    name="type"
-                    control={lessonForm.control}
-                    render={({ field: typeField }) => (
-                      <Controller
-                        name="content"
-                        control={lessonForm.control}
-                        render={({ field: contentField, fieldState }) => {
-                          if (typeField.value !== LESSONTYPE.VIDEO) {
-                            return (
-                              <TextField
-                                {...contentField}
-                                fullWidth
-                                multiline
-                                rows={6}
-                                label="Lesson Content"
-                                error={!!fieldState.error}
-                                helperText={
-                                  fieldState.error?.message ||
-                                  "Enter the lesson content or upload a document above"
-                                }
-                              />
-                            )
+                {![
+                  LESSONTYPE.VIDEO,
+                  LESSONTYPE.DOCUMENT,
+                  LESSONTYPE.PRESENTATION,
+                ].includes(lessonForm.watch("type")) && (
+                  <Grid size={{ xs: 12 }}>
+                    <Controller
+                      name="content"
+                      control={lessonForm.control}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          multiline
+                          rows={6}
+                          label="Lesson Content"
+                          error={!!fieldState.error}
+                          helperText={
+                            fieldState.error?.message ||
+                            "Enter the lesson content or upload a document above"
                           }
-
-                          return <></>
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
+                        />
+                      )}
+                    />
+                  </Grid>
+                )}
               </Grid>
             </Box>
           </FormProvider>

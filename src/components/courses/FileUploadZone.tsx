@@ -171,7 +171,7 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
   return (
     <Box>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        Upload {lessonType}
+        UPLOAD {lessonType}
       </Typography>
 
       {!uploadedFile ? (

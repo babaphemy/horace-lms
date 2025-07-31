@@ -61,7 +61,7 @@ export function useLessonProgress({
     const progressData: VideoProgress = {
       lessonId,
       userId,
-      currentTime,
+      currentTime: currentTime,
       duration,
       completionPercentage,
       lastWatched: new Date().toISOString(),

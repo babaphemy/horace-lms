@@ -20,7 +20,7 @@ export interface LessonProgress {
 }
 
 export interface VideoProgress extends LessonProgress {
-  currentTime?: number
+  currentTime: number
   duration?: number
 }
 

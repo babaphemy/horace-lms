@@ -30,6 +30,8 @@ const PopularCard = ({ data }: courseProp) => {
     category,
     brief,
     posts,
+    authorCompany,
+    authorRole,
     thumbnail,
     students,
     totalSteps,
@@ -80,7 +82,7 @@ const PopularCard = ({ data }: courseProp) => {
                   marginRight: "5px",
                 }}
               />
-              Horace
+              {authorCompany}
             </Typography>
             <Tag label={category} />
           </Box>
@@ -113,7 +115,7 @@ const PopularCard = ({ data }: courseProp) => {
                   {author}
                 </Typography>
                 <Typography variant="caption" margin={0} color="primary">
-                  Software Engineer
+                  {authorRole || "Instructor"}
                 </Typography>
               </Box>
             </Box>
