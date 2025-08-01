@@ -10,7 +10,9 @@ import {
   Search,
   Tag,
 } from "lucide-react"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 type ResourceType = "video" | "document" | "blog" | "article"
@@ -96,6 +98,7 @@ const categories = [
 ]
 
 const HoraceResourcesPage = () => {
+  const { data: session } = useSession()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const router = useRouter()
@@ -141,6 +144,17 @@ const HoraceResourcesPage = () => {
   const handleResourceClick = (resource: Resource) => {
     const routeType = resource.type === "blog" ? "article" : resource.type
     router.push(`/dashboard/resources/${routeType}/${resource.id}`)
+  }
+  if (!session?.user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <h1>Access Denied</h1>
+        <br />
+        <Link href="/login" className="text-blue-600 hover:text-blue-700">
+          Click here to Login
+        </Link>
+      </div>
+    )
   }
 
   return (
