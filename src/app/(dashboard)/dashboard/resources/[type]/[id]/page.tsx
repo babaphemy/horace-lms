@@ -1,11 +1,12 @@
 "use client"
 import { useParams } from "next/navigation"
 import { useRouter } from "next/navigation"
-import { Resource, resources } from "../../page"
 import { Home, ChevronRight, FileText } from "lucide-react"
 import VideoPlayer from "@/components/resources/Videoplayer"
 import PDFViewer from "@/components/resources/PDFViewer"
 import ArticleViewer from "@/components/resources/ArticleViewer"
+import { Resource } from "@/types/types"
+import { resources } from "@/app/api/data"
 
 const Breadcrumb = ({ resource }: { resource: Resource }) => {
   const router = useRouter()

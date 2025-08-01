@@ -583,3 +583,16 @@ export type OrganizationMember = {
   updatedOn?: string
   createdOn?: string
 }
+export type ResourceType = "video" | "document" | "blog" | "article"
+export type Resource = {
+  id: number
+  title: string
+  type: ResourceType
+  category: string
+  description: string
+  content: string
+  thumbnail?: string
+  duration?: string
+  date: string
+  readTime?: string
+}

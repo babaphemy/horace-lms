@@ -1,4 +1,4 @@
-import { Resource } from "@/app/(dashboard)/dashboard/resources/page"
+import { Resource } from "@/types/types"
 import { Calendar } from "lucide-react"
 import ReactPlayer from "react-player"
 

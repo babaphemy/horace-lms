@@ -1,4 +1,4 @@
-import { Resource } from "@/app/(dashboard)/dashboard/resources/page"
+import { Resource } from "@/types/types"
 import { ArrowLeft, Calendar, ExternalLink } from "lucide-react"
 import Link from "next/link"
 

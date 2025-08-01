@@ -1,5 +1,7 @@
 "use client"
 
+import { resources } from "@/app/api/data"
+import { Resource, ResourceType } from "@/types/types"
 import {
   BookOpen,
   Calendar,
@@ -15,76 +17,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-type ResourceType = "video" | "document" | "blog" | "article"
-export type Resource = {
-  id: number
-  title: string
-  type: ResourceType
-  category: string
-  description: string
-  content: string
-  thumbnail?: string
-  duration?: string
-  date: string
-  readTime?: string
-}
-export const resources: Resource[] = [
-  {
-    id: 1,
-    title: "Horace Demo",
-    type: "video",
-    category: "Demo",
-    description:
-      "Complete walkthrough of the Horace platform features and capabilities",
-    thumbnail:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=225&fit=crop",
-    content: "https://femi.b-cdn.net/horace-demo.mp4",
-    duration: "12:34",
-    date: "2024-07-15",
-  },
-  {
-    id: 2,
-    title: "Product Release v1.9 Documentation",
-    type: "document",
-    category: "Documentation",
-    description:
-      "Comprehensive documentation for the latest Horace release including new features and improvements",
-    content: "https://docs.horace.com/release-v1.9.pdf",
-    date: "2024-07-10",
-  },
-  {
-    id: 3,
-    title: "Summer Camp",
-    type: "document",
-    category: "Campaign",
-    description: "Horace summer camp bootcamp",
-    content: "https://femi.b-cdn.net/summer%20camp.pdf",
-    readTime: "1 min read",
-    date: "2024-07-08",
-  },
-  {
-    id: 4,
-    title: "API Integration Guide",
-    type: "document",
-    category: "Documentation",
-    description:
-      "Complete guide for integrating Horace APIs into your applications",
-    content: "https://lms.horacelearning.com/dashboard/api-docs",
-    date: "2024-07-05",
-  },
-  {
-    id: 5,
-    title: "Student Assessment System",
-    type: "document",
-    category: "Documentation",
-    description:
-      "the student assessment and grading system for Horace platform",
-    content:
-      "https://femi.b-cdn.net/Student%20Assessment%20System%20Documentation.pdf",
-    readTime: "3 min read",
-    date: "2024-07-01",
-  },
-]
 
 const categories = [
   "all",

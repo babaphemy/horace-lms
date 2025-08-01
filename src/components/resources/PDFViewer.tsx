@@ -1,4 +1,4 @@
-import { Resource } from "@/app/(dashboard)/dashboard/resources/page"
+import { Resource } from "@/types/types"
 import { Calendar, Download, FileText } from "lucide-react"
 
 const PDFViewer = ({ resource }: { resource: Resource }) => {
