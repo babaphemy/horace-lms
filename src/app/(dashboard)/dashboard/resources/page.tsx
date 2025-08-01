@@ -147,14 +147,13 @@ const HoraceResourcesPage = () => {
               key={resource.id}
               className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
             >
-              {/* Video Thumbnail */}
-              {resource.type === "video" && resource.thumbnail && (
+              {resource.type === "video" && (
                 <div
                   className="relative cursor-pointer"
                   onClick={() => handleResourceClick(resource)}
                 >
                   <Image
-                    src={resource.thumbnail}
+                    src={resource.thumbnail || "/img/boy2.png"}
                     alt={resource.title}
                     className="w-full h-48 object-cover rounded-t-lg"
                     width={500}

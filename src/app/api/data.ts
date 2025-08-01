@@ -184,8 +184,7 @@ const resources: Resource[] = [
     category: "Demo",
     description:
       "Complete walkthrough of the Horace platform features and capabilities",
-    thumbnail:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=225&fit=crop",
+    thumbnail: "/img/boy2.png",
     content: "https://femi.b-cdn.net/horace-demo.mp4",
     duration: "12:34",
     date: "2024-07-15",
