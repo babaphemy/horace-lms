@@ -1,5 +1,5 @@
 "use client"
-import { addUserCourse, fetchCourse } from "@/app/api/rest"
+import { addUserCourse, courseGrantAccess, fetchCourse } from "@/app/api/rest"
 import SimilarCard from "@/components/SimilarCard"
 import ModalLogin from "@/components/auth/ModalLogin"
 import SignUpLogin from "@/components/auth/ModalSignUp"
@@ -9,7 +9,13 @@ import CourseHeader from "@/components/layout/CourseHeader"
 import PaymentModal from "@/components/payment/PaymentModal"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx, Appcontext } from "@/context/AppContext"
-import { LessonDto, tCourseLte, TopicDto, tPost } from "@/types/types"
+import {
+  CorporateAuthRequest,
+  LessonDto,
+  tCourseLte,
+  TopicDto,
+  tPost,
+} from "@/types/types"
 import {
   Code,
   Download,
@@ -144,6 +150,16 @@ const Detailb = () => {
       throw error
     },
   })
+  const corporateAuth = useMutation(courseGrantAccess, {
+    onSuccess: () => {
+      notifySuccess("Access granted successfully!")
+      router.push(`/course/classroom/client`)
+    },
+    onError: (error) => {
+      notifyError("Failed to grant access. Please try again.")
+      throw error
+    },
+  })
 
   const handleJoinClass = () => {
     if (!userId) {
@@ -164,6 +180,13 @@ const Detailb = () => {
         data: { open: true, type: "payment" },
       })
     }
+  }
+  const gotoClass = () => {
+    const payload: CorporateAuthRequest = {
+      courseId,
+      userId: userId || "",
+    }
+    corporateAuth.mutate(payload)
   }
 
   if (status === "loading") {
@@ -345,10 +368,7 @@ const Detailb = () => {
                       <Button
                         variant="contained"
                         className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
-                        onClick={() =>
-                          router.push("/course/classroom?courseId=" + courseId)
-                        }
-                        disabled={!sessionUser}
+                        onClick={gotoClass}
                       >
                         Go To Class
                       </Button>

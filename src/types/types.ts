@@ -596,3 +596,13 @@ export type Resource = {
   date: string
   readTime?: string
 }
+export type CorporateAuthRequest = {
+  userId: string
+  courseId: string
+}
+export type TokenResponse = {
+  userId: string
+  courseId: string
+  success: boolean
+  email: string
+}

@@ -52,7 +52,7 @@ export function useLessonProgress({
   }
 
   const saveProgress = (currentTime: number, duration: number) => {
-    if (!lessonId || !userId || duration === 0) return
+    if (!lessonId || !userId || !currentTime || duration === 0) return
 
     const completionPercentage = Math.min((currentTime / duration) * 100, 100)
     const timeDiff = Math.abs(currentTime - lastSavedTimeRef.current)

@@ -14,11 +14,13 @@ import {
   Uploader,
   UserDto,
   OrganizationMember,
+  CorporateAuthRequest,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
   auth,
   basePath,
+  cookieAuth,
   DeleteSettings,
   horacePath,
   PostSettings,
@@ -646,8 +648,27 @@ const getUserProgress = async (userId: string) => {
   }
   return response.json()
 }
+const courseGrantAccess = async (dto: CorporateAuthRequest) => {
+  const response = await fetch(
+    `${basePath}course/org/authenticate-user`,
+    PostSettings(dto)
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+const courseAccessToken = async () => {
+  const response = await fetch(`${basePath}course/user/token-info`, cookieAuth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 
 export {
+  courseGrantAccess,
+  courseAccessToken,
   saveMyProgress,
   saveLessonProgress,
   getLessonProgress,
