@@ -150,16 +150,18 @@ const Detailb = () => {
       throw error
     },
   })
-  const corporateAuth = useMutation(courseGrantAccess, {
-    onSuccess: () => {
-      notifySuccess("Access granted successfully!")
-      router.push(`/course/classroom/client`)
-    },
-    onError: (error) => {
-      notifyError("Failed to grant access. Please try again.")
-      throw error
-    },
-  })
+  const authenticateUser = async (userData: CorporateAuthRequest) => {
+    try {
+      const response = await courseGrantAccess(userData)
+      if (response.success) {
+        router.push(response.redirectUrl)
+      } else {
+        notifyError("Authentication failed. Please try again.")
+      }
+    } catch {
+      notifyError("An error occurred during authentication.")
+    }
+  }
 
   const handleJoinClass = () => {
     if (!userId) {
@@ -181,12 +183,16 @@ const Detailb = () => {
       })
     }
   }
-  const gotoClass = () => {
+  const gotoClass = async () => {
+    if (session?.user) {
+      router.push(`/course/classroom?courseId=${courseId}`)
+      return
+    }
     const payload: CorporateAuthRequest = {
       courseId,
       userId: userId || "",
     }
-    corporateAuth.mutate(payload)
+    await authenticateUser(payload)
   }
 
   if (status === "loading") {

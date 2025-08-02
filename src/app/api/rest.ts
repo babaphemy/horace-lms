@@ -649,10 +649,12 @@ const getUserProgress = async (userId: string) => {
   return response.json()
 }
 const courseGrantAccess = async (dto: CorporateAuthRequest) => {
-  const response = await fetch(
-    `${basePath}course/org/authenticate-user`,
-    PostSettings(dto)
-  )
+  const response = await fetch(`${basePath}course/org/authenticate-user`, {
+    method: "POST",
+    ...auth,
+    body: JSON.stringify(dto),
+    credentials: "include",
+  })
   if (!response.ok) {
     throw new Error(response.statusText)
   }
