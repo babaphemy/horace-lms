@@ -23,6 +23,7 @@ import {
   cookieAuth,
   DeleteSettings,
   horacePath,
+  mixedAuth,
   PostSettings,
   PutSettings,
 } from "./setting"
@@ -651,7 +652,7 @@ const getUserProgress = async (userId: string) => {
 const courseGrantAccess = async (dto: CorporateAuthRequest) => {
   const response = await fetch(`${basePath}course/org/authenticate-user`, {
     method: "POST",
-    ...auth,
+    ...mixedAuth,
     body: JSON.stringify(dto),
     credentials: "include",
   })
