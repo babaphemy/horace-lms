@@ -652,7 +652,9 @@ const getUserProgress = async (userId: string) => {
 const courseGrantAccess = async (dto: CorporateAuthRequest) => {
   const response = await fetch(`${basePath}course/org/authenticate-user`, {
     method: "POST",
-    ...mixedAuth,
+    headers: {
+      ...mixedAuth.headers,
+    },
     body: JSON.stringify(dto),
     credentials: "include",
   })
