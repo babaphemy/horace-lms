@@ -6,6 +6,19 @@ const authKey = process.env.NEXT_PUBLIC_APIKEY
 export const auth = {
   headers: { Authorization: `Basic ${authKey}` },
 }
+export const mixedAuth = {
+  headers: {
+    Authorization: `Basic ${authKey}`,
+    "Content-Type": "application/json",
+  },
+}
+export const cookieAuth = {
+  method: "GET",
+  headers: {
+    accept: "*/*",
+  },
+  credentials: "include" as RequestCredentials,
+}
 export const PostSettings = <T>(obj: T) => {
   return {
     method: "POST",

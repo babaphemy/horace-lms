@@ -1,5 +1,5 @@
 "use client"
-import { addUserCourse, fetchCourse } from "@/app/api/rest"
+import { addUserCourse, courseGrantAccess, fetchCourse } from "@/app/api/rest"
 import SimilarCard from "@/components/SimilarCard"
 import ModalLogin from "@/components/auth/ModalLogin"
 import SignUpLogin from "@/components/auth/ModalSignUp"
@@ -9,7 +9,13 @@ import CourseHeader from "@/components/layout/CourseHeader"
 import PaymentModal from "@/components/payment/PaymentModal"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx, Appcontext } from "@/context/AppContext"
-import { LessonDto, tCourseLte, TopicDto, tPost } from "@/types/types"
+import {
+  CorporateAuthRequest,
+  LessonDto,
+  tCourseLte,
+  TopicDto,
+  tPost,
+} from "@/types/types"
 import {
   Code,
   Download,
@@ -144,6 +150,18 @@ const Detailb = () => {
       throw error
     },
   })
+  const authenticateUser = async (userData: CorporateAuthRequest) => {
+    try {
+      const response = await courseGrantAccess(userData)
+      if (response.success) {
+        router.push(response.redirectUrl)
+      } else {
+        notifyError("Authentication failed. Please try again.")
+      }
+    } catch {
+      notifyError("An error occurred during authentication.")
+    }
+  }
 
   const handleJoinClass = () => {
     if (!userId) {
@@ -164,6 +182,17 @@ const Detailb = () => {
         data: { open: true, type: "payment" },
       })
     }
+  }
+  const gotoClass = async () => {
+    if (session?.user) {
+      router.push(`/course/classroom?courseId=${courseId}`)
+      return
+    }
+    const payload: CorporateAuthRequest = {
+      courseId,
+      userId: userId || "",
+    }
+    await authenticateUser(payload)
   }
 
   if (status === "loading") {
@@ -258,10 +287,7 @@ const Detailb = () => {
                   </Typography>
                   <Avatar
                     alt="instructor"
-                    src={
-                      data?.author?.dp ||
-                      "https://material-ui.com/static/images/avatar/1.webp"
-                    }
+                    src={data?.author?.dp || "/img/boy.png"}
                     sx={{ width: 120, height: 120 }}
                   />
                   <Typography
@@ -348,9 +374,7 @@ const Detailb = () => {
                       <Button
                         variant="contained"
                         className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
-                        onClick={() =>
-                          router.push("/course/classroom?courseId=" + courseId)
-                        }
+                        onClick={gotoClass}
                       >
                         Go To Class
                       </Button>

@@ -18,11 +18,13 @@ import {
 } from "@mui/icons-material"
 
 export interface Lesson {
+  // TODO: use LessonDTO for consistency and delete Lesson
   id: string
   tid: string
   title: string
   video?: string
   content?: string
+  extension?: string
   type: string
   orderIndex: number
   createdOn: string | null

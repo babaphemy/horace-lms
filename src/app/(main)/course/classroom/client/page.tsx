@@ -2,12 +2,10 @@
 import React, { Suspense, useEffect, useState } from "react"
 import { Box, Grid, CircularProgress, Alert } from "@mui/material"
 import FooterLte from "@/components/layout/FooterLte"
-import { useSearchParams } from "next/navigation"
 import { useQuery } from "react-query"
-import { fetchCourse } from "@/app/api/rest"
+import { courseAccessToken, fetchCourse } from "@/app/api/rest"
 import ContentCard, { Lesson } from "@/components/classroom/ContentCard"
 import LessonContent from "@/components/classroom/LessonContent"
-import { useSession } from "next-auth/react"
 import {
   ContentContainer,
   MainCard,
@@ -20,17 +18,19 @@ import { useLessonProgress } from "@/hooks/useLessonProgress"
 import { LessonDto, TopicDto } from "@/types/types"
 
 const ClassroomPage = () => {
-  const { data: session } = useSession()
-
-  const searchParams = useSearchParams()
-  const id = searchParams?.get("courseId")
-
   const [tabValue, setTabValue] = useState(0)
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["course", id, session?.user?.id],
-    queryFn: () => fetchCourse(id as string, session?.user?.id as string),
+
+  const { data: userToken, isLoading: tokenLoading } = useQuery({
+    queryKey: ["userToken"],
+    queryFn: courseAccessToken,
     refetchOnWindowFocus: false,
-    enabled: !!id && !!session?.user?.id,
+  })
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["course", userToken?.courseId, userToken?.userId],
+    queryFn: () =>
+      fetchCourse(userToken?.courseId as string, userToken?.userId as string),
+    refetchOnWindowFocus: false,
+    enabled: !!userToken?.userId && !!userToken?.courseId,
   })
 
   const [currentLesson, setCurrentLesson] = React.useState(
@@ -38,7 +38,7 @@ const ClassroomPage = () => {
   )
   const { progress, saveALessonProgress } = useLessonProgress({
     lessonId: currentLesson?.id,
-    userId: session?.user?.id || "",
+    userId: userToken?.userId || "",
   })
 
   const handleLessonSelect = (lesson: Lesson) => {
@@ -66,7 +66,7 @@ const ClassroomPage = () => {
   }
 
   const lessonMaterials: LessonMaterial[] = []
-  if (isLoading) {
+  if (isLoading || tokenLoading) {
     return (
       <Box
         display="flex"
@@ -78,12 +78,16 @@ const ClassroomPage = () => {
       </Box>
     )
   }
-  if (error) {
+  if (error || !userToken) {
     return (
-      <Box p={4}>
-        <Alert severity="error">
-          Failed to load course content. Please try again later.
-        </Alert>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        p={4}
+      >
+        <Alert severity="error">Access denied! Please login to continue.</Alert>
       </Box>
     )
   }
@@ -96,10 +100,10 @@ const ClassroomPage = () => {
             <Box sx={{ p: 3 }}>
               <LessonHead data={data} />
               <ContentContainer>
-                {session?.user?.id && currentLesson && (
+                {userToken?.userId && currentLesson && (
                   <LessonContent
                     lesson={currentLesson}
-                    userId={session?.user?.id}
+                    userId={userToken?.userId}
                   />
                 )}
               </ContentContainer>
@@ -114,27 +118,6 @@ const ClassroomPage = () => {
           </Grid>
           <Grid size={{ xs: 12, md: 4 }} sx={{ bgcolor: "grey.50" }}>
             <Box sx={{ p: 3 }}>
-              {/* <Box sx={{ mb: 3 }}>
-                <Typography
-                  variant="body2"
-                  fontWeight="medium"
-                  sx={{ mb: 0.5 }}
-                >
-                  10% Complete
-                </Typography>
-                <LinearProgress
-                  variant="determinate"
-                  value={10}
-                  sx={{
-                    height: 4,
-                    borderRadius: 1,
-                    "& .MuiLinearProgress-bar": {
-                      backgroundColor: "#f48fb1",
-                    },
-                  }}
-                />
-              </Box> */}
-
               <ContentCard
                 topics={data?.curriculum?.topic || []}
                 currentLessonId={currentLesson?.id}

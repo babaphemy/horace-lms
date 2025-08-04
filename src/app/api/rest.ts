@@ -14,16 +14,23 @@ import {
   Uploader,
   UserDto,
   OrganizationMember,
+  CorporateAuthRequest,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
   auth,
   basePath,
+  cookieAuth,
   DeleteSettings,
   horacePath,
+  mixedAuth,
   PostSettings,
   PutSettings,
 } from "./setting"
+import {
+  LessonProgress,
+  VideoProgress,
+} from "@/components/classroom/VideoPlayerWithProgress"
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
   return resp.json()
@@ -229,12 +236,12 @@ const isCourseReg = async (id: string) => {
   return response.json()
 }
 const recentCourses = async (
-  startDate: string,
-  endDate: string,
+  page: number = 0,
+  size: number = 10,
   organizationId?: string
 ) => {
   const response = await fetch(
-    `${basePath}course/range/${startDate}/${endDate}${organizationId ? `?orgId=${organizationId}` : ""}`,
+    `${basePath}course/recent/${`${organizationId}`}?page=${page}&limit=${size}`,
     auth
   )
   if (!response.ok) {
@@ -242,6 +249,20 @@ const recentCourses = async (
   }
   return response.json()
 }
+// const coursesByDate = async (
+//   startDate: string,
+//   endDate: string,
+//   organizationId?: string
+// ) => {
+//   const response = await fetch(
+//     `${basePath}course/range/${startDate}/${endDate}${organizationId ? `?orgId=${organizationId}` : ""}`,
+//     auth
+//   )
+//   if (!response.ok) {
+//     return { error: response.status }
+//   }
+//   return response.json()
+// }
 const dashboardStat = async (userId: string) => {
   const response = await fetch(`${basePath}user/dashboard/${userId}`, auth)
   if (!response.ok) {
@@ -588,8 +609,75 @@ const fetchUserOrganization = async (userId: string): Promise<orgDto> => {
   }
   return response.json()
 }
+const saveMyProgress = async (data: VideoProgress) => {
+  const response = await fetch(
+    `${horacePath}stream/progress`,
+    PostSettings(data)
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+const saveLessonProgress = async (data: LessonProgress) => {
+  const response = await fetch(
+    `${horacePath}stream/lesson-progress`,
+    PostSettings(data)
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+const getLessonProgress = async (lessonId: string, userId: string) => {
+  const response = await fetch(
+    `${horacePath}stream/progress/${lessonId}/${userId}`,
+    auth
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+const getUserProgress = async (userId: string) => {
+  const response = await fetch(
+    `${horacePath}stream/progress/user/${userId}`,
+    auth
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+const courseGrantAccess = async (dto: CorporateAuthRequest) => {
+  const response = await fetch(`${basePath}course/org/authenticate-user`, {
+    method: "POST",
+    headers: {
+      ...mixedAuth.headers,
+    },
+    body: JSON.stringify(dto),
+    credentials: "include",
+  })
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+const courseAccessToken = async () => {
+  const response = await fetch(`${basePath}course/user/token-info`, cookieAuth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 
 export {
+  courseGrantAccess,
+  courseAccessToken,
+  saveMyProgress,
+  saveLessonProgress,
+  getLessonProgress,
+  getUserProgress,
   addCourseDetail,
   addThumbnail,
   addTopic,

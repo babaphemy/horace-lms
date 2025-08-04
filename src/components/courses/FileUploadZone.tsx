@@ -129,6 +129,7 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
 
       const fieldName = lessonType === LESSONTYPE.VIDEO ? "video" : "content"
 
+      setValue("extension", file.name.split(".").pop() || "")
       setValue(fieldName, filePath)
       setValue("assetKey", fileKey)
       setUploadedFile(filePath)
@@ -170,7 +171,7 @@ const FileUploadZone: React.FC<FileUploadProps> = ({
   return (
     <Box>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        Upload {lessonType}
+        UPLOAD {lessonType}
       </Typography>
 
       {!uploadedFile ? (

@@ -168,8 +168,7 @@ const DashboardPage = () => {
   }, [])
 
   const { data: recents } = useQuery({
-    queryFn: () =>
-      recentCourses(dateRange.start, dateRange.end, stats?.organizationId),
+    queryFn: () => recentCourses(0, 10, stats?.organizationId),
     queryKey: [
       "recentCourses",
       dateRange.start,
@@ -214,11 +213,8 @@ const DashboardPage = () => {
               </Box>
 
               {recents?.map((course: tCourse) => (
-                <>
-                  <Box
-                    key={course.id}
-                    sx={{ mb: 3, "&:last-child": { mb: 0 } }}
-                  >
+                <Box key={course.id}>
+                  <Box sx={{ mb: 3, "&:last-child": { mb: 0 } }}>
                     <Box
                       sx={{
                         display: "flex",
@@ -381,7 +377,7 @@ const DashboardPage = () => {
                       Manage Students
                     </MenuItem>
                   </Menu>
-                </>
+                </Box>
               ))}
             </CardContent>
           </Card>

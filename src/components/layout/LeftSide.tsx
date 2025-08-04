@@ -140,6 +140,15 @@ const menuData: TNavBar[] = [
   },
   {
     id: 4,
+    title: "Resources",
+    allowed_roles: [AccessRoles.ADMIN, AccessRoles.INSTRUCTOR],
+    icon: <Book />,
+    active: true,
+    order: 1,
+    path: "/dashboard/resources",
+  },
+  {
+    id: 5,
     title: "Settings",
     path: "#",
     icon: <Settings />,
@@ -185,7 +194,7 @@ const menuData: TNavBar[] = [
     ],
   },
   {
-    id: 5,
+    id: 6,
     title: "Organization Members",
     icon: <People />,
     path: "/dashboard/settings/org/members/",

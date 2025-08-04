@@ -17,9 +17,11 @@ import {
   Share,
 } from "@mui/icons-material"
 import VideoPlaceholderSVG from "../lms/VideoPlaceholderSVG"
-import ReactPlayer from "react-player"
 import Image from "next/image"
 import dynamic from "next/dynamic"
+import VideoPlayerWithProgress from "./VideoPlayerWithProgress"
+import ReactPlayer from "react-player"
+import { useRef } from "react"
 
 const PdfViewer = dynamic(() => import("./PdfViewer"), {
   ssr: false,
@@ -33,7 +35,7 @@ interface HTMLLessonProps {
 }
 
 const streamUrl =
-  process.env.NEXT_PUBLIC_STREAM_URL || "https://horacelms.com/stream"
+  process.env.NEXT_PUBLIC_STREAM_URL || "https://horacelms.com/stream2"
 
 const HTMLLesson: React.FC<HTMLLessonProps> = ({ lesson }) => {
   return (
@@ -135,86 +137,22 @@ const ProgressFill = styled(Box)({
   borderRadius: "inherit",
 })
 
-const getFileExtension = (url: string): string => {
-  if (!url) return ""
-
-  // Remove query parameters and hash
-  const cleanUrl = url.split("?")[0].split("#")[0]
-
-  // Extract file extension
-  const extension = cleanUrl.split(".").pop()?.toLowerCase() || ""
-
-  return extension
-}
-
-// Helper function to determine content type based on file extension
 const getContentType = (lesson: Lesson): string => {
-  if (lesson.type?.toLowerCase() === "video" || lesson.video) {
+  const extension = lesson.extension?.toLowerCase() || ""
+  if (lesson?.type?.toLowerCase() === "video" || lesson.video) {
     return "video"
   }
-  if (!lesson.content) {
-    return lesson.type?.toLowerCase() || "unknown"
-  }
-
-  const extension = getFileExtension(lesson.content)
-
-  // Map file extensions to content types
-  switch (extension) {
-    case "pdf":
-      return "pdf"
-    case "doc":
-    case "docx":
-      return "document"
-    case "ppt":
-    case "pptx":
-      return "document"
-    case "xls":
-    case "xlsx":
-      return "document"
-    case "txt":
-      return "text"
-    case "html":
-    case "htm":
-      return "html"
-    case "js":
-    case "jsx":
-    case "ts":
-    case "tsx":
-    case "py":
-    case "java":
-    case "cpp":
-    case "c":
-    case "css":
-    case "scss":
-    case "json":
-    case "xml":
-      return "code"
-    case "mp4":
-    case "avi":
-    case "mov":
-    case "wmv":
-    case "flv":
-    case "webm":
-      return "video"
-    case "mp3":
-    case "wav":
-    case "ogg":
-    case "m4a":
-      return "audio"
-    case "jpg":
-    case "jpeg":
-    case "png":
-    case "gif":
-    case "bmp":
-    case "svg":
-      return "image"
-    default:
-      // Fall back to lesson type if extension is unknown
-      return lesson.type?.toLowerCase() || "unknown"
-  }
+  return extension || "unknown"
 }
 
-const LessonContent = ({ lesson }: { lesson: Lesson }) => {
+const LessonContent = ({
+  lesson,
+  userId,
+}: {
+  lesson: Lesson
+  userId: string
+}) => {
+  const playerRef = useRef<ReactPlayer>(null)
   if (!lesson) {
     return (
       <Alert severity="info">
@@ -230,20 +168,11 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
       return (
         <VideoPlaceholder>
           {lesson.id ? (
-            <ReactPlayer
-              url={`${streamUrl}/${lesson.id}`}
-              width="100%"
-              height="100%"
-              controls={true}
-              loop={true}
-              config={{
-                file: {
-                  attributes: {
-                    controlsList: "nodownload",
-                    defer: true,
-                  },
-                },
-              }}
+            <VideoPlayerWithProgress
+              lesson={lesson}
+              streamUrl={streamUrl}
+              userId={userId}
+              playerRef={playerRef}
             />
           ) : (
             <>
@@ -278,7 +207,6 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
                   <ProgressIndicator>
                     <ProgressFill />
                   </ProgressIndicator>
-                  <Typography variant="caption">00:43 / 12:31</Typography>
                 </Box>
                 <Box>
                   <IconButton size="small" sx={{ color: "white" }}>
@@ -298,7 +226,6 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
       )
 
     case "pdf":
-    case "document":
       const documentUrl = `${process.env.NEXT_PUBLIC_HORACE}stream/document/${lesson.id}`
       return (
         <PDFPreview>
@@ -317,6 +244,36 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
               </Typography>
             </>
           )}
+        </PDFPreview>
+      )
+    case "ppt":
+    case "pptx":
+    case "xls":
+    case "xlsx":
+    case "doc":
+    case "docx":
+      const officeDocUrl = `${process.env.NEXT_PUBLIC_HORACE}stream/document/${lesson.id}`
+
+      return (
+        <PDFPreview>
+          <PictureAsPdf sx={{ fontSize: 60, color: "#1976d2", mb: 2 }} />
+          <Typography variant="h6" gutterBottom>
+            {lesson.title || "Document"}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mb={3}>
+            This document type cannot be previewed directly. You can open it in
+            your browser or download it below.
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<CloudDownload />}
+            href={officeDocUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ mb: 2 }}
+          >
+            Open in Browser / Download
+          </Button>
         </PDFPreview>
       )
 
@@ -398,7 +355,6 @@ const LessonContent = ({ lesson }: { lesson: Lesson }) => {
       )
 
     default:
-      // Default case for unknown content types
       return (
         <DocumentContainer>
           <Typography variant="h6" gutterBottom>

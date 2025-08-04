@@ -98,6 +98,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     queryKey: ["course", id],
     queryFn: () => fetchCourse(id),
     enabled: !!id,
+    refetchOnWindowFocus: false,
   })
 
   const courseForm = useForm({
@@ -139,6 +140,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       type: LESSONTYPE.TEXT as LESSONTYPE,
       content: "",
       video: "",
+      extension: "",
     },
   })
 
@@ -282,6 +284,10 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
     deleteTopicMutation({
       id: topic.id,
     })
+    if (!courseData || !id || deleteConfirmation.index === undefined) return
+    // Notification logic moved to the onSuccess callback of deleteTopicMutation
+
+    setDeleteConfirmation({ open: false, type: "topic" })
   }
 
   const { mutate: addEditLesson } = useMutation({
@@ -311,6 +317,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       content: "",
       video: "",
       assetKey: "",
+      extension: "",
     })
     setLessonDialogOpen(true)
   }
@@ -329,6 +336,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       type: lesson.type as LESSONTYPE,
       content: lesson.content,
       video: lesson.video,
+      extension: lesson?.extension || "",
     })
     setLessonDialogOpen(true)
   }
@@ -342,6 +350,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
       title: data.title,
       type: data.type,
       content: data.content,
+      extension: data.extension || "",
       video: data.video || "",
       assetKey: data.assetKey || "",
       orderIndex:
@@ -563,7 +572,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                 <DragIndicator sx={{ mr: 2, color: "text.secondary" }} />
                 <Box flexGrow={1}>
                   <Typography variant="h6" fontWeight="bold">
-                    {topic.module}
+                    {topic.title || topic.module}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {topic?.lessons?.length} lessons • Due:{" "}
@@ -678,7 +687,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         )
       )}
 
-      {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteConfirmation.open}
         onClose={handleCancelDelete}
@@ -759,7 +767,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         </DialogActions>
       </Dialog>
 
-      {/* Course Edit Dialog */}
       <Dialog open={courseDialogOpen} maxWidth="md" fullWidth>
         <DialogTitle>Edit Course Details</DialogTitle>
         <DialogContent>
@@ -987,7 +994,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         </DialogActions>
       </Dialog>
 
-      {/* Lesson Edit Dialog */}
       <Dialog open={lessonDialogOpen} maxWidth="md" fullWidth>
         <DialogTitle>
           {editingLesson ? "Edit Lesson" : "Add New Lesson"}
@@ -1017,7 +1023,7 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                     control={lessonForm.control}
                     render={({ field, fieldState }) => (
                       <FormControl fullWidth error={!!fieldState.error}>
-                        <InputLabel>Lesson Type</InputLabel>
+                        <InputLabel>Lesson Type </InputLabel>
                         <Select {...field} label="Lesson Type">
                           <MenuItem value={LESSONTYPE.TEXT}>Text</MenuItem>
                           <MenuItem value={LESSONTYPE.VIDEO}>Video</MenuItem>
@@ -1067,56 +1073,51 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                     }}
                   />
                 </Grid>
+                {lessonForm.watch("type") === LESSONTYPE.VIDEO && (
+                  <Grid size={{ xs: 12 }}>
+                    <Controller
+                      name="video"
+                      disabled
+                      control={lessonForm.control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          label="Video URL (optional - alternative to file upload)"
+                          placeholder="https://..."
+                          helperText="You can either upload a video file above or provide a URL here"
+                        />
+                      )}
+                    />
+                  </Grid>
+                )}
 
-                {/* Manual Video URL input (alternative to file upload) */}
-                <Grid size={{ xs: 12 }}>
-                  <Controller
-                    name="video"
-                    control={lessonForm.control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        fullWidth
-                        label="Video URL (optional - alternative to file upload)"
-                        placeholder="https://..."
-                        helperText="You can either upload a video file above or provide a URL here"
-                      />
-                    )}
-                  />
-                </Grid>
-
-                <Grid size={{ xs: 12 }}>
-                  <Controller
-                    name="type"
-                    control={lessonForm.control}
-                    render={({ field: typeField }) => (
-                      <Controller
-                        name="content"
-                        control={lessonForm.control}
-                        render={({ field: contentField, fieldState }) => {
-                          if (typeField.value !== LESSONTYPE.VIDEO) {
-                            return (
-                              <TextField
-                                {...contentField}
-                                fullWidth
-                                multiline
-                                rows={6}
-                                label="Lesson Content"
-                                error={!!fieldState.error}
-                                helperText={
-                                  fieldState.error?.message ||
-                                  "Enter the lesson content or upload a document above"
-                                }
-                              />
-                            )
+                {![
+                  LESSONTYPE.VIDEO,
+                  LESSONTYPE.DOCUMENT,
+                  LESSONTYPE.PRESENTATION,
+                ].includes(lessonForm.watch("type")) && (
+                  <Grid size={{ xs: 12 }}>
+                    <Controller
+                      name="content"
+                      control={lessonForm.control}
+                      render={({ field, fieldState }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          multiline
+                          rows={6}
+                          label="Lesson Content"
+                          error={!!fieldState.error}
+                          helperText={
+                            fieldState.error?.message ||
+                            "Enter the lesson content or upload a document above"
                           }
-
-                          return <></>
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
+                        />
+                      )}
+                    />
+                  </Grid>
+                )}
               </Grid>
             </Box>
           </FormProvider>
@@ -1125,7 +1126,9 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
           <Button onClick={() => setLessonDialogOpen(false)}>Cancel</Button>
           <Button
             variant="contained"
-            onClick={lessonForm.handleSubmit(handleSaveLesson)}
+            onClick={lessonForm.handleSubmit((data) => {
+              handleSaveLesson(data)
+            })}
             disabled={saving}
           >
             {saving ? <CircularProgress size={20} /> : "Save"}
