@@ -60,9 +60,13 @@ const ContentCard: React.FC<ContentCardProps> = ({
 
   React.useEffect(() => {
     if (topics.length > 0) {
-      setExpandedTopics({ [topics[0].id]: true })
+      const initialTopic =
+        topics?.find((topic) =>
+          topic.lessons.some((lesson) => lesson.id === currentLessonId)
+        ) || topics[0]
+      setExpandedTopics({ [initialTopic.id]: true })
     }
-  }, [topics])
+  }, [topics, currentLessonId])
 
   const handleTopicToggle = (topicId: string) => {
     setExpandedTopics((prev) => ({
@@ -98,75 +102,79 @@ const ContentCard: React.FC<ContentCardProps> = ({
           <List disablePadding>
             {topics
               .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0))
-              .map((topic, idx) => (
-                <Box key={topic.id} sx={{ mb: 2 }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      mb: 1,
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handleTopicToggle(topic.id)}
-                  >
-                    {expandedTopics[topic.id] ? (
-                      <KeyboardArrowDown
-                        sx={{ color: "primary.main", fontSize: 16, mr: 1 }}
-                      />
-                    ) : (
-                      <KeyboardArrowUp
-                        sx={{ color: "primary.main", fontSize: 16, mr: 1 }}
-                      />
-                    )}
-                    <Typography variant="caption" fontWeight="medium">
-                      {idx + 1}: {topic?.module || topic?.title}
-                    </Typography>
-                  </Box>
+              .map((topic, idx) => {
+                return (
+                  <Box key={topic.id} sx={{ mb: 2 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        mb: 1,
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleTopicToggle(topic.id)}
+                    >
+                      {expandedTopics[topic.id] ? (
+                        <KeyboardArrowDown
+                          sx={{ color: "primary.main", fontSize: 16, mr: 1 }}
+                        />
+                      ) : (
+                        <KeyboardArrowUp
+                          sx={{ color: "primary.main", fontSize: 16, mr: 1 }}
+                        />
+                      )}
+                      <Typography variant="caption" fontWeight="medium">
+                        {idx + 1}: {topic?.module || topic?.title}
+                      </Typography>
+                    </Box>
 
-                  <Collapse in={expandedTopics[topic.id] || false}>
-                    {topic.lessons
-                      .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0))
-                      .map((lesson) => {
-                        const isCurrentLesson = lesson.id === currentLessonId
-
-                        return (
-                          <ListItem
-                            key={lesson.id}
-                            onClick={() => handleSelect(lesson)}
-                            sx={{
-                              backgroundColor: isCurrentLesson
-                                ? "#ffcdd2" // Current lesson highlight
-                                : "grey.100",
-                              borderRadius: 1,
-                              mb: 1,
-                              py: 0.5,
-                              cursor: "pointer",
-                              "&:hover": {
-                                backgroundColor: isCurrentLesson
-                                  ? "#ffbdbd"
-                                  : "grey.200",
-                              },
-                            }}
-                          >
-                            <ListItemText
-                              primary={lesson.title}
-                              primaryTypographyProps={{
-                                variant: "body2",
-                                color: isCurrentLesson
-                                  ? "#c62828"
-                                  : "text.secondary",
-                                fontWeight: isCurrentLesson
-                                  ? "medium"
-                                  : "regular",
-                              }}
-                            />
-                            {getLessonIcon(lesson.type)}
-                          </ListItem>
+                    <Collapse in={expandedTopics[topic.id] || false}>
+                      {topic.lessons
+                        .sort(
+                          (a, b) => (a.orderIndex || 0) - (b.orderIndex || 0)
                         )
-                      })}
-                  </Collapse>
-                </Box>
-              ))}
+                        .map((lesson) => {
+                          const isCurrentLesson = lesson.id === currentLessonId
+
+                          return (
+                            <ListItem
+                              key={lesson.id}
+                              onClick={() => handleSelect(lesson)}
+                              sx={{
+                                backgroundColor: isCurrentLesson
+                                  ? "#ffcdd2" // Current lesson highlight
+                                  : "grey.100",
+                                borderRadius: 1,
+                                mb: 1,
+                                py: 0.5,
+                                cursor: "pointer",
+                                "&:hover": {
+                                  backgroundColor: isCurrentLesson
+                                    ? "#ffbdbd"
+                                    : "grey.200",
+                                },
+                              }}
+                            >
+                              <ListItemText
+                                primary={lesson.title}
+                                primaryTypographyProps={{
+                                  variant: "body2",
+                                  color: isCurrentLesson
+                                    ? "#000000"
+                                    : "text.secondary",
+                                  fontWeight: isCurrentLesson
+                                    ? "medium"
+                                    : "regular",
+                                }}
+                              />
+                              {getLessonIcon(lesson.type)}
+                            </ListItem>
+                          )
+                        })}
+                    </Collapse>
+                  </Box>
+                )
+              })}
           </List>
         )}
       </CardContent>
