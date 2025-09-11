@@ -73,7 +73,7 @@ const DashboardPage = () => {
         router.push(`/dashboard/courses/${selectedCourseId}`)
         break
       case "quiz":
-        router.push(`/dashboard/courses/${selectedCourseId}/quizzes`)
+        router.push(`/dashboard/courses/${selectedCourseId}/quizzes/add`)
         break
       case "thumbnail":
         handleThumbnailUpload()

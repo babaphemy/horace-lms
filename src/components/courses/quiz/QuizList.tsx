@@ -203,7 +203,6 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
   } = useQuery<Quiz[]>({
     queryKey: ["quizzes"],
     queryFn: async () => {
-      // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return dummyQuizzes
     },
@@ -213,7 +212,6 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
 
   const deleteQuizMutation = useMutation({
     mutationFn: async (id: string) => {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 500))
       return id
     },

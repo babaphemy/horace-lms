@@ -14,30 +14,24 @@ import {
   Step,
   StepLabel,
   Grid,
-  Card,
-  CardMedia,
   IconButton,
   FormControlLabel,
-  Checkbox,
   Alert,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
+  FormHelperText,
+  Radio,
 } from "@mui/material"
-import {
-  Add as AddIcon,
-  Delete as DeleteIcon,
-  CloudUpload as CloudUploadIcon,
-} from "@mui/icons-material"
+import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { quizSchema, TQuiz } from "@/schema/quizSchema"
-import { useSession } from "next-auth/react"
-import { fetchCourse } from "@/app/api/rest"
+import { addQuiz, fetchCourse } from "@/app/api/rest"
 import { LessonDto } from "@/types/types"
 
 const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
   const [activeStep, setActiveStep] = useState(0)
-  const { data: session } = useSession()
-  const [imagePreview, setImagePreview] = useState<string>("")
   const queryClient = useQueryClient()
 
   const { data: courseData } = useQuery({
@@ -57,96 +51,45 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
   } = useForm<TQuiz>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
-      quizName: "",
-      courseId: id,
       lessonId: "",
-      coverTitle: "",
-      description: "",
-      coverImage: "",
-      questions: [
-        {
-          question: "",
-          questionImage: "",
-          duration: "30",
-          points: "1",
-          feedBack: "",
-          options: [
-            { optionId: "1", option: "", isAnswer: "false" },
-            { optionId: "2", option: "", isAnswer: "false" },
-          ],
-        },
-      ],
-      totalDuration: 0,
-      totalPoints: 0,
-      accessibility: {
-        review: true,
-        countdown: true,
-        countdownTransition: true,
-        countDown: 5,
-        showAnswer: true,
-        showResult: true,
+      content: {
+        title: "",
+        description: "",
+        timeLimit: 30,
+        passingScore: 70,
+        questions: [
+          {
+            id: 1,
+            type: "multiple_choice",
+            question: "",
+            points: 1,
+            options: [
+              { id: "a", text: "" },
+              { id: "b", text: "" },
+              { id: "c", text: "" },
+              { id: "d", text: "" },
+            ],
+            correctAnswer: "",
+            explanation: "",
+          },
+        ],
       },
     },
   })
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "questions",
+    name: "content.questions",
   })
 
   const createQuizMutation = useMutation({
-    mutationFn: async (data: TQuiz) => {
-      // Calculate total duration and points
-      const totalDuration = data.questions.reduce(
-        (sum, question) => sum + parseInt(question.duration || "0"),
-        0
-      )
-      const totalPoints = data.questions.reduce(
-        (sum, question) => sum + parseInt(question.points || "0"),
-        0
-      )
-
-      const payload = {
-        ...data,
-        totalDuration,
-        totalPoints,
-        createdBy: session?.user?.id,
-      }
-
-      const response = await fetch("/api/quizzes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to create quiz")
-      }
-
-      return response.json()
-    },
+    mutationFn: addQuiz,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["quizzes"] })
-      // Navigate to quizzes list or show success message
     },
   })
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const result = reader.result as string
-        setImagePreview(result)
-        setValue("coverImage", result)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const steps = ["Quiz Details", "Questions", "Accessibility Settings"]
+  const steps = ["Quiz Details", "Questions", "Review"]
 
   const handleNext = () => {
     setActiveStep((prevStep) => prevStep + 1)
@@ -161,52 +104,48 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
   }
 
   const addQuestion = () => {
+    const newQuestionId = fields.length + 1
     append({
+      id: newQuestionId,
+      type: "multiple_choice",
       question: "",
-      questionImage: "",
-      duration: "30",
-      points: "1",
-      feedBack: "",
+      points: 1,
       options: [
-        { optionId: "1", option: "", isAnswer: "false" },
-        { optionId: "2", option: "", isAnswer: "false" },
+        { id: "a", text: "" },
+        { id: "b", text: "" },
+        { id: "c", text: "" },
+        { id: "d", text: "" },
       ],
-      // Removed interactionType
+      correctAnswer: "",
+      explanation: "",
     })
   }
 
   const addOption = (questionIndex: number) => {
-    const options = watch(`questions.${questionIndex}.options`)
-    const newOptionId = (options.length + 1).toString()
-    setValue(`questions.${questionIndex}.options`, [
+    const options = watch(`content.questions.${questionIndex}.options`)
+    const newOptionId = String.fromCharCode(97 + options.length)
+    setValue(`content.questions.${questionIndex}.options`, [
       ...options,
-      { optionId: newOptionId, option: "", isAnswer: "false" },
+      { id: newOptionId, text: "" },
     ])
   }
 
   const removeOption = (questionIndex: number, optionIndex: number) => {
-    const options = watch(`questions.${questionIndex}.options`)
+    const options = watch(`content.questions.${questionIndex}.options`)
     if (options.length > 2) {
       setValue(
-        `questions.${questionIndex}.options`,
+        `content.questions.${questionIndex}.options`,
         options.filter((_, index) => index !== optionIndex)
       )
     }
   }
 
-  const toggleCorrectAnswer = (questionIndex: number, optionIndex: number) => {
-    const options = watch(`questions.${questionIndex}.options`)
-    const updatedOptions = options.map((option, index) => ({
-      ...option,
-      isAnswer: index === optionIndex ? "true" : "false",
-    }))
-    setValue(`questions.${questionIndex}.options`, updatedOptions)
-  }
-
   const lessons: LessonDto[] = useMemo(() => {
     if (courseData) {
-      return courseData?.curriculum?.topic?.flatMap(
-        (c: { lessons: LessonDto[] }) => c?.lessons
+      return (
+        courseData?.curriculum?.topic?.flatMap(
+          (c: { lessons: LessonDto[] }) => c?.lessons
+        ) || []
       )
     } else return []
   }, [courseData])
@@ -237,97 +176,95 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
             <Box>
               <Grid container spacing={3}>
                 <Grid size={{ xs: 12 }}>
-                  <Select
-                    {...register("lessonId")}
-                    labelId="lesson-select-label"
-                    label="Select Lesson"
-                    disabled={!lessons}
-                    fullWidth
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          maxHeight: 300,
-                        },
-                      },
-                    }}
-                  >
-                    {!lessons ? (
-                      <MenuItem value="" disabled>
-                        Loading lessons...
-                      </MenuItem>
-                    ) : lessons.length === 0 ? (
-                      <MenuItem value="" disabled>
-                        No lessons available
-                      </MenuItem>
-                    ) : (
-                      lessons.map((lesson) => (
-                        <MenuItem key={lesson.id} value={lesson.id}>
-                          {lesson.title || `Lesson ${lesson.id}`}
-                        </MenuItem>
-                      ))
+                  <FormControl fullWidth error={!!errors.lessonId}>
+                    <InputLabel id="lesson-select-label">
+                      Select Lesson
+                    </InputLabel>
+                    <Controller
+                      name="lessonId"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          labelId="lesson-select-label"
+                          label="Select Lesson"
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 300,
+                              },
+                            },
+                          }}
+                        >
+                          {!lessons ? (
+                            <MenuItem value={0} disabled>
+                              Loading lessons...
+                            </MenuItem>
+                          ) : lessons.length === 0 ? (
+                            <MenuItem value={0} disabled>
+                              No lessons available
+                            </MenuItem>
+                          ) : (
+                            lessons.map((lesson) => (
+                              <MenuItem key={lesson.id} value={lesson.id}>
+                                {lesson.title || `Lesson ${lesson.id}`}
+                              </MenuItem>
+                            ))
+                          )}
+                        </Select>
+                      )}
+                    />
+                    {errors.lessonId && (
+                      <FormHelperText>{errors.lessonId.message}</FormHelperText>
                     )}
-                  </Select>
+                  </FormControl>
                 </Grid>
 
                 <Grid size={{ xs: 12 }}>
                   <TextField
                     fullWidth
-                    label="Quiz Name"
-                    {...register("quizName")}
-                    error={!!errors.quizName}
-                    helperText={errors.quizName?.message}
+                    label="Quiz Title"
+                    {...register("content.title")}
+                    error={!!errors.content?.title}
+                    helperText={errors.content?.title?.message}
                   />
                 </Grid>
 
-                <Grid size={{ xs: 12 }}>
-                  <TextField
-                    fullWidth
-                    label="Cover Title"
-                    {...register("coverTitle")}
-                    error={!!errors.coverTitle}
-                    helperText={errors.coverTitle?.message}
-                  />
-                </Grid>
                 <Grid size={{ xs: 12 }}>
                   <TextField
                     fullWidth
                     multiline
                     rows={4}
                     label="Description"
-                    {...register("description")}
-                    error={!!errors.description}
-                    helperText={errors.description?.message}
+                    {...register("content.description")}
+                    error={!!errors.content?.description}
+                    helperText={errors.content?.description?.message}
                   />
                 </Grid>
-                <Grid size={{ xs: 12 }}>
-                  <Box>
-                    <input
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      id="cover-image-upload"
-                      type="file"
-                      onChange={handleImageUpload}
-                    />
-                    <label htmlFor="cover-image-upload">
-                      <Button
-                        variant="outlined"
-                        component="span"
-                        startIcon={<CloudUploadIcon />}
-                      >
-                        Upload Cover Image
-                      </Button>
-                    </label>
-                    {imagePreview && (
-                      <Card sx={{ maxWidth: 345, mt: 2 }}>
-                        <CardMedia
-                          component="img"
-                          height="140"
-                          image={imagePreview}
-                          alt="Cover preview"
-                        />
-                      </Card>
-                    )}
-                  </Box>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    label="Time Limit (minutes)"
+                    {...register("content.timeLimit", { valueAsNumber: true })}
+                    error={!!errors.content?.timeLimit}
+                    helperText={errors.content?.timeLimit?.message}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    label="Passing Score (%)"
+                    {...register("content.passingScore", {
+                      valueAsNumber: true,
+                    })}
+                    error={!!errors.content?.passingScore}
+                    helperText={errors.content?.passingScore?.message}
+                    inputProps={{ min: 0, max: 100 }}
+                  />
                 </Grid>
               </Grid>
             </Box>
@@ -361,36 +298,56 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                       <TextField
                         fullWidth
                         label="Question"
-                        {...register(`questions.${questionIndex}.question`)}
-                        error={!!errors.questions?.[questionIndex]?.question}
+                        {...register(
+                          `content.questions.${questionIndex}.question`
+                        )}
+                        error={
+                          !!errors.content?.questions?.[questionIndex]?.question
+                        }
                         helperText={
-                          errors.questions?.[questionIndex]?.question?.message
+                          errors.content?.questions?.[questionIndex]?.question
+                            ?.message
                         }
                       />
                     </Grid>
-                    <Grid size={{ xs: 6 }}>
-                      <TextField
-                        fullWidth
-                        type="number"
-                        label="Duration (seconds)"
-                        {...register(`questions.${questionIndex}.duration`)}
-                      />
+
+                    <Grid size={{ xs: 12, sm: 6 }}>
+                      <FormControl fullWidth>
+                        <InputLabel>Question Type</InputLabel>
+                        <Controller
+                          name={`content.questions.${questionIndex}.type`}
+                          control={control}
+                          render={({ field }) => (
+                            <Select {...field} label="Question Type">
+                              <MenuItem value="multiple_choice">
+                                Multiple Choice
+                              </MenuItem>
+                              <MenuItem value="true_false">True/False</MenuItem>
+                              <MenuItem value="short_answer">
+                                Short Answer
+                              </MenuItem>
+                            </Select>
+                          )}
+                        />
+                      </FormControl>
                     </Grid>
-                    <Grid size={{ xs: 6 }}>
+
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         fullWidth
                         type="number"
                         label="Points"
-                        {...register(`questions.${questionIndex}.points`)}
-                      />
-                    </Grid>
-                    <Grid size={{ xs: 12 }}>
-                      <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Feedback"
-                        {...register(`questions.${questionIndex}.feedBack`)}
+                        {...register(
+                          `content.questions.${questionIndex}.points`,
+                          { valueAsNumber: true }
+                        )}
+                        error={
+                          !!errors.content?.questions?.[questionIndex]?.points
+                        }
+                        helperText={
+                          errors.content?.questions?.[questionIndex]?.points
+                            ?.message
+                        }
                       />
                     </Grid>
 
@@ -398,17 +355,11 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                       <Typography variant="subtitle1" gutterBottom>
                         Options
                       </Typography>
-                      <Typography
-                        sx={{ mb: 3 }}
-                        variant="subtitle2"
-                        gutterBottom
-                      >
-                        Select the correct answer from the options
-                      </Typography>
-                      {watch(`questions.${questionIndex}.options`).map(
+
+                      {watch(`content.questions.${questionIndex}.options`).map(
                         (option, optionIndex) => (
                           <Box
-                            key={option.optionId}
+                            key={option.id}
                             sx={{
                               mb: 2,
                               p: 2,
@@ -420,12 +371,16 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                               <Grid size={{ xs: 1 }}>
                                 <FormControlLabel
                                   control={
-                                    <Checkbox
-                                      checked={option.isAnswer === "true"}
+                                    <Radio
+                                      checked={
+                                        watch(
+                                          `content.questions.${questionIndex}.correctAnswer`
+                                        ) === option.id
+                                      }
                                       onChange={() =>
-                                        toggleCorrectAnswer(
-                                          questionIndex,
-                                          optionIndex
+                                        setValue(
+                                          `content.questions.${questionIndex}.correctAnswer`,
+                                          option.id
                                         )
                                       }
                                     />
@@ -436,9 +391,9 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                               <Grid size={{ xs: 9 }}>
                                 <TextField
                                   fullWidth
-                                  label={`Option ${optionIndex + 1}`}
+                                  label={`Option ${option.id.toUpperCase()}`}
                                   {...register(
-                                    `questions.${questionIndex}.options.${optionIndex}.option`
+                                    `content.questions.${questionIndex}.options.${optionIndex}.text`
                                   )}
                                 />
                               </Grid>
@@ -449,8 +404,9 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                                     removeOption(questionIndex, optionIndex)
                                   }
                                   disabled={
-                                    watch(`questions.${questionIndex}.options`)
-                                      .length <= 2
+                                    watch(
+                                      `content.questions.${questionIndex}.options`
+                                    ).length <= 2
                                   }
                                 >
                                   <DeleteIcon />
@@ -468,6 +424,18 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                       >
                         Add Option
                       </Button>
+                    </Grid>
+
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        fullWidth
+                        multiline
+                        rows={3}
+                        label="Explanation"
+                        {...register(
+                          `content.questions.${questionIndex}.explanation`
+                        )}
+                      />
                     </Grid>
                   </Grid>
                 </Paper>
@@ -487,114 +455,78 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
           {activeStep === 2 && (
             <Box>
               <Typography variant="h6" gutterBottom>
-                Accessibility Settings
+                Review Your Quiz
               </Typography>
-              <Grid container spacing={3}>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <Controller
-                    name="accessibility.review"
-                    control={control}
-                    render={({ field }) => (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                        }
-                        label="Show quiz feedback after each question"
-                      />
-                    )}
-                  />
+              <Paper sx={{ p: 3, mb: 3 }}>
+                <Typography variant="h6" gutterBottom>
+                  Quiz Details
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Title
+                    </Typography>
+                    <Typography variant="body1">
+                      {watch("content.title")}
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Lesson
+                    </Typography>
+                    <Typography variant="body1">
+                      {lessons.find(
+                        (l) => l.id?.toString() === String(watch("lessonId"))
+                      )?.title || "Not selected"}
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Time Limit
+                    </Typography>
+                    <Typography variant="body1">
+                      {watch("content.timeLimit")} minutes
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Passing Score
+                    </Typography>
+                    <Typography variant="body1">
+                      {watch("content.passingScore")}%
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <Typography variant="body2" color="text.secondary">
+                      Description
+                    </Typography>
+                    <Typography variant="body1">
+                      {watch("content.description")}
+                    </Typography>
+                  </Grid>
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <Controller
-                    name="accessibility.countdown"
-                    control={control}
-                    render={({ field }) => (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                        }
-                        label="Enable countdown timer"
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <Controller
-                    name="accessibility.countdownTransition"
-                    control={control}
-                    render={({ field }) => (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                            disabled={!watch("accessibility.countdown")}
-                          />
-                        }
-                        label="Show countdown transition animation"
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <Controller
-                    name="accessibility.showAnswer"
-                    control={control}
-                    render={({ field }) => (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                        }
-                        label="Show correct answer after each question"
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <Controller
-                    name="accessibility.showResult"
-                    control={control}
-                    render={({ field }) => (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={field.value}
-                            onChange={(e) => field.onChange(e.target.checked)}
-                          />
-                        }
-                        label="Show result summary at the end"
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <Controller
-                    name="accessibility.countDown"
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        fullWidth
-                        type="number"
-                        label="Countdown time (seconds)"
-                        value={field.value}
-                        onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
-                        }
-                        disabled={!watch("accessibility.countdown")}
-                      />
-                    )}
-                  />
-                </Grid>
-              </Grid>
+              </Paper>
+
+              <Paper sx={{ p: 3 }}>
+                <Typography variant="h6" gutterBottom>
+                  Questions ({fields.length})
+                </Typography>
+                {fields.map((question, index) => (
+                  <Box
+                    key={question.id}
+                    sx={{ mb: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}
+                  >
+                    <Typography variant="subtitle1">
+                      Q{index + 1}:{" "}
+                      {watch(`content.questions.${index}.question`)}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Points: {watch(`content.questions.${index}.points`)} |
+                      Type: {watch(`content.questions.${index}.type`)}
+                    </Typography>
+                  </Box>
+                ))}
+              </Paper>
             </Box>
           )}
 

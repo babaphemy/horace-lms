@@ -31,6 +31,7 @@ import {
   LessonProgress,
   VideoProgress,
 } from "@/components/classroom/VideoPlayerWithProgress"
+import { TQuiz } from "@/schema/quizSchema"
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
   return resp.json()
@@ -199,6 +200,14 @@ const myRegisteredCourses = async (userId: string) => {
     `${basePath}course/courses/my-registered/${userId}`,
     auth
   )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
+const addQuiz = async (data: TQuiz) => {
+  const response = await fetch(`${basePath}course/quiz/add`, PostSettings(data))
   if (!response.ok) {
     return { error: response.status }
   }
@@ -733,4 +742,5 @@ export {
   fetchOrganizationMembers,
   fetchUserOrganization,
   updateOrg,
+  addQuiz,
 }
