@@ -48,6 +48,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
     register,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<TQuiz>({
     resolver: zodResolver(quizSchema),
@@ -88,6 +89,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["quizzes"] })
       notifySuccess("Quiz created successfully!")
+      reset()
     },
     onError: () => {
       notifyError("Failed to create quiz. Please try again.")
