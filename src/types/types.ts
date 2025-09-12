@@ -606,3 +606,40 @@ export type TokenResponse = {
   success: boolean
   email: string
 }
+
+export interface CertificateData {
+  id: string
+  recipientName: string
+  recipientEmail: string
+  courseId: string
+  courseName: string
+  completionDate: string
+  finalScore?: number
+  certificateId: string
+  courseDuration: string
+  instructorName: string
+  instructorTitle: string
+  issuedDate: string
+  expirationDate?: string
+  verificationCode: string
+  organization: {
+    name: string
+    logo?: string
+    signature?: string
+  }
+}
+
+export interface CertificateVerification {
+  isValid: boolean
+  certificate?: CertificateData
+  issuedAt?: Date
+  verifiedAt: Date
+  error?: string
+}
+
+export interface EnrollmentStatus {
+  isEnrolled: boolean
+  isCompleted: boolean
+  completionDate?: string
+  progress?: number
+}

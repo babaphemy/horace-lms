@@ -9,6 +9,7 @@ import CourseHeader from "@/components/layout/CourseHeader"
 import PaymentModal from "@/components/payment/PaymentModal"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx, Appcontext } from "@/context/AppContext"
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium"
 import {
   CorporateAuthRequest,
   LessonDto,
@@ -365,6 +366,20 @@ const Detailb = () => {
                             <NoteAddRounded fontSize="small" />
                           </ListItemIcon>
                           <ListItemText primary={`${noteCount} Notes`} />
+                        </ListItem>
+                      )}
+
+                      {registered && (
+                        <ListItem
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            router.push(`/course/certificate/${courseId}`)
+                          }
+                        >
+                          <ListItemIcon>
+                            <WorkspacePremiumIcon fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText primary={`Get Certificate`} />
                         </ListItem>
                       )}
                     </List>
