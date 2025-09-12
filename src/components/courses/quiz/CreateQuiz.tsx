@@ -29,6 +29,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query"
 import { quizSchema, TQuiz } from "@/schema/quizSchema"
 import { addQuiz, fetchCourse } from "@/app/api/rest"
 import { LessonDto } from "@/types/types"
+import { notifyError, notifySuccess } from "@/utils/notification"
 
 const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -86,6 +87,10 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
     mutationFn: addQuiz,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["quizzes"] })
+      notifySuccess("Quiz created successfully!")
+    },
+    onError: () => {
+      notifyError("Failed to create quiz. Please try again.")
     },
   })
 
