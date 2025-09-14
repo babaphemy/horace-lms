@@ -31,6 +31,7 @@ import {
   LessonProgress,
   VideoProgress,
 } from "@/components/classroom/VideoPlayerWithProgress"
+import { TQuiz } from "@/schema/quizSchema"
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
   return resp.json()
@@ -197,6 +198,31 @@ const fetchLMS = async (id: string) => {
 const myRegisteredCourses = async (userId: string) => {
   const response = await fetch(
     `${basePath}course/courses/my-registered/${userId}`,
+    auth
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
+const addQuiz = async (data: TQuiz) => {
+  const response = await fetch(`${basePath}course/quiz/add`, PostSettings(data))
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const allQuiz = async (lessonId: string) => {
+  const response = await fetch(`${basePath}course/quiz/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const allCourseQuiz = async (courseId: string) => {
+  const response = await fetch(
+    `${basePath}course/quiz/bycourse/${courseId}`,
     auth
   )
   if (!response.ok) {
@@ -733,4 +759,7 @@ export {
   fetchOrganizationMembers,
   fetchUserOrganization,
   updateOrg,
+  addQuiz,
+  allQuiz,
+  allCourseQuiz,
 }

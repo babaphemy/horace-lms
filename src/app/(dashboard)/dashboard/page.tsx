@@ -45,7 +45,7 @@ import Image from "next/image"
 import React, { useMemo, useState, useRef } from "react"
 import { useQuery, useMutation, useQueryClient } from "react-query"
 import PlaceholderSVG from "@/components/lms/courseEditor/PlaceholderSvg"
-
+import QuizIcon from "@mui/icons-material/Quiz"
 const DashboardPage = () => {
   const router = useRouter()
   const { data: session } = useSession()
@@ -71,6 +71,15 @@ const DashboardPage = () => {
     switch (type) {
       case "edit":
         router.push(`/dashboard/courses/${selectedCourseId}`)
+        break
+      case "quiz":
+        router.push(`/dashboard/courses/${selectedCourseId}/quizzes/add`)
+        break
+      case "quizlist":
+        router.push(`/dashboard/courses/${selectedCourseId}/quizzes`)
+        break
+      case "analytics":
+        router.push(`/dashboard/courses/${selectedCourseId}/analytics`)
         break
       case "thumbnail":
         handleThumbnailUpload()
@@ -367,6 +376,14 @@ const DashboardPage = () => {
                     <MenuItem onClick={() => handleMenuClose("thumbnail")}>
                       <PhotoCamera sx={{ mr: 1, fontSize: 18 }} />
                       Change Thumbnail
+                    </MenuItem>
+                    <MenuItem onClick={() => handleMenuClose("quiz")}>
+                      <QuizIcon sx={{ mr: 1, fontSize: 18 }} />
+                      Add Quiz
+                    </MenuItem>
+                    <MenuItem onClick={() => handleMenuClose("quizlist")}>
+                      <Assignment sx={{ mr: 1, fontSize: 18 }} />
+                      Quiz List
                     </MenuItem>
                     <MenuItem onClick={() => handleMenuClose("analytics")}>
                       <Analytics sx={{ mr: 1, fontSize: 18 }} />
