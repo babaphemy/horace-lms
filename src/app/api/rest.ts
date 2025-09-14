@@ -208,9 +208,32 @@ const myRegisteredCourses = async (userId: string) => {
 
 const addQuiz = async (data: TQuiz) => {
   const response = await fetch(`${basePath}course/quiz/add`, PostSettings(data))
+
   if (!response.ok) {
-    return { error: response.status }
+    let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+
+    try {
+      const errorData = await response.text()
+      const errorJson = JSON.parse(errorData)
+      if (
+        errorJson.message &&
+        errorJson.message.includes("E11000 duplicate key error")
+      ) {
+        if (errorJson.message.includes("lessonId")) {
+          errorMessage =
+            "A quiz already exists for this lesson. Please select a different lesson or delete the existing quiz first."
+        } else {
+          errorMessage =
+            "A quiz with these details already exists. Please modify your quiz details."
+        }
+      } else if (errorJson.message) {
+        errorMessage = errorJson.message
+      }
+    } catch {}
+
+    throw new Error(errorMessage)
   }
+
   return response.json()
 }
 const allQuiz = async (lessonId: string) => {

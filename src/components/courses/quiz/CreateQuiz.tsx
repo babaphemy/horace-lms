@@ -202,6 +202,17 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
         { id: "c", text: "" },
         { id: "d", text: "" },
       ])
+    } else if (newType === "short_answer") {
+      setValue(`content.questions.${questionIndex}.options`, [
+        {
+          id: "a",
+          text: "NA",
+        },
+        {
+          id: "b",
+          text: "NA",
+        },
+      ])
     }
   }
 
