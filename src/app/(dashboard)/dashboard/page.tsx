@@ -75,6 +75,12 @@ const DashboardPage = () => {
       case "quiz":
         router.push(`/dashboard/courses/${selectedCourseId}/quizzes/add`)
         break
+      case "quizlist":
+        router.push(`/dashboard/courses/${selectedCourseId}/quizzes`)
+        break
+      case "analytics":
+        router.push(`/dashboard/courses/${selectedCourseId}/analytics`)
+        break
       case "thumbnail":
         handleThumbnailUpload()
         break
@@ -374,6 +380,10 @@ const DashboardPage = () => {
                     <MenuItem onClick={() => handleMenuClose("quiz")}>
                       <QuizIcon sx={{ mr: 1, fontSize: 18 }} />
                       Add Quiz
+                    </MenuItem>
+                    <MenuItem onClick={() => handleMenuClose("quizlist")}>
+                      <Assignment sx={{ mr: 1, fontSize: 18 }} />
+                      Quiz List
                     </MenuItem>
                     <MenuItem onClick={() => handleMenuClose("analytics")}>
                       <Analytics sx={{ mr: 1, fontSize: 18 }} />

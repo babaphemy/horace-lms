@@ -23,8 +23,13 @@ import {
   InputLabel,
   FormHelperText,
   Radio,
+  RadioGroup,
 } from "@mui/material"
-import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material"
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Error as ErrorIcon,
+} from "@mui/icons-material"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { quizSchema, TQuiz } from "@/schema/quizSchema"
 import { addQuiz, fetchCourse } from "@/app/api/rest"
@@ -49,7 +54,8 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
     watch,
     setValue,
     reset,
-    formState: { errors },
+    trigger,
+    formState: { errors, isSubmitting },
   } = useForm<TQuiz>({
     resolver: zodResolver(quizSchema),
     defaultValues: {
@@ -90,24 +96,45 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["quizzes"] })
       notifySuccess("Quiz created successfully!")
       reset()
+      setActiveStep(0)
     },
-    onError: () => {
-      notifyError("Failed to create quiz. Please try again.")
+    onError: (error: Error) => {
+      notifyError(error?.message || "Failed to create quiz. Please try again.")
     },
   })
 
   const steps = ["Quiz Details", "Questions", "Review"]
 
-  const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1)
+  const handleNext = async () => {
+    let isValid = true
+
+    if (activeStep === 0) {
+      isValid = await trigger([
+        "lessonId",
+        "content.title",
+        "content.description",
+        "content.timeLimit",
+        "content.passingScore",
+      ])
+    } else if (activeStep === 1) {
+      isValid = await trigger("content.questions")
+    }
+
+    if (isValid) {
+      setActiveStep((prevStep) => prevStep + 1)
+    }
   }
 
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1)
   }
 
-  const onSubmit = (data: TQuiz) => {
-    createQuizMutation.mutate(data)
+  const onSubmit = async (data: TQuiz) => {
+    try {
+      await createQuizMutation.mutateAsync(data)
+    } catch {
+      notifyError("Submission error:")
+    }
   }
 
   const addQuestion = () => {
@@ -140,10 +167,41 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
   const removeOption = (questionIndex: number, optionIndex: number) => {
     const options = watch(`content.questions.${questionIndex}.options`)
     if (options.length > 2) {
+      const currentCorrectAnswer = watch(
+        `content.questions.${questionIndex}.correctAnswer`
+      )
+      const removedOption = options[optionIndex]
+
+      if (currentCorrectAnswer === removedOption.id) {
+        setValue(`content.questions.${questionIndex}.correctAnswer`, "")
+      }
+
       setValue(
         `content.questions.${questionIndex}.options`,
         options.filter((_, index) => index !== optionIndex)
       )
+    }
+  }
+
+  const handleQuestionTypeChange = (
+    questionIndex: number,
+    newType: "multiple_choice" | "true_false" | "short_answer"
+  ) => {
+    setValue(`content.questions.${questionIndex}.type`, newType)
+    setValue(`content.questions.${questionIndex}.correctAnswer`, "")
+
+    if (newType === "true_false") {
+      setValue(`content.questions.${questionIndex}.options`, [
+        { id: "true", text: "True" },
+        { id: "false", text: "False" },
+      ])
+    } else if (newType === "multiple_choice") {
+      setValue(`content.questions.${questionIndex}.options`, [
+        { id: "a", text: "" },
+        { id: "b", text: "" },
+        { id: "c", text: "" },
+        { id: "d", text: "" },
+      ])
     }
   }
 
@@ -156,6 +214,108 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
       )
     } else return []
   }, [courseData])
+
+  const renderFormErrors = () => {
+    const hasErrors = Object.keys(errors).length > 0
+    if (!hasErrors) return null
+
+    return (
+      <Alert severity="error" icon={<ErrorIcon />} sx={{ mb: 3 }}>
+        <Typography variant="subtitle2" gutterBottom>
+          Please fix the following errors:
+        </Typography>
+        <Box component="ul" sx={{ margin: 0, paddingLeft: 2 }}>
+          {errors.lessonId && <li>Please select a lesson</li>}
+          {errors.content?.title && <li>Quiz title is required</li>}
+          {errors.content?.description && <li>Quiz description is required</li>}
+          {errors.content?.timeLimit && <li>Valid time limit is required</li>}
+          {errors.content?.passingScore && (
+            <li>Valid passing score is required (0-100%)</li>
+          )}
+          {errors.content?.questions && (
+            <li>Please fix question errors below</li>
+          )}
+        </Box>
+      </Alert>
+    )
+  }
+
+  const renderCorrectAnswerField = (
+    questionIndex: number,
+    questionType: string
+  ) => {
+    const hasCorrectAnswerError =
+      !!errors.content?.questions?.[questionIndex]?.correctAnswer
+
+    if (questionType === "short_answer") {
+      return (
+        <Grid size={{ xs: 12 }}>
+          <TextField
+            fullWidth
+            label="Correct Answer"
+            {...register(`content.questions.${questionIndex}.correctAnswer`)}
+            error={hasCorrectAnswerError}
+            helperText={
+              hasCorrectAnswerError
+                ? errors.content?.questions?.[questionIndex]?.correctAnswer
+                    ?.message
+                : "Provide the expected answer for this short answer question"
+            }
+          />
+        </Grid>
+      )
+    }
+
+    return (
+      <Grid size={{ xs: 12 }}>
+        <FormControl
+          component="fieldset"
+          error={hasCorrectAnswerError}
+          fullWidth
+        >
+          <Typography
+            variant="subtitle2"
+            gutterBottom
+            sx={{
+              color: hasCorrectAnswerError ? "error.main" : "text.primary",
+            }}
+          >
+            Correct Answer *
+          </Typography>
+          <Controller
+            name={`content.questions.${questionIndex}.correctAnswer`}
+            control={control}
+            render={({ field }) => (
+              <RadioGroup {...field} row>
+                {watch(`content.questions.${questionIndex}.options`).map(
+                  (option) => (
+                    <FormControlLabel
+                      key={option.id}
+                      value={option.id}
+                      control={<Radio />}
+                      label={
+                        questionType === "true_false"
+                          ? option.text
+                          : `Option ${option.id.toUpperCase()}${option.text ? ` - ${option.text}` : ""}`
+                      }
+                    />
+                  )
+                )}
+              </RadioGroup>
+            )}
+          />
+          {hasCorrectAnswerError && (
+            <FormHelperText>
+              {
+                errors.content?.questions?.[questionIndex]?.correctAnswer
+                  ?.message
+              }
+            </FormHelperText>
+          )}
+        </FormControl>
+      </Grid>
+    )
+  }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -172,6 +332,8 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
           ))}
         </Stepper>
 
+        {renderFormErrors()}
+
         {createQuizMutation.isError && (
           <Alert severity="error" sx={{ mb: 2 }}>
             Failed to create quiz. Please try again.
@@ -185,7 +347,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                 <Grid size={{ xs: 12 }}>
                   <FormControl fullWidth error={!!errors.lessonId}>
                     <InputLabel id="lesson-select-label">
-                      Select Lesson
+                      Select Lesson *
                     </InputLabel>
                     <Controller
                       name="lessonId"
@@ -194,7 +356,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                         <Select
                           {...field}
                           labelId="lesson-select-label"
-                          label="Select Lesson"
+                          label="Select Lesson *"
                           MenuProps={{
                             PaperProps: {
                               style: {
@@ -204,11 +366,11 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                           }}
                         >
                           {!lessons ? (
-                            <MenuItem value={0} disabled>
+                            <MenuItem value="" disabled>
                               Loading lessons...
                             </MenuItem>
                           ) : lessons.length === 0 ? (
-                            <MenuItem value={0} disabled>
+                            <MenuItem value="" disabled>
                               No lessons available
                             </MenuItem>
                           ) : (
@@ -230,7 +392,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                 <Grid size={{ xs: 12 }}>
                   <TextField
                     fullWidth
-                    label="Quiz Title"
+                    label="Quiz Title *"
                     {...register("content.title")}
                     error={!!errors.content?.title}
                     helperText={errors.content?.title?.message}
@@ -242,7 +404,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                     fullWidth
                     multiline
                     rows={4}
-                    label="Description"
+                    label="Description *"
                     {...register("content.description")}
                     error={!!errors.content?.description}
                     helperText={errors.content?.description?.message}
@@ -253,10 +415,11 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                   <TextField
                     fullWidth
                     type="number"
-                    label="Time Limit (minutes)"
+                    label="Time Limit (minutes) *"
                     {...register("content.timeLimit", { valueAsNumber: true })}
                     error={!!errors.content?.timeLimit}
                     helperText={errors.content?.timeLimit?.message}
+                    inputProps={{ min: 1, max: 180 }}
                   />
                 </Grid>
 
@@ -264,7 +427,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                   <TextField
                     fullWidth
                     type="number"
-                    label="Passing Score (%)"
+                    label="Passing Score (%) *"
                     {...register("content.passingScore", {
                       valueAsNumber: true,
                     })}
@@ -279,174 +442,210 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
 
           {activeStep === 1 && (
             <Box>
-              {fields.map((question, questionIndex) => (
-                <Paper key={question.id} sx={{ p: 3, mb: 3 }}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    mb={2}
+              {fields.map((question, questionIndex) => {
+                const questionType = watch(
+                  `content.questions.${questionIndex}.type`
+                )
+                const questionErrors =
+                  errors.content?.questions?.[questionIndex]
+                const hasQuestionErrors = !!questionErrors
+
+                return (
+                  <Paper
+                    key={question.id}
+                    sx={{
+                      p: 3,
+                      mb: 3,
+                      border: hasQuestionErrors ? "2px solid" : "1px solid",
+                      borderColor: hasQuestionErrors ? "error.main" : "divider",
+                    }}
                   >
-                    <Typography variant="h6">
-                      Question {questionIndex + 1}
-                    </Typography>
-                    {fields.length > 1 && (
-                      <IconButton
-                        color="error"
-                        onClick={() => remove(questionIndex)}
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb={2}
+                    >
+                      <Typography
+                        variant="h6"
+                        color={
+                          hasQuestionErrors ? "error.main" : "text.primary"
+                        }
                       >
-                        <DeleteIcon />
-                      </IconButton>
-                    )}
-                  </Box>
-
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 12 }}>
-                      <TextField
-                        fullWidth
-                        label="Question"
-                        {...register(
-                          `content.questions.${questionIndex}.question`
+                        Question {questionIndex + 1}
+                        {hasQuestionErrors && (
+                          <ErrorIcon sx={{ ml: 1, fontSize: "1.2em" }} />
                         )}
-                        error={
-                          !!errors.content?.questions?.[questionIndex]?.question
-                        }
-                        helperText={
-                          errors.content?.questions?.[questionIndex]?.question
-                            ?.message
-                        }
-                      />
-                    </Grid>
+                      </Typography>
+                      {fields.length > 1 && (
+                        <IconButton
+                          color="error"
+                          onClick={() => remove(questionIndex)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
+                    </Box>
 
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <FormControl fullWidth>
-                        <InputLabel>Question Type</InputLabel>
-                        <Controller
-                          name={`content.questions.${questionIndex}.type`}
-                          control={control}
-                          render={({ field }) => (
-                            <Select {...field} label="Question Type">
-                              <MenuItem value="multiple_choice">
-                                Multiple Choice
-                              </MenuItem>
-                              <MenuItem value="true_false">True/False</MenuItem>
-                              <MenuItem value="short_answer">
-                                Short Answer
-                              </MenuItem>
-                            </Select>
+                    <Grid container spacing={2}>
+                      <Grid size={{ xs: 12 }}>
+                        <TextField
+                          fullWidth
+                          label="Question *"
+                          {...register(
+                            `content.questions.${questionIndex}.question`
+                          )}
+                          error={!!questionErrors?.question}
+                          helperText={questionErrors?.question?.message}
+                        />
+                      </Grid>
+
+                      <Grid size={{ xs: 12, sm: 6 }}>
+                        <FormControl fullWidth error={!!questionErrors?.type}>
+                          <InputLabel>Question Type *</InputLabel>
+                          <Controller
+                            name={`content.questions.${questionIndex}.type`}
+                            control={control}
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                label="Question Type *"
+                                onChange={(e) => {
+                                  field.onChange(e)
+                                  handleQuestionTypeChange(
+                                    questionIndex,
+                                    e.target.value
+                                  )
+                                }}
+                              >
+                                <MenuItem value="multiple_choice">
+                                  Multiple Choice
+                                </MenuItem>
+                                <MenuItem value="true_false">
+                                  True/False
+                                </MenuItem>
+                                <MenuItem value="short_answer">
+                                  Short Answer
+                                </MenuItem>
+                              </Select>
+                            )}
+                          />
+                          {questionErrors?.type && (
+                            <FormHelperText>
+                              {typeof questionErrors?.type === "object" &&
+                              "message" in questionErrors.type
+                                ? (questionErrors.type as { message?: string })
+                                    .message
+                                : null}
+                            </FormHelperText>
+                          )}
+                        </FormControl>
+                      </Grid>
+
+                      <Grid size={{ xs: 12, sm: 6 }}>
+                        <TextField
+                          fullWidth
+                          type="number"
+                          label="Points *"
+                          {...register(
+                            `content.questions.${questionIndex}.points`,
+                            { valueAsNumber: true }
+                          )}
+                          error={!!questionErrors?.points}
+                          helperText={questionErrors?.points?.message}
+                          inputProps={{ min: 1, max: 10 }}
+                        />
+                      </Grid>
+
+                      {questionType !== "short_answer" && (
+                        <Grid size={{ xs: 12 }}>
+                          <Typography variant="subtitle1" gutterBottom>
+                            Options
+                          </Typography>
+
+                          {watch(
+                            `content.questions.${questionIndex}.options`
+                          ).map((option, optionIndex) => (
+                            <Box
+                              key={option.id}
+                              sx={{
+                                mb: 2,
+                                p: 2,
+                                border: "1px solid #eee",
+                                borderRadius: 1,
+                              }}
+                            >
+                              <Grid container spacing={2} alignItems="center">
+                                <Grid size={{ xs: 10 }}>
+                                  <TextField
+                                    fullWidth
+                                    label={`Option ${option.id.toUpperCase()}`}
+                                    {...register(
+                                      `content.questions.${questionIndex}.options.${optionIndex}.text`
+                                    )}
+                                    disabled={questionType === "true_false"}
+                                    error={
+                                      !!questionErrors?.options?.[optionIndex]
+                                        ?.text
+                                    }
+                                    helperText={
+                                      questionErrors?.options?.[optionIndex]
+                                        ?.text?.message
+                                    }
+                                  />
+                                </Grid>
+                                <Grid size={{ xs: 2 }}>
+                                  {questionType !== "true_false" && (
+                                    <IconButton
+                                      color="error"
+                                      onClick={() =>
+                                        removeOption(questionIndex, optionIndex)
+                                      }
+                                      disabled={
+                                        watch(
+                                          `content.questions.${questionIndex}.options`
+                                        ).length <= 2
+                                      }
+                                    >
+                                      <DeleteIcon />
+                                    </IconButton>
+                                  )}
+                                </Grid>
+                              </Grid>
+                            </Box>
+                          ))}
+
+                          {questionType === "multiple_choice" && (
+                            <Button
+                              variant="outlined"
+                              startIcon={<AddIcon />}
+                              onClick={() => addOption(questionIndex)}
+                              sx={{ mt: 1 }}
+                            >
+                              Add Option
+                            </Button>
+                          )}
+                        </Grid>
+                      )}
+
+                      {renderCorrectAnswerField(questionIndex, questionType)}
+
+                      <Grid size={{ xs: 12 }}>
+                        <TextField
+                          fullWidth
+                          multiline
+                          rows={3}
+                          placeholder="Provide further explanation for the question (optional)"
+                          label="Explanation"
+                          {...register(
+                            `content.questions.${questionIndex}.explanation`
                           )}
                         />
-                      </FormControl>
+                      </Grid>
                     </Grid>
-
-                    <Grid size={{ xs: 12, sm: 6 }}>
-                      <TextField
-                        fullWidth
-                        type="number"
-                        label="Points"
-                        {...register(
-                          `content.questions.${questionIndex}.points`,
-                          { valueAsNumber: true }
-                        )}
-                        error={
-                          !!errors.content?.questions?.[questionIndex]?.points
-                        }
-                        helperText={
-                          errors.content?.questions?.[questionIndex]?.points
-                            ?.message
-                        }
-                      />
-                    </Grid>
-
-                    <Grid size={{ xs: 12 }}>
-                      <Typography variant="subtitle1" gutterBottom>
-                        Options
-                      </Typography>
-
-                      {watch(`content.questions.${questionIndex}.options`).map(
-                        (option, optionIndex) => (
-                          <Box
-                            key={option.id}
-                            sx={{
-                              mb: 2,
-                              p: 2,
-                              border: "1px solid #eee",
-                              borderRadius: 1,
-                            }}
-                          >
-                            <Grid container spacing={2} alignItems="center">
-                              <Grid size={{ xs: 1 }}>
-                                <FormControlLabel
-                                  control={
-                                    <Radio
-                                      checked={
-                                        watch(
-                                          `content.questions.${questionIndex}.correctAnswer`
-                                        ) === option.id
-                                      }
-                                      onChange={() =>
-                                        setValue(
-                                          `content.questions.${questionIndex}.correctAnswer`,
-                                          option.id
-                                        )
-                                      }
-                                    />
-                                  }
-                                  label=""
-                                />
-                              </Grid>
-                              <Grid size={{ xs: 9 }}>
-                                <TextField
-                                  fullWidth
-                                  label={`Option ${option.id.toUpperCase()}`}
-                                  {...register(
-                                    `content.questions.${questionIndex}.options.${optionIndex}.text`
-                                  )}
-                                />
-                              </Grid>
-                              <Grid size={{ xs: 2 }}>
-                                <IconButton
-                                  color="error"
-                                  onClick={() =>
-                                    removeOption(questionIndex, optionIndex)
-                                  }
-                                  disabled={
-                                    watch(
-                                      `content.questions.${questionIndex}.options`
-                                    ).length <= 2
-                                  }
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Grid>
-                            </Grid>
-                          </Box>
-                        )
-                      )}
-                      <Button
-                        variant="outlined"
-                        startIcon={<AddIcon />}
-                        onClick={() => addOption(questionIndex)}
-                        sx={{ mt: 1 }}
-                      >
-                        Add Option
-                      </Button>
-                    </Grid>
-
-                    <Grid size={{ xs: 12 }}>
-                      <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Explanation"
-                        {...register(
-                          `content.questions.${questionIndex}.explanation`
-                        )}
-                      />
-                    </Grid>
-                  </Grid>
-                </Paper>
-              ))}
+                  </Paper>
+                )
+              })}
 
               <Button
                 variant="contained"
@@ -529,7 +728,9 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Points: {watch(`content.questions.${index}.points`)} |
-                      Type: {watch(`content.questions.${index}.type`)}
+                      Type: {watch(`content.questions.${index}.type`)} | Correct
+                      Answer:{" "}
+                      {watch(`content.questions.${index}.correctAnswer`)}
                     </Typography>
                   </Box>
                 ))}
@@ -550,9 +751,11 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
               <Button
                 type="submit"
                 variant="contained"
-                disabled={createQuizMutation.isLoading}
+                disabled={isSubmitting || createQuizMutation.isLoading}
               >
-                {createQuizMutation.isLoading ? "Creating..." : "Create Quiz"}
+                {isSubmitting || createQuizMutation.isLoading
+                  ? "Creating..."
+                  : "Create Quiz"}
               </Button>
             )}
           </Box>

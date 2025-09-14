@@ -213,6 +213,23 @@ const addQuiz = async (data: TQuiz) => {
   }
   return response.json()
 }
+const allQuiz = async (lessonId: string) => {
+  const response = await fetch(`${basePath}course/quiz/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const allCourseQuiz = async (courseId: string) => {
+  const response = await fetch(
+    `${basePath}course/quiz/bycourse/${courseId}`,
+    auth
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
 const isRegistered = async (userId: string, courseId: string) => {
   const response = await fetch(
     `${basePath}reg/isreg/${userId}/${courseId}`,
@@ -743,4 +760,6 @@ export {
   fetchUserOrganization,
   updateOrg,
   addQuiz,
+  allQuiz,
+  allCourseQuiz,
 }

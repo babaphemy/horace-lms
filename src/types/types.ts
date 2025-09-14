@@ -82,11 +82,37 @@ export type tLoginUser = {
   email: string
   password: string | number
 }
-export type tQuiz = {
-  id: number
+export type QuizOption = {
+  id: string
+  text: string
+}
+
+export type QuizQuestionType = "short_answer" | "multiple_choice" | "true_false"
+
+export type QuizQuestion = {
+  id: number | string
+  type: QuizQuestionType
+  question: string
+  points: number
+  options: QuizOption[]
+  correctAnswer: string
+  explanation: string
+}
+
+export type QuizContent = {
   title: string
-  options: [string]
-  answer: string
+  description: string
+  timeLimit: number
+  passingScore: number
+  questions: QuizQuestion[]
+}
+
+export type Quiz = {
+  id: string
+  lessonId: string
+  content: QuizContent
+  createdOn: string
+  modifiedOn: string
 }
 export type tLecture = {
   id?: number
