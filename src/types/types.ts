@@ -110,6 +110,11 @@ export type QuizContent = {
 export type Quiz = {
   id: string
   lessonId: string
+  title?: string
+  description?: string
+  timeLimit?: number
+  passingScore?: number
+  questionsCount?: number
   content: QuizContent
   createdOn: string
   modifiedOn: string

@@ -174,16 +174,16 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
                 >
                   <CardContent sx={{ flexGrow: 1, p: 3 }}>
                     <Typography variant="h6" component="h2" gutterBottom noWrap>
-                      {quiz.content.title}
+                      {quiz.title}
                     </Typography>
 
                     <Typography
                       variant="body2"
                       sx={{ mb: 2, height: 40, overflow: "hidden" }}
                     >
-                      {quiz?.content?.description?.length > 100
-                        ? `${quiz.content?.description.substring(0, 100)}...`
-                        : quiz.content?.description}
+                      {quiz?.description && quiz.description.length > 100
+                        ? `${quiz.description.substring(0, 100)}...`
+                        : quiz?.description}
                     </Typography>
 
                     <Box
@@ -191,20 +191,20 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
                     >
                       <Chip
                         icon={<AccessTimeIcon />}
-                        label={formatDuration(quiz.content.timeLimit)}
+                        label={formatDuration(quiz?.timeLimit || 0)}
                         size="small"
                         variant="outlined"
                         color="primary"
                       />
                       <Chip
                         icon={<EmojiEventsIcon />}
-                        label={`${quiz.content.passingScore} pts`}
+                        label={`${quiz?.passingScore} pts`}
                         size="small"
                         variant="outlined"
                         color="secondary"
                       />
                       <Chip
-                        label={`${quiz.content.questions.length} Qs`}
+                        label={`${quiz.questionsCount} Qs`}
                         size="small"
                         variant="outlined"
                       />
