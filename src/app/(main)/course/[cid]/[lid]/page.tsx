@@ -101,6 +101,11 @@ const QuizPage = () => {
     setCurrentQuestionIndex(index)
   }
 
+  const totalPoints = quizData?.content?.questions?.reduce(
+    (sum: number, q: QuizQuestion) => sum + q.points,
+    0
+  )
+
   const submitQuizScore = useCallback(
     async (answers: UserAnswer[]) => {
       try {
@@ -198,10 +203,6 @@ const QuizPage = () => {
   const lessonProgress =
     ((currentQuestionIndex + 1) / quizData?.content?.questions?.length) * 100
 
-  const totalPoints = quizData?.content?.questions?.reduce(
-    (sum: number, q: QuizQuestion) => sum + q.points,
-    0
-  )
   const earnedPoints = userAnswers.reduce((sum: number, ua) => {
     const question = quizData?.content?.questions?.find(
       (q: QuizQuestion) => q.id === ua.questionId
