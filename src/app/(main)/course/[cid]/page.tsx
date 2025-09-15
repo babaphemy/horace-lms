@@ -1,5 +1,10 @@
 "use client"
-import { addUserCourse, courseGrantAccess } from "@/app/api/rest"
+import {
+  addUserCourse,
+  courseGrantAccess,
+  getUserProgress,
+  userQuizScores,
+} from "@/app/api/rest"
 import SimilarCard from "@/components/SimilarCard"
 import ModalLogin from "@/components/auth/ModalLogin"
 import SignUpLogin from "@/components/auth/ModalSignUp"
@@ -9,12 +14,17 @@ import CourseHeader from "@/components/layout/CourseHeader"
 import PaymentModal from "@/components/payment/PaymentModal"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx, Appcontext } from "@/context/AppContext"
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium"
 import {
   CorporateAuthRequest,
+  CourseResponse,
   LessonDto,
+  ProgressData,
+  Quiz,
   tCourseLte,
   TopicDto,
   tPost,
+  TUserScore,
 } from "@/types/types"
 import {
   Code,
@@ -41,14 +51,91 @@ import {
 } from "@mui/material"
 import Fuse from "fuse.js"
 import ReactPlayer from "react-player"
-import React, { useEffect } from "react"
-import { useMutation, useQueryClient } from "react-query"
+import React, { useEffect, useMemo } from "react"
+import { useMutation, useQueryClient, useQuery } from "react-query"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { notifyError, notifySuccess, notifyWarn } from "@/utils/notification"
 import Curriculum from "@/components/courses/Curriculum"
 import { useSession } from "next-auth/react"
 import useCourse from "@/hooks/useCourse"
 import useQuizSummary from "@/hooks/useQuizSummary"
+
+interface CertificateEligibilityProps {
+  registered: boolean
+  userScores: TUserScore[] | null | undefined
+  courseQuiz: Quiz[] | null | undefined
+  data: CourseResponse
+  progress: ProgressData[] | null | undefined
+}
+const checkCertificateEligibility = ({
+  registered,
+  userScores,
+  courseQuiz,
+  data,
+  progress,
+}: CertificateEligibilityProps): boolean => {
+  //? If user is not registered, they can't get a certificate
+  if (!registered) return false
+
+  //? If any required data is missing, they can't get a certificate
+  if (!userScores || !courseQuiz || !data || !progress) {
+    return false
+  }
+
+  try {
+    const lessons =
+      data?.curriculum?.topic?.flatMap(
+        (topic) => topic.lessons as LessonDto[]
+      ) || []
+
+    const quizzes = courseQuiz as Quiz[]
+
+    //? All lessons must be completed (100% progress)
+    const allLessonsCompleted = lessons.every((lesson: LessonDto) => {
+      const lessonProgress = progress.find(
+        (p: ProgressData) => p.lessonId === lesson.id
+      )
+      return lessonProgress && lessonProgress.completionPercentage === 100
+    })
+
+    if (!allLessonsCompleted) {
+      return false
+    }
+
+    //? All quizzes must be attempted
+    const allQuizzesPassed = quizzes.every((quiz: Quiz) => {
+      const quizScore = userScores.find(
+        (score) => String(score.quizId) === String(quiz.id)
+      )
+
+      return quizScore
+    })
+
+    if (!allQuizzesPassed) {
+      return false
+    }
+
+    //? Verify that all quizzes meet the passing score requirement
+    const quizzesMeetRequirements = quizzes.every((quiz: Quiz) => {
+      const quizScore = userScores.find(
+        (score) => String(score.quizId) === String(quiz.id)
+      )
+
+      if (!quizScore) return false
+
+      const score = quizScore.score
+
+      return score >= (quiz.passingScore || quiz.content.passingScore || 70)
+    })
+
+    if (!quizzesMeetRequirements) {
+      return false
+    }
+    return true
+  } catch {
+    return false
+  }
+}
 
 const Detailb = () => {
   const { courses } = React.useContext(Appcontext)
@@ -75,6 +162,18 @@ const Detailb = () => {
   const router = useRouter()
   const userId = decodedUid || sessionUser?.id || null
 
+  const { data: userScores } = useQuery({
+    queryFn: () => userQuizScores(userId as string),
+    queryKey: ["userQuizScores", userId],
+    enabled: !!userId,
+  })
+
+  const { data: progress } = useQuery({
+    queryKey: ["progress", userId],
+    queryFn: () => getUserProgress(userId ?? ""),
+    enabled: !!userId,
+  })
+
   useEffect(() => {
     if (status !== "loading" && !userId) {
       notifyWarn("You need to log in to access this course.")
@@ -98,6 +197,18 @@ const Detailb = () => {
     assetCount,
     registered,
   } = data || {}
+
+  const canGetCeritificate = useMemo(() => {
+    if (userScores && courseQuiz && data && progress) {
+      return checkCertificateEligibility({
+        registered,
+        userScores,
+        courseQuiz,
+        data,
+        progress: progress?.progress,
+      })
+    } else return false
+  }, [userScores, courseQuiz, data, progress, registered])
 
   useEffect(() => {
     const fuse = new Fuse(courses, {
@@ -359,6 +470,20 @@ const Detailb = () => {
                             <NoteAddRounded fontSize="small" />
                           </ListItemIcon>
                           <ListItemText primary={`${noteCount} Notes`} />
+                        </ListItem>
+                      )}
+
+                      {canGetCeritificate && (
+                        <ListItem
+                          style={{ cursor: "pointer" }}
+                          onClick={() =>
+                            router.push(`/course/certificate/${courseId}`)
+                          }
+                        >
+                          <ListItemIcon>
+                            <WorkspacePremiumIcon fontSize="small" />
+                          </ListItemIcon>
+                          <ListItemText primary={`Get Certificate`} />
                         </ListItem>
                       )}
                     </List>
