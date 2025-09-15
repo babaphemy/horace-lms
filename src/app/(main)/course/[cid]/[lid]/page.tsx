@@ -111,10 +111,7 @@ const QuizPage = () => {
           return sum + (ua.isCorrect && question ? question.points : 0)
         }, 0)
 
-        const totalPoints = quizData?.content?.questions?.reduce(
-          (sum: number, q: QuizQuestion) => sum + q.points,
-          0
-        )
+        const passingScore = quizData?.content?.passingScore
 
         const scorePercentage =
           totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0
@@ -122,7 +119,7 @@ const QuizPage = () => {
         await addScore({
           userId: session?.user?.id ?? "",
           score: scorePercentage,
-          maxScore: totalPoints,
+          maxScore: passingScore,
           timeTaken,
           quizId: quizData.id,
         })
@@ -130,7 +127,7 @@ const QuizPage = () => {
         throw error
       }
     },
-    [quizData, session, timeRemaining]
+    [quizData, session, timeRemaining, totalPoints]
   )
 
   const calculateResults = useCallback(() => {
