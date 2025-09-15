@@ -119,6 +119,18 @@ export type Quiz = {
   createdOn: string
   modifiedOn: string
 }
+export interface QuizItem {
+  id: string
+  title: string
+  description: string
+  lessonId: string
+  timeLimit: number
+  passingScore: number
+  questionsCount: number
+  createdOn: string
+  modifiedOn: string
+  content: any
+}
 export type tLecture = {
   id?: number
   title: string

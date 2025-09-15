@@ -6,7 +6,6 @@ import {
   styled,
   Typography,
 } from "@mui/material"
-import { Lesson } from "./ContentCard"
 import {
   CloudDownload,
   Code,
@@ -22,6 +21,7 @@ import dynamic from "next/dynamic"
 import VideoPlayerWithProgress from "./VideoPlayerWithProgress"
 import ReactPlayer from "react-player"
 import { useRef } from "react"
+import { LessonDto } from "@/types/types"
 
 const PdfViewer = dynamic(() => import("./PdfViewer"), {
   ssr: false,
@@ -137,7 +137,7 @@ const ProgressFill = styled(Box)({
   borderRadius: "inherit",
 })
 
-const getContentType = (lesson: Lesson): string => {
+const getContentType = (lesson: LessonDto): string => {
   const extension = lesson.extension?.toLowerCase() || ""
   if (lesson?.type?.toLowerCase() === "video" || lesson.video) {
     return "video"
@@ -149,7 +149,7 @@ const LessonContent = ({
   lesson,
   userId,
 }: {
-  lesson: Lesson
+  lesson: LessonDto
   userId: string
 }) => {
   const playerRef = useRef<ReactPlayer>(null)
@@ -169,7 +169,7 @@ const LessonContent = ({
         <VideoPlaceholder>
           {lesson.id ? (
             <VideoPlayerWithProgress
-              lesson={lesson}
+              lesson={{ ...lesson, id: lesson.id as string }}
               streamUrl={streamUrl}
               userId={userId}
               playerRef={playerRef}

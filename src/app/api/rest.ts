@@ -236,7 +236,7 @@ const addQuiz = async (data: TQuiz) => {
 
   return response.json()
 }
-const allQuiz = async (lessonId: string) => {
+const lessonQuiz = async (lessonId: string) => {
   const response = await fetch(`${basePath}course/quiz/${lessonId}`, auth)
   if (!response.ok) {
     return { error: response.status }
@@ -783,6 +783,6 @@ export {
   fetchUserOrganization,
   updateOrg,
   addQuiz,
-  allQuiz,
+  lessonQuiz,
   allCourseQuiz,
 }

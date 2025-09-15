@@ -3,60 +3,53 @@ import {
   Card,
   CardContent,
   Typography,
-  Box,
+  List,
   ListItem,
   ListItemText,
-  List,
+  Box,
   Collapse,
+  Chip,
 } from "@mui/material"
 import {
+  PlayCircleOutline,
+  ArticleOutlined,
   FiberManualRecord,
   KeyboardArrowDown,
   KeyboardArrowUp,
-  PlayCircleOutline,
-  ArticleOutlined,
+  Quiz as QuizIcon,
+  AccessTime,
+  Grade,
 } from "@mui/icons-material"
-
-export interface Lesson {
-  // TODO: use LessonDTO for consistency and delete Lesson
-  id: string
-  tid: string
-  title: string
-  video?: string
-  content?: string
-  extension?: string
-  type: string
-  orderIndex: number
-  createdOn: string | null
-  updatedOn: string | null
-}
+import { LessonDto, QuizItem } from "@/types/types"
+import { useRouter } from "next/navigation"
 
 interface Topic {
   id: string
-  module: string
-  title: string
-  description: string
-  cid: string | null
-  orderIndex: number
-  lessons: Lesson[]
-  createdOn: string | null
-  updatedOn: string | null
+  title?: string
+  module?: string
+  orderIndex?: number
+  lessons: LessonDto[]
 }
 
 interface ContentCardProps {
   topics: Topic[]
   currentLessonId?: string
-  handleSelect: (_lesson: Lesson) => void
+  handleSelect: (_lesson: LessonDto) => void
+  quizSummary: QuizItem[]
+  courseId: string
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({
   topics,
   currentLessonId,
   handleSelect,
+  quizSummary,
+  courseId,
 }) => {
   const [expandedTopics, setExpandedTopics] = useState<{
     [key: string]: boolean
   }>({})
+  const router = useRouter()
 
   React.useEffect(() => {
     if (topics.length > 0) {
@@ -85,6 +78,12 @@ const ContentCard: React.FC<ContentCardProps> = ({
       default:
         return <FiberManualRecord sx={{ color: "primary.main", fontSize: 8 }} />
     }
+  }
+  const getQuizForLesson = (lessonId: string): QuizItem | undefined => {
+    return quizSummary.find((quiz) => quiz.lessonId === lessonId)
+  }
+  const handleQuizClick = (quiz: QuizItem) => {
+    router.push(`/course/${courseId}/${quiz.lessonId}`)
   }
 
   return (
@@ -135,40 +134,169 @@ const ContentCard: React.FC<ContentCardProps> = ({
                         )
                         .map((lesson) => {
                           const isCurrentLesson = lesson.id === currentLessonId
+                          const lessonQuiz = getQuizForLesson(lesson.id ?? "")
 
                           return (
-                            <ListItem
-                              key={lesson.id}
-                              onClick={() => handleSelect(lesson)}
-                              sx={{
-                                backgroundColor: isCurrentLesson
-                                  ? "#ffcdd2" // Current lesson highlight
-                                  : "grey.100",
-                                borderRadius: 1,
-                                mb: 1,
-                                py: 0.5,
-                                cursor: "pointer",
-                                "&:hover": {
+                            <Box key={lesson.id}>
+                              {/* Lesson Item */}
+                              <ListItem
+                                onClick={() => handleSelect(lesson)}
+                                sx={{
                                   backgroundColor: isCurrentLesson
-                                    ? "#ffbdbd"
-                                    : "grey.200",
-                                },
-                              }}
-                            >
-                              <ListItemText
-                                primary={lesson.title}
-                                primaryTypographyProps={{
-                                  variant: "body2",
-                                  color: isCurrentLesson
-                                    ? "#000000"
-                                    : "text.secondary",
-                                  fontWeight: isCurrentLesson
-                                    ? "medium"
-                                    : "regular",
+                                    ? "#ffcdd2" // Current lesson highlight
+                                    : "grey.100",
+                                  borderRadius: 1,
+                                  mb: 1,
+                                  py: 0.5,
+                                  cursor: "pointer",
+                                  "&:hover": {
+                                    backgroundColor: isCurrentLesson
+                                      ? "#ffbdbd"
+                                      : "grey.200",
+                                  },
                                 }}
-                              />
-                              {getLessonIcon(lesson.type)}
-                            </ListItem>
+                              >
+                                <ListItemText
+                                  primary={lesson.title}
+                                  primaryTypographyProps={{
+                                    variant: "body2",
+                                    color: isCurrentLesson
+                                      ? "#000000"
+                                      : "text.secondary",
+                                    fontWeight: isCurrentLesson
+                                      ? "medium"
+                                      : "regular",
+                                  }}
+                                />
+                                {getLessonIcon(lesson.type)}
+                              </ListItem>
+
+                              {/* Quiz Item for this lesson (if exists) */}
+                              {lessonQuiz && (
+                                <Box sx={{ ml: 2, mb: 1 }}>
+                                  <ListItem
+                                    onClick={() => handleQuizClick(lessonQuiz)}
+                                    sx={{
+                                      backgroundColor: "primary.50",
+                                      border: "1px solid",
+                                      borderColor: "primary.light",
+                                      borderRadius: 1,
+                                      cursor: "pointer",
+                                      py: 1,
+                                      "&:hover": {
+                                        backgroundColor: "primary.100",
+                                      },
+                                    }}
+                                  >
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                        width: "100%",
+                                      }}
+                                    >
+                                      <QuizIcon
+                                        color="primary"
+                                        fontSize="small"
+                                        sx={{ mt: 0.5, mr: 1 }}
+                                      />
+                                      <Box sx={{ flex: 1 }}>
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 1,
+                                            mb: 0.5,
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="caption"
+                                            fontWeight="medium"
+                                            color="primary"
+                                          >
+                                            {lessonQuiz.title}
+                                          </Typography>
+                                          <Chip
+                                            size="small"
+                                            label="Quiz"
+                                            color="primary"
+                                            variant="outlined"
+                                            sx={{
+                                              height: 16,
+                                              fontSize: "0.6rem",
+                                            }}
+                                          />
+                                        </Box>
+
+                                        <Typography
+                                          variant="caption"
+                                          color="text.secondary"
+                                          sx={{
+                                            display: "-webkit-box",
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: "vertical",
+                                            overflow: "hidden",
+                                            fontSize: "0.7rem",
+                                            lineHeight: 1.2,
+                                            mb: 0.5,
+                                          }}
+                                        >
+                                          {lessonQuiz.description}
+                                        </Typography>
+
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            gap: 1,
+                                            flexWrap: "wrap",
+                                          }}
+                                        >
+                                          <Box
+                                            sx={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: 0.3,
+                                            }}
+                                          >
+                                            <AccessTime sx={{ fontSize: 10 }} />
+                                            <Typography
+                                              variant="caption"
+                                              sx={{ fontSize: "0.65rem" }}
+                                            >
+                                              {lessonQuiz.timeLimit}min
+                                            </Typography>
+                                          </Box>
+
+                                          <Box
+                                            sx={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: 0.3,
+                                            }}
+                                          >
+                                            <Grade sx={{ fontSize: 10 }} />
+                                            <Typography
+                                              variant="caption"
+                                              sx={{ fontSize: "0.65rem" }}
+                                            >
+                                              {lessonQuiz.passingScore}%
+                                            </Typography>
+                                          </Box>
+
+                                          <Typography
+                                            variant="caption"
+                                            color="primary"
+                                            sx={{ fontSize: "0.65rem" }}
+                                          >
+                                            {lessonQuiz.questionsCount} Q
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                    </Box>
+                                  </ListItem>
+                                </Box>
+                              )}
+                            </Box>
                           )
                         })}
                     </Collapse>

@@ -1,5 +1,5 @@
 "use client"
-import { addUserCourse, courseGrantAccess, fetchCourse } from "@/app/api/rest"
+import { addUserCourse, courseGrantAccess } from "@/app/api/rest"
 import SimilarCard from "@/components/SimilarCard"
 import ModalLogin from "@/components/auth/ModalLogin"
 import SignUpLogin from "@/components/auth/ModalSignUp"
@@ -42,11 +42,13 @@ import {
 import Fuse from "fuse.js"
 import ReactPlayer from "react-player"
 import React, { useEffect } from "react"
-import { useMutation, useQuery, useQueryClient } from "react-query"
+import { useMutation, useQueryClient } from "react-query"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { notifyError, notifySuccess, notifyWarn } from "@/utils/notification"
 import Curriculum from "@/components/courses/Curriculum"
 import { useSession } from "next-auth/react"
+import useCourse from "@/hooks/useCourse"
+import useQuizSummary from "@/hooks/useQuizSummary"
 
 const Detailb = () => {
   const { courses } = React.useContext(Appcontext)
@@ -80,16 +82,8 @@ const Detailb = () => {
       return
     }
   }, [userId, status, router])
-
-  const { data } = useQuery(
-    ["acourse", cid, userId],
-    () => fetchCourse(cid as string, userId as string),
-    {
-      staleTime: 5000,
-      cacheTime: 10,
-      enabled: !!cid && !!userId,
-    }
-  )
+  const { data } = useCourse(cid as string, userId as string)
+  const { courseQuiz } = useQuizSummary({ courseId: cid as string })
   const {
     courseId,
     courseName,
@@ -419,7 +413,7 @@ const Detailb = () => {
                 <Typography variant="h6" className="mt-4 mx-4">
                   Content
                 </Typography>
-                <Curriculum data={data} />
+                <Curriculum data={data} quiz={courseQuiz} />
               </Paper>
             </Box>
           </div>
