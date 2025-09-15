@@ -3,7 +3,7 @@ import React, { Suspense, useEffect, useState } from "react"
 import { Box, Grid, CircularProgress, Alert } from "@mui/material"
 import FooterLte from "@/components/layout/FooterLte"
 import { useQuery } from "react-query"
-import { courseAccessToken } from "@/app/api/rest"
+import { courseAccessToken, userQuizScores } from "@/app/api/rest"
 import ContentCard from "@/components/classroom/ContentCard"
 import LessonContent from "@/components/classroom/LessonContent"
 import {
@@ -41,6 +41,12 @@ const ClassroomPage = () => {
   const { progress, saveALessonProgress } = useLessonProgress({
     lessonId: currentLesson?.id,
     userId: userToken?.userId || "",
+  })
+
+  const { data: userScores } = useQuery({
+    queryFn: () => userQuizScores(userToken?.userId as string),
+    queryKey: ["userQuizScores", userToken?.userId],
+    enabled: !!userToken?.userId,
   })
 
   const handleLessonSelect = (lesson: LessonDto) => {
@@ -128,6 +134,8 @@ const ClassroomPage = () => {
                 handleSelect={handleLessonSelect}
                 quizSummary={courseQuiz || []}
                 courseId={userToken?.courseId || ""}
+                progress={progress?.progress || []}
+                userScores={userScores}
               />
             </Box>
           </Grid>

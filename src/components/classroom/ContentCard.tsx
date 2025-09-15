@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import {
   Card,
   CardContent,
@@ -9,6 +9,7 @@ import {
   Box,
   Collapse,
   Chip,
+  Button,
 } from "@mui/material"
 import {
   PlayCircleOutline,
@@ -20,7 +21,13 @@ import {
   AccessTime,
   Grade,
 } from "@mui/icons-material"
-import { LessonDto, QuizItem } from "@/types/types"
+import {
+  LessonDto,
+  ProgressData,
+  Quiz,
+  QuizItem,
+  TUserScore,
+} from "@/types/types"
 import { useRouter } from "next/navigation"
 
 interface Topic {
@@ -37,6 +44,79 @@ interface ContentCardProps {
   handleSelect: (_lesson: LessonDto) => void
   quizSummary: QuizItem[]
   courseId: string
+  progress: ProgressData[]
+  userScores: TUserScore[] | undefined
+}
+
+interface CertificateEligibilityProps {
+  userScores: TUserScore[] | null | undefined
+  courseQuiz: Quiz[] | null | undefined
+  progress: ProgressData[] | null | undefined
+  topics: Topic[]
+}
+
+const checkCertificateEligibility = ({
+  userScores,
+  courseQuiz,
+  progress,
+  topics,
+}: CertificateEligibilityProps): boolean => {
+  //? If any required data is missing, they can't get a certificate
+  if (!userScores || !courseQuiz || !topics || !progress) {
+    return false
+  }
+
+  try {
+    const lessons =
+      topics?.flatMap((topic) => topic.lessons as LessonDto[]) || []
+
+    const quizzes = courseQuiz as Quiz[]
+
+    //? All lessons must be completed (100% progress)
+    const allLessonsCompleted = lessons.every((lesson: LessonDto) => {
+      const lessonProgress = progress.find(
+        (p: ProgressData) => p.lessonId === lesson.id
+      )
+      return lessonProgress && lessonProgress.completionPercentage === 100
+    })
+
+    if (!allLessonsCompleted) {
+      return false
+    }
+
+    //? All quizzes must be attempted
+    const allQuizzesPassed = quizzes.every((quiz: Quiz) => {
+      const quizScore = userScores.find(
+        (score) => String(score.quizId) === String(quiz.id)
+      )
+
+      return quizScore
+    })
+
+    if (!allQuizzesPassed) {
+      return false
+    }
+
+    //? Verify that all quizzes meet the passing score requirement
+    const quizzesMeetRequirements = quizzes.every((quiz: Quiz) => {
+      const quizScore = userScores.find(
+        (score) => String(score.quizId) === String(quiz.id)
+      )
+
+      if (!quizScore) return false
+
+      const score = quizScore.score
+
+      return score >= (quiz.passingScore || quiz.content.passingScore || 70)
+    })
+
+    if (!quizzesMeetRequirements) {
+      return false
+    }
+    return true
+  } catch {
+    return false
+  }
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({
@@ -45,6 +125,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
   handleSelect,
   quizSummary,
   courseId,
+  progress,
+  userScores,
 }) => {
   const [expandedTopics, setExpandedTopics] = useState<{
     [key: string]: boolean
@@ -67,6 +149,18 @@ const ContentCard: React.FC<ContentCardProps> = ({
       [topicId]: !prev[topicId],
     }))
   }
+
+  const canGetCeritificate = useMemo(() => {
+    if (userScores && quizSummary && topics && progress) {
+      return checkCertificateEligibility({
+        userScores,
+        courseQuiz: quizSummary,
+
+        progress,
+        topics,
+      })
+    } else return false
+  }, [userScores, quizSummary, topics, progress])
 
   const getLessonIcon = (lessonType: string) => {
     switch (lessonType?.toLowerCase()) {
@@ -304,6 +398,18 @@ const ContentCard: React.FC<ContentCardProps> = ({
                 )
               })}
           </List>
+        )}
+        {/** Get Certificate */}
+        {canGetCeritificate && (
+          <Button
+            onClick={() => {
+              router.push(`/course/certificate/${courseId}`)
+            }}
+            variant="outlined"
+            sx={{ mt: 3 }}
+          >
+            Get Certificate
+          </Button>
         )}
       </CardContent>
     </Card>
