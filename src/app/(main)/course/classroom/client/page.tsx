@@ -3,8 +3,8 @@ import React, { Suspense, useEffect, useState } from "react"
 import { Box, Grid, CircularProgress, Alert } from "@mui/material"
 import FooterLte from "@/components/layout/FooterLte"
 import { useQuery } from "react-query"
-import { courseAccessToken, fetchCourse } from "@/app/api/rest"
-import ContentCard, { Lesson } from "@/components/classroom/ContentCard"
+import { courseAccessToken } from "@/app/api/rest"
+import ContentCard from "@/components/classroom/ContentCard"
 import LessonContent from "@/components/classroom/LessonContent"
 import {
   ContentContainer,
@@ -16,6 +16,8 @@ import LessonResources, {
 } from "@/components/classroom/LessonResources"
 import { useLessonProgress } from "@/hooks/useLessonProgress"
 import { LessonDto, TopicDto } from "@/types/types"
+import useQuizSummary from "@/hooks/useQuizSummary"
+import useCourse from "@/hooks/useCourse"
 
 const ClassroomPage = () => {
   const [tabValue, setTabValue] = useState(0)
@@ -25,12 +27,12 @@ const ClassroomPage = () => {
     queryFn: courseAccessToken,
     refetchOnWindowFocus: false,
   })
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["course", userToken?.courseId, userToken?.userId],
-    queryFn: () =>
-      fetchCourse(userToken?.courseId as string, userToken?.userId as string),
-    refetchOnWindowFocus: false,
-    enabled: !!userToken?.userId && !!userToken?.courseId,
+  const { data, isLoading, error } = useCourse(
+    userToken?.courseId as string,
+    userToken?.userId as string
+  )
+  const { courseQuiz } = useQuizSummary({
+    courseId: userToken?.courseId as string,
   })
 
   const [currentLesson, setCurrentLesson] = React.useState(
@@ -41,8 +43,10 @@ const ClassroomPage = () => {
     userId: userToken?.userId || "",
   })
 
-  const handleLessonSelect = (lesson: Lesson) => {
-    saveALessonProgress(lesson.id)
+  const handleLessonSelect = (lesson: LessonDto) => {
+    if (lesson.id) {
+      saveALessonProgress(lesson.id)
+    }
     setCurrentLesson(lesson)
   }
   useEffect(() => {
@@ -122,6 +126,8 @@ const ClassroomPage = () => {
                 topics={data?.curriculum?.topic || []}
                 currentLessonId={currentLesson?.id}
                 handleSelect={handleLessonSelect}
+                quizSummary={courseQuiz || []}
+                courseId={userToken?.courseId || ""}
               />
             </Box>
           </Grid>

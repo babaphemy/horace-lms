@@ -1,34 +1,37 @@
 {
-  "title": "Introduction to Java Programming - Unit 1 Quiz",
-  "description": "Test your understanding of basic Java concepts, variables, data types, and control structures covered in Unit 1.",
-  "timeLimit": 30,
-  "passingScore": 70,
-  "questions": [
-    {
-      "id": 1,
-      "type": "multiple_choice",
-      "question": "Which of the following is the correct syntax to declare a variable in Java?",
-      "points": 5,
-      "options": [
-        {
-          "id": "a",
-          "text": "var x = 10;"
-        },
-        {
-          "id": "b",
-          "text": "int x = 10;"
-        },
-        {
-          "id": "c",
-          "text": "x := 10;"
-        },
-        {
-          "id": "d",
-          "text": "declare x as int = 10;"
-        }
-      ],
-      "correctAnswer": "b",
-      "explanation": "In Java, variables are declared using the data type followed by the variable name and optional initialization. 'int x = 10;' is the correct syntax."
-    }
-  ]
+  "lessonId": 9007199254740991,
+  "content": {
+    "title": "Introduction to Java Programming - Unit 1 Quiz",
+    "description": "Test your understanding of basic Java concepts, variables, data types, and control structures covered in Unit 1.",
+    "timeLimit": 30,
+    "passingScore": 70,
+    "questions": [
+      {
+        "id": 1,
+        "type": "multiple_choice",
+        "question": "Which of the following is the correct syntax to declare a variable in Java?",
+        "points": 5,
+        "options": [
+          {
+            "id": "a",
+            "text": "var x = 10;"
+          },
+          {
+            "id": "b",
+            "text": "int x = 10;"
+          },
+          {
+            "id": "c",
+            "text": "x := 10;"
+          },
+          {
+            "id": "d",
+            "text": "declare x as int = 10;"
+          }
+        ],
+        "correctAnswer": "b",
+        "explanation": "In Java, variables are declared using the data type followed by the variable name and optional initialization. 'int x = 10;' is the correct syntax."
+      }
+    ]
+  }
 }

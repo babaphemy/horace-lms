@@ -5,7 +5,7 @@ import FooterLte from "@/components/layout/FooterLte"
 import { useSearchParams } from "next/navigation"
 import { useQuery } from "react-query"
 import { fetchCourse } from "@/app/api/rest"
-import ContentCard, { Lesson } from "@/components/classroom/ContentCard"
+import ContentCard from "@/components/classroom/ContentCard"
 import LessonContent from "@/components/classroom/LessonContent"
 import { useSession } from "next-auth/react"
 import {
@@ -18,6 +18,7 @@ import LessonResources, {
 } from "@/components/classroom/LessonResources"
 import { useLessonProgress } from "@/hooks/useLessonProgress"
 import { LessonDto, TopicDto } from "@/types/types"
+import useQuizSummary from "@/hooks/useQuizSummary"
 
 const ClassroomPage = () => {
   const { data: session } = useSession()
@@ -36,13 +37,17 @@ const ClassroomPage = () => {
   const [currentLesson, setCurrentLesson] = React.useState(
     data?.curriculum?.topic[0]?.lessons[0]
   )
+  const { courseQuiz } = useQuizSummary({ courseId: id as string })
+
   const { progress, saveALessonProgress } = useLessonProgress({
     lessonId: currentLesson?.id,
     userId: session?.user?.id || "",
   })
 
-  const handleLessonSelect = (lesson: Lesson) => {
-    saveALessonProgress(lesson.id)
+  const handleLessonSelect = (lesson: LessonDto) => {
+    if (lesson.id) {
+      saveALessonProgress(lesson.id)
+    }
     setCurrentLesson(lesson)
   }
   useEffect(() => {
@@ -139,6 +144,8 @@ const ClassroomPage = () => {
                 topics={data?.curriculum?.topic || []}
                 currentLessonId={currentLesson?.id}
                 handleSelect={handleLessonSelect}
+                quizSummary={courseQuiz || []}
+                courseId={id || ""}
               />
             </Box>
           </Grid>
