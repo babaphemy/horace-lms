@@ -15,6 +15,7 @@ import {
   UserDto,
   OrganizationMember,
   CorporateAuthRequest,
+  TAddQuizScore,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -234,6 +235,18 @@ const addQuiz = async (data: TQuiz) => {
     throw new Error(errorMessage)
   }
 
+  return response.json()
+}
+
+const addScore = async (data: TAddQuizScore) => {
+  const response = await fetch(
+    `${basePath}course/quiz/score`,
+    PostSettings(data)
+  )
+
+  if (!response.ok) {
+    throw new Error("Failed to submit quiz score")
+  }
   return response.json()
 }
 const lessonQuiz = async (lessonId: string) => {
@@ -785,4 +798,5 @@ export {
   addQuiz,
   lessonQuiz,
   allCourseQuiz,
+  addScore,
 }

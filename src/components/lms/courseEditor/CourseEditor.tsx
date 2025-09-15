@@ -40,7 +40,6 @@ import {
   DragIndicator,
   PlayArrow,
   Article,
-  Quiz,
   Assignment,
   Warning,
 } from "@mui/icons-material"
@@ -419,8 +418,8 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
         return <PlayArrow />
       case LESSONTYPE.TEXT:
         return <Article />
-      case LESSONTYPE.QUIZ:
-        return <Quiz />
+      // case LESSONTYPE.QUIZ:
+      //   return <Quiz />
       case LESSONTYPE.ASSIGNMENT:
         return <Assignment />
       case LESSONTYPE.PRESENTATION:
@@ -1027,7 +1026,6 @@ const CourseEditor: React.FC<CourseEditorProps> = ({ id, userId }) => {
                         <Select {...field} label="Lesson Type">
                           <MenuItem value={LESSONTYPE.TEXT}>Text</MenuItem>
                           <MenuItem value={LESSONTYPE.VIDEO}>Video</MenuItem>
-                          <MenuItem value={LESSONTYPE.QUIZ}>Quiz</MenuItem>
                           <MenuItem value={LESSONTYPE.PRESENTATION}>
                             Presentation
                           </MenuItem>
