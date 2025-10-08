@@ -148,7 +148,7 @@ const LessonResources: React.FC<Props> = ({
       <TabPanel value={tabValue} index={0}>
         <Box>
           <Typography variant="subtitle1" gutterBottom>
-            Your Notes {userID}
+            Your Notes
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             Take notes during the course to help with your learning.
@@ -191,7 +191,7 @@ const LessonResources: React.FC<Props> = ({
                       Saving...
                     </>
                   ) : (
-                    `Save Notes ${userID}`
+                    "Save Notes"
                   )}
                 </Button>
                 {hasChanges && (
