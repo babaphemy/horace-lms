@@ -11,11 +11,9 @@ import {
   MainCard,
 } from "@/components/classroom/StyledComponents"
 import LessonHead from "@/components/classroom/LessonHead"
-import LessonResources, {
-  LessonMaterial,
-} from "@/components/classroom/LessonResources"
+import LessonResources from "@/components/classroom/LessonResources"
 import { useLessonProgress } from "@/hooks/useLessonProgress"
-import { LessonDto, TopicDto } from "@/types/types"
+import { LessonDto, LessonMaterial, TopicDto } from "@/types/types"
 import useQuizSummary from "@/hooks/useQuizSummary"
 import useCourse from "@/hooks/useCourse"
 
@@ -27,6 +25,7 @@ const ClassroomPage = () => {
     queryFn: courseAccessToken,
     refetchOnWindowFocus: false,
   })
+
   const { data, isLoading, error } = useCourse(
     userToken?.courseId as string,
     userToken?.userId as string
@@ -117,6 +116,7 @@ const ClassroomPage = () => {
                 tabValue={tabValue}
                 setTabValue={setTabValue}
                 handleTabChange={handleTabChange}
+                userID={userToken?.userId || ""}
               />
             </Box>
           </Grid>

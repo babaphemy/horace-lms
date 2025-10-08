@@ -205,6 +205,35 @@ const myRegisteredCourses = async (userId: string) => {
   }
   return response.json()
 }
+const myNotes = async (userId: string, lessonId: string) => {
+  const response = await fetch(`${basePath}course/${userId}/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const addNote = async (data: {
+  userId: string
+  lessonId: string
+  notes: string
+}) => {
+  const response = await fetch(
+    `${basePath}course/user/notes`,
+    PostSettings(data)
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
+const lessonMaterials = async (lessonId: string) => {
+  const response = await fetch(`${basePath}course/materials/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
 
 const addQuiz = async (data: TQuiz) => {
   const response = await fetch(`${basePath}course/quiz/add`, PostSettings(data))
@@ -729,6 +758,9 @@ export {
   getUserProgress,
   addCourseDetail,
   addThumbnail,
+  myNotes,
+  addNote,
+  lessonMaterials,
   addTopic,
   addLecture,
   activities,

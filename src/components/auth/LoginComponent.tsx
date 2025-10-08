@@ -1,5 +1,4 @@
 "use client"
-import fb from "@/assets/img/fbcolor.webp"
 import google from "@/assets/img/ggcolor.webp"
 import { MODAL_SET } from "@/context/Action"
 import { AppDpx } from "@/context/AppContext"
@@ -176,14 +175,6 @@ const Login = (props: Props) => {
         >
           <Image src={google} alt="google" width={20} height={20} />
           Login with Google
-        </Button>
-        <Button
-          variant="outlined"
-          sx={[loginStyles.center, loginStyles.button]}
-          fullWidth
-        >
-          <Image src={fb} alt="fb" width={25} height={25} />
-          Login with Facebook
         </Button>
       </Box>
       <Box sx={loginStyles.dividerContainer}>
