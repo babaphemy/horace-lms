@@ -90,13 +90,21 @@ export type QuizOption = {
 export type QuizQuestionType = "short_answer" | "multiple_choice" | "true_false"
 
 export type QuizQuestion = {
-  id: number | string
+  id: number
   type: QuizQuestionType
   question: string
   points: number
   options: QuizOption[]
   correctAnswer: string
   explanation: string
+}
+
+export interface TAddQuizScore {
+  userId: string
+  score: number
+  maxScore: number
+  timeTaken: number
+  quizId: string
 }
 
 export type QuizContent = {
@@ -164,7 +172,7 @@ export enum LESSONTYPE {
   DOCUMENT = "DOCUMENT",
   HTML = "HTML",
   PDF = "PDF",
-  QUIZ = "QUIZ",
+  // QUIZ = "QUIZ",
   TEXT = "TEXT",
   ASSIGNMENT = "ASSIGNMENT",
   PRESENTATION = "PRESENTATION",
