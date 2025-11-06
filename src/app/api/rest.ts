@@ -165,12 +165,34 @@ const addSubjectComplete = async (
   }
   return resp.json()
 }
-
-const fetchCourses = async (page: number = 0, size: number = 10) => {
+export const fetchOrgCourses = async (
+  orgid: string,
+  page: number = 0,
+  size: number = 10
+) => {
   const response = await fetch(
-    `${basePath}course/courses?page=${page}&size=${size}`,
+    `${basePath}course/org-courses?page=${page}&size=${size}&orgId=${orgid}`,
     auth
   )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
+const fetchCourses = async (
+  userId?: string,
+  page: number = 0,
+  size: number = 10
+) => {
+  let url = `${basePath}course/courses?page=${page}&size=${size}`
+
+  if (userId) {
+    url += `&userId=${userId}`
+  }
+
+  const response = await fetch(url, auth)
+
   if (!response.ok) {
     return { error: response.status }
   }

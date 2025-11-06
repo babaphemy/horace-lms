@@ -13,13 +13,15 @@ import Hero from "@/components/home/Hero"
 import Benefits from "@/components/home/Benefits"
 import PopularCourses from "@/components/home/PopularCourses"
 import Footer from "@/components/Footer"
+import { useSession } from "next-auth/react"
 
 const Home: NextPage = () => {
   const dispatch = useContext(AppDpx)
+  const { data: session } = useSession()
 
   const { data, isLoading } = useQuery(
     "usersAdddoc",
-    () => fetchCourses(0, 10),
+    () => fetchCourses(session?.user?.id, 0, 10),
     {
       staleTime: 5000,
       cacheTime: 10,
