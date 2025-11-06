@@ -39,7 +39,7 @@ const Curriculum = ({ data, quiz }: CurriculumProps) => {
   const getLessonIds = (lessons: LessonDto[]) => {
     return lessons.map((lesson) => lesson.id)
   }
-  const getQuizzesForTopic = (lessons: LessonDto[]) => {
+  const getQuizForTopic = (lessons: LessonDto[]) => {
     const lessonIds = getLessonIds(lessons)
     return quiz.filter((q) => lessonIds.includes(q.lessonId))
   }
@@ -53,11 +53,11 @@ const Curriculum = ({ data, quiz }: CurriculumProps) => {
               <PlayCircle sx={{ mr: 1 }} />
               <Typography fontWeight={500}>{module.title}</Typography>
 
-              {getQuizzesForTopic(module?.lessons || []).length > 0 && (
+              {getQuizForTopic(module?.lessons || []).length > 0 && (
                 <Chip
                   size="small"
-                  label={`${getQuizzesForTopic(module?.lessons || []).length} Quiz${
-                    getQuizzesForTopic(module?.lessons || []).length > 1
+                  label={`${getQuizForTopic(module?.lessons || []).length} Quiz${
+                    getQuizForTopic(module?.lessons || []).length > 1
                       ? "es"
                       : ""
                   }`}

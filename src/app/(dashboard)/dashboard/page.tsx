@@ -73,10 +73,10 @@ const DashboardPage = () => {
         router.push(`/dashboard/courses/${selectedCourseId}`)
         break
       case "quiz":
-        router.push(`/dashboard/courses/${selectedCourseId}/quizzes/add`)
+        router.push(`/dashboard/courses/${selectedCourseId}/quiz/add`)
         break
       case "quizlist":
-        router.push(`/dashboard/courses/${selectedCourseId}/quizzes`)
+        router.push(`/dashboard/courses/${selectedCourseId}/quiz`)
         break
       case "analytics":
         router.push(`/dashboard/courses/${selectedCourseId}/analytics`)

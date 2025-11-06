@@ -287,8 +287,26 @@ const addQuiz = async (data: TQuiz) => {
 
   return response.json()
 }
+export const editQuiz = async ({ id, data }: { id: string; data: TQuiz }) => {
+  const response = await fetch(
+    `${basePath}course/quiz/edit/${id}`,
+    PutSettings(data)
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 const lessonQuiz = async (lessonId: string) => {
   const response = await fetch(`${basePath}course/quiz/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+export const getQuizById = async (id: string) => {
+  const response = await fetch(`${basePath}course/quiz/id/${id}`, auth)
   if (!response.ok) {
     return { error: response.status }
   }
