@@ -2,7 +2,7 @@
 import useLessonQuiz from "@/hooks/useLessonQuiz"
 import { QuizOption, QuizQuestion } from "@/types/types"
 import { useParams, useRouter } from "next/navigation"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 
 interface UserAnswer {
   questionId: number
@@ -22,11 +22,25 @@ const QuizPage = () => {
   const [showResults, setShowResults] = useState(false)
   const [confirmSubmitDialog, setConfirmSubmitDialog] = useState(false)
 
+  // Use ref to track if component is mounted
+  const isMountedRef = useRef(true)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const { quiz: quizData } = useLessonQuiz({ lid: lid as string })
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+      }
+    }
+  }, [])
+
   const handleBackToClassroom = () => {
     router.push(`/course/classroom?courseId=${cid}`)
   }
-
-  const { quiz: quizData } = useLessonQuiz({ lid: lid as string })
 
   const handleStartQuiz = () => {
     setQuizStarted(true)
@@ -39,11 +53,13 @@ const QuizPage = () => {
     )
     setUserAnswers(initialAnswers)
   }
+
   const handleAnswerChange = (questionId: number, answer: string) => {
     setUserAnswers((prev) =>
       prev.map((ua) => (ua.questionId === questionId ? { ...ua, answer } : ua))
     )
   }
+
   const handleNextQuestion = () => {
     if (currentQuestionIndex < quizData.content.questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1)
@@ -59,50 +75,74 @@ const QuizPage = () => {
   const handleGoToQuestion = (index: number) => {
     setCurrentQuestionIndex(index)
   }
-  const calculateResults = React.useCallback(() => {
-    const updatedAnswers = userAnswers.map((ua) => {
-      const question = quizData.content.questions.find(
-        (q: QuizQuestion) => q.id === ua.questionId
-      )
-      if (!question) return ua
 
-      let isCorrect = false
-      if (question.type === "short_answer") {
-        isCorrect = ua.answer
-          .toLowerCase()
-          .trim()
-          .includes(
-            question.correctAnswer.toLowerCase().trim().substring(0, 10)
-          )
-      } else {
-        isCorrect = ua.answer === question.correctAnswer
-      }
+  const calculateResults = useCallback(() => {
+    if (!isMountedRef.current) return
 
-      return { ...ua, isCorrect }
+    setUserAnswers((prevAnswers) => {
+      const updatedAnswers = prevAnswers.map((ua) => {
+        const question = quizData.content.questions.find(
+          (q: QuizQuestion) => q.id === ua.questionId
+        )
+        if (!question) return ua
+
+        let isCorrect = false
+        if (question.type === "short_answer") {
+          if (!ua.answer || !question.correctAnswer) {
+            isCorrect = false
+          } else {
+            isCorrect = ua.answer
+              .toLowerCase()
+              .trim()
+              .includes(
+                question.correctAnswer.toLowerCase().trim().substring(0, 10)
+              )
+          }
+        } else {
+          isCorrect = ua.answer === question.correctAnswer
+        }
+
+        return { ...ua, isCorrect }
+      })
+
+      return updatedAnswers
     })
 
-    setUserAnswers(updatedAnswers)
     setShowResults(true)
-  }, [userAnswers, quizData])
-  const handleTimeUp = React.useCallback(() => {
+  }, [quizData])
+
+  const handleTimeUp = useCallback(() => {
+    if (!isMountedRef.current) return
     setQuizCompleted(true)
     calculateResults()
   }, [calculateResults])
 
+  // Optimized timer effect - removed timeRemaining from dependencies
   useEffect(() => {
-    if (quizStarted && !quizCompleted && timeRemaining > 0) {
-      const timer = setInterval(() => {
+    if (quizStarted && !quizCompleted) {
+      timerRef.current = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
+            // Clear interval before calling handleTimeUp
+            if (timerRef.current) {
+              clearInterval(timerRef.current)
+              timerRef.current = null
+            }
             handleTimeUp()
             return 0
           }
           return prev - 1
         })
       }, 1000)
-      return () => clearInterval(timer)
+
+      return () => {
+        if (timerRef.current) {
+          clearInterval(timerRef.current)
+          timerRef.current = null
+        }
+      }
     }
-  }, [quizStarted, quizCompleted, timeRemaining, handleTimeUp])
+  }, [quizStarted, quizCompleted, handleTimeUp])
 
   const handleSubmitQuiz = () => {
     setConfirmSubmitDialog(false)
@@ -247,6 +287,7 @@ const QuizPage = () => {
       </div>
     )
   }
+
   if (showResults) {
     return (
       <div className="max-w-4xl mx-auto p-6">
