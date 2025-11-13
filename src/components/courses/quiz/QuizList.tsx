@@ -31,11 +31,11 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
   const queryClient = useQueryClient()
 
   const {
-    data: quizzes,
+    data: quiz,
     isLoading,
     error,
   } = useQuery<Quiz[]>({
-    queryKey: ["quizzes"],
+    queryKey: ["quiz"],
     queryFn: () => allCourseQuiz(id),
     enabled: !!id,
   })
@@ -46,7 +46,7 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
       return id
     },
     onSuccess: (deletedId) => {
-      queryClient.setQueryData(["quizzes"], (old: Quiz[] | undefined) =>
+      queryClient.setQueryData(["quiz"], (old: Quiz[] | undefined) =>
         old ? old.filter((quiz) => quiz.id !== deletedId) : []
       )
     },
@@ -96,7 +96,7 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
         </Alert>
         <Button
           variant="contained"
-          onClick={() => queryClient.refetchQueries({ queryKey: ["quizzes"] })}
+          onClick={() => queryClient.refetchQueries({ queryKey: ["quiz"] })}
         >
           Try Again
         </Button>
@@ -113,12 +113,12 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
         mb={4}
       >
         <Typography variant="h4" component="h1" fontWeight="bold">
-          All Quiz ({quizzes?.length || 0})
+          All Quiz ({quiz?.length || 0})
         </Typography>
         <Button
           variant="contained"
           component={Link}
-          href={`/dashboard/courses/${id}/quizzes/add`}
+          href={`/dashboard/courses/${id}/quiz/add`}
           startIcon={<QuizIcon />}
           size="large"
         >
@@ -126,7 +126,7 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
         </Button>
       </Box>
 
-      {quizzes?.length === 0 ? (
+      {quiz?.length === 0 ? (
         <Paper
           sx={{ p: 6, textAlign: "center", borderRadius: 2 }}
           elevation={2}
@@ -149,7 +149,7 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
             variant="contained"
             size="large"
             component={Link}
-            href="/quizzes/create"
+            href="/quiz/create"
             sx={{ borderRadius: 2 }}
           >
             Create Your First Quiz
@@ -158,7 +158,7 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
       ) : (
         <>
           <Grid container spacing={3}>
-            {quizzes?.map((quiz) => (
+            {quiz?.map((quiz) => (
               <Grid size={{ xs: 12, md: 6, lg: 4 }} key={quiz.id}>
                 <Card
                   sx={{
@@ -232,7 +232,7 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
                     <Button
                       size="small"
                       component={Link}
-                      href={`/quizzes/edit/${quiz.id}`}
+                      href={`/dashboard/courses/${id}/quiz/${quiz.id}`}
                       startIcon={<EditIcon />}
                     >
                       Edit

@@ -166,12 +166,34 @@ const addSubjectComplete = async (
   }
   return resp.json()
 }
-
-const fetchCourses = async (page: number = 0, size: number = 10) => {
+export const fetchOrgCourses = async (
+  orgid: string,
+  page: number = 0,
+  size: number = 10
+) => {
   const response = await fetch(
-    `${basePath}course/courses?page=${page}&size=${size}`,
+    `${basePath}course/org-courses?page=${page}&size=${size}&orgId=${orgid}`,
     auth
   )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
+const fetchCourses = async (
+  userId?: string,
+  page: number = 0,
+  size: number = 10
+) => {
+  let url = `${basePath}course/courses?page=${page}&size=${size}`
+
+  if (userId) {
+    url += `&userId=${userId}`
+  }
+
+  const response = await fetch(url, auth)
+
   if (!response.ok) {
     return { error: response.status }
   }
@@ -201,6 +223,35 @@ const myRegisteredCourses = async (userId: string) => {
     `${basePath}course/courses/my-registered/${userId}`,
     auth
   )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const myNotes = async (userId: string, lessonId: string) => {
+  const response = await fetch(`${basePath}course/${userId}/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const addNote = async (data: {
+  userId: string
+  lessonId: string
+  notes: string
+}) => {
+  const response = await fetch(
+    `${basePath}course/user/notes`,
+    PostSettings(data)
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
+const lessonMaterials = async (lessonId: string) => {
+  const response = await fetch(`${basePath}course/materials/${lessonId}`, auth)
   if (!response.ok) {
     return { error: response.status }
   }
@@ -249,8 +300,26 @@ const addScore = async (data: TAddQuizScore) => {
   }
   return response.json()
 }
+export const editQuiz = async ({ id, data }: { id: string; data: TQuiz }) => {
+  const response = await fetch(
+    `${basePath}course/quiz/edit/${id}`,
+    PutSettings(data)
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 const lessonQuiz = async (lessonId: string) => {
   const response = await fetch(`${basePath}course/quiz/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+export const getQuizById = async (id: string) => {
+  const response = await fetch(`${basePath}course/quiz/id/${id}`, auth)
   if (!response.ok) {
     return { error: response.status }
   }
@@ -742,6 +811,9 @@ export {
   getUserProgress,
   addCourseDetail,
   addThumbnail,
+  myNotes,
+  addNote,
+  lessonMaterials,
   addTopic,
   addLecture,
   activities,

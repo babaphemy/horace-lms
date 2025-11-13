@@ -13,6 +13,7 @@ import { fetchCourses } from "../../api/rest"
 
 import CourseData from "@/components/courses/CourseData"
 import { coursefilter } from "@/utils/util"
+import { useSession } from "next-auth/react"
 
 export type FilterItem = {
   label: string
@@ -23,17 +24,15 @@ const Courses = () => {
   const [allCourses, setAllCourses] = useState([])
   const [filteredData, setFilteredData] = useState<tCourseLte[] | []>([])
   const [currentFilter, setCurrentFilter] = useState(coursefilter[0])
+  const { data: session } = useSession()
 
   const dispatch = useContext(AppDpx)
-
-  const { data, isLoading } = useQuery(
-    "usersRegisteredCourses",
-    () => fetchCourses(0, 10),
-    {
-      staleTime: 5000,
-      cacheTime: 10,
-    }
-  )
+  const { data, isLoading } = useQuery({
+    queryKey: ["usersRegisteredCourses", session?.user?.id],
+    queryFn: () => fetchCourses(session?.user?.id as string, 0, 10),
+    refetchOnWindowFocus: false,
+    enabled: !!session?.user?.id,
+  })
 
   const handleSearch = debounce(async (query: string) => {
     const fuse = new Fuse<tCourse>(data, {

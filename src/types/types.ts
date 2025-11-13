@@ -657,3 +657,14 @@ export type TokenResponse = {
   success: boolean
   email: string
 }
+export type LessonMaterial = {
+  id: string
+  lessonId: string
+  type: string
+  url: string
+  name: string
+  orderIndex?: number
+  createdOn: string
+  updatedOn: string
+  size?: string
+}
