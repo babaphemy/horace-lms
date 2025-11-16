@@ -1,8 +1,44 @@
 "use client"
 import useLessonQuiz from "@/hooks/useLessonQuiz"
-import { QuizOption, QuizQuestion } from "@/types/types"
+import { QuizOption, QuizQuestion, Quiz } from "@/types/types"
 import { useParams, useRouter } from "next/navigation"
-import React, { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useMemo } from "react"
+import {
+  Box,
+  Button,
+  Typography,
+  Card,
+  CardContent,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  TextField,
+  LinearProgress,
+  Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  AppBar,
+  Toolbar,
+} from "@mui/material"
+import {
+  ArrowBack as ArrowBackIcon,
+  NavigateBefore as NavigateBeforeIcon,
+  NavigateNext as NavigateNextIcon,
+  Check as CheckIcon,
+  Close as CloseIcon,
+  AccessTime as AccessTimeIcon,
+  EmojiEvents as EmojiEventsIcon,
+} from "@mui/icons-material"
+import { useSession } from "next-auth/react"
+import { addScore } from "@/app/api/rest"
 
 interface UserAnswer {
   questionId: number
@@ -13,6 +49,7 @@ interface UserAnswer {
 const QuizPage = () => {
   const params = useParams()
   const { lid, cid } = params
+  const { data: session } = useSession()
   const router = useRouter()
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([])
@@ -22,25 +59,13 @@ const QuizPage = () => {
   const [showResults, setShowResults] = useState(false)
   const [confirmSubmitDialog, setConfirmSubmitDialog] = useState(false)
 
-  // Use ref to track if component is mounted
-  const isMountedRef = useRef(true)
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
-
-  const { quiz: quizData } = useLessonQuiz({ lid: lid as string })
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-      }
-    }
-  }, [])
-
   const handleBackToClassroom = () => {
     router.push(`/course/classroom?courseId=${cid}`)
   }
+
+  const { quiz: quizData }: { quiz: Quiz } = useLessonQuiz({
+    lid: lid as string,
+  })
 
   const handleStartQuiz = () => {
     setQuizStarted(true)
@@ -76,73 +101,88 @@ const QuizPage = () => {
     setCurrentQuestionIndex(index)
   }
 
+  const totalPoints = quizData?.content?.questions?.reduce(
+    (sum: number, q: QuizQuestion) => sum + q.points,
+    0
+  )
+
+  const submitQuizScore = useCallback(
+    async (answers: UserAnswer[]) => {
+      try {
+        const earnedPoints = answers.reduce((sum: number, ua) => {
+          const question = quizData?.content?.questions?.find(
+            (q: QuizQuestion) => q.id === ua.questionId
+          )
+          return sum + (ua.isCorrect && question ? question.points : 0)
+        }, 0)
+
+        const passingScore = quizData?.content?.passingScore
+
+        const scorePercentage =
+          totalPoints > 0 ? Math.round((earnedPoints / totalPoints) * 100) : 0
+        const timeTaken = quizData?.content?.timeLimit * 60 - timeRemaining
+        await addScore({
+          userId: session?.user?.id ?? "",
+          score: scorePercentage,
+          maxScore: passingScore,
+          timeTaken,
+          quizId: quizData.id,
+        })
+      } catch (error) {
+        throw error
+      }
+    },
+    [quizData, session, timeRemaining, totalPoints]
+  )
+
   const calculateResults = useCallback(() => {
-    if (!isMountedRef.current) return
+    const updatedAnswers = userAnswers.map((ua) => {
+      const question = quizData.content.questions.find(
+        (q: QuizQuestion) => q.id === ua.questionId
+      )
+      if (!question) return ua
 
-    setUserAnswers((prevAnswers) => {
-      const updatedAnswers = prevAnswers.map((ua) => {
-        const question = quizData.content.questions.find(
-          (q: QuizQuestion) => q.id === ua.questionId
-        )
-        if (!question) return ua
+      let isCorrect = false
+      if (question.type === "short_answer") {
+        isCorrect = ua.answer
+          .toLowerCase()
+          .trim()
+          .includes(
+            question.correctAnswer.toLowerCase().trim().substring(0, 10)
+          )
+      } else {
+        isCorrect = ua.answer === question.correctAnswer
+      }
 
-        let isCorrect = false
-        if (question.type === "short_answer") {
-          if (!ua.answer || !question.correctAnswer) {
-            isCorrect = false
-          } else {
-            isCorrect = ua.answer
-              .toLowerCase()
-              .trim()
-              .includes(
-                question.correctAnswer.toLowerCase().trim().substring(0, 10)
-              )
-          }
-        } else {
-          isCorrect = ua.answer === question.correctAnswer
-        }
-
-        return { ...ua, isCorrect }
-      })
-
-      return updatedAnswers
+      return { ...ua, isCorrect }
     })
 
+    setUserAnswers(updatedAnswers)
     setShowResults(true)
-  }, [quizData])
+
+    //? Submit score to the API endpoint
+    submitQuizScore(updatedAnswers)
+  }, [userAnswers, quizData, submitQuizScore])
 
   const handleTimeUp = useCallback(() => {
-    if (!isMountedRef.current) return
     setQuizCompleted(true)
     calculateResults()
   }, [calculateResults])
 
-  // Optimized timer effect - removed timeRemaining from dependencies
   useEffect(() => {
-    if (quizStarted && !quizCompleted) {
-      timerRef.current = setInterval(() => {
+    if (quizStarted && !quizCompleted && timeRemaining > 0) {
+      const timer = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
-            // Clear interval before calling handleTimeUp
-            if (timerRef.current) {
-              clearInterval(timerRef.current)
-              timerRef.current = null
-            }
             handleTimeUp()
             return 0
           }
           return prev - 1
         })
       }, 1000)
-
-      return () => {
-        if (timerRef.current) {
-          clearInterval(timerRef.current)
-          timerRef.current = null
-        }
-      }
+      return () => clearInterval(timer)
     }
-  }, [quizStarted, quizCompleted, handleTimeUp])
+  }, [quizStarted, quizCompleted, timeRemaining, handleTimeUp])
 
   const handleSubmitQuiz = () => {
     setConfirmSubmitDialog(false)
@@ -150,18 +190,19 @@ const QuizPage = () => {
     calculateResults()
   }
 
-  const currentQuestion = quizData?.content?.questions[currentQuestionIndex]
-  const currentAnswer =
-    userAnswers.find((ua) => ua.questionId === currentQuestion?.id)?.answer ||
-    ""
+  const currentQuestion = useMemo(() => {
+    return quizData?.content?.questions[currentQuestionIndex]
+  }, [quizData, currentQuestionIndex])
+  const currentAnswer = useMemo(() => {
+    return (
+      userAnswers.find((ua) => ua.questionId === currentQuestion?.id)?.answer ||
+      ""
+    )
+  }, [userAnswers, currentQuestion])
 
   const lessonProgress =
     ((currentQuestionIndex + 1) / quizData?.content?.questions?.length) * 100
 
-  const totalPoints = quizData?.content?.questions?.reduce(
-    (sum: number, q: QuizQuestion) => sum + q.points,
-    0
-  )
   const earnedPoints = userAnswers.reduce((sum: number, ua) => {
     const question = quizData?.content?.questions?.find(
       (q: QuizQuestion) => q.id === ua.questionId
@@ -187,38 +228,55 @@ const QuizPage = () => {
       case "multiple_choice":
       case "true_false":
         return (
-          <div className="space-y-3">
+          <RadioGroup
+            value={currentAnswer}
+            onChange={(e) => {
+              handleAnswerChange(currentQuestion.id, e.target.value)
+            }}
+            sx={{ gap: 1 }}
+          >
             {currentQuestion.options.map((option: QuizOption) => (
-              <label
+              <Paper
                 key={option.id}
-                className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                elevation={1}
+                sx={{
+                  p: 2,
+                  border: 1,
+                  borderColor:
+                    currentAnswer === option.id ? "primary.main" : "grey.300",
+                  borderRadius: 1,
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: "action.hover",
+                  },
+                }}
+                onClick={() => {
+                  handleAnswerChange(currentQuestion.id, option.id)
+                }}
               >
-                <input
-                  type="radio"
-                  name={`question_${currentQuestion.id}`}
+                <FormControlLabel
                   value={option.id}
-                  checked={currentAnswer === option.id}
-                  onChange={(e) =>
-                    handleAnswerChange(currentQuestion.id, e.target.value)
-                  }
-                  className="w-4 h-4 text-blue-600"
+                  control={<Radio />}
+                  label={option.text}
+                  sx={{ width: "100%", m: 0 }}
                 />
-                <span className="text-sm">{option.text}</span>
-              </label>
+              </Paper>
             ))}
-          </div>
+          </RadioGroup>
         )
 
       case "short_answer":
         return (
-          <textarea
+          <TextField
             value={currentAnswer}
             onChange={(e) =>
               handleAnswerChange(currentQuestion.id, e.target.value)
             }
             placeholder="Enter your answer here..."
-            className="w-full p-3 border rounded-lg resize-none h-32 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            multiline
             rows={4}
+            fullWidth
+            variant="outlined"
           />
         )
 
@@ -230,91 +288,118 @@ const QuizPage = () => {
   // Quiz start screen
   if (!quizStarted) {
     return (
-      <div className="max-w-2xl mx-auto p-6">
-        <div className="mb-4">
-          <button
-            onClick={handleBackToClassroom}
-            className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            ← Back to Classroom
-          </button>
-        </div>
+      <Box maxWidth="md" sx={{ mx: "auto", p: 3 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={handleBackToClassroom}
+          sx={{ mb: 3 }}
+        >
+          Back to Classroom
+        </Button>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-          <div className="text-6xl mb-4">📝</div>
-          <h1 className="text-3xl font-bold mb-3">
+        <Card sx={{ textAlign: "center", p: 4 }}>
+          <Typography variant="h3" sx={{ mb: 2 }}>
+            📝
+          </Typography>
+          <Typography variant="h4" sx={{ mb: 2 }}>
             {quizData?.content?.title}
-          </h1>
-          <p className="text-gray-600 mb-6">{quizData?.content?.description}</p>
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            {quizData?.content?.description}
+          </Typography>
 
-          <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <div className="flex items-center bg-blue-100 px-3 py-1 rounded-full">
-              <span className="text-sm">
-                ⏱️ Time Limit: {quizData?.content?.timeLimit} minutes
-              </span>
-            </div>
-            <div className="flex items-center bg-green-100 px-3 py-1 rounded-full">
-              <span className="text-sm">
-                🎯 Passing Score: {quizData?.content?.passingScore}%
-              </span>
-            </div>
-            <div className="flex items-center bg-purple-100 px-3 py-1 rounded-full">
-              <span className="text-sm">
-                📊 {quizData?.content?.questions?.length} Questions
-              </span>
-            </div>
-          </div>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1,
+              justifyContent: "center",
+              mb: 4,
+            }}
+          >
+            <Chip
+              icon={<AccessTimeIcon />}
+              label={`Time Limit: ${quizData?.content?.timeLimit} minutes`}
+            />
+            <Chip
+              label={`Passing Score: ${quizData?.content?.passingScore}%`}
+              color="success"
+            />
+            <Chip
+              label={`${quizData?.content?.questions?.length} Questions`}
+              variant="outlined"
+            />
+          </Box>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
-            <h3 className="font-semibold mb-2">Instructions:</h3>
-            <ul className="text-sm space-y-1 list-disc list-inside">
-              <li>Read each question carefully before answering</li>
-              <li>
-                You can navigate between questions using the navigation buttons
-              </li>
-              <li>Your progress is automatically saved</li>
-              <li>Submit your quiz before time runs out</li>
-            </ul>
-          </div>
+          <Card
+            variant="outlined"
+            sx={{ textAlign: "left", mb: 4, bgcolor: "" }}
+          >
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Instructions:
+              </Typography>
+              <List dense>
+                <ListItem>
+                  <ListItemText primary="Read each question carefully before answering" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="You can navigate between questions using the navigation buttons" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Your progress is automatically saved" />
+                </ListItem>
+                <ListItem>
+                  <ListItemText primary="Submit your quiz before time runs out" />
+                </ListItem>
+              </List>
+            </CardContent>
+          </Card>
 
-          <button
+          <Button
+            variant="contained"
+            size="large"
             onClick={handleStartQuiz}
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            sx={{ px: 4, py: 1.5 }}
           >
             Start Quiz
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Card>
+      </Box>
     )
   }
 
   if (showResults) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="text-center mb-8">
-            <div
-              className={`text-6xl mb-4 ${passed ? "text-green-500" : "text-red-500"}`}
-            >
-              {passed ? "✅" : "❌"}
-            </div>
-            <h1 className="text-3xl font-bold mb-2">
+      <Box maxWidth="lg" sx={{ mx: "auto", p: 3 }}>
+        <Card sx={{ p: 4 }}>
+          <Box sx={{ textAlign: "center", mb: 4 }}>
+            {passed ? (
+              <CheckIcon sx={{ fontSize: 60, color: "success.main", mb: 2 }} />
+            ) : (
+              <CloseIcon sx={{ fontSize: 60, color: "error.main", mb: 2 }} />
+            )}
+            <Typography variant="h4" sx={{ mb: 1 }}>
               Quiz {passed ? "Passed!" : "Failed"}
-            </h1>
-            <div
-              className={`text-4xl font-bold mb-2 ${passed ? "text-green-500" : "text-red-500"}`}
+            </Typography>
+            <Typography
+              variant="h3"
+              sx={{ mb: 1, color: passed ? "success.main" : "error.main" }}
             >
               {scorePercentage}%
-            </div>
-            <p className="text-gray-600">
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
               You scored {earnedPoints} out of {totalPoints} points
-            </p>
-          </div>
+            </Typography>
+          </Box>
 
-          <hr className="my-6" />
+          <Divider sx={{ my: 3 }} />
 
-          <h2 className="text-xl font-semibold mb-4">Review Your Answers:</h2>
-          <div className="space-y-4">
+          <Typography variant="h5" sx={{ mb: 3 }}>
+            Review Your Answers:
+          </Typography>
+
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {quizData.content.questions.map(
               (question: QuizQuestion, index: number) => {
                 const userAnswer = userAnswers.find(
@@ -323,190 +408,219 @@ const QuizPage = () => {
                 const isCorrect = userAnswer?.isCorrect || false
 
                 return (
-                  <div key={question.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-medium">
-                        Question {index + 1}: {question.question}
-                      </h3>
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-semibold ${
-                          isCorrect
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
+                  <Card key={question.id} variant="outlined">
+                    <CardContent>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-start",
+                          mb: 2,
+                        }}
                       >
-                        {isCorrect ? "Correct" : "Incorrect"}
-                      </span>
-                    </div>
+                        <Typography variant="h6">
+                          Question {index + 1}: {question.question}
+                        </Typography>
+                        <Chip
+                          label={isCorrect ? "Correct" : "Incorrect"}
+                          color={isCorrect ? "success" : "error"}
+                          size="small"
+                        />
+                      </Box>
 
-                    <div className="space-y-2 text-sm">
-                      <p className="text-gray-600">
-                        <span className="font-medium">Your answer:</span>{" "}
-                        {userAnswer?.answer || "No answer"}
-                      </p>
-                      {!isCorrect && (
-                        <p className="text-green-600">
-                          <span className="font-medium">Correct answer:</span>{" "}
-                          {question.correctAnswer}
-                        </p>
-                      )}
-                      <p className="text-gray-500">
-                        <span className="font-medium">Points:</span>{" "}
-                        {question.points}
-                      </p>
-                    </div>
-                  </div>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 1,
+                        }}
+                      >
+                        <Typography variant="body2">
+                          <strong>Your answer:</strong>{" "}
+                          {userAnswer?.answer || "No answer"}
+                        </Typography>
+                        {!isCorrect && (
+                          <Typography variant="body2" color="success.main">
+                            <strong>Correct answer:</strong>{" "}
+                            {question.correctAnswer}
+                          </Typography>
+                        )}
+                        <Typography variant="body2" color="text.secondary">
+                          <strong>Points:</strong> {question.points}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
                 )
               }
             )}
-          </div>
+          </Box>
 
-          <div className="flex gap-3 justify-center mt-8">
-            <button
-              onClick={handleBackToClassroom}
-              className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition-colors"
-            >
+          <Box
+            sx={{ display: "flex", gap: 2, justifyContent: "center", mt: 4 }}
+          >
+            <Button variant="outlined" onClick={handleBackToClassroom}>
               Back to Classroom
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="contained"
               onClick={() => window.location.reload()}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Take Quiz Again
-            </button>
-          </div>
-        </div>
-      </div>
+            </Button>
+          </Box>
+        </Card>
+      </Box>
     )
   }
 
   // Main quiz interface
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleBackToClassroom}
-              className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              ← Back to Classroom
-            </button>
-          </div>
-          <h1 className="text-2xl font-bold">{quizData.content.title}</h1>
-          <div
-            className={`px-3 py-1 rounded-full font-semibold ${
-              timeRemaining < 300
-                ? "bg-red-100 text-red-800"
-                : "bg-blue-100 text-blue-800"
-            }`}
+    <Box sx={{ maxWidth: 1200, mx: "auto", p: 2 }}>
+      <AppBar position="static" color="transparent" elevation={1}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            onClick={handleBackToClassroom}
+            sx={{ mr: 2 }}
           >
-            ⏱️ {formatTime(timeRemaining)}
-          </div>
-        </div>
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            {quizData.content.title}
+          </Typography>
+          <Chip
+            icon={<AccessTimeIcon />}
+            label={formatTime(timeRemaining)}
+            color={timeRemaining < 300 ? "error" : "primary"}
+            variant="filled"
+          />
+        </Toolbar>
+      </AppBar>
 
-        <div className="mb-6">
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
-            <span>
+      <Card sx={{ mt: 2, p: 3 }}>
+        <Box sx={{ mb: 3 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 1,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
               Question {currentQuestionIndex + 1} of{" "}
               {quizData.content.questions.length}
-            </span>
-            <span>{Math.round(lessonProgress)}% Complete</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${lessonProgress}%` }}
-            ></div>
-          </div>
-        </div>
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {Math.round(lessonProgress)}% Complete
+            </Typography>
+          </Box>
+          <LinearProgress
+            variant="determinate"
+            value={lessonProgress}
+            sx={{ height: 8, borderRadius: 4 }}
+          />
+        </Box>
 
         {/* Question */}
-        <div className="border rounded-lg p-6 mb-6">
-          <div className="flex justify-between items-start mb-4">
-            <h2 className="text-lg font-medium">{currentQuestion.question}</h2>
-            <span className="bg-gray-100 px-2 py-1 rounded text-sm">
-              {currentQuestion.points} pts
-            </span>
-          </div>
+        <Card variant="outlined" sx={{ p: 3, mb: 3 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              mb: 3,
+            }}
+          >
+            <Typography variant="h6">{currentQuestion?.question}</Typography>
+            <Chip label={`${currentQuestion?.points} pts`} variant="outlined" />
+          </Box>
 
           {renderQuestion()}
-        </div>
+        </Card>
 
         {/* Navigation */}
-        <div className="flex justify-between items-center">
-          <button
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Button
+            startIcon={<NavigateBeforeIcon />}
             onClick={handlePreviousQuestion}
             disabled={currentQuestionIndex === 0}
-            className="flex items-center px-4 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+            variant="outlined"
           >
-            ← Previous
-          </button>
+            Previous
+          </Button>
 
-          <div className="flex gap-2">
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
             {quizData.content.questions.map(
               (_: QuizQuestion, index: number) => (
-                <button
+                <Button
                   key={index}
+                  variant={
+                    index === currentQuestionIndex ? "contained" : "outlined"
+                  }
                   onClick={() => handleGoToQuestion(index)}
-                  className={`w-10 h-10 rounded border font-medium transition-colors ${
-                    index === currentQuestionIndex
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                  }`}
+                  sx={{ minWidth: 40, height: 40 }}
                 >
                   {index + 1}
-                </button>
+                </Button>
               )
             )}
-          </div>
+          </Box>
 
           {currentQuestionIndex === quizData.content.questions.length - 1 ? (
-            <button
+            <Button
+              variant="contained"
+              color="success"
               onClick={() => setConfirmSubmitDialog(true)}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              endIcon={<EmojiEventsIcon />}
             >
               Submit Quiz
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
+              endIcon={<NavigateNextIcon />}
               onClick={handleNextQuestion}
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              variant="contained"
             >
-              Next →
-            </button>
+              Next
+            </Button>
           )}
-        </div>
-      </div>
+        </Box>
+      </Card>
 
       {/* Submit Confirmation Dialog */}
-      {confirmSubmitDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">Submit Quiz?</h3>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to submit your quiz? You will not be able to
-              make changes after submission.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setConfirmSubmitDialog(false)}
-                className="px-4 py-2 border rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmitQuiz}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      <Dialog
+        open={confirmSubmitDialog}
+        onClose={() => setConfirmSubmitDialog(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Submit Quiz?</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to submit your quiz? You will not be able to
+            make changes after submission.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmSubmitDialog(false)}>Cancel</Button>
+          <Button
+            onClick={handleSubmitQuiz}
+            variant="contained"
+            color="success"
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   )
 }
 
