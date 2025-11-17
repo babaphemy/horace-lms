@@ -26,6 +26,7 @@ import { useQuery, useMutation, useQueryClient } from "react-query"
 import Link from "next/link"
 import { allCourseQuiz } from "@/app/api/rest"
 import { Quiz } from "@/types/types"
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 
 const QuizList: React.FC<{ id: string }> = ({ id }) => {
   const queryClient = useQueryClient()
@@ -112,9 +113,40 @@ const QuizList: React.FC<{ id: string }> = ({ id }) => {
         alignItems="center"
         mb={4}
       >
-        <Typography variant="h4" component="h1" fontWeight="bold">
-          All Quiz ({quiz?.length || 0})
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <Button
+            variant="text"
+            startIcon={<ArrowBackIcon />}
+            component={Link}
+            href="/dashboard"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              color: "text.primary",
+              background: "none",
+              border: "none",
+              boxShadow: "none",
+              textTransform: "none",
+              "&:hover": {
+                background: "transparent",
+                textDecoration: "underline",
+              },
+            }}
+          >
+            Go Back
+          </Button>
+
+          <Typography variant="h4" component="h1" fontWeight="bold">
+            All Quiz ({quiz?.length || 0})
+          </Typography>
+        </Box>
         <Button
           variant="contained"
           component={Link}

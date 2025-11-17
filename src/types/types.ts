@@ -668,3 +668,14 @@ export type LessonMaterial = {
   updatedOn: string
   size?: string
 }
+
+export interface TQuizScores {
+  id: string
+  userId: string
+  quizId: string
+  score: number
+  maxScore: number
+  timeTaken: number
+  createdOn: string | null
+  modifiedOn: string | null
+}

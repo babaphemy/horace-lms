@@ -16,6 +16,7 @@ import {
   OrganizationMember,
   CorporateAuthRequest,
   TAddQuizScore,
+  TQuizScores,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -802,7 +803,19 @@ const courseAccessToken = async () => {
   return response.json()
 }
 
+const getUserQuizScores = async (userId: string): Promise<TQuizScores[]> => {
+  const response = await fetch(
+    `${basePath}course/quiz/scores?userId=${userId}`,
+    auth
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 export {
+  getUserQuizScores,
   courseGrantAccess,
   courseAccessToken,
   saveMyProgress,
