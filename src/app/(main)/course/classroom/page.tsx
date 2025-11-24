@@ -4,7 +4,7 @@ import { Box, Grid, CircularProgress, Alert } from "@mui/material"
 import FooterLte from "@/components/layout/FooterLte"
 import { useSearchParams } from "next/navigation"
 import { useQuery } from "react-query"
-import { fetchCourse } from "@/app/api/rest"
+import { fetchCourse, userQuizScores } from "@/app/api/rest"
 import ContentCard from "@/components/classroom/ContentCard"
 import LessonContent from "@/components/classroom/LessonContent"
 import { useSession } from "next-auth/react"
@@ -30,6 +30,12 @@ const ClassroomPage = () => {
     queryFn: () => fetchCourse(id as string, session?.user?.id as string),
     refetchOnWindowFocus: false,
     enabled: !!id && !!session?.user?.id,
+  })
+
+  const { data: userScores } = useQuery({
+    queryFn: () => userQuizScores(session?.user?.id as string),
+    queryKey: ["userQuizScores", session?.user?.id],
+    enabled: !!session?.user?.id,
   })
 
   const [currentLesson, setCurrentLesson] = React.useState(
@@ -145,6 +151,8 @@ const ClassroomPage = () => {
                 handleSelect={handleLessonSelect}
                 quizSummary={courseQuiz || []}
                 courseId={id || ""}
+                progress={progress?.progress || []}
+                userScores={userScores}
               />
             </Box>
           </Grid>

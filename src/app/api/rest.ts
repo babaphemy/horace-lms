@@ -15,6 +15,7 @@ import {
   UserDto,
   OrganizationMember,
   CorporateAuthRequest,
+  TUserScore,
   TAddQuizScore,
   TQuizScores,
 } from "@/types/types"
@@ -399,6 +400,17 @@ const dashboardStat = async (userId: string) => {
   const response = await fetch(`${basePath}user/dashboard/${userId}`, auth)
   if (!response.ok) {
     return { error: response.status }
+  }
+  return response.json()
+}
+
+const userQuizScores = async (userId: string): Promise<TUserScore[]> => {
+  const response = await fetch(
+    `${basePath}course/quiz/scores?userId=${userId}`,
+    auth
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
   }
   return response.json()
 }
@@ -883,5 +895,6 @@ export {
   addQuiz,
   lessonQuiz,
   allCourseQuiz,
+  userQuizScores,
   addScore,
 }
