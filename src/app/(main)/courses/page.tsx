@@ -9,7 +9,7 @@ import Fuse, { FuseResult } from "fuse.js"
 import { debounce } from "lodash"
 import { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
-import { fetchCourses } from "../../api/rest"
+import { myRegisteredCourses } from "../../api/rest"
 
 import CourseData from "@/components/courses/CourseData"
 import { coursefilter } from "@/utils/util"
@@ -29,7 +29,7 @@ const Courses = () => {
   const dispatch = useContext(AppDpx)
   const { data, isLoading } = useQuery({
     queryKey: ["usersRegisteredCourses", session?.user?.id],
-    queryFn: () => fetchCourses(session?.user?.id as string, 0, 10),
+    queryFn: () => myRegisteredCourses(session?.user?.id as string),
     refetchOnWindowFocus: false,
     enabled: !!session?.user?.id,
   })
@@ -53,14 +53,13 @@ const Courses = () => {
   }, 700)
 
   useEffect(() => {
-    if (data?.content?.length > 0) {
-      const content = data.content
-      setFilteredData(content)
-      setAllCourses(content)
-      dispatch({ type: COURSES_SET, data: content })
+    if (data?.length > 0) {
+      setFilteredData(data)
+      setAllCourses(data)
+      dispatch({ type: COURSES_SET, data: data })
       return
     }
-  }, [data?.content, dispatch])
+  }, [data, dispatch])
 
   return (
     <Box>
