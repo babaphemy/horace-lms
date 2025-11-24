@@ -38,7 +38,8 @@ import {
   EmojiEvents as EmojiEventsIcon,
 } from "@mui/icons-material"
 import { useSession } from "next-auth/react"
-import { addScore } from "@/app/api/rest"
+import { addScore, getUserQuizScores } from "@/app/api/rest"
+import { useQuery } from "react-query"
 
 interface UserAnswer {
   questionId: number
@@ -66,6 +67,22 @@ const QuizPage = () => {
   const { quiz: quizData }: { quiz: Quiz } = useLessonQuiz({
     lid: lid as string,
   })
+
+  const { data: quizScores, isLoading: isLoadingScores } = useQuery({
+    queryKey: ["quizScores", quizData?.id, session?.user?.id],
+    queryFn: () => getUserQuizScores(session?.user?.id ?? ""),
+    enabled: !!session?.user?.id,
+  })
+
+  const hasUserTakenQuiz = useMemo(() => {
+    if (!quizScores || !quizData?.id) return false
+    return quizScores.some((score) => score.quizId === quizData.id)
+  }, [quizScores, quizData?.id])
+
+  const previousQuizScore = useMemo(() => {
+    if (!quizScores || !quizData?.id) return null
+    return quizScores.find((score) => score.quizId === quizData.id)
+  }, [quizScores, quizData?.id])
 
   const handleStartQuiz = () => {
     setQuizStarted(true)
@@ -285,8 +302,108 @@ const QuizPage = () => {
     }
   }
 
+  if (isLoadingScores) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
+        <Typography>Checking quiz status...</Typography>
+      </Box>
+    )
+  }
+
+  if (hasUserTakenQuiz && previousQuizScore) {
+    return (
+      <Box maxWidth="md" sx={{ mx: "auto", p: 3 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={handleBackToClassroom}
+          sx={{ mb: 3 }}
+        >
+          Back to Classroom
+        </Button>
+
+        <Card sx={{ textAlign: "center", p: 4 }}>
+          <Typography variant="h3" sx={{ mb: 2 }}>
+            ✅
+          </Typography>
+          <Typography variant="h4" sx={{ mb: 2 }}>
+            Quiz Already Completed
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            You have already taken this quiz and cannot retake it.
+          </Typography>
+
+          <Card
+            variant="outlined"
+            sx={{ textAlign: "center", mb: 4, maxWidth: 400, mx: "auto" }}
+          >
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Your Previous Score:
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 2,
+                  mb: 2,
+                }}
+              >
+                <Chip
+                  icon={<EmojiEventsIcon />}
+                  label={`Score: ${previousQuizScore.score}%`}
+                  color={
+                    previousQuizScore.score >= quizData?.content?.passingScore
+                      ? "success"
+                      : "error"
+                  }
+                  variant="filled"
+                />
+                <Chip
+                  icon={<AccessTimeIcon />}
+                  label={`Time: ${previousQuizScore.timeTaken}s`}
+                  variant="outlined"
+                />
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                Passing Score: {quizData?.content?.passingScore}%
+              </Typography>
+              <Typography
+                variant="body2"
+                color={
+                  previousQuizScore.score >= quizData?.content?.passingScore
+                    ? "success.main"
+                    : "error.main"
+                }
+                sx={{ fontWeight: "bold", mt: 1 }}
+              >
+                {previousQuizScore.score >= quizData?.content?.passingScore
+                  ? "PASSED"
+                  : "FAILED"}
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Button
+            variant="contained"
+            onClick={handleBackToClassroom}
+            sx={{ px: 4, py: 1.5 }}
+          >
+            Back to Classroom
+          </Button>
+        </Card>
+      </Box>
+    )
+  }
+
   // Quiz start screen
-  if (!quizStarted) {
+  if (!quizStarted && !hasUserTakenQuiz) {
     return (
       <Box maxWidth="md" sx={{ mx: "auto", p: 3 }}>
         <Button
