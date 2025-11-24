@@ -13,12 +13,10 @@ import {
   MainCard,
 } from "@/components/classroom/StyledComponents"
 import LessonHead from "@/components/classroom/LessonHead"
-import LessonResources, {
-  LessonMaterial,
-} from "@/components/classroom/LessonResources"
 import { useLessonProgress } from "@/hooks/useLessonProgress"
-import { LessonDto, TopicDto } from "@/types/types"
+import { LessonDto, LessonMaterial, TopicDto } from "@/types/types"
 import useQuizSummary from "@/hooks/useQuizSummary"
+import LessonResources from "@/components/classroom/LessonResources"
 
 const ClassroomPage = () => {
   const { data: session } = useSession()
@@ -120,6 +118,7 @@ const ClassroomPage = () => {
                 tabValue={tabValue}
                 setTabValue={setTabValue}
                 handleTabChange={handleTabChange}
+                userID={session?.user?.id || ""}
               />
             </Box>
           </Grid>

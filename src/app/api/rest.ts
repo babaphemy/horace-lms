@@ -16,6 +16,8 @@ import {
   OrganizationMember,
   CorporateAuthRequest,
   TUserScore,
+  TAddQuizScore,
+  TQuizScores,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -166,12 +168,34 @@ const addSubjectComplete = async (
   }
   return resp.json()
 }
-
-const fetchCourses = async (page: number = 0, size: number = 10) => {
+export const fetchOrgCourses = async (
+  orgid: string,
+  page: number = 0,
+  size: number = 10
+) => {
   const response = await fetch(
-    `${basePath}course/courses?page=${page}&size=${size}`,
+    `${basePath}course/org-courses?page=${page}&size=${size}&orgId=${orgid}`,
     auth
   )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
+const fetchCourses = async (
+  userId?: string,
+  page: number = 0,
+  size: number = 10
+) => {
+  let url = `${basePath}course/courses?page=${page}&size=${size}`
+
+  if (userId) {
+    url += `&userId=${userId}`
+  }
+
+  const response = await fetch(url, auth)
+
   if (!response.ok) {
     return { error: response.status }
   }
@@ -201,6 +225,35 @@ const myRegisteredCourses = async (userId: string) => {
     `${basePath}course/courses/my-registered/${userId}`,
     auth
   )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const myNotes = async (userId: string, lessonId: string) => {
+  const response = await fetch(`${basePath}course/${userId}/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+const addNote = async (data: {
+  userId: string
+  lessonId: string
+  notes: string
+}) => {
+  const response = await fetch(
+    `${basePath}course/user/notes`,
+    PostSettings(data)
+  )
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+
+const lessonMaterials = async (lessonId: string) => {
+  const response = await fetch(`${basePath}course/materials/${lessonId}`, auth)
   if (!response.ok) {
     return { error: response.status }
   }
@@ -237,8 +290,38 @@ const addQuiz = async (data: TQuiz) => {
 
   return response.json()
 }
+
+const addScore = async (data: TAddQuizScore) => {
+  const response = await fetch(
+    `${basePath}course/quiz/score`,
+    PostSettings(data)
+  )
+
+  if (!response.ok) {
+    throw new Error("Failed to submit quiz score")
+  }
+  return response.json()
+}
+export const editQuiz = async ({ id, data }: { id: string; data: TQuiz }) => {
+  const response = await fetch(
+    `${basePath}course/quiz/edit/${id}`,
+    PutSettings(data)
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 const lessonQuiz = async (lessonId: string) => {
   const response = await fetch(`${basePath}course/quiz/${lessonId}`, auth)
+  if (!response.ok) {
+    return { error: response.status }
+  }
+  return response.json()
+}
+export const getQuizById = async (id: string) => {
+  const response = await fetch(`${basePath}course/quiz/id/${id}`, auth)
   if (!response.ok) {
     return { error: response.status }
   }
@@ -732,7 +815,19 @@ const courseAccessToken = async () => {
   return response.json()
 }
 
+const getUserQuizScores = async (userId: string): Promise<TQuizScores[]> => {
+  const response = await fetch(
+    `${basePath}course/quiz/scores?userId=${userId}`,
+    auth
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 export {
+  getUserQuizScores,
   courseGrantAccess,
   courseAccessToken,
   saveMyProgress,
@@ -741,6 +836,9 @@ export {
   getUserProgress,
   addCourseDetail,
   addThumbnail,
+  myNotes,
+  addNote,
+  lessonMaterials,
   addTopic,
   addLecture,
   activities,
@@ -798,4 +896,5 @@ export {
   lessonQuiz,
   allCourseQuiz,
   userQuizScores,
+  addScore,
 }

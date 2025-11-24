@@ -12,13 +12,15 @@ import type { NextPage } from "next"
 import { useContext, useEffect } from "react"
 import { useQuery } from "react-query"
 import { fetchCourses } from "../../api/rest"
+import { useSession } from "next-auth/react"
 
 const Home: NextPage = () => {
   const dispatch = useContext(AppDpx)
+  const { data: session } = useSession()
 
   const { data, isLoading } = useQuery(
     "usersAdddoc",
-    () => fetchCourses(0, 10),
+    () => fetchCourses(session?.user?.id, 0, 10),
     {
       staleTime: 5000,
       cacheTime: 10,

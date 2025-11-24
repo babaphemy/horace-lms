@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import { useForm, useFieldArray, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -25,6 +25,7 @@ import {
   Radio,
   RadioGroup,
   Chip,
+  Skeleton,
 } from "@mui/material"
 import {
   Add as AddIcon,
@@ -32,24 +33,54 @@ import {
   Error as ErrorIcon,
   CheckCircle as CheckCircleIcon,
   Warning as WarningIcon,
+  ArrowBack as ArrowBackIcon,
 } from "@mui/icons-material"
 import { useMutation, useQuery, useQueryClient } from "react-query"
 import { quizSchema, TQuiz } from "@/schema/quizSchema"
-import { addQuiz, fetchCourse } from "@/app/api/rest"
+import { getQuizById, fetchCourse, editQuiz } from "@/app/api/rest"
 import { LessonDto } from "@/types/types"
 import { notifyError, notifySuccess } from "@/utils/notification"
+import { useParams, useRouter } from "next/navigation"
 
-const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
+const QuizEditPage = () => {
+  const params = useParams()
+  const router = useRouter()
+  const { id, qid } = params
   const [activeStep, setActiveStep] = useState(0)
   const queryClient = useQueryClient()
 
-  const { data: courseData } = useQuery({
-    queryKey: ["course", id],
-    queryFn: () => fetchCourse(id),
-    enabled: !!id,
+  const {
+    data: quizData,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["quiz", qid],
+    queryFn: async () => getQuizById(qid as string),
+    enabled: !!qid,
     refetchOnWindowFocus: false,
   })
 
+  const { data: courseData } = useQuery({
+    queryKey: ["course", quizData?.courseId],
+    queryFn: () => fetchCourse(quizData?.courseId),
+    enabled: !!quizData?.courseId,
+    refetchOnWindowFocus: false,
+  })
+
+  useEffect(() => {
+    if (!id) {
+      router.push("/dashboard")
+      return
+    }
+    if (!qid) {
+      router.push(`/dashboard/courses/${id}/quiz/`)
+      return
+    }
+    if (!isLoading && !quizData && !error) {
+      router.push(`/dashboard/courses/${id}/quiz/`)
+      return
+    }
+  }, [id, qid, isLoading, quizData, error, router])
   const {
     control,
     handleSubmit,
@@ -92,17 +123,31 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
     control,
     name: "content.questions",
   })
+  useEffect(() => {
+    if (quizData) {
+      reset({
+        lessonId: quizData.lessonId || "",
+        content: {
+          title: quizData.content?.title || "",
+          description: quizData.content?.description || "",
+          timeLimit: quizData.content?.timeLimit || 30,
+          passingScore: quizData.content?.passingScore || 70,
+          questions: quizData.content?.questions || [],
+        },
+      })
+    }
+  }, [quizData, reset])
 
-  const createQuizMutation = useMutation({
-    mutationFn: addQuiz,
+  const updateQuizMutation = useMutation({
+    mutationFn: (data: TQuiz) => editQuiz({ id: qid as string, data }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["quiz", qid] })
       queryClient.invalidateQueries({ queryKey: ["quiz"] })
-      notifySuccess("Quiz created successfully!")
-      reset()
-      setActiveStep(0)
+      notifySuccess("Quiz updated successfully!")
+      router.back()
     },
     onError: (error: Error) => {
-      notifyError(error?.message || "Failed to create quiz. Please try again.")
+      notifyError(error?.message || "Failed to update quiz. Please try again.")
     },
   })
 
@@ -173,7 +218,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
     }
 
     try {
-      await createQuizMutation.mutateAsync(data)
+      await updateQuizMutation.mutateAsync(data)
     } catch {
       notifyError("Submission error")
     }
@@ -393,12 +438,81 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
     return answer && answer.trim() !== ""
   }
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Paper elevation={3} sx={{ p: 4 }}>
+          <Skeleton variant="text" width="40%" height={60} sx={{ mb: 3 }} />
+          <Skeleton variant="rectangular" height={80} sx={{ mb: 2 }} />
+          <Skeleton variant="rectangular" height={400} />
+        </Paper>
+      </Container>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Paper elevation={3} sx={{ p: 4 }}>
+          <Alert severity="error" icon={<ErrorIcon />}>
+            <Typography variant="h6" gutterBottom>
+              Failed to load quiz
+            </Typography>
+            <Typography variant="body2">
+              {(error as Error)?.message ||
+                "An error occurred while loading the quiz."}
+            </Typography>
+            <Button
+              startIcon={<ArrowBackIcon />}
+              onClick={() => router.back()}
+              sx={{ mt: 2 }}
+            >
+              Go Back
+            </Button>
+          </Alert>
+        </Paper>
+      </Container>
+    )
+  }
+
+  // Quiz not found
+  if (!quizData) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Paper elevation={3} sx={{ p: 4 }}>
+          <Alert severity="warning" icon={<WarningIcon />}>
+            <Typography variant="h6" gutterBottom>
+              Quiz not found
+            </Typography>
+            <Typography variant="body2">
+              The quiz you are looking for does not exist or has been deleted.
+            </Typography>
+            <Button
+              startIcon={<ArrowBackIcon />}
+              onClick={() => router.back()}
+              sx={{ mt: 2 }}
+            >
+              Go Back
+            </Button>
+          </Alert>
+        </Paper>
+      </Container>
+    )
+  }
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Create New Quiz
-        </Typography>
+        <Box display="flex" alignItems="center" gap={2} mb={3}>
+          <IconButton onClick={() => router.back()}>
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h4" component="h1">
+            Edit Quiz
+          </Typography>
+        </Box>
 
         <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
           {steps.map((label) => (
@@ -410,9 +524,9 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
 
         {renderFormErrors()}
 
-        {createQuizMutation.isError && (
+        {updateQuizMutation.isError && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            Failed to create quiz. Please try again.
+            Failed to update quiz. Please try again.
           </Alert>
         )}
 
@@ -421,48 +535,25 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
             <Box>
               <Grid container spacing={3}>
                 <Grid size={{ xs: 12 }}>
-                  <FormControl fullWidth error={!!errors.lessonId}>
-                    <InputLabel id="lesson-select-label">
-                      Select Lesson *
-                    </InputLabel>
-                    <Controller
-                      name="lessonId"
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          labelId="lesson-select-label"
-                          label="Select Lesson *"
-                          MenuProps={{
-                            PaperProps: {
-                              style: {
-                                maxHeight: 300,
-                              },
-                            },
-                          }}
-                        >
-                          {!lessons ? (
-                            <MenuItem value="" disabled>
-                              Loading lessons...
-                            </MenuItem>
-                          ) : lessons.length === 0 ? (
-                            <MenuItem value="" disabled>
-                              No lessons available
-                            </MenuItem>
-                          ) : (
-                            lessons.map((lesson) => (
-                              <MenuItem key={lesson.id} value={lesson.id}>
-                                {lesson.title || `Lesson ${lesson.id}`}
-                              </MenuItem>
-                            ))
-                          )}
-                        </Select>
-                      )}
-                    />
-                    {errors.lessonId && (
-                      <FormHelperText>{errors.lessonId.message}</FormHelperText>
-                    )}
-                  </FormControl>
+                  <Box sx={{ mb: 1 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      gutterBottom
+                    >
+                      Lesson
+                    </Typography>
+                    <Typography variant="h6">
+                      {lessons.find(
+                        (l) => l.id?.toString() === String(watch("lessonId"))
+                      )?.title ||
+                        quizData?.lessonId ||
+                        "Unknown Lesson"}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      The lesson cannot be changed after quiz creation
+                    </Typography>
+                  </Box>
                 </Grid>
 
                 <Grid size={{ xs: 12 }}>
@@ -822,7 +913,7 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
               )}
 
               <Typography variant="h6" gutterBottom>
-                Review Your Quiz
+                Review Your Changes
               </Typography>
               <Paper sx={{ p: 3, mb: 3 }}>
                 <Typography variant="h6" gutterBottom>
@@ -936,27 +1027,32 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
               Back
             </Button>
 
-            {activeStep < steps.length - 1 ? (
-              <Button variant="contained" onClick={handleNext}>
-                Next
+            <Box display="flex" gap={2}>
+              <Button variant="outlined" onClick={() => router.back()}>
+                Cancel
               </Button>
-            ) : (
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={
-                  isSubmitting ||
-                  createQuizMutation.isLoading ||
-                  !checkAllQuestionsAnswered().allAnswered
-                }
-              >
-                {isSubmitting || createQuizMutation.isLoading
-                  ? "Creating..."
-                  : !checkAllQuestionsAnswered().allAnswered
-                    ? "Cannot Submit - Missing Answers"
-                    : "Create Quiz"}
-              </Button>
-            )}
+              {activeStep < steps.length - 1 ? (
+                <Button variant="contained" onClick={handleNext}>
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={
+                    isSubmitting ||
+                    updateQuizMutation.isLoading ||
+                    !checkAllQuestionsAnswered().allAnswered
+                  }
+                >
+                  {isSubmitting || updateQuizMutation.isLoading
+                    ? "Updating..."
+                    : !checkAllQuestionsAnswered().allAnswered
+                      ? "Cannot Submit - Missing Answers"
+                      : "Update Quiz"}
+                </Button>
+              )}
+            </Box>
           </Box>
         </form>
       </Paper>
@@ -964,4 +1060,4 @@ const CreateQuiz: React.FC<{ id: string }> = ({ id }) => {
   )
 }
 
-export default CreateQuiz
+export default QuizEditPage
