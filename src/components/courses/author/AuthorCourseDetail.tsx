@@ -19,6 +19,7 @@ import {
   Assessment,
   Schedule,
   ArrowBack,
+  Edit,
 } from "@mui/icons-material"
 
 import Link from "next/link"
@@ -75,14 +76,33 @@ const AuthorCourseDetail: React.FC = () => {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ mb: 3 }}>
-        <Button
-          startIcon={<ArrowBack />}
-          component={Link}
-          href="/dashboard"
-          sx={{ mb: 2 }}
+        <Box
+          sx={{
+            mb: 3,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          Back to Dashboard
-        </Button>
+          <Button
+            startIcon={<ArrowBack />}
+            component={Link}
+            href="/dashboard"
+            sx={{ mb: 2 }}
+          >
+            Back to Dashboard
+          </Button>
+
+          <Button
+            startIcon={<Edit />}
+            component={Link}
+            variant="contained"
+            href={`/dashboard/courses/add?cid=${course.id}`}
+            sx={{ mb: 2 }}
+          >
+            Edit Course
+          </Button>
+        </Box>
         <Typography variant="h4" gutterBottom>
           {course?.courseName}
         </Typography>
