@@ -399,7 +399,7 @@ const recentCourses = async (
 const dashboardStat = async (userId: string) => {
   const response = await fetch(`${basePath}user/dashboard/${userId}`, auth)
   if (!response.ok) {
-    return { error: response.status }
+    throw new Error(response.statusText)
   }
   return response.json()
 }

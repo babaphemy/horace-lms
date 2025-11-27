@@ -108,13 +108,13 @@ export const StudentsList: React.FC<StudentsListProps> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredStudents?.map((student, index) => (
+            {filteredStudents?.map((student) => (
               <StudentRow
                 courseQuiz={courseQuiz}
                 course={course}
                 handleMenuOpen={handleMenuOpen}
                 student={student}
-                key={index}
+                key={student.id}
               />
             ))}
           </TableBody>

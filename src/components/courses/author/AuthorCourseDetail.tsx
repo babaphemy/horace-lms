@@ -43,7 +43,7 @@ const AuthorCourseDetail: React.FC = () => {
   } = useCourse(id as string, userId as string)
 
   const { data } = useQuery({
-    queryKey: ["registered=students", id],
+    queryKey: ["registered-students", id],
     queryFn: () => registeredStudents(id as string),
     enabled: !!id,
   })

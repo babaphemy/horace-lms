@@ -19,7 +19,6 @@ export type FilterItem = {
   label: string
   value: string
 }
-//6915e1ce3617386fc6a7d9f7
 const Courses = () => {
   const [allCourses, setAllCourses] = useState([])
   const [filteredData, setFilteredData] = useState<tCourseLte[] | []>([])

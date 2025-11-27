@@ -53,7 +53,7 @@ export const CourseStatistics: React.FC<CourseStatisticsProps> = ({
         {/* Asset Statistics */}
         <Grid container spacing={2}>
           {stats.map((stat, index) => (
-            <Grid sx={{ xs: 6, sm: 6, md: 2.4 }} key={index}>
+            <Grid size={{ xs: 6, sm: 6, md: 2.4 }} key={index}>
               <Box sx={{ textAlign: "center", p: 2 }}>
                 {stat.icon}
                 <Typography

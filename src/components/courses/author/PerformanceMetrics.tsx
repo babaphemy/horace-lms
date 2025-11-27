@@ -60,8 +60,8 @@ export const PerformanceMetrics: React.FC<PerformanceMetricsProps> = ({
 
   return (
     <Grid container spacing={2}>
-      {metrics.map((metric, index) => (
-        <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+      {metrics.map((metric) => (
+        <Grid size={{ xs: 12, sm: 6, md: 3 }} key={metric.title}>
           <Card>
             <CardContent>
               <Box display="flex" alignItems="center" mb={2}>

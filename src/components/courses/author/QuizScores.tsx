@@ -29,7 +29,11 @@ export const QuizScores: React.FC<QuizScoresProps> = ({
       return null
     }
 
-    const maxScore = quizScore?.maxScore * 100 || 100
+    //? max score is showing figure 1. It may be a bug or intentional. So i try to handle both cases.
+    const maxScore =
+      quizScore?.maxScore > 0 && quizScore?.maxScore <= 1
+        ? quizScore?.maxScore * 100
+        : quizScore?.maxScore || 100
     const passingScore = quiz.passingScore || quiz.content?.passingScore || 100
 
     if (
