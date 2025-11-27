@@ -323,7 +323,7 @@ export type tCourse = {
   image: string
   price: number
   status: boolean
-  curriculum: tCurriculum
+  curriculum?: CurriculumMap
   brief: string
   tax: number
   createdOn: string

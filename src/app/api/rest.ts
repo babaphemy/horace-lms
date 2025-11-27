@@ -414,6 +414,14 @@ const userQuizScores = async (userId: string): Promise<TUserScore[]> => {
   }
   return response.json()
 }
+
+const registeredStudents = async (cid: string): Promise<tUser[]> => {
+  const response = await fetch(`${basePath}course/students/${cid}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 const contactUs = async (data: {
   firstname: string
   lastname: string
@@ -691,6 +699,14 @@ const userOrganization = async (userId: string) => {
   return response.json()
 }
 
+const getUserInfo = async (userId: string): Promise<tUser> => {
+  const response = await fetch(`${basePath}user/${userId}`, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 const getTeamMembers = async (orgId: string, page: number) => {
   const response = await fetch(
     `${basePath}user/org-users/${orgId}?page=${page}&size=10`,
@@ -873,6 +889,7 @@ export {
   isRegistered,
   login2,
   loginUser,
+  registeredStudents,
   manageDraft,
   myRegisteredCourses,
   paystacktx,
@@ -897,4 +914,5 @@ export {
   allCourseQuiz,
   userQuizScores,
   addScore,
+  getUserInfo,
 }

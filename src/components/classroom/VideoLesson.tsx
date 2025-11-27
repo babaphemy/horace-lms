@@ -1,7 +1,7 @@
 "use client"
 
 import { Appcontext } from "@/context/AppContext"
-import { tCurriculum, tNextPrev, tPost, tSection } from "@/types/types"
+import { tCurriculum, tNextPrev, tPost } from "@/types/types"
 import { ThumbDownAltOutlined, ThumbUpAltOutlined } from "@mui/icons-material"
 import {
   Box,
@@ -18,7 +18,6 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import React, { useContext, useEffect } from "react"
 import ReactPlayer from "react-player"
-import Curriculumb from "../courses/Curriculumb"
 import ClassLayout from "../layout/ClassLayout"
 
 interface Props {
@@ -40,14 +39,10 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
   const { course, playId } = useContext(Appcontext)
   const router = useRouter()
 
-  const { curriculum, brief, courseName, category, posts, author } =
-    course || {}
-  const playing = playId || curriculum?.section[0]?.lecture[0]
+  const { brief, courseName, category, posts, author } = course || {}
+  const playing = playId
 
-  const lessonCount =
-    curriculum?.section && curriculum.section.length > 0
-      ? countLectureItems(curriculum)
-      : 0
+  const lessonCount = 0
 
   useEffect(() => {
     if (!course) {
@@ -237,7 +232,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
                 </IconButton>{" "}
               </Typography>
             </Box>
-            <Box className="my-5">
+            {/* <Box className="my-5">
               {curriculum?.section?.map((curriculum: tSection, idx: number) => {
                 return (
                   <Box
@@ -258,7 +253,7 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
                   </Box>
                 )
               })}
-            </Box>
+            </Box> */}
           </Box>
         </div>
         <div className="w-full md:w-2/6 md:ml-6">
@@ -267,11 +262,11 @@ const ClassroomB = ({ handleNext, handlePrev, handleOpenExercise }: Props) => {
               <Typography variant="h6" className="mt-4 mx-4">
                 Content
               </Typography>
-              <Curriculumb
+              {/* <Curriculumb
                 courseName={courseName}
                 curriculum={curriculum}
                 isShort={true}
-              />
+              /> */}
             </Paper>
           </Box>
         </div>

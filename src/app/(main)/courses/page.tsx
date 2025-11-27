@@ -9,7 +9,7 @@ import Fuse, { FuseResult } from "fuse.js"
 import { debounce } from "lodash"
 import { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
-import { myRegisteredCourses } from "../../api/rest"
+import { fetchCourses } from "../../api/rest"
 
 import CourseData from "@/components/courses/CourseData"
 import { coursefilter } from "@/utils/util"
@@ -19,7 +19,7 @@ export type FilterItem = {
   label: string
   value: string
 }
-
+//6915e1ce3617386fc6a7d9f7
 const Courses = () => {
   const [allCourses, setAllCourses] = useState([])
   const [filteredData, setFilteredData] = useState<tCourseLte[] | []>([])
@@ -29,7 +29,7 @@ const Courses = () => {
   const dispatch = useContext(AppDpx)
   const { data, isLoading } = useQuery({
     queryKey: ["usersRegisteredCourses", session?.user?.id],
-    queryFn: () => myRegisteredCourses(session?.user?.id as string),
+    queryFn: () => fetchCourses(undefined, 0, 10),
     refetchOnWindowFocus: false,
     enabled: !!session?.user?.id,
   })

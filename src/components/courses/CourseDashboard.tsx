@@ -65,10 +65,7 @@ const processedSubjects: tCourse[] = [
     image: "https://dummyimage.com/600x400/000/fff",
     price: 99.99,
     status: true,
-    curriculum: {
-      section: [],
-      objective: [],
-    },
+
     brief: "A brief overview of the Advanced Math course.",
     tax: 5.0,
     createdOn: "2025-05-14T12:00:00Z",
