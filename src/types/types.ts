@@ -752,8 +752,8 @@ export interface TQuizScores {
 export interface CourseDTOResponse {
   content: tCourseLte[]
   pageable: {
-    pageNumber: boolean
-    pageSize: boolean
+    pageNumber: number
+    pageSize: number
     sort: {
       empty: boolean
       sorted: boolean
