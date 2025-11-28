@@ -174,7 +174,9 @@ const Drafts = ({
                   flexDirection: "column",
                   alignItems: "stretch",
                 }}
-                onClick={() => handleEditCourse(course.id || "")}
+                onClick={() =>
+                  router.push(`/dashboard/courses/${course.id}/detail`)
+                }
               >
                 <CardContent
                   sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
@@ -288,7 +290,10 @@ const Drafts = ({
                     startIcon={<EditIcon />}
                     size="small"
                     sx={{ flexGrow: 1 }}
-                    onClick={() => handleEditCourse(course.id || "")}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleEditCourse(course.id || "")
+                    }}
                   >
                     Edit Draft
                   </Button>
@@ -298,7 +303,10 @@ const Drafts = ({
                       startIcon={<DeleteOutlineIcon />}
                       size="small"
                       sx={{ flexGrow: 1 }}
-                      onClick={() => handleDelete(course.id || "")}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDelete(course.id || "")
+                      }}
                     >
                       Delete
                     </Button>
@@ -307,7 +315,10 @@ const Drafts = ({
                       startIcon={<EditIcon />}
                       size="small"
                       sx={{ flexGrow: 1 }}
-                      onClick={() => onPublish(course.id, !course.draft)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onPublish(course.id, !course.draft)
+                      }}
                     >
                       UnPublish
                     </Button>
