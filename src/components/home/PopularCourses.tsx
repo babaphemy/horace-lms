@@ -67,13 +67,14 @@ const PopularCourses = ({
         }}
       >
         <Grid container spacing={5}>
-          {filteredData?.map((course: tCourseLte, index: number) => {
-            return (
-              <Grid key={index + course.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                <PopularCard data={course} />
-              </Grid>
-            )
-          })}
+          {Array.isArray(filteredData) &&
+            filteredData?.map((course: tCourseLte, index: number) => {
+              return (
+                <Grid key={index + course.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                  <PopularCard data={course} />
+                </Grid>
+              )
+            })}
         </Grid>
         <Button
           variant="contained"

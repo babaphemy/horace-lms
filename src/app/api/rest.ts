@@ -18,6 +18,7 @@ import {
   TUserScore,
   TAddQuizScore,
   TQuizScores,
+  CourseDTOResponse,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -187,7 +188,7 @@ const fetchCourses = async (
   userId?: string,
   page: number = 0,
   size: number = 10
-) => {
+): Promise<CourseDTOResponse> => {
   let url = `${basePath}course/courses?page=${page}&size=${size}`
 
   if (userId) {
@@ -197,7 +198,7 @@ const fetchCourses = async (
   const response = await fetch(url, auth)
 
   if (!response.ok) {
-    return { error: response.status }
+    throw new Error(response.statusText)
   }
   return response.json()
 }

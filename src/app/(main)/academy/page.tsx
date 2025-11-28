@@ -13,6 +13,7 @@ import { useContext, useEffect } from "react"
 import { useQuery } from "react-query"
 import { fetchCourses } from "../../api/rest"
 import { useSession } from "next-auth/react"
+import { tCourseLte } from "@/types/types"
 
 const Home: NextPage = () => {
   const dispatch = useContext(AppDpx)
@@ -29,7 +30,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (data) {
-      dispatch({ type: COURSES_SET, data })
+      dispatch({ type: COURSES_SET, data: data?.content })
     }
   }, [data, dispatch])
 
@@ -39,7 +40,10 @@ const Home: NextPage = () => {
         <Container>
           <Hero />
           <Benefits />
-          <PopularCourses data={data} isLoading={isLoading} />
+          <PopularCourses
+            data={data?.content as tCourseLte[]}
+            isLoading={isLoading}
+          />
         </Container>
         <Footer />
       </Box>
