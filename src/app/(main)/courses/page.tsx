@@ -3,8 +3,8 @@ import Footer from "@/components/Footer"
 import CoursesSearch from "@/components/courses/CoursesSearch"
 import { AppDpx } from "@/context/AppContext"
 import { COURSES_SET } from "@/context/actions"
-import { tCourse, tCourseLte } from "@/types/types"
-import { Box, Container } from "@mui/material"
+import { tCourseLte } from "@/types/types"
+import { Box, Container, Pagination, Stack } from "@mui/material"
 import Fuse, { FuseResult } from "fuse.js"
 import { debounce } from "lodash"
 import { useContext, useEffect, useState } from "react"
@@ -20,21 +20,25 @@ export type FilterItem = {
   value: string
 }
 const Courses = () => {
-  const [allCourses, setAllCourses] = useState([])
+  const [allCourses, setAllCourses] = useState<tCourseLte[]>([])
   const [filteredData, setFilteredData] = useState<tCourseLte[] | []>([])
   const [currentFilter, setCurrentFilter] = useState(coursefilter[0])
   const { data: session } = useSession()
+  const [currentPage, setCurrentPage] = useState(0)
 
   const dispatch = useContext(AppDpx)
   const { data, isLoading } = useQuery({
-    queryKey: ["usersRegisteredCourses", session?.user?.id],
-    queryFn: () => fetchCourses(undefined, 0, 10),
+    queryKey: ["usersRegisteredCourses", session?.user?.id, currentPage],
+    queryFn: () => fetchCourses(undefined, currentPage, 10),
     refetchOnWindowFocus: false,
     enabled: !!session?.user?.id,
   })
 
   const handleSearch = debounce(async (query: string) => {
-    const fuse = new Fuse<tCourse>(data, {
+    if (currentPage !== 0) {
+      setCurrentPage(0)
+    }
+    const fuse = new Fuse<tCourseLte>(data?.content ?? [], {
       keys: ["category", "courseName"],
       includeScore: false,
       includeMatches: true,
@@ -52,13 +56,20 @@ const Courses = () => {
   }, 700)
 
   useEffect(() => {
-    if (data?.length > 0) {
-      setFilteredData(data)
-      setAllCourses(data)
-      dispatch({ type: COURSES_SET, data: data })
+    if (Array.isArray(data?.content) && data?.content?.length > 0) {
+      setFilteredData(data?.content)
+      setAllCourses(data?.content)
+      dispatch({ type: COURSES_SET, data: data?.content })
       return
     }
   }, [data, dispatch])
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    setCurrentPage(page - 1)
+  }
 
   return (
     <Box>
@@ -74,6 +85,20 @@ const Courses = () => {
           isLoading={isLoading}
           filteredData={filteredData}
         />
+
+        {data && data.totalPages > 1 && (
+          <Stack spacing={2} alignItems="center" sx={{ mt: 4, mb: 4 }}>
+            <Pagination
+              count={data.totalPages}
+              page={currentPage + 1}
+              onChange={handlePageChange}
+              color="primary"
+              size="large"
+              showFirstButton
+              showLastButton
+            />
+          </Stack>
+        )}
       </Container>
       <Footer />
     </Box>

@@ -4,7 +4,7 @@ import { Box, Container } from "@mui/material"
 import type { NextPage } from "next"
 import { useQuery } from "react-query"
 import styles from "@/styles/Home.module.css"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { AppDpx } from "@/context/AppContext"
 import { fetchCourses } from "@/app/api/rest"
 import { COURSES_SET } from "@/context/actions"
@@ -14,6 +14,7 @@ import Benefits from "@/components/home/Benefits"
 import PopularCourses from "@/components/home/PopularCourses"
 import Footer from "@/components/Footer"
 import { useSession } from "next-auth/react"
+import { tCourseLte } from "@/types/types"
 
 const Home: NextPage = () => {
   const dispatch = useContext(AppDpx)
@@ -27,10 +28,11 @@ const Home: NextPage = () => {
       cacheTime: 10,
     }
   )
-
-  if (data) {
-    dispatch({ type: COURSES_SET, data })
-  }
+  useEffect(() => {
+    if (data) {
+      dispatch({ type: COURSES_SET, data: data?.content })
+    }
+  }, [data, dispatch])
 
   return (
     <div className={styles.container}>
@@ -39,7 +41,10 @@ const Home: NextPage = () => {
         <Container>
           <Hero />
           <Benefits />
-          <PopularCourses data={data} isLoading={isLoading} />
+          <PopularCourses
+            data={data?.content as tCourseLte[]}
+            isLoading={isLoading}
+          />
         </Container>
         <Footer />
       </Box>

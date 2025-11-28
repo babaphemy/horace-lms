@@ -111,9 +111,9 @@ const AuthorCourseDetail: React.FC = () => {
         </Typography>
       </Box>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         {/* Course Overview */}
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Paper sx={{ p: 3, width: "100%", height: "100%" }}>
             <Typography variant="h6" gutterBottom>
               Course Overview
@@ -184,7 +184,7 @@ const AuthorCourseDetail: React.FC = () => {
         </Grid>
 
         {/* Course Statistics */}
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <CourseStatistics assetCount={course?.assetCount} />
         </Grid>
       </Grid>
