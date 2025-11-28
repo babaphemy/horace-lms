@@ -70,6 +70,9 @@ const SubjectCreateComp = () => {
       notifyError("Failed to fetch course data")
     },
   })
+  if (session?.user?.roles.some((role) => role.toLowerCase() === "student")) {
+    router.push("/")
+  }
 
   useEffect(() => {
     if (isLoading || status === "loading") return

@@ -31,7 +31,6 @@ import TopBg from "./TopBg"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
-import { AddOutlined } from "@mui/icons-material"
 import { Session } from "next-auth"
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -168,9 +167,7 @@ const Header = () => {
                   <NextLink href="/about" passHref>
                     About
                   </NextLink>
-                  <NextLink href="/academy" passHref>
-                    Academy
-                  </NextLink>
+
                   <NextLink href="/courses" passHref>
                     Courses
                   </NextLink>
@@ -226,9 +223,7 @@ const Header = () => {
                 <NextLink href="/about" passHref>
                   About
                 </NextLink>
-                <NextLink href="/academy" passHref>
-                  Academy
-                </NextLink>
+
                 <NextLink href="/courses" passHref>
                   Courses
                 </NextLink>
@@ -315,13 +310,7 @@ const Header = () => {
                       <BookIcon />
                       My Courses
                     </MenuItem>
-                    <MenuItem
-                      onClick={() => handleClose(`/dashboard/courses/add`)}
-                      disableRipple
-                    >
-                      <AddOutlined />
-                      Create
-                    </MenuItem>
+
                     <MenuItem
                       onClick={() => {
                         handleLogout()
