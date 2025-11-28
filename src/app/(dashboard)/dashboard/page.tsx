@@ -57,6 +57,10 @@ const DashboardPage = () => {
   const [uploadingCourseId, setUploadingCourseId] = useState<string | null>(
     null
   )
+  const [selectedCourseAuthorId, setSelectedCourseAuthorId] = useState<
+    string | null
+  >(null)
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleMenuClick = (
@@ -65,6 +69,9 @@ const DashboardPage = () => {
   ) => {
     setAnchorEl(event.currentTarget)
     setSelectedCourseId(cid)
+    setSelectedCourseAuthorId(
+      recents.find((c: tCourse) => c.id === cid)?.author?.id
+    )
   }
 
   const handleMenuClose = (type: string) => {
@@ -361,41 +368,40 @@ const DashboardPage = () => {
                       </Tooltip>
                     </Box>
                   </Box>
-
-                  <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={() => handleMenuClose("")}
-                  >
-                    {userId === course?.author?.id && (
-                      <MenuItem onClick={() => handleMenuClose("edit")}>
-                        <Edit sx={{ mr: 1, fontSize: 18 }} />
-                        Edit Course
-                      </MenuItem>
-                    )}
-                    <MenuItem onClick={() => handleMenuClose("thumbnail")}>
-                      <PhotoCamera sx={{ mr: 1, fontSize: 18 }} />
-                      Change Thumbnail
-                    </MenuItem>
-                    <MenuItem onClick={() => handleMenuClose("quiz")}>
-                      <QuizIcon sx={{ mr: 1, fontSize: 18 }} />
-                      Add Quiz
-                    </MenuItem>
-                    <MenuItem onClick={() => handleMenuClose("quizlist")}>
-                      <Assignment sx={{ mr: 1, fontSize: 18 }} />
-                      Quiz List
-                    </MenuItem>
-                    <MenuItem onClick={() => handleMenuClose("analytics")}>
-                      <Analytics sx={{ mr: 1, fontSize: 18 }} />
-                      View Analytics
-                    </MenuItem>
-                    <MenuItem onClick={() => handleMenuClose("students")}>
-                      <People sx={{ mr: 1, fontSize: 18 }} />
-                      Manage Students
-                    </MenuItem>
-                  </Menu>
                 </Box>
               ))}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={() => handleMenuClose("")}
+              >
+                {userId === selectedCourseAuthorId && (
+                  <MenuItem onClick={() => handleMenuClose("edit")}>
+                    <Edit sx={{ mr: 1, fontSize: 18 }} />
+                    Edit Course
+                  </MenuItem>
+                )}
+                <MenuItem onClick={() => handleMenuClose("thumbnail")}>
+                  <PhotoCamera sx={{ mr: 1, fontSize: 18 }} />
+                  Change Thumbnail
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuClose("quiz")}>
+                  <QuizIcon sx={{ mr: 1, fontSize: 18 }} />
+                  Add Quiz
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuClose("quizlist")}>
+                  <Assignment sx={{ mr: 1, fontSize: 18 }} />
+                  Quiz List
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuClose("analytics")}>
+                  <Analytics sx={{ mr: 1, fontSize: 18 }} />
+                  View Analytics
+                </MenuItem>
+                <MenuItem onClick={() => handleMenuClose("students")}>
+                  <People sx={{ mr: 1, fontSize: 18 }} />
+                  Manage Students
+                </MenuItem>
+              </Menu>
             </CardContent>
           </Card>
 
