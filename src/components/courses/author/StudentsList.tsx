@@ -171,17 +171,13 @@ function StudentRow({
     enabled: !!student?.id,
   })
 
-  //? Calculate progress metrics
+  //? Calculate progress metrics - FIXED CALCULATIONS
   const { lessonProgress, completedLessons, averageScore } = useMemo(() => {
-    let calculatedLessonProgress = 0
-    let calculatedCompletedLessons = 0
-    let calculatedAverageScore = 0
-
     if (!course || !progress || !userScores) {
       return {
-        lessonProgress: calculatedLessonProgress,
-        completedLessons: calculatedCompletedLessons,
-        averageScore: calculatedAverageScore,
+        lessonProgress: 0,
+        completedLessons: 0,
+        averageScore: 0,
       }
     }
 
@@ -201,34 +197,23 @@ function StudentRow({
         }
       }
 
-      let totalCompletionPercentage = 0
       let completedCount = 0
-
       lessons.forEach((lesson: LessonDto) => {
         const lessonProgressData = progress?.progress?.find(
           (p: ProgressData) => p.lessonId === lesson.id
         )
-
-        if (lessonProgressData) {
-          totalCompletionPercentage +=
-            lessonProgressData.completionPercentage || 0
-
-          if (lessonProgressData.completionPercentage === 100) {
-            completedCount++
-          }
+        if (lessonProgressData?.completionPercentage === 100) {
+          completedCount++
         }
       })
 
-      calculatedLessonProgress =
-        totalLessons > 0
-          ? Math.round(totalCompletionPercentage / totalLessons)
-          : 0
-
-      calculatedCompletedLessons = completedCount
+      const calculatedCompletedLessons = completedCount
+      const calculatedLessonProgress =
+        totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0
 
       const quizzes = courseQuiz || []
-      let totalQuizScore = 0
-      let quizCount = 0
+      let totalPercentage = 0
+      let validQuizCount = 0
 
       quizzes.forEach((quiz: Quiz) => {
         const quizScore = userScores?.find(
@@ -238,30 +223,32 @@ function StudentRow({
         if (quizScore) {
           const maxScore =
             quiz.passingScore || quiz.content?.passingScore || 100
+          const userScore = quizScore.score
 
-          if (maxScore > 0) {
-            const percentageScore = (quizScore.score / maxScore) * 100
+          if (maxScore > 0 && userScore >= 0) {
+            const percentage = (userScore / maxScore) * 100
+            const cappedPercentage = Math.min(percentage, 100)
 
-            totalQuizScore += percentageScore
-            quizCount++
+            totalPercentage += cappedPercentage
+            validQuizCount++
           }
         }
       })
 
-      calculatedAverageScore =
-        quizCount > 0 ? Math.round(totalQuizScore / quizCount) : 0
+      const calculatedAverageScore =
+        validQuizCount > 0 ? Math.round(totalPercentage / validQuizCount) : 0
 
-      if (calculatedAverageScore > 100) {
-        calculatedAverageScore = 100
+      return {
+        lessonProgress: calculatedLessonProgress,
+        completedLessons: calculatedCompletedLessons,
+        averageScore: calculatedAverageScore,
       }
     } catch {
-      throw "Error calculating student progress:"
-    }
-
-    return {
-      lessonProgress: calculatedLessonProgress,
-      completedLessons: calculatedCompletedLessons,
-      averageScore: calculatedAverageScore,
+      return {
+        lessonProgress: 0,
+        completedLessons: 0,
+        averageScore: 0,
+      }
     }
   }, [course, progress, userScores, courseQuiz])
 
@@ -288,10 +275,21 @@ function StudentRow({
     return "error"
   }
 
-  // Format last activity date safely
-  const lastActivityDate = progress?.progress?.updatedAt
-    ? new Date(progress.progress.updatedAt).toLocaleDateString()
-    : "No activity"
+  const lastActivityDate = useMemo(() => {
+    if (!progress?.progress?.length) return "No activity"
+
+    const mostRecentProgress = (progress.progress as ProgressData[]).reduce(
+      (latest, current) => {
+        const currentDate = new Date(current.updatedAt || 0)
+        const latestDate = new Date(latest.updatedAt || 0)
+        return currentDate > latestDate ? current : latest
+      }
+    )
+
+    return mostRecentProgress.updatedAt
+      ? new Date(mostRecentProgress.updatedAt).toLocaleDateString()
+      : "No activity"
+  }, [progress])
 
   // Format enrollment date safely
   const enrollmentDate = student?.createdOn
