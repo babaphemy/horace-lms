@@ -21,7 +21,7 @@ import {
   ArrowBack,
   Edit,
 } from "@mui/icons-material"
-
+import DOMPurify from "dompurify"
 import Link from "next/link"
 import { CourseStatistics } from "./CourseStatistics"
 import useCourse from "@/hooks/useCourse"
@@ -118,8 +118,22 @@ const AuthorCourseDetail: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               Course Overview
             </Typography>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              {course?.overview}
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                mb: 2,
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(course?.overview || ""),
+                }}
+              />
             </Typography>
 
             <Grid container spacing={2} sx={{ mt: 1 }}>
