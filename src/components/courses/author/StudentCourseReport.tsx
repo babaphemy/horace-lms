@@ -32,6 +32,7 @@ import { PerformanceMetrics } from "./PerformanceMetrics"
 import { ProgressData, Quiz, tCourse } from "@/types/types"
 import useQuizSummary from "@/hooks/useQuizSummary"
 import * as XLSX from "xlsx"
+import { notifyError, notifySuccess } from "@/utils/notification"
 
 interface StudentCourseReportProps {
   studentId: string
@@ -204,12 +205,12 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
 
       let calculatedEstimatedTimeRemaining = 0
 
-      if (calculatedLessonProgress > 0 && calculatedLessonProgress < 100) {
+      if (calculatedLessonProgress > 5 && calculatedLessonProgress < 100) {
         const timePerPercentage = totalTimeSpent / calculatedLessonProgress
         const remainingPercentage = 100 - calculatedLessonProgress
         calculatedEstimatedTimeRemaining =
           timePerPercentage * remainingPercentage
-      } else if (calculatedLessonProgress === 0 && totalCourseDuration > 0) {
+      } else if (calculatedLessonProgress <= 5 && totalCourseDuration > 0) {
         calculatedEstimatedTimeRemaining = totalCourseDuration
       }
 
@@ -367,7 +368,10 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
             Status:
               lessonProgressData?.completionPercentage === 100
                 ? "Completed"
-                : "In Progress",
+                : !lessonProgressData ||
+                    lessonProgressData.completionPercentage === 0
+                  ? "Not Started"
+                  : "In Progress",
           }
         })
 
@@ -399,7 +403,7 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
           XLSX.utils.book_append_sheet(wb, ws, sheetName)
         }
       } catch {
-        throw `Error creating sheet ${sheetName}`
+        throw new Error(`Error creating sheet ${sheetName}`)
       }
     })
 
@@ -411,8 +415,10 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
 
     try {
       XLSX.writeFile(wb, fileName)
+      notifySuccess("Report exported successfully")
     } catch {
-      throw "Error exporting file:"
+      notifyError("Failed to export report")
+      throw new Error("Error exporting file")
     }
   }
   if (isLoading) {

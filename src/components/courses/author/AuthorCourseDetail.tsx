@@ -21,7 +21,7 @@ import {
   ArrowBack,
   Edit,
 } from "@mui/icons-material"
-
+import DOMPurify from "dompurify"
 import Link from "next/link"
 import { CourseStatistics } from "./CourseStatistics"
 import useCourse from "@/hooks/useCourse"
@@ -130,7 +130,9 @@ const AuthorCourseDetail: React.FC = () => {
               }}
             >
               <div
-                dangerouslySetInnerHTML={{ __html: course?.overview || "" }}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(course?.overview || ""),
+                }}
               />
             </Typography>
 
