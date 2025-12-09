@@ -17,7 +17,7 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material"
-import { Search, MoreVert, Visibility, TrendingUp } from "@mui/icons-material"
+import { Search, MoreVert, Visibility } from "@mui/icons-material"
 
 import { useRouter } from "next/navigation"
 import { LessonDto, ProgressData, Quiz, tCourse, tUser } from "@/types/types"
@@ -99,9 +99,11 @@ export const StudentsList: React.FC<StudentsListProps> = ({
           <TableHead>
             <TableRow>
               <TableCell>Student</TableCell>
-              <TableCell>Progress</TableCell>
-              <TableCell>Completed</TableCell>
-              <TableCell>Average Score</TableCell>
+              <TableCell>Course Progress</TableCell>
+              <TableCell>Lessons Completed</TableCell>
+              <TableCell>Avg Quiz Score</TableCell>
+              <TableCell>Quiz Progress</TableCell>
+              <TableCell>Quiz Completion Rate</TableCell>
               <TableCell>Last Activity</TableCell>
               <TableCell>Enrollment Date</TableCell>
               <TableCell align="center">Actions</TableCell>
@@ -171,13 +173,13 @@ function StudentRow({
     enabled: !!student?.id,
   })
 
-  //? Calculate progress metrics - FIXED CALCULATIONS
-  const { lessonProgress, completedLessons, averageScore } = useMemo(() => {
-    if (!course || !progress || !userScores) {
+  //? Calculate course progress from progress data endpoint
+  const { lessonProgress, completedLessons } = useMemo(() => {
+    if (!course || !progress) {
       return {
         lessonProgress: 0,
         completedLessons: 0,
-        averageScore: 0,
+        timeSpent: 0,
       }
     }
 
@@ -193,17 +195,30 @@ function StudentRow({
         return {
           lessonProgress: 0,
           completedLessons: 0,
-          averageScore: 0,
+          timeSpent: 0,
         }
       }
 
       let completedCount = 0
+      let totalTimeSpent = 0
+
       lessons.forEach((lesson: LessonDto) => {
+        if (!lesson.id) return
+
         const lessonProgressData = progress?.progress?.find(
-          (p: ProgressData) => p.lessonId === lesson.id
+          (p: ProgressData) => String(p.lessonId) === String(lesson.id)
         )
-        if (lessonProgressData?.completionPercentage === 100) {
-          completedCount++
+        if (lessonProgressData) {
+          if (lessonProgressData.completionPercentage === 100) {
+            completedCount++
+          }
+
+          // Calculate time spent from progress data
+          const lessonTimeSpent = Math.min(
+            lessonProgressData.currentTime || 0,
+            lessonProgressData.duration || 0
+          )
+          totalTimeSpent += lessonTimeSpent
         }
       })
 
@@ -211,46 +226,91 @@ function StudentRow({
       const calculatedLessonProgress =
         totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0
 
-      const quizzes = courseQuiz || []
-      let totalPercentage = 0
-      let validQuizCount = 0
-
-      quizzes.forEach((quiz: Quiz) => {
-        const quizScore = userScores?.find(
-          (score) => String(score.quizId) === String(quiz.id)
-        )
-
-        if (quizScore) {
-          const maxScore =
-            quiz.passingScore || quiz.content?.passingScore || 100
-          const userScore = quizScore.score
-
-          if (maxScore > 0 && userScore >= 0) {
-            const percentage = (userScore / maxScore) * 100
-            const cappedPercentage = Math.min(percentage, 100)
-
-            totalPercentage += cappedPercentage
-            validQuizCount++
-          }
-        }
-      })
-
-      const calculatedAverageScore =
-        validQuizCount > 0 ? Math.round(totalPercentage / validQuizCount) : 0
-
       return {
         lessonProgress: calculatedLessonProgress,
         completedLessons: calculatedCompletedLessons,
-        averageScore: calculatedAverageScore,
+        timeSpent: Math.round(totalTimeSpent),
       }
     } catch {
       return {
         lessonProgress: 0,
         completedLessons: 0,
-        averageScore: 0,
+        timeSpent: 0,
       }
     }
-  }, [course, progress, userScores, courseQuiz])
+  }, [course, progress])
+
+  //? Calculate quiz metrics from quiz scores endpoint
+  const { averageScore, quizCompletionRate, quizProgress } = useMemo(() => {
+    if (!courseQuiz || !userScores) {
+      return {
+        averageScore: 0,
+        quizCompletionRate: 0,
+        quizProgress: 0,
+      }
+    }
+
+    try {
+      const quizzes = courseQuiz || []
+      const totalQuizzes = quizzes.length
+
+      if (totalQuizzes === 0) {
+        return {
+          averageScore: 0,
+          quizCompletionRate: 0,
+          quizProgress: 0,
+        }
+      }
+
+      let totalScorePercentage = 0
+      let completedQuizCount = 0
+
+      // Calculate average score including ALL quizzes (unattempted = 0%)
+      quizzes.forEach((quiz: Quiz) => {
+        const quizScore = userScores?.find(
+          (score) => String(score.quizId) === String(quiz.id)
+        )
+
+        // If quiz is found in scores array, it's 100% complete and 100% progress
+        if (quizScore) {
+          completedQuizCount++
+          // Convert score to percentage: (userScore / maxScore) * 100
+          const maxScore = quizScore.maxScore > 0 ? quizScore.maxScore : 100
+          const scorePercentage =
+            maxScore > 0 ? (quizScore.score / maxScore) * 100 : 0
+          totalScorePercentage += Math.min(scorePercentage, 100) // Cap at 100%
+        } else {
+          // Quiz not attempted = 0% score
+          totalScorePercentage += 0
+        }
+      })
+
+      // Average score = sum of all quiz percentages (including 0% for unattempted) / total quizzes
+      const calculatedAverageScore =
+        totalQuizzes > 0 ? Math.round(totalScorePercentage / totalQuizzes) : 0
+
+      // Completion rate = (quizzes with scores) / (total quizzes) * 100
+      const calculatedQuizCompletionRate =
+        totalQuizzes > 0
+          ? Math.round((completedQuizCount / totalQuizzes) * 100)
+          : 0
+
+      // Quiz progress = completion rate (each quiz with score is 100% progress)
+      const calculatedQuizProgress = calculatedQuizCompletionRate
+
+      return {
+        averageScore: calculatedAverageScore,
+        quizCompletionRate: calculatedQuizCompletionRate,
+        quizProgress: calculatedQuizProgress,
+      }
+    } catch {
+      return {
+        averageScore: 0,
+        quizCompletionRate: 0,
+        quizProgress: 0,
+      }
+    }
+  }, [courseQuiz, userScores])
 
   const totalLessons = useMemo(() => {
     if (course) {
@@ -315,22 +375,19 @@ function StudentRow({
         </Box>
       </TableCell>
       <TableCell>
-        <Box sx={{ width: "100%", mr: 1 }}>
-          <Box display="flex" alignItems="center">
-            <TrendingUp
-              sx={{ mr: 1, color: `${getProgressColor(lessonProgress)}.main` }}
-            />
-            <Typography variant="body2" sx={{ minWidth: 35 }}>
-              {lessonProgress}%
-            </Typography>
-          </Box>
-        </Box>
+        <Chip
+          label={`${lessonProgress}%`}
+          size="small"
+          color={getProgressColor(lessonProgress)}
+          title="Course progress (from progress data)"
+        />
       </TableCell>
       <TableCell>
         <Chip
           label={`${completedLessons}/${totalLessons}`}
           size="small"
           color={completedLessons === totalLessons ? "success" : "default"}
+          title="Lessons completed (from progress data)"
         />
       </TableCell>
       <TableCell>
@@ -339,7 +396,39 @@ function StudentRow({
           size="small"
           color={getScoreColor(averageScore)}
           variant={averageScore === 0 ? "outlined" : "filled"}
+          title="Average quiz score across all quizzes (unattempted = 0%)"
         />
+      </TableCell>
+      <TableCell>
+        <Chip
+          label={`${quizProgress}%`}
+          size="small"
+          color={getProgressColor(quizProgress)}
+          title="Quiz progress (from quiz scores)"
+        />
+      </TableCell>
+      <TableCell>
+        <Chip
+          label={`${quizCompletionRate}%`}
+          size="small"
+          color={quizCompletionRate === 100 ? "success" : "default"}
+          title="Quiz completion rate (from quiz scores)"
+        />
+        {courseQuiz && courseQuiz.length > 0 && (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            display="block"
+            sx={{ mt: 0.5 }}
+          >
+            {userScores?.filter((score) =>
+              courseQuiz.some(
+                (quiz: Quiz) => String(quiz.id) === String(score.quizId)
+              )
+            ).length || 0}
+            /{courseQuiz.length} quizzes
+          </Typography>
+        )}
       </TableCell>
       <TableCell>{lastActivityDate}</TableCell>
       <TableCell>{enrollmentDate}</TableCell>
