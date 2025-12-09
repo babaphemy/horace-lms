@@ -34,6 +34,7 @@ import { ProgressData, Quiz, tCourse } from "@/types/types"
 import useQuizSummary from "@/hooks/useQuizSummary"
 import * as XLSX from "xlsx"
 import { notifyError, notifySuccess } from "@/utils/notification"
+import { useStudentMetrics } from "./studentReportHelper"
 
 interface StudentCourseReportProps {
   studentId: string
@@ -226,76 +227,10 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
   }, [course, progress])
 
   //? Calculate quiz metrics from quiz scores endpoint
-  const { averageScore, quizCompletionRate, quizProgress } = useMemo(() => {
-    if (!courseQuiz || !userScores) {
-      return {
-        averageScore: 0,
-        quizCompletionRate: 0,
-        quizProgress: 0,
-      }
-    }
-
-    try {
-      const quizzes = courseQuiz || []
-      const totalQuizzes = quizzes.length
-
-      if (totalQuizzes === 0) {
-        return {
-          averageScore: 0,
-          quizCompletionRate: 0,
-          quizProgress: 0,
-        }
-      }
-
-      let totalScorePercentage = 0
-      let completedQuizCount = 0
-
-      // Calculate average score including ALL quizzes (unattempted = 0%)
-      quizzes.forEach((quiz: Quiz) => {
-        const quizScore = userScores?.find(
-          (score) => String(score.quizId) === String(quiz.id)
-        )
-
-        // If quiz is found in scores array, it's 100% complete and 100% progress
-        if (quizScore) {
-          completedQuizCount++
-          // Convert score to percentage: (userScore / maxScore) * 100
-          const maxScore = quizScore.maxScore > 0 ? quizScore.maxScore : 100
-          const scorePercentage =
-            maxScore > 0 ? (quizScore.score / maxScore) * 100 : 0
-          totalScorePercentage += Math.min(scorePercentage, 100) // Cap at 100%
-        } else {
-          // Quiz not attempted = 0% score
-          totalScorePercentage += 0
-        }
-      })
-
-      // Average score = sum of all quiz percentages (including 0% for unattempted) / total quizzes
-      const calculatedAverageScore =
-        totalQuizzes > 0 ? Math.round(totalScorePercentage / totalQuizzes) : 0
-
-      // Completion rate = (quizzes with scores) / (total quizzes) * 100
-      const calculatedQuizCompletionRate =
-        totalQuizzes > 0
-          ? Math.round((completedQuizCount / totalQuizzes) * 100)
-          : 0
-
-      // Quiz progress = completion rate (each quiz with score is 100% progress)
-      const calculatedQuizProgress = calculatedQuizCompletionRate
-
-      return {
-        averageScore: calculatedAverageScore,
-        quizCompletionRate: calculatedQuizCompletionRate,
-        quizProgress: calculatedQuizProgress,
-      }
-    } catch {
-      return {
-        averageScore: 0,
-        quizCompletionRate: 0,
-        quizProgress: 0,
-      }
-    }
-  }, [courseQuiz, userScores])
+  const { averageScore, quizCompletionRate, quizProgress } = useStudentMetrics(
+    courseQuiz || [],
+    userScores
+  )
 
   const courseProgress = {
     progress: lessonProgress,
@@ -307,9 +242,9 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
   // Combine course progress and quiz metrics for overallPerformance
   const overallPerformanceWithQuiz = {
     ...overallPerformance,
-    averageQuizScore: averageScore, // From quiz scores endpoint
-    quizCompletionRate: quizCompletionRate, // From quiz scores endpoint
-    quizProgress: quizProgress, // From quiz scores endpoint
+    averageQuizScore: averageScore,
+    quizCompletionRate: quizCompletionRate,
+    quizProgress: quizProgress,
   }
 
   const exportToExcel = () => {
@@ -358,15 +293,18 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
       ],
 
       "Quiz Scores": (() => {
-        const quizData = (courseQuiz || []).map((quiz: Quiz) => {
+        const quizData = courseQuiz.map((quiz: Quiz) => {
           const quizScore = userScores?.find(
             (score) => String(score.quizId) === String(quiz.id)
           )
           // Use maxScore
           const maxScore =
-            quizScore && quizScore.maxScore > 0
-              ? quizScore.maxScore
-              : quiz.passingScore || quiz.content?.passingScore || 100
+            (quizScore?.maxScore || 0) > 0 && (quizScore?.maxScore || 0) <= 1
+              ? (quizScore?.maxScore || 0) * 100
+              : quizScore?.maxScore ||
+                quiz.passingScore ||
+                quiz.content?.passingScore ||
+                100
           const percentage = quizScore
             ? Math.round((quizScore.score / maxScore) * 100)
             : 0
