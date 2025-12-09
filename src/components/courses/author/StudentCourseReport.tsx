@@ -21,6 +21,7 @@ import {
   TrendingUp,
   PlayLesson as LessonIcon,
   Download,
+  AccessTime,
 } from "@mui/icons-material"
 
 import { useQuery } from "react-query"
@@ -79,23 +80,21 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
     enabled: !!studentId,
   })
 
+  //? Calculate course progress from progress data endpoint
   const {
     lessonProgress,
     completedLessons,
-    averageScore,
     totalLessons,
     overallPerformance,
     lastActivity,
   } = useMemo(() => {
-    if (!course || !progress || !userScores) {
+    if (!course || !progress) {
       return {
         lessonProgress: 0,
         completedLessons: 0,
-        averageScore: 0,
         totalLessons: 0,
         overallPerformance: {
           completionRate: 0,
-          averageQuizScore: 0,
           timeSpent: 0,
           estimatedTimeRemaining: 0,
         },
@@ -115,11 +114,9 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
         return {
           lessonProgress: 0,
           completedLessons: 0,
-          averageScore: 0,
           totalLessons: 0,
           overallPerformance: {
             completionRate: 0,
-            averageQuizScore: 0,
             timeSpent: 0,
             estimatedTimeRemaining: 0,
           },
@@ -134,8 +131,10 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
       let totalCourseDuration = 0
 
       lessons.forEach((lesson) => {
+        if (!lesson.id) return // Skip lessons without IDs
+
         const lessonProgressData = progress?.progress?.find(
-          (p: ProgressData) => p.lessonId === lesson.id
+          (p: ProgressData) => String(p.lessonId) === String(lesson.id)
         )
 
         if (lessonProgressData) {
@@ -176,33 +175,6 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
           ? Math.round((completedCount / calculatedTotalLessons) * 100)
           : 0
 
-      const quizzes = courseQuiz || []
-      let totalPercentage = 0
-      let validQuizCount = 0
-
-      quizzes.forEach((quiz: Quiz) => {
-        const quizScore = userScores?.find(
-          (score) => String(score.quizId) === String(quiz.id)
-        )
-
-        if (quizScore) {
-          const maxScore =
-            quiz.passingScore || quiz.content?.passingScore || 100
-          const userScore = quizScore.score
-
-          if (maxScore > 0 && userScore >= 0) {
-            const percentage = (userScore / maxScore) * 100
-            const cappedPercentage = Math.min(percentage, 100)
-
-            totalPercentage += cappedPercentage
-            validQuizCount++
-          }
-        }
-      })
-
-      const calculatedAverageScore =
-        validQuizCount > 0 ? Math.round(totalPercentage / validQuizCount) : 0
-
       let calculatedEstimatedTimeRemaining = 0
 
       if (calculatedLessonProgress > 5 && calculatedLessonProgress < 100) {
@@ -226,8 +198,7 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
       }
 
       const calculatedOverallPerformance = {
-        completionRate: calculatedLessonProgress,
-        averageQuizScore: calculatedAverageScore,
+        completionRate: calculatedLessonProgress, // Course completion rate from progress data
         timeSpent: Math.round(totalTimeSpent),
         estimatedTimeRemaining: Math.round(calculatedEstimatedTimeRemaining),
       }
@@ -235,7 +206,6 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
       return {
         lessonProgress: calculatedLessonProgress,
         completedLessons: calculatedCompletedLessons,
-        averageScore: calculatedAverageScore,
         totalLessons: calculatedTotalLessons,
         overallPerformance: calculatedOverallPerformance,
         lastActivity: latestActivity,
@@ -244,24 +214,102 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
       return {
         lessonProgress: 0,
         completedLessons: 0,
-        averageScore: 0,
         totalLessons: 0,
         overallPerformance: {
           completionRate: 0,
-          averageQuizScore: 0,
           timeSpent: 0,
           estimatedTimeRemaining: 0,
         },
         lastActivity: "",
       }
     }
-  }, [course, progress, userScores, courseQuiz])
+  }, [course, progress])
+
+  //? Calculate quiz metrics from quiz scores endpoint
+  const { averageScore, quizCompletionRate, quizProgress } = useMemo(() => {
+    if (!courseQuiz || !userScores) {
+      return {
+        averageScore: 0,
+        quizCompletionRate: 0,
+        quizProgress: 0,
+      }
+    }
+
+    try {
+      const quizzes = courseQuiz || []
+      const totalQuizzes = quizzes.length
+
+      if (totalQuizzes === 0) {
+        return {
+          averageScore: 0,
+          quizCompletionRate: 0,
+          quizProgress: 0,
+        }
+      }
+
+      let totalScorePercentage = 0
+      let completedQuizCount = 0
+
+      // Calculate average score including ALL quizzes (unattempted = 0%)
+      quizzes.forEach((quiz: Quiz) => {
+        const quizScore = userScores?.find(
+          (score) => String(score.quizId) === String(quiz.id)
+        )
+
+        // If quiz is found in scores array, it's 100% complete and 100% progress
+        if (quizScore) {
+          completedQuizCount++
+          // Convert score to percentage: (userScore / maxScore) * 100
+          const maxScore = quizScore.maxScore > 0 ? quizScore.maxScore : 100
+          const scorePercentage =
+            maxScore > 0 ? (quizScore.score / maxScore) * 100 : 0
+          totalScorePercentage += Math.min(scorePercentage, 100) // Cap at 100%
+        } else {
+          // Quiz not attempted = 0% score
+          totalScorePercentage += 0
+        }
+      })
+
+      // Average score = sum of all quiz percentages (including 0% for unattempted) / total quizzes
+      const calculatedAverageScore =
+        totalQuizzes > 0 ? Math.round(totalScorePercentage / totalQuizzes) : 0
+
+      // Completion rate = (quizzes with scores) / (total quizzes) * 100
+      const calculatedQuizCompletionRate =
+        totalQuizzes > 0
+          ? Math.round((completedQuizCount / totalQuizzes) * 100)
+          : 0
+
+      // Quiz progress = completion rate (each quiz with score is 100% progress)
+      const calculatedQuizProgress = calculatedQuizCompletionRate
+
+      return {
+        averageScore: calculatedAverageScore,
+        quizCompletionRate: calculatedQuizCompletionRate,
+        quizProgress: calculatedQuizProgress,
+      }
+    } catch {
+      return {
+        averageScore: 0,
+        quizCompletionRate: 0,
+        quizProgress: 0,
+      }
+    }
+  }, [courseQuiz, userScores])
 
   const courseProgress = {
     progress: lessonProgress,
     completedLessons: completedLessons,
     totalLessons: totalLessons,
     lastActivity: lastActivity,
+  }
+
+  // Combine course progress and quiz metrics for overallPerformance
+  const overallPerformanceWithQuiz = {
+    ...overallPerformance,
+    averageQuizScore: averageScore, // From quiz scores endpoint
+    quizCompletionRate: quizCompletionRate, // From quiz scores endpoint
+    quizProgress: quizProgress, // From quiz scores endpoint
   }
 
   const exportToExcel = () => {
@@ -285,12 +333,14 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
       ],
 
       "Progress Summary": [
-        { Metric: "Overall Progress", Value: `${lessonProgress}%` },
+        { Metric: "Course Progress", Value: `${lessonProgress}%` },
         {
           Metric: "Completed Lessons",
           Value: `${completedLessons}/${totalLessons}`,
         },
         { Metric: "Average Quiz Score", Value: `${averageScore}%` },
+        { Metric: "Quiz Completion Rate", Value: `${quizCompletionRate}%` },
+        { Metric: "Quiz Progress", Value: `${quizProgress}%` },
         {
           Metric: "Time Spent",
           Value: formatTime(overallPerformance.timeSpent),
@@ -312,8 +362,11 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
           const quizScore = userScores?.find(
             (score) => String(score.quizId) === String(quiz.id)
           )
+          // Use maxScore
           const maxScore =
-            quiz.passingScore || quiz.content?.passingScore || 100
+            quizScore && quizScore.maxScore > 0
+              ? quizScore.maxScore
+              : quiz.passingScore || quiz.content?.passingScore || 100
           const percentage = quizScore
             ? Math.round((quizScore.score / maxScore) * 100)
             : 0
@@ -353,9 +406,11 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
           ) || []
 
         const lessonData = lessons.map((lesson) => {
-          const lessonProgressData = progress?.progress?.find(
-            (p: ProgressData) => p.lessonId === lesson.id
-          )
+          const lessonProgressData = lesson.id
+            ? progress?.progress?.find(
+                (p: ProgressData) => String(p.lessonId) === String(lesson.id)
+              )
+            : undefined
 
           return {
             "Lesson Title": lesson.title || "Untitled Lesson",
@@ -476,17 +531,29 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
               <Box sx={{ mt: 2 }}>
                 <Chip
                   icon={<CheckCircle />}
-                  label={`${completedLessons}/${totalLessons} Lessons Completed`}
+                  label={`${completedLessons}/${totalLessons} Lessons`}
                   color="success"
                   variant="outlined"
                   sx={{ mr: 1 }}
+                  title="Lessons completed (from progress data)"
                 />
                 <Chip
                   icon={<TrendingUp />}
-                  label={`${lessonProgress}% Progress`}
+                  label={`${lessonProgress}% Course Progress`}
                   color="primary"
                   variant="outlined"
+                  title="Course progress based on lesson completion"
                 />
+                {averageScore > 0 && (
+                  <Chip
+                    icon={<TrendingUp />}
+                    label={`${averageScore}% Quiz Avg`}
+                    color="secondary"
+                    variant="outlined"
+                    sx={{ ml: 1 }}
+                    title="Average quiz score (from quiz scores)"
+                  />
+                )}
               </Box>
             </Grid>
           </Grid>
@@ -503,13 +570,21 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
         </Grid>
       </Paper>
 
-      {/* Progress Overview */}
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <Card>
+      {/* Course Progress Overview */}
+      <Grid container spacing={3} sx={{ height: "100%" }}>
+        <Grid size={{ xs: 12, md: 8 }} sx={{ height: "100%" }}>
+          <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Course Progress
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  sx={{ mt: 0.5 }}
+                >
+                  Based on lesson completion (from progress data)
+                </Typography>
               </Typography>
               <Box sx={{ mb: 2 }}>
                 <LinearProgress
@@ -540,25 +615,88 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
                     </Typography>
                   </Box>
                 </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Box display="flex" alignItems="center">
+                    <AccessTime color="primary" sx={{ mr: 1 }} />
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        {formatTime(overallPerformance.timeSpent)}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Time spent (from progress data)
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Box display="flex" alignItems="center">
+                    <Schedule color="primary" sx={{ mr: 1 }} />
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        {formatTime(overallPerformance.estimatedTimeRemaining)}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Estimated time remaining
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
               </Grid>
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Performance Summary */}
-        <Grid size={{ xs: 12, md: 4 }}>
+        {/* Quiz Performance Summary */}
+        <Grid size={{ xs: 12, md: 4 }} sx={{ height: "100%" }}>
           <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Performance Summary
+                Quiz Performance
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  sx={{ mt: 0.5 }}
+                >
+                  Based on quiz scores
+                </Typography>
               </Typography>
               <Box sx={{ textAlign: "center", py: 2 }}>
-                <Typography variant="h3" color="primary">
+                <Typography variant="h3" color="secondary">
                   {averageScore}%
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Average Quiz Score
                 </Typography>
+                {courseQuiz && courseQuiz.length > 0 && (
+                  <Box sx={{ mt: 2 }}>
+                    <Box sx={{ mb: 1 }}>
+                      <Typography variant="body2" fontWeight="medium">
+                        Quiz Completion Rate
+                      </Typography>
+                      <Typography variant="h5" color="secondary">
+                        {quizCompletionRate}%
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {userScores?.filter((score) =>
+                          courseQuiz.some(
+                            (quiz: Quiz) =>
+                              String(quiz.id) === String(score.quizId)
+                          )
+                        ).length || 0}{" "}
+                        of {courseQuiz.length} quizzes completed
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="body2" fontWeight="medium">
+                        Quiz Progress
+                      </Typography>
+                      <Typography variant="h5" color="secondary">
+                        {quizProgress}%
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
               </Box>
             </CardContent>
           </Card>
@@ -570,7 +708,7 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
       {/* Detailed Sections */}
       <PerformanceMetrics
         courseProgress={courseProgress}
-        overallPerformance={overallPerformance}
+        overallPerformance={overallPerformanceWithQuiz}
       />
 
       <Grid container spacing={3} sx={{ mt: 1 }}>
