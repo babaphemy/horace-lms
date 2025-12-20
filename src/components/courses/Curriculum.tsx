@@ -41,7 +41,7 @@ const Curriculum = ({ data, quiz }: CurriculumProps) => {
   }
   const getQuizForTopic = (lessons: LessonDto[]) => {
     const lessonIds = getLessonIds(lessons)
-    return quiz.filter((q) => lessonIds.includes(q.lessonId))
+    return quiz?.filter((q) => lessonIds.includes(q.lessonId))
   }
 
   return (
