@@ -12,8 +12,6 @@ import { basePath } from "../../api/setting"
 import ExistingTranx from "@/components/checkout/ExistingTranx"
 import RenderAuth from "@/components/checkout/RenderAuth"
 import RenderPayment from "@/components/checkout/RenderPayment"
-import Footer from "@/components/Footer"
-import Header from "@/components/Header"
 import { Box, Container, Grid, Paper } from "@mui/material"
 
 const CheckoutPage = () => (
@@ -51,7 +49,6 @@ const CheckoutContent: React.FC = () => {
 
   return (
     <>
-      <Header />
       <Box
         sx={{
           minHeight: "100vh",
@@ -95,7 +92,6 @@ const CheckoutContent: React.FC = () => {
           </Grid>
         </Container>
       </Box>
-      <Footer />
     </>
   )
 }
