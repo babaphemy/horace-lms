@@ -845,7 +845,10 @@ const manageDraft = async (obj: {
 }
 
 const setCourseAsFeatured = async (cid: string) => {
-  const resp = await fetch(`${basePath}course/featured/${cid}`, PutSettings({}))
+  const resp = await fetchWithAuth(
+    `${basePath}course/featured/${cid}`,
+    PutSettings({})
+  )
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
