@@ -54,7 +54,7 @@ export const useLessonProgress = ({ courseId }: UseLessonProgressProps) => {
       queryClient.invalidateQueries(["studentProgress"])
     },
     onError: () => {
-      toast.error("Failed to update lesson progress:")
+      toast.error("Failed to update lesson progress")
     },
   })
 
