@@ -15,12 +15,17 @@ import {
   Divider,
   IconButton,
   ButtonGroup,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"
 import { useRouter } from "next/navigation"
-import React from "react"
+import React, { useState } from "react"
 import { notifyInfo } from "@/utils/notification"
 
 const Drafts = ({
@@ -35,6 +40,9 @@ const Drafts = ({
   onDelete?: (_id: string) => void
 }) => {
   const router = useRouter()
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [unpublishDialogOpen, setUnpublishDialogOpen] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState<tCourse | null>(null)
 
   const handleEditCourse = (courseId: string) => {
     router.push(`/dashboard/courses/add?cid=${courseId}`)
@@ -49,8 +57,42 @@ const Drafts = ({
       day: "numeric",
     })
   }
+
+  const handleDeleteClick = (course: tCourse) => {
+    setSelectedCourse(course)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleUnpublishClick = (course: tCourse) => {
+    setSelectedCourse(course)
+    setUnpublishDialogOpen(true)
+  }
+
+  const confirmDelete = () => {
+    if (selectedCourse?.id) {
+      if (onDelete) {
+        onDelete(selectedCourse.id)
+      } else {
+        notifyInfo(`Deleting course... ${selectedCourse.id}`)
+      }
+    }
+    setDeleteDialogOpen(false)
+    setSelectedCourse(null)
+  }
+
+  const confirmUnpublish = () => {
+    if (selectedCourse?.id) {
+      onPublish(selectedCourse.id, !selectedCourse.draft)
+    }
+    setUnpublishDialogOpen(false)
+    setSelectedCourse(null)
+  }
+
   const handleDelete = (id: string) => {
-    notifyInfo(`Deleting course... ${id}`)
+    const course = data.find((c) => c.id === id)
+    if (course) {
+      handleDeleteClick(course)
+    }
   }
 
   if (loading) {
@@ -317,7 +359,7 @@ const Drafts = ({
                       sx={{ flexGrow: 1 }}
                       onClick={(e) => {
                         e.stopPropagation()
-                        onPublish(course.id, !course.draft)
+                        handleUnpublishClick(course)
                       }}
                     >
                       UnPublish
@@ -331,7 +373,7 @@ const Drafts = ({
                     size="small"
                     onClick={(e) => {
                       e.stopPropagation()
-                      onDelete(course.id || "")
+                      handleDeleteClick(course)
                     }}
                   >
                     <DeleteOutlineIcon />
@@ -342,6 +384,82 @@ const Drafts = ({
           </Grid>
         ))}
       </Grid>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={() => {
+          setDeleteDialogOpen(false)
+          setSelectedCourse(null)
+        }}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">
+          Confirm Delete Course
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            Are you sure you want to delete &quot;{selectedCourse?.courseName}
+            &quot;? This action cannot be undone and will permanently remove the
+            course and all its data.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDeleteDialogOpen(false)
+              setSelectedCourse(null)
+            }}
+            color="inherit"
+          >
+            Cancel
+          </Button>
+          <Button onClick={confirmDelete} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Unpublish Confirmation Dialog */}
+      <Dialog
+        open={unpublishDialogOpen}
+        onClose={() => {
+          setUnpublishDialogOpen(false)
+          setSelectedCourse(null)
+        }}
+        aria-labelledby="unpublish-dialog-title"
+        aria-describedby="unpublish-dialog-description"
+      >
+        <DialogTitle id="unpublish-dialog-title">
+          Confirm Unpublish Course
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="unpublish-dialog-description">
+            Are you sure you want to unpublish &quot;
+            {selectedCourse?.courseName}&quot;? The course will be moved to
+            draft status and will no longer be visible to students.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setUnpublishDialogOpen(false)
+              setSelectedCourse(null)
+            }}
+            color="inherit"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={confirmUnpublish}
+            color="warning"
+            variant="contained"
+          >
+            Unpublish
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

@@ -692,6 +692,42 @@ const manageDraft = async (obj: {
   return resp.json()
 }
 
+const setCourseAsFeatured = async (cid: string) => {
+  const resp = await fetch(`${basePath}course/featured/${cid}`, PutSettings({}))
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+
+const fetchFeaturedCourse = async (cid: string, userId?: string) => {
+  let url = `${basePath}course/${cid}`
+  if (userId) {
+    url += `?userId=${userId}`
+  }
+  const response = await fetch(url, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
+const fetchFeaturedCourses = async (
+  userId?: string,
+  page: number = 0,
+  size: number = 10
+): Promise<CourseDTOResponse> => {
+  let url = `${basePath}course/featured?page=${page}&size=${size}`
+  if (userId) {
+    url += `&userId=${userId}`
+  }
+  const response = await fetch(url, auth)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
 const userOrganization = async (userId: string) => {
   const response = await fetch(`${basePath}user/org/${userId}`, auth)
   if (!response.ok) {
@@ -876,6 +912,8 @@ export {
   events,
   fetchCourse,
   fetchCourses,
+  fetchFeaturedCourse,
+  fetchFeaturedCourses,
   fetcher,
   fetchLMS,
   getPresignedUrl,
@@ -899,6 +937,7 @@ export {
   registerUser,
   resetOwnPass,
   resetPass,
+  setCourseAsFeatured,
   submitInterview,
   updateDp,
   uploadImageToS3,

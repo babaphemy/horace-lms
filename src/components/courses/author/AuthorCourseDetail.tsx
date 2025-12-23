@@ -20,6 +20,8 @@ import {
   Schedule,
   ArrowBack,
   Edit,
+  Star,
+  StarBorder,
 } from "@mui/icons-material"
 import DOMPurify from "dompurify"
 import Link from "next/link"
@@ -28,14 +30,16 @@ import useCourse from "@/hooks/useCourse"
 import { useSession } from "next-auth/react"
 import { useParams } from "next/navigation"
 import { StudentsList } from "./StudentsList"
-import { useQuery } from "react-query"
-import { registeredStudents } from "@/app/api/rest"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+import { registeredStudents, setCourseAsFeatured } from "@/app/api/rest"
+import { notifySuccess, notifyError } from "@/utils/notification"
 
 const AuthorCourseDetail: React.FC = () => {
   const params = useParams()
   const { id } = params
   const { data: session } = useSession()
   const userId = session?.user.id
+  const queryClient = useQueryClient()
   const {
     data: course,
     isLoading,
@@ -47,6 +51,25 @@ const AuthorCourseDetail: React.FC = () => {
     queryFn: () => registeredStudents(id as string),
     enabled: !!id,
   })
+
+  const { mutate: setFeatured, isLoading: isSettingFeatured } = useMutation(
+    setCourseAsFeatured,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["course", id, userId])
+        notifySuccess("Course set as featured successfully!")
+      },
+      onError: (error: Error) => {
+        notifyError(`Failed to set course as featured: ${error.message}`)
+      },
+    }
+  )
+
+  const handleSetFeatured = () => {
+    if (id) {
+      setFeatured(id as string)
+    }
+  }
   if (isLoading) {
     return (
       <Box
@@ -93,15 +116,27 @@ const AuthorCourseDetail: React.FC = () => {
             Back to Dashboard
           </Button>
 
-          <Button
-            startIcon={<Edit />}
-            component={Link}
-            variant="contained"
-            href={`/dashboard/courses/add?cid=${course.id}`}
-            sx={{ mb: 2 }}
-          >
-            Edit Course
-          </Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              startIcon={course?.featured ? <Star /> : <StarBorder />}
+              variant={course?.featured ? "contained" : "outlined"}
+              color={course?.featured ? "warning" : "primary"}
+              onClick={handleSetFeatured}
+              disabled={isSettingFeatured}
+              sx={{ mb: 2 }}
+            >
+              {course?.featured ? "Featured" : "Set as Featured"}
+            </Button>
+            <Button
+              startIcon={<Edit />}
+              component={Link}
+              variant="contained"
+              href={`/dashboard/courses/add?cid=${course.id}`}
+              sx={{ mb: 2 }}
+            >
+              Edit Course
+            </Button>
+          </Box>
         </Box>
         <Typography variant="h4" gutterBottom>
           {course?.courseName}
