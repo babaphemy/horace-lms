@@ -53,7 +53,7 @@ const Curriculum = ({ data, quiz }: CurriculumProps) => {
               <PlayCircle sx={{ mr: 1 }} />
               <Typography fontWeight={500}>{module.title}</Typography>
 
-              {getQuizForTopic(module?.lessons || []).length > 0 && (
+              {getQuizForTopic(module?.lessons || [])?.length > 0 && (
                 <Chip
                   size="small"
                   label={`${getQuizForTopic(module?.lessons || []).length} Quiz${

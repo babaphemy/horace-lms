@@ -32,6 +32,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { Session } from "next-auth"
+import { AccessRoles } from "@/utils/util"
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -101,8 +102,8 @@ const Header = () => {
   const router = useRouter()
   const { data: session } = useSession()
   const user = session?.user
-  const isAdmin = user?.roles?.includes("ADMIN")
-  const isInstructor = user?.roles?.includes("INSTRUCTOR")
+  const isAdmin = user?.roles?.includes(AccessRoles.ADMIN)
+  const isInstructor = user?.roles?.includes(AccessRoles.INSTRUCTOR)
   const [open, setOpen] = React.useState(false)
   const dispatch = useContext(AppDpx)
 

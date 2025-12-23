@@ -19,15 +19,15 @@ import {
   TAddQuizScore,
   TQuizScores,
   CourseDTOResponse,
+  CourseProgressResponse,
+  LessonProgressRequest,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
-  auth,
   basePath,
   cookieAuth,
   DeleteSettings,
   horacePath,
-  mixedAuth,
   PostSettings,
   PutSettings,
 } from "./setting"
@@ -36,6 +36,21 @@ import {
   VideoProgress,
 } from "@/components/classroom/VideoPlayerWithProgress"
 import { TQuiz } from "@/schema/quizSchema"
+import { getSession } from "next-auth/react"
+
+export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  const session = await getSession()
+  return fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(session?.accessToken && {
+        Authorization: `Bearer ${session.accessToken}`,
+      }),
+      ...options.headers,
+    },
+  })
+}
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
   return resp.json()
@@ -48,7 +63,7 @@ const getAllUsers = async (): Promise<tUser[]> => {
   return resp.json()
 }
 const getUserById = async (id: string): Promise<tUser> => {
-  const resp = await fetch(`${basePath}user/${id}`, auth)
+  const resp = await fetchWithAuth(`${basePath}user/${id}`)
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -66,7 +81,13 @@ const loginUser = async (data: {
   password: string | number
   type?: string
 }) => {
-  const resp = await fetch(`${basePath}user/login`, PostSettings(data))
+  const resp = await fetchWithAuth(`${basePath}user/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -74,7 +95,13 @@ const loginUser = async (data: {
 }
 
 const createOrg = async (data: orgDto) => {
-  const resp = await fetch(`${basePath}org/add`, PostSettings(data))
+  const resp = await fetchWithAuth(`${basePath}org/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -82,10 +109,13 @@ const createOrg = async (data: orgDto) => {
 }
 
 const updateOrg = async (data: { data: orgDto; id: string }) => {
-  const resp = await fetch(
-    `${basePath}org/update/${data.id}`,
-    PutSettings(data.data)
-  )
+  const resp = await fetchWithAuth(`${basePath}org/update/${data.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data.data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -94,7 +124,13 @@ const updateOrg = async (data: { data: orgDto; id: string }) => {
 
 const registerUser = async (data: UserDto) => {
   data.organizationId = "NA"
-  const resp = await fetch(`${basePath}user/add`, PostSettings(data))
+  const resp = await fetchWithAuth(`${basePath}user/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -102,7 +138,7 @@ const registerUser = async (data: UserDto) => {
 }
 
 const verifyEmail = async (email: string) => {
-  const resp = await fetch(`${basePath}user/exists/${email}`, auth)
+  const resp = await fetchWithAuth(`${basePath}user/exists/${email}`)
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -114,7 +150,13 @@ const doToken = async (data: {
   type: string
   organizationId: string
 }) => {
-  const resp = await fetch(`${basePath}user/dotoken`, PostSettings(data))
+  const resp = await fetchWithAuth(`${basePath}user/dotoken`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
 
   if (!resp.ok) {
     throw new Error(resp.statusText)
@@ -130,7 +172,13 @@ const resetPass = async (data: {
   type: string
   organizationId: string
 }) => {
-  const resp = await fetch(`${basePath}user/reset/password`, PostSettings(data))
+  const resp = await fetchWithAuth(`${basePath}user/reset/password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -141,17 +189,26 @@ const resetOwnPass = async (data: {
   email: string
   password: string
 }) => {
-  const resp = await fetch(
-    `${basePath}user/reset/ownpassword`,
-    PostSettings(data)
-  )
+  const resp = await fetchWithAuth(`${basePath}user/reset/ownpassword`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
   return resp.text()
 }
 const addCourseDetail = async (course: CourseCreate): Promise<CourseCreate> => {
-  const resp = await fetch(`${basePath}course/add`, PostSettings(course))
+  const resp = await fetchWithAuth(`${basePath}course/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(course),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -160,10 +217,13 @@ const addCourseDetail = async (course: CourseCreate): Promise<CourseCreate> => {
 const addSubjectComplete = async (
   subject: CourseComplete
 ): Promise<CourseResponse> => {
-  const resp = await fetch(
-    `${basePath}course/addcomplete`,
-    PostSettings(subject)
-  )
+  const resp = await fetchWithAuth(`${basePath}course/addcomplete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(subject),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -174,14 +234,21 @@ export const fetchOrgCourses = async (
   page: number = 0,
   size: number = 10
 ) => {
-  const response = await fetch(
-    `${basePath}course/org-courses?page=${page}&size=${size}&orgId=${orgid}`,
-    auth
+  const response = await fetchWithAuth(
+    `${basePath}course/org-courses?page=${page}&size=${size}&orgId=${orgid}`
   )
   if (!response.ok) {
     return { error: response.status }
   }
   return response.json()
+}
+
+export const featuredCourses = async () => {
+  const resp = await fetchWithAuth(`${basePath}course/featured`)
+  if (!resp.ok) {
+    return { error: resp.status }
+  }
+  return resp.json()
 }
 
 const fetchCourses = async (
@@ -195,7 +262,7 @@ const fetchCourses = async (
     url += `&userId=${userId}`
   }
 
-  const response = await fetch(url, auth)
+  const response = await fetchWithAuth(url)
 
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -203,11 +270,10 @@ const fetchCourses = async (
   return response.json()
 }
 const fetchCourse = async (id: string, userid?: string) => {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     userid
       ? `${basePath}course/summary/${id}?userId=${userid}`
-      : `${basePath}course/${id}`,
-    auth
+      : `${basePath}course/${id}`
   )
   if (!response.ok) {
     return { error: response.status }
@@ -215,16 +281,15 @@ const fetchCourse = async (id: string, userid?: string) => {
   return response.json()
 }
 const fetchLMS = async (id: string) => {
-  const response = await fetch(`${basePath}course/lms/${id}`, auth)
+  const response = await fetchWithAuth(`${basePath}course/lms/${id}`)
   if (!response.ok) {
     return { error: response.status }
   }
   return response.json()
 }
 const myRegisteredCourses = async (userId: string) => {
-  const response = await fetch(
-    `${basePath}course/courses/my-registered/${userId}`,
-    auth
+  const response = await fetchWithAuth(
+    `${basePath}course/courses/my-registered/${userId}`
   )
   if (!response.ok) {
     return { error: response.status }
@@ -232,7 +297,9 @@ const myRegisteredCourses = async (userId: string) => {
   return response.json()
 }
 const myNotes = async (userId: string, lessonId: string) => {
-  const response = await fetch(`${basePath}course/${userId}/${lessonId}`, auth)
+  const response = await fetchWithAuth(
+    `${basePath}course/${userId}/${lessonId}`
+  )
   if (!response.ok) {
     return { error: response.status }
   }
@@ -243,10 +310,13 @@ const addNote = async (data: {
   lessonId: string
   notes: string
 }) => {
-  const response = await fetch(
-    `${basePath}course/user/notes`,
-    PostSettings(data)
-  )
+  const response = await fetch(`${basePath}course/user/notes`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     return { error: response.status }
   }
@@ -254,7 +324,9 @@ const addNote = async (data: {
 }
 
 const lessonMaterials = async (lessonId: string) => {
-  const response = await fetch(`${basePath}course/materials/${lessonId}`, auth)
+  const response = await fetchWithAuth(
+    `${basePath}course/materials/${lessonId}`
+  )
   if (!response.ok) {
     return { error: response.status }
   }
@@ -262,7 +334,13 @@ const lessonMaterials = async (lessonId: string) => {
 }
 
 const addQuiz = async (data: TQuiz) => {
-  const response = await fetch(`${basePath}course/quiz/add`, PostSettings(data))
+  const response = await fetchWithAuth(`${basePath}course/quiz/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
 
   if (!response.ok) {
     let errorMessage = `HTTP ${response.status}: ${response.statusText}`
@@ -293,10 +371,13 @@ const addQuiz = async (data: TQuiz) => {
 }
 
 const addScore = async (data: TAddQuizScore) => {
-  const response = await fetch(
-    `${basePath}course/quiz/score`,
-    PostSettings(data)
-  )
+  const response = await fetchWithAuth(`${basePath}course/quiz/score`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
 
   if (!response.ok) {
     throw new Error("Failed to submit quiz score")
@@ -315,23 +396,22 @@ export const editQuiz = async ({ id, data }: { id: string; data: TQuiz }) => {
 }
 
 const lessonQuiz = async (lessonId: string) => {
-  const response = await fetch(`${basePath}course/quiz/${lessonId}`, auth)
+  const response = await fetchWithAuth(`${basePath}course/quiz/${lessonId}`)
   if (!response.ok) {
     return { error: response.status }
   }
   return response.json()
 }
 export const getQuizById = async (id: string) => {
-  const response = await fetch(`${basePath}course/quiz/id/${id}`, auth)
+  const response = await fetchWithAuth(`${basePath}course/quiz/id/${id}`)
   if (!response.ok) {
     return { error: response.status }
   }
   return response.json()
 }
 const allCourseQuiz = async (courseId: string) => {
-  const response = await fetch(
-    `${basePath}course/quiz/bycourse/${courseId}`,
-    auth
+  const response = await fetchWithAuth(
+    `${basePath}course/quiz/bycourse/${courseId}`
   )
   if (!response.ok) {
     return { error: response.status }
@@ -339,9 +419,8 @@ const allCourseQuiz = async (courseId: string) => {
   return response.json()
 }
 const isRegistered = async (userId: string, courseId: string) => {
-  const response = await fetch(
-    `${basePath}reg/isreg/${userId}/${courseId}`,
-    auth
+  const response = await fetchWithAuth(
+    `${basePath}reg/isreg/${userId}/${courseId}`
   )
   if (!response.ok) {
     return { error: response.status }
@@ -349,21 +428,24 @@ const isRegistered = async (userId: string, courseId: string) => {
   return response.json()
 }
 const coursesByAuthor = async (id: string) => {
-  const response = await fetch(`${basePath}course/byauthor/${id}`, auth)
+  const response = await fetchWithAuth(`${basePath}course/byauthor/${id}`)
   if (!response.ok) {
     return { error: response.status }
   }
   return response.json()
 }
-const addUserCourse = async (data: { id: string; user: string }) => {
-  const response = await fetch(`${basePath}reg/add`, PostSettings(data))
+const addUserCourse = async (cid: string) => {
+  const response = await fetch(
+    `${basePath}reg/add/${cid}`,
+    await PostSettings({ id: cid })
+  )
   if (!response.ok) {
     return { error: response.status }
   }
   return response.json()
 }
 const isCourseReg = async (id: string) => {
-  const response = await fetch(`${basePath}reg/my/${id}`, auth)
+  const response = await fetchWithAuth(`${basePath}reg/my/${id}`)
   if (!response.ok) {
     return { error: response.status }
   }
@@ -374,9 +456,8 @@ const recentCourses = async (
   size: number = 10,
   organizationId?: string
 ) => {
-  const response = await fetch(
-    `${basePath}course/recent/${`${organizationId}`}?page=${page}&limit=${size}`,
-    auth
+  const response = await fetchWithAuth(
+    `${basePath}course/recent/${`${organizationId}`}?page=${page}&limit=${size}`
   )
   if (!response.ok) {
     return { error: response.status }
@@ -398,7 +479,7 @@ const recentCourses = async (
 //   return response.json()
 // }
 const dashboardStat = async (userId: string) => {
-  const response = await fetch(`${basePath}user/dashboard/${userId}`, auth)
+  const response = await fetchWithAuth(`${basePath}user/dashboard/${userId}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -406,9 +487,8 @@ const dashboardStat = async (userId: string) => {
 }
 
 const userQuizScores = async (userId: string): Promise<TUserScore[]> => {
-  const response = await fetch(
-    `${basePath}course/quiz/scores?userId=${userId}`,
-    auth
+  const response = await fetchWithAuth(
+    `${basePath}course/quiz/scores?userId=${userId}`
   )
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -417,7 +497,7 @@ const userQuizScores = async (userId: string): Promise<TUserScore[]> => {
 }
 
 const registeredStudents = async (cid: string): Promise<tUser[]> => {
-  const response = await fetch(`${basePath}course/students/${cid}`, auth)
+  const response = await fetchWithAuth(`${basePath}course/students/${cid}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -431,17 +511,26 @@ const contactUs = async (data: {
   type: string
   phone?: string
 }) => {
-  const response = await fetch(
-    `${basePath}contact/essl/new`,
-    PostSettings(data)
-  )
+  const response = await fetch(`${basePath}contact/essl/new`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     throw new Error(response.statusText)
   }
   return response.text()
 }
 const addTopic = async (data: TopicDto): Promise<TopicDto> => {
-  const response = await fetch(`${basePath}course/module`, PostSettings(data))
+  const response = await fetchWithAuth(`${basePath}course/module`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -452,17 +541,26 @@ const getCourseLecture = async (data: {
   user: string
   count: number | null
 }) => {
-  const response = await fetch(`${basePath}course/lecture`, PostSettings(data))
+  const response = await fetchWithAuth(`${basePath}course/lecture`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     return { error: response.status }
   }
   return response.json()
 }
 const addLecture = async (data: LessonDto): Promise<LessonDto> => {
-  const response = await fetch(
-    `${basePath}course/module/lesson`,
-    PostSettings(data)
-  )
+  const response = await fetchWithAuth(`${basePath}course/module/lesson`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -470,7 +568,7 @@ const addLecture = async (data: LessonDto): Promise<LessonDto> => {
 }
 
 const deleteTopic = async (id: string): Promise<void> => {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     `${basePath}course/module/${id}`,
     DeleteSettings({ id })
   )
@@ -479,7 +577,7 @@ const deleteTopic = async (id: string): Promise<void> => {
   }
 }
 const deleteLecture = async (id: string): Promise<void> => {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     `${basePath}course/module/lesson/${id}`,
     DeleteSettings({ id })
   )
@@ -488,14 +586,26 @@ const deleteLecture = async (id: string): Promise<void> => {
   }
 }
 const addReview = async (data: tReview) => {
-  const response = await fetch(`${basePath}post/addmeta`, PostSettings(data))
+  const response = await fetch(`${basePath}post/addmeta`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     return { error: response.status }
   }
   return response.json()
 }
 const addThumbnail = async (data: CourseCreate) => {
-  const response = await fetch(`${basePath}course/thumbnail`, PutSettings(data))
+  const response = await fetch(`${basePath}course/thumbnail`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -505,7 +615,13 @@ const handlePay = async (obj: CardDto) => {
   const apikey = process.env.NEXT_PUBLIC_stripe_pub || ""
   const stripeInit = loadStripe(apikey)
   const str = await stripeInit
-  const resp = await fetch(`${basePath}pay/session`, PostSettings(obj))
+  const resp = await fetch(`${basePath}pay/session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(obj),
+  })
   const session = await resp.json()
   if (!session.id) return
   const res = await str?.redirectToCheckout({
@@ -518,10 +634,13 @@ const handlePay = async (obj: CardDto) => {
 }
 
 const submitInterview = async (data: tInterview) => {
-  const response = await fetch(
-    `${basePath}contact/interview`,
-    PostSettings(data)
-  )
+  const response = await fetch(`${basePath}contact/interview`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     return { error: response.status }
   }
@@ -544,14 +663,26 @@ const fetcher = async (
   return await res.json()
 }
 const createPaymentIntent = async (data: TransactionData) => {
-  const resp = await fetch(`${basePath}pay/intent`, PostSettings(data))
+  const resp = await fetch(`${basePath}pay/intent`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
   return resp.json()
 }
 const paystacktx = async (data: TransactionData) => {
-  const resp = await fetch(`${basePath}pay/paystack`, PostSettings(data))
+  const resp = await fetch(`${basePath}pay/paystack`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -578,7 +709,13 @@ const getSideNavItems = async (role: string, active: boolean) => {
   return resp.json()
 }
 export const storeTranx = async (data: TransactionData): Promise<Tranx> => {
-  const resp = await fetch(`${basePath}pay/tranx`, PostSettings(data))
+  const resp = await fetch(`${basePath}pay/tranx`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -589,14 +726,26 @@ const portalAuth = async (data: {
   password: string
   type: string
 }) => {
-  const resp = await fetch(`${basePath}user/login`, PostSettings(data))
+  const resp = await fetch(`${basePath}user/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
   return resp.json()
 }
 const login2 = async (data: { email: string; password: string }) => {
-  const resp = await fetch(`${basePath}user/login2`, PostSettings(data))
+  const resp = await fetch(`${basePath}user/login2`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -641,10 +790,13 @@ const updateDp = async (data: tUser) => {
   return resp.json()
 }
 const getPresignedUrl = async (uploader: Uploader) => {
-  const resp = await fetch(
-    `${horacePath}info/s3/presigned`,
-    PostSettings(uploader)
-  )
+  const resp = await fetchWithAuth(`${horacePath}info/s3/presigned`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(uploader),
+  })
   if (!resp.ok) {
     throw new Error(resp.statusText)
   }
@@ -693,7 +845,7 @@ const manageDraft = async (obj: {
 }
 
 const userOrganization = async (userId: string) => {
-  const response = await fetch(`${basePath}user/org/${userId}`, auth)
+  const response = await fetchWithAuth(`${basePath}user/org/${userId}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -701,7 +853,7 @@ const userOrganization = async (userId: string) => {
 }
 
 const getUserInfo = async (userId: string): Promise<tUser> => {
-  const response = await fetch(`${basePath}user/${userId}`, auth)
+  const response = await fetchWithAuth(`${basePath}user/${userId}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -709,9 +861,8 @@ const getUserInfo = async (userId: string): Promise<tUser> => {
 }
 
 const getTeamMembers = async (orgId: string, page: number) => {
-  const response = await fetch(
-    `${basePath}user/org-users/${orgId}?page=${page}&size=10`,
-    auth
+  const response = await fetchWithAuth(
+    `${basePath}user/org-users/${orgId}?page=${page}&size=10`
   )
   if (!response.ok) {
     throw new Error(
@@ -732,14 +883,14 @@ const addUserToOrganization = async (email: string, orgId: string) => {
 }
 
 const activities = async (userId: string) => {
-  const response = await fetch(`${basePath}activity/user/${userId}`, auth)
+  const response = await fetchWithAuth(`${basePath}activity/user/${userId}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
   return response.json()
 }
 const events = async (userId: string) => {
-  const response = await fetch(`${basePath}event/user/${userId}`, auth)
+  const response = await fetchWithAuth(`${basePath}event/user/${userId}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -749,7 +900,7 @@ const events = async (userId: string) => {
 const fetchOrganizationMembers = async (
   orgId: string
 ): Promise<OrganizationMember[]> => {
-  const response = await fetch(`${basePath}user/org-users/${orgId}`, auth)
+  const response = await fetchWithAuth(`${basePath}user/org-users/${orgId}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -764,36 +915,41 @@ const fetchOrganizationMembers = async (
 }
 
 const fetchUserOrganization = async (userId: string): Promise<orgDto> => {
-  const response = await fetch(`${basePath}user/org/${userId}`, auth)
+  const response = await fetchWithAuth(`${basePath}user/org/${userId}`)
   if (!response.ok) {
     throw new Error(response.statusText)
   }
   return response.json()
 }
 const saveMyProgress = async (data: VideoProgress) => {
-  const response = await fetch(
-    `${horacePath}stream/progress`,
-    PostSettings(data)
-  )
+  const response = await fetchWithAuth(`${horacePath}stream/progress`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     throw new Error(response.statusText)
   }
   return response.json()
 }
 const saveLessonProgress = async (data: LessonProgress) => {
-  const response = await fetch(
-    `${horacePath}stream/lesson-progress`,
-    PostSettings(data)
-  )
+  const response = await fetchWithAuth(`${horacePath}stream/lesson-progress`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
   if (!response.ok) {
     throw new Error(response.statusText)
   }
   return response.json()
 }
 const getLessonProgress = async (lessonId: string, userId: string) => {
-  const response = await fetch(
-    `${horacePath}stream/progress/${lessonId}/${userId}`,
-    auth
+  const response = await fetchWithAuth(
+    `${horacePath}stream/progress/${lessonId}/${userId}`
   )
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -801,9 +957,8 @@ const getLessonProgress = async (lessonId: string, userId: string) => {
   return response.json()
 }
 const getUserProgress = async (userId: string) => {
-  const response = await fetch(
-    `${horacePath}stream/progress/user/${userId}`,
-    auth
+  const response = await fetchWithAuth(
+    `${horacePath}stream/progress/user/${userId}`
   )
   if (!response.ok) {
     throw new Error(response.statusText)
@@ -811,14 +966,13 @@ const getUserProgress = async (userId: string) => {
   return response.json()
 }
 const courseGrantAccess = async (dto: CorporateAuthRequest) => {
-  const response = await fetch(`${basePath}course/org/authenticate-user`, {
-    method: "POST",
-    headers: {
-      ...mixedAuth.headers,
-    },
-    body: JSON.stringify(dto),
-    credentials: "include",
-  })
+  const response = await fetchWithAuth(
+    `${basePath}course/org/authenticate-user`,
+    {
+      method: "POST",
+      body: JSON.stringify(dto),
+    }
+  )
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -833,14 +987,110 @@ const courseAccessToken = async () => {
 }
 
 const getUserQuizScores = async (userId: string): Promise<TQuizScores[]> => {
-  const response = await fetch(
-    `${basePath}course/quiz/scores?userId=${userId}`,
-    auth
+  const response = await fetchWithAuth(
+    `${basePath}course/quiz/scores?userId=${userId}`
   )
   if (!response.ok) {
     throw new Error(response.statusText)
   }
   return response.json()
+}
+
+export const updateLessonProgress = async (request: LessonProgressRequest) => {
+  const response = await fetchWithAuth(`${basePath}progress/lesson`, {
+    method: "POST",
+    body: JSON.stringify(request),
+  })
+  if (!response.ok) throw new Error("Failed to update lesson progress")
+  return response.json()
+}
+
+export const getCourseProgress = async (
+  courseId: string
+): Promise<CourseProgressResponse | null> => {
+  const response = await fetchWithAuth(`${basePath}progress/course/${courseId}`)
+
+  if (response.status === 404) {
+    return null
+  }
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`Failed to fetch course progress: ${error}`)
+  }
+
+  return response.json()
+}
+
+export const getAllStudentProgress = async (): Promise<
+  CourseProgressResponse[]
+> => {
+  const response = await fetch(`${basePath}progress/student`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`Failed to fetch student progress: ${error}`)
+  }
+
+  return response.json()
+}
+
+export const markLessonComplete = async (
+  lessonId: string,
+  topicId: string,
+  courseId: string
+): Promise<LessonProgress> => {
+  const response = await fetchWithAuth(
+    `${basePath}progress/mark-complete/lesson/${lessonId}?topicId=${topicId}&courseId=${courseId}`,
+    {
+      method: "POST",
+    }
+  )
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`Failed to mark lesson complete: ${error}`)
+  }
+
+  return response.json()
+}
+export const getLessonProgressB = async (
+  userId: string,
+  courseId: string
+): Promise<CourseProgressResponse | null> => {
+  return getCourseProgress(courseId)
+}
+
+export const getCourseProgressForStudent = async (
+  courseId: string,
+  studentId: string
+): Promise<CourseProgressResponse | null> => {
+  try {
+    const response = await fetchWithAuth(
+      `${basePath}progress/course/${courseId}/student/${studentId}`,
+      {
+        method: "GET",
+      }
+    )
+
+    if (response.status === 404) {
+      return null
+    }
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch student course progress")
+    }
+
+    return response.json()
+  } catch {
+    return null
+  }
 }
 
 export {

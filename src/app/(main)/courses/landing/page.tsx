@@ -6,7 +6,7 @@ import { useQuery } from "react-query"
 import styles from "@/styles/Home.module.css"
 import { useContext, useEffect } from "react"
 import { AppDpx } from "@/context/AppContext"
-import { fetchCourses } from "@/app/api/rest"
+import { featuredCourses, fetchCourses } from "@/app/api/rest"
 import { COURSES_SET } from "@/context/actions"
 import Header from "@/components/Header"
 import Hero from "@/components/home/Hero"
@@ -19,10 +19,11 @@ import { tCourseLte } from "@/types/types"
 const Home: NextPage = () => {
   const dispatch = useContext(AppDpx)
   const { data: session } = useSession()
+  const userID = session?.user?.id
 
   const { data, isLoading } = useQuery(
     "usersAdddoc",
-    () => fetchCourses(session?.user?.id, 0, 10),
+    userID ? () => fetchCourses(userID, 0, 10) : () => featuredCourses(),
     {
       staleTime: 5000,
       cacheTime: 10,

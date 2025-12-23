@@ -83,13 +83,9 @@ const CourseDetail = ({ cid }: { cid: string }) => {
     },
   })
   const handleJoinClass = () => {
-    const payload = {
-      id: String(cid),
-      user: String(user?.id),
-    }
     if (user?.id) {
       if (data?.price > 0) {
-        addCourseToUser.mutate({ ...payload, user: String(payload.user) })
+        addCourseToUser.mutate(cid)
       } else {
         dispatch({
           type: MODAL_SET,

@@ -20,8 +20,8 @@ import {
 import { Search, MoreVert, Visibility } from "@mui/icons-material"
 
 import { useRouter } from "next/navigation"
-import { LessonDto, ProgressData, Quiz, tCourse, tUser } from "@/types/types"
-import { getUserProgress, userQuizScores } from "@/app/api/rest"
+import { Quiz, tCourse, tUser, CourseProgressResponse } from "@/types/types"
+import { getCourseProgressForStudent, userQuizScores } from "@/app/api/rest"
 import { useQuery } from "react-query"
 import useQuizSummary from "@/hooks/useQuizSummary"
 
@@ -116,6 +116,7 @@ export const StudentsList: React.FC<StudentsListProps> = ({
                 course={course}
                 handleMenuOpen={handleMenuOpen}
                 student={student}
+                courseId={courseId}
                 key={student.id}
               />
             ))}
@@ -152,13 +153,14 @@ export const StudentsList: React.FC<StudentsListProps> = ({
 
 function StudentRow({
   student,
-  course,
   courseQuiz,
   handleMenuOpen,
+  courseId,
 }: {
   courseQuiz: Quiz[]
   course: tCourse
   student: tUser
+  courseId: string
   handleMenuOpen: (_e: React.MouseEvent<HTMLElement>, _student: tUser) => void
 }) {
   const { data: userScores } = useQuery({
@@ -167,80 +169,29 @@ function StudentRow({
     enabled: !!student?.id,
   })
 
-  const { data: progress } = useQuery({
-    queryKey: ["progress", student?.id],
-    queryFn: () => getUserProgress(student?.id ?? ""),
-    enabled: !!student?.id,
+  const { data: courseProgress } = useQuery<CourseProgressResponse | null>({
+    queryKey: ["courseProgress", courseId, student?.id],
+    queryFn: () => getCourseProgressForStudent(courseId, student?.email ?? ""),
+    enabled: !!courseId && !!student?.id,
   })
 
-  //? Calculate course progress from progress data endpoint
-  const { lessonProgress, completedLessons } = useMemo(() => {
-    if (!course || !progress) {
+  const { lessonProgress, completedLessons, totalLessons } = useMemo(() => {
+    if (!courseProgress) {
       return {
         lessonProgress: 0,
         completedLessons: 0,
-        timeSpent: 0,
+        totalLessons: 0,
       }
     }
 
-    try {
-      const lessons =
-        course.curriculum?.topic?.flatMap(
-          (topic) => topic.lessons as LessonDto[]
-        ) || []
-
-      const totalLessons = lessons.length
-
-      if (totalLessons === 0) {
-        return {
-          lessonProgress: 0,
-          completedLessons: 0,
-          timeSpent: 0,
-        }
-      }
-
-      let completedCount = 0
-      let totalTimeSpent = 0
-
-      lessons.forEach((lesson: LessonDto) => {
-        if (!lesson.id) return
-
-        const lessonProgressData = progress?.progress?.find(
-          (p: ProgressData) => String(p.lessonId) === String(lesson.id)
-        )
-        if (lessonProgressData) {
-          if (lessonProgressData.completionPercentage === 100) {
-            completedCount++
-          }
-
-          // Calculate time spent from progress data
-          const lessonTimeSpent = Math.min(
-            lessonProgressData.currentTime || 0,
-            lessonProgressData.duration || 0
-          )
-          totalTimeSpent += lessonTimeSpent
-        }
-      })
-
-      const calculatedCompletedLessons = completedCount
-      const calculatedLessonProgress =
-        totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0
-
-      return {
-        lessonProgress: calculatedLessonProgress,
-        completedLessons: calculatedCompletedLessons,
-        timeSpent: Math.round(totalTimeSpent),
-      }
-    } catch {
-      return {
-        lessonProgress: 0,
-        completedLessons: 0,
-        timeSpent: 0,
-      }
+    return {
+      lessonProgress: Math.round(courseProgress.overallProgressPercentage || 0),
+      completedLessons: courseProgress.completedLessons || 0,
+      totalLessons: courseProgress.totalLessons || 0,
     }
-  }, [course, progress])
+  }, [courseProgress])
 
-  //? Calculate quiz metrics from quiz scores endpoint
+  // Quiz metrics
   const { averageScore, quizCompletionRate, quizProgress } = useMemo(() => {
     if (!courseQuiz || !userScores) {
       return {
@@ -271,31 +222,25 @@ function StudentRow({
           (score) => String(score.quizId) === String(quiz.id)
         )
 
-        // If quiz is found in scores array, it's 100% complete and 100% progress
         if (quizScore) {
           completedQuizCount++
-          // Convert score to percentage: (userScore / maxScore) * 100
           const maxScore = quizScore.maxScore > 0 ? quizScore.maxScore : 100
           const scorePercentage =
             maxScore > 0 ? (quizScore.score / maxScore) * 100 : 0
-          totalScorePercentage += Math.min(scorePercentage, 100) // Cap at 100%
+          totalScorePercentage += Math.min(scorePercentage, 100)
         } else {
-          // Quiz not attempted = 0% score
           totalScorePercentage += 0
         }
       })
 
-      // Average score = sum of all quiz percentages (including 0% for unattempted) / total quizzes
       const calculatedAverageScore =
         totalQuizzes > 0 ? Math.round(totalScorePercentage / totalQuizzes) : 0
 
-      // Completion rate = (quizzes with scores) / (total quizzes) * 100
       const calculatedQuizCompletionRate =
         totalQuizzes > 0
           ? Math.round((completedQuizCount / totalQuizzes) * 100)
           : 0
 
-      // Quiz progress = completion rate (each quiz with score is 100% progress)
       const calculatedQuizProgress = calculatedQuizCompletionRate
 
       return {
@@ -312,17 +257,6 @@ function StudentRow({
     }
   }, [courseQuiz, userScores])
 
-  const totalLessons = useMemo(() => {
-    if (course) {
-      const lessons =
-        course.curriculum?.topic?.flatMap(
-          (topic) => topic.lessons as LessonDto[]
-        ) || []
-      return lessons.length
-    }
-    return 0
-  }, [course])
-
   const getProgressColor = (progress: number) => {
     if (progress >= 80) return "success"
     if (progress >= 50) return "warning"
@@ -336,20 +270,14 @@ function StudentRow({
   }
 
   const lastActivityDate = useMemo(() => {
-    if (!progress?.progress?.length) return "No activity"
+    if (!courseProgress?.lastAccessedAt) return "No activity"
 
-    const mostRecentProgress = (progress.progress as ProgressData[]).reduce(
-      (latest, current) => {
-        const currentDate = new Date(current.updatedAt || 0)
-        const latestDate = new Date(latest.updatedAt || 0)
-        return currentDate > latestDate ? current : latest
-      }
-    )
-
-    return mostRecentProgress.updatedAt
-      ? new Date(mostRecentProgress.updatedAt).toLocaleDateString()
-      : "No activity"
-  }, [progress])
+    try {
+      return new Date(courseProgress.lastAccessedAt).toLocaleDateString()
+    } catch {
+      return "No activity"
+    }
+  }, [courseProgress])
 
   // Format enrollment date safely
   const enrollmentDate = student?.createdOn
@@ -379,7 +307,7 @@ function StudentRow({
           label={`${lessonProgress}%`}
           size="small"
           color={getProgressColor(lessonProgress)}
-          title="Course progress (from progress data)"
+          title="Overall course progress"
         />
       </TableCell>
       <TableCell>
@@ -387,7 +315,7 @@ function StudentRow({
           label={`${completedLessons}/${totalLessons}`}
           size="small"
           color={completedLessons === totalLessons ? "success" : "default"}
-          title="Lessons completed (from progress data)"
+          title="Lessons completed"
         />
       </TableCell>
       <TableCell>
@@ -404,7 +332,7 @@ function StudentRow({
           label={`${quizProgress}%`}
           size="small"
           color={getProgressColor(quizProgress)}
-          title="Quiz progress (from quiz scores)"
+          title="Quiz progress"
         />
       </TableCell>
       <TableCell>
@@ -412,7 +340,7 @@ function StudentRow({
           label={`${quizCompletionRate}%`}
           size="small"
           color={quizCompletionRate === 100 ? "success" : "default"}
-          title="Quiz completion rate (from quiz scores)"
+          title="Quiz completion rate"
         />
         {courseQuiz && courseQuiz.length > 0 && (
           <Typography

@@ -20,7 +20,7 @@ import Image from "next/image"
 import dynamic from "next/dynamic"
 import VideoPlayerWithProgress from "./VideoPlayerWithProgress"
 import ReactPlayer from "react-player"
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { LessonDto } from "@/types/types"
 
 const PdfViewer = dynamic(() => import("./PdfViewer"), {
@@ -28,16 +28,41 @@ const PdfViewer = dynamic(() => import("./PdfViewer"), {
   loading: () => <div>Loading PDF viewer...</div>,
 })
 
+interface LessonContentProps {
+  lesson: LessonDto
+  userId: string
+  onComplete?: () => void
+  onProgress?: (_percentage: number) => void
+}
+
 interface HTMLLessonProps {
   lesson: {
     content?: string
   }
+  onComplete?: () => void
 }
 
 const streamUrl =
   process.env.NEXT_PUBLIC_STREAM_URL || "https://horacelms.com/stream2"
 
-const HTMLLesson: React.FC<HTMLLessonProps> = ({ lesson }) => {
+const HTMLLesson: React.FC<HTMLLessonProps> = ({ lesson, onComplete }) => {
+  const hasMarkedComplete = useRef(false)
+  const onCompleteRef = useRef(onComplete)
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete
+  }, [onComplete])
+
+  useEffect(() => {
+    if (lesson.content && onCompleteRef.current && !hasMarkedComplete.current) {
+      const timer = setTimeout(() => {
+        onCompleteRef.current?.()
+        hasMarkedComplete.current = true // Set flag to prevent re-runs
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [lesson.content])
+
   return (
     <DocumentContainer>
       <HTMLContent>
@@ -145,14 +170,42 @@ const getContentType = (lesson: LessonDto): string => {
   return extension || "unknown"
 }
 
-const LessonContent = ({
+const LessonContent: React.FC<LessonContentProps> = ({
   lesson,
   userId,
-}: {
-  lesson: LessonDto
-  userId: string
+  onComplete,
+  onProgress,
 }) => {
   const playerRef = useRef<ReactPlayer>(null)
+  const hasMarkedComplete = useRef(false)
+  const onCompleteRef = useRef(onComplete)
+  useEffect(() => {
+    onCompleteRef.current = onComplete
+  }, [onComplete])
+
+  useEffect(() => {
+    hasMarkedComplete.current = false
+  }, [lesson.id])
+
+  useEffect(() => {
+    const contentType = getContentType(lesson)
+
+    // For non-video content, mark as complete after viewing
+    if (
+      contentType !== "video" &&
+      lesson.id &&
+      onCompleteRef.current &&
+      !hasMarkedComplete.current
+    ) {
+      const timer = setTimeout(() => {
+        onCompleteRef.current?.()
+        hasMarkedComplete.current = true
+      }, 2000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [lesson])
+
   if (!lesson) {
     return (
       <Alert severity="info">
@@ -173,6 +226,11 @@ const LessonContent = ({
               streamUrl={streamUrl}
               userId={userId}
               playerRef={playerRef}
+              onProgress={(progress) => {
+                const percentage = Math.round(progress * 100)
+                onProgress?.(percentage)
+              }}
+              onComplete={onComplete}
             />
           ) : (
             <>
@@ -271,6 +329,9 @@ const LessonContent = ({
             target="_blank"
             rel="noopener noreferrer"
             sx={{ mb: 2 }}
+            onClick={() => {
+              setTimeout(() => onComplete?.(), 500)
+            }}
           >
             Open in Browser / Download
           </Button>
@@ -279,7 +340,7 @@ const LessonContent = ({
 
     case "text":
     case "html":
-      return <HTMLLesson lesson={lesson} />
+      return <HTMLLesson lesson={lesson} onComplete={onComplete} />
 
     case "code":
       return (
@@ -317,7 +378,16 @@ const LessonContent = ({
           </Typography>
           {lesson.content ? (
             <Box sx={{ mt: 2 }}>
-              <audio controls style={{ width: "100%" }}>
+              <audio
+                controls
+                style={{ width: "100%" }}
+                onEnded={() => onComplete?.()}
+                onTimeUpdate={(e) => {
+                  const audio = e.target as HTMLAudioElement
+                  const progress = (audio.currentTime / audio.duration) * 100
+                  onProgress?.(Math.round(progress))
+                }}
+              >
                 <source src={lesson.content} />
                 Your browser does not support the audio element.
               </audio>
@@ -374,6 +444,9 @@ const LessonContent = ({
                 href={lesson.content}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => {
+                  setTimeout(() => onComplete?.(), 500)
+                }}
               >
                 Download File
               </Button>
