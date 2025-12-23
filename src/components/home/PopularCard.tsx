@@ -41,7 +41,7 @@ const PopularCard = ({ data }: courseProp) => {
       acc += post.like
       return acc
     }, 0)
-    const st = students ?? 10
+    const st = students ?? 33
     return likes + totalSteps + st
   }
 
@@ -123,7 +123,7 @@ const PopularCard = ({ data }: courseProp) => {
             <Box sx={cardStyles.numbers}>
               <FavoriteIcon color="primary" />
               <Typography variant="body2" sx={cardStyles.between}>
-                {`${countStudent()} students`}
+                {`${countStudent()}+ students`}
               </Typography>
             </Box>
           </Box>

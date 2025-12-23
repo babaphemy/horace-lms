@@ -41,11 +41,14 @@ export function useLessonProgress({
       queryClient.invalidateQueries(["progress", lessonId, userId])
     },
   })
-  const saveALessonProgress = (lid: string) => {
+  const saveALessonProgress = (
+    lid: string,
+    completionPercentage: number = 0
+  ) => {
     const progressData: LessonProgress = {
       lessonId: lid,
       userId,
-      completionPercentage: 0,
+      completionPercentage,
       lastWatched: new Date().toISOString(),
     }
     saveMyLessonProgress(progressData)

@@ -4,12 +4,12 @@ import React, { useEffect, useRef, useState } from "react"
 import ReactPlayer from "react-player"
 
 interface VideoPlayerProps {
-  lesson: {
-    id: string
-  }
+  lesson: { id: string }
   streamUrl: string
   userId: string
   playerRef: React.RefObject<ReactPlayer>
+  onProgress?: (_progress: number) => void
+  onComplete?: () => void
 }
 
 export interface LessonProgress {
@@ -29,6 +29,8 @@ const VideoPlayerWithProgress: React.FC<VideoPlayerProps> = ({
   streamUrl,
   userId,
   playerRef,
+  onProgress,
+  onComplete,
 }) => {
   const progressUpdateRef = useRef<NodeJS.Timeout>()
 
@@ -78,13 +80,21 @@ const VideoPlayerWithProgress: React.FC<VideoPlayerProps> = ({
 
   const handleProgress = ({
     playedSeconds,
+    played,
   }: {
     playedSeconds: number
+    played: number
     loadedSeconds: number
   }) => {
     if (!isLoaded) return
 
     const duration = playerRef.current?.getDuration() || 0
+
+    onProgress?.(played)
+
+    if (played >= 0.95 && onComplete && duration > 0) {
+      onComplete()
+    }
 
     // Debounced save - clear previous timeout
     if (progressUpdateRef.current) {
@@ -109,6 +119,7 @@ const VideoPlayerWithProgress: React.FC<VideoPlayerProps> = ({
   const handleEnded = () => {
     const duration = playerRef.current?.getDuration() || 0
     saveProgress(duration, duration) // Mark as 100% complete
+    onComplete?.()
   }
 
   // Handle seeking

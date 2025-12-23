@@ -779,3 +779,71 @@ export interface CourseDTOResponse {
   numberOfElements: number
   empty: boolean
 }
+export interface LessonProgressRequest {
+  lessonId: string
+  topicId: string
+  courseId: string
+  progressPercentage: number
+  completed?: boolean
+  timeSpent?: number
+}
+export interface LessonProgress {
+  id: string
+  studentId: string
+  lessonId: string
+  topicId: string
+  courseId: string
+  progressPercentage: number
+  completed: boolean
+  timeSpent?: number
+  lastAccessedAt: string // ISO date string
+  completedAt?: string // ISO date string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TopicProgress {
+  topicId: string
+  topicTitle: string
+  totalLessons: number
+  completedLessons: number
+  progressPercentage: number
+  lessons: LessonProgress[]
+}
+
+export interface CourseProgressResponse {
+  courseId: string
+  courseTitle: string
+  studentId: string
+  totalLessons: number
+  completedLessons: number
+  overallProgressPercentage: number
+  enrolledAt?: string
+  lastAccessedAt?: string
+  topics: TopicProgress[]
+}
+
+export interface ProgressData {
+  id: string
+  studentId: string
+  lessonId: string
+  topicId: string
+  courseId: string
+  progressPercentage: number
+  completed: boolean
+  lastAccessedAt: string
+  completedAt?: string
+  timeSpent?: number
+}
+export interface LessonProgressData {
+  id: string
+  studentId: string
+  lessonId: string
+  topicId: string
+  courseId: string
+  completionPercentage: number
+  completed: boolean
+  lastAccessedAt: string
+  completedAt?: string
+  timeSpent?: number
+}

@@ -11,17 +11,20 @@ import { Box, Container } from "@mui/material"
 import type { NextPage } from "next"
 import { useContext, useEffect } from "react"
 import { useQuery } from "react-query"
-import { fetchCourses } from "../../api/rest"
+import { featuredCourses, fetchCourses } from "../../api/rest"
 import { useSession } from "next-auth/react"
 import { tCourseLte } from "@/types/types"
 
 const Home: NextPage = () => {
   const dispatch = useContext(AppDpx)
   const { data: session } = useSession()
+  const userID = session?.user?.id
 
   const { data, isLoading } = useQuery(
     "usersAdddoc",
-    () => fetchCourses(session?.user?.id, 0, 10),
+    userID
+      ? () => fetchCourses(session?.user?.id, 0, 10)
+      : () => featuredCourses(),
     {
       staleTime: 5000,
       cacheTime: 10,

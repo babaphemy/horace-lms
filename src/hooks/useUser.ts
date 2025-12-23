@@ -20,7 +20,7 @@ const useUser = () => {
         firstname: session?.user?.firstname || "",
         lastname: session?.user?.name || "",
         password: "",
-        type: session?.user?.roles?.includes("STUDENT")
+        type: session?.user?.roles?.includes("ROLE_STUDENT")
           ? "STUDENT"
           : "NON-STUDENT",
       }

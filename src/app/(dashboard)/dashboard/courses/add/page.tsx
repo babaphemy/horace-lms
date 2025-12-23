@@ -7,6 +7,7 @@ import ReviewSubjectForm from "@/components/courses/ReviewSubjectForm"
 import { courseCompleteSchema } from "@/schema/courseSchema"
 import { CourseComplete, LESSONTYPE, TopicDto } from "@/types/types"
 import { notifyError, notifySuccess } from "@/utils/notification"
+import { AccessRoles } from "@/utils/util"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { Save as SaveIcon } from "@mui/icons-material"
 import {
@@ -70,7 +71,7 @@ const SubjectCreateComp = () => {
       notifyError("Failed to fetch course data")
     },
   })
-  if (session?.user?.roles.some((role) => role.toLowerCase() === "student")) {
+  if (session?.user?.roles.some((role) => role === AccessRoles.STUDENT)) {
     router.push("/")
   }
 
