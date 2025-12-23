@@ -5,6 +5,7 @@ import { AppDpx } from "@/context/AppContext"
 import useUser from "@/hooks/useUser"
 import { loginStyles } from "@/styles/loginStyles"
 import { notifyError, notifySuccess } from "@/utils/notification"
+import { AccessRoles } from "@/utils/util"
 import { yupResolver } from "@hookform/resolvers/yup"
 import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import VisibilityIcon from "@mui/icons-material/Visibility"
@@ -72,8 +73,8 @@ const Login = (props: Props) => {
     if (status === "authenticated" || session?.user?.email) {
       notifySuccess("Login successful! Redirecting...")
       if (
-        session?.user?.roles?.includes("ADMIN") ||
-        session?.user?.roles?.includes("INSTRUCTOR")
+        session?.user?.roles?.includes(AccessRoles.ADMIN) ||
+        session?.user?.roles?.includes(AccessRoles.INSTRUCTOR)
       ) {
         router.push("/dashboard")
       } else {

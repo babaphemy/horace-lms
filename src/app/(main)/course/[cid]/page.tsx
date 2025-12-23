@@ -274,13 +274,8 @@ const Detailb = () => {
       return
     }
 
-    const payload = {
-      id: courseId,
-      user: userId,
-    }
-
     if (price < 1) {
-      addCourseToUser.mutate(payload)
+      addCourseToUser.mutate(courseId)
     } else {
       dispatch({
         type: MODAL_SET,

@@ -1,7 +1,9 @@
 import NextAuth, { NextAuthOptions, Session } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import { auth, PostSettings } from "../../setting"
+import { PostUnsecured } from "../../setting"
+import { fetchWithAuth } from "../../rest"
+import { AccessRoles } from "@/utils/util"
 
 const basePath = process.env.NEXT_PUBLIC_BASEPATH as string
 const authOptions: NextAuthOptions = {
@@ -22,7 +24,7 @@ const authOptions: NextAuthOptions = {
         }
         const res = await fetch(
           `${basePath}user/login2`,
-          PostSettings(credentials)
+          PostUnsecured(credentials)
         )
         const user = await res.json()
         if (res?.ok && user) {
@@ -32,9 +34,9 @@ const authOptions: NextAuthOptions = {
           return {
             id: user.id,
             email: user.email,
-            name: user.firstname || user.name || "Guest",
+            name: user.firstname || user.name || AccessRoles.GUEST,
             token: user.token || "",
-            roles: user.roles || ["Guest"],
+            roles: user.roles || [AccessRoles.GUEST],
             image: user.dp || user.image || null,
             firstname: user.firstname,
             lastname: user.lastname,
@@ -64,16 +66,18 @@ const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         try {
-          const res = await fetch(`${basePath}user/auser/${user?.email}`, auth)
+          const res = await fetchWithAuth(
+            `${basePath}user/auser/${user?.email}`
+          )
           const userData = await res.json()
 
           if (res?.ok && userData && !userData.detail) {
             account.userData = {
               id: userData.id,
-              name: userData.firstname || user.name || "Guest",
+              name: userData.firstname || user.name || AccessRoles.GUEST,
               email: userData.email,
               token: userData.token || "",
-              roles: userData.roles || ["Guest"],
+              roles: userData.roles || [AccessRoles.GUEST],
               image: userData.dp || user.image || null,
               firstname: userData.firstname,
               lastname: userData.lastname,
@@ -98,7 +102,7 @@ const authOptions: NextAuthOptions = {
       } else if (user) {
         token.accessToken = user.token || ""
         token.id = user.id
-        token.roles = user.roles || ["Guest"]
+        token.roles = user.roles || [AccessRoles.GUEST]
         token.user = {
           id: user.id,
           email: user.email,

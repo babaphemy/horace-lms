@@ -9,7 +9,7 @@ import Fuse, { FuseResult } from "fuse.js"
 import { debounce } from "lodash"
 import { useContext, useEffect, useState } from "react"
 import { useQuery } from "react-query"
-import { fetchCourses } from "../../api/rest"
+import { featuredCourses, fetchCourses } from "../../api/rest"
 
 import CourseData from "@/components/courses/CourseData"
 import { coursefilter } from "@/utils/util"
@@ -24,14 +24,20 @@ const Courses = () => {
   const [filteredData, setFilteredData] = useState<tCourseLte[] | []>([])
   const [currentFilter, setCurrentFilter] = useState(coursefilter[0])
   const { data: session } = useSession()
+  const userId = session?.user?.id
   const [currentPage, setCurrentPage] = useState(0)
 
   const dispatch = useContext(AppDpx)
   const { data, isLoading } = useQuery({
-    queryKey: ["usersRegisteredCourses", session?.user?.id, currentPage],
-    queryFn: () => fetchCourses(undefined, currentPage, 10),
+    queryKey: [
+      "usersRegisteredCourses-featured",
+      session?.user?.id,
+      currentPage,
+    ],
+    queryFn: userId
+      ? () => fetchCourses(session?.user?.id, currentPage, 10)
+      : () => featuredCourses(),
     refetchOnWindowFocus: false,
-    enabled: !!session?.user?.id,
   })
 
   const handleSearch = debounce(async (query: string) => {
