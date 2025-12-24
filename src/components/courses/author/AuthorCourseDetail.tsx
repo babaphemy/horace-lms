@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useMemo } from "react"
 import {
   Container,
   Grid,
@@ -31,7 +31,11 @@ import { useSession } from "next-auth/react"
 import { useParams } from "next/navigation"
 import { StudentsList } from "./StudentsList"
 import { useQuery, useMutation, useQueryClient } from "react-query"
-import { registeredStudents, setCourseAsFeatured } from "@/app/api/rest"
+import {
+  registeredStudents,
+  setCourseAsFeatured,
+  featuredCourses,
+} from "@/app/api/rest"
 import { notifySuccess, notifyError } from "@/utils/notification"
 
 const AuthorCourseDetail: React.FC = () => {
@@ -52,11 +56,27 @@ const AuthorCourseDetail: React.FC = () => {
     enabled: !!id,
   })
 
+  //? Fetch featured courses to check if current course is featured
+  const { data: featuredCoursesData } = useQuery({
+    queryKey: ["featured-courses"],
+    queryFn: () => featuredCourses(),
+  })
+
+  //? Check if current course is in the featured courses list
+  const isCourseFeatured = useMemo(() => {
+    const featuredCoursesList = featuredCoursesData?.content
+    return (
+      Array.isArray(featuredCoursesList) &&
+      featuredCoursesList.some((course) => course.id === id)
+    )
+  }, [featuredCoursesData, id])
+
   const { mutate: setFeatured, isLoading: isSettingFeatured } = useMutation(
     setCourseAsFeatured,
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["course", id, userId])
+        queryClient.invalidateQueries(["featured-courses"])
         notifySuccess("Course set as featured successfully!")
       },
       onError: (error: Error) => {
@@ -118,14 +138,14 @@ const AuthorCourseDetail: React.FC = () => {
 
           <Box sx={{ display: "flex", gap: 2 }}>
             <Button
-              startIcon={course?.featured ? <Star /> : <StarBorder />}
-              variant={course?.featured ? "contained" : "outlined"}
-              color={course?.featured ? "warning" : "primary"}
+              startIcon={isCourseFeatured ? <Star /> : <StarBorder />}
+              variant={isCourseFeatured ? "contained" : "outlined"}
+              color={isCourseFeatured ? "warning" : "primary"}
               onClick={handleSetFeatured}
               disabled={isSettingFeatured}
               sx={{ mb: 2 }}
             >
-              {course?.featured ? "Featured" : "Set as Featured"}
+              {isCourseFeatured ? "Featured" : "Set as Featured"}
             </Button>
             <Button
               startIcon={<Edit />}
