@@ -43,7 +43,8 @@ interface HTMLLessonProps {
 }
 
 const streamUrl =
-  process.env.NEXT_PUBLIC_STREAM_URL || "https://horacelms.com/stream2"
+  process.env.NEXT_PUBLIC_STREAM_URL ||
+  "https://horaceapi.horacelearning.us/stream2"
 
 const HTMLLesson: React.FC<HTMLLessonProps> = ({ lesson, onComplete }) => {
   const hasMarkedComplete = useRef(false)
