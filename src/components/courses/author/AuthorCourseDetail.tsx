@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useMemo } from "react"
 import {
   Container,
   Grid,
@@ -20,6 +20,8 @@ import {
   Schedule,
   ArrowBack,
   Edit,
+  Star,
+  StarBorder,
 } from "@mui/icons-material"
 import DOMPurify from "dompurify"
 import Link from "next/link"
@@ -28,14 +30,20 @@ import useCourse from "@/hooks/useCourse"
 import { useSession } from "next-auth/react"
 import { useParams } from "next/navigation"
 import { StudentsList } from "./StudentsList"
-import { useQuery } from "react-query"
-import { registeredStudents } from "@/app/api/rest"
+import { useQuery, useMutation, useQueryClient } from "react-query"
+import {
+  registeredStudents,
+  setCourseAsFeatured,
+  featuredCourses,
+} from "@/app/api/rest"
+import { notifySuccess, notifyError } from "@/utils/notification"
 
 const AuthorCourseDetail: React.FC = () => {
   const params = useParams()
   const { id } = params
   const { data: session } = useSession()
   const userId = session?.user.id
+  const queryClient = useQueryClient()
   const {
     data: course,
     isLoading,
@@ -47,6 +55,41 @@ const AuthorCourseDetail: React.FC = () => {
     queryFn: () => registeredStudents(id as string),
     enabled: !!id,
   })
+
+  //? Fetch featured courses to check if current course is featured
+  const { data: featuredCoursesData } = useQuery({
+    queryKey: ["featured-courses"],
+    queryFn: () => featuredCourses(),
+  })
+
+  //? Check if current course is in the featured courses list
+  const isCourseFeatured = useMemo(() => {
+    const featuredCoursesList = featuredCoursesData?.content
+    return (
+      Array.isArray(featuredCoursesList) &&
+      featuredCoursesList.some((course) => course.id === id)
+    )
+  }, [featuredCoursesData, id])
+
+  const { mutate: setFeatured, isLoading: isSettingFeatured } = useMutation(
+    setCourseAsFeatured,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["course", id, userId])
+        queryClient.invalidateQueries(["featured-courses"])
+        notifySuccess("Course set as featured successfully!")
+      },
+      onError: (error: Error) => {
+        notifyError(`Failed to set course as featured: ${error.message}`)
+      },
+    }
+  )
+
+  const handleSetFeatured = () => {
+    if (id) {
+      setFeatured(id as string)
+    }
+  }
   if (isLoading) {
     return (
       <Box
@@ -93,15 +136,27 @@ const AuthorCourseDetail: React.FC = () => {
             Back to Dashboard
           </Button>
 
-          <Button
-            startIcon={<Edit />}
-            component={Link}
-            variant="contained"
-            href={`/dashboard/courses/add?cid=${course.id}`}
-            sx={{ mb: 2 }}
-          >
-            Edit Course
-          </Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              startIcon={isCourseFeatured ? <Star /> : <StarBorder />}
+              variant={isCourseFeatured ? "contained" : "outlined"}
+              color={isCourseFeatured ? "warning" : "primary"}
+              onClick={handleSetFeatured}
+              disabled={isSettingFeatured}
+              sx={{ mb: 2 }}
+            >
+              {isCourseFeatured ? "Featured" : "Set as Featured"}
+            </Button>
+            <Button
+              startIcon={<Edit />}
+              component={Link}
+              variant="contained"
+              href={`/dashboard/courses/add?cid=${course.id}`}
+              sx={{ mb: 2 }}
+            >
+              Edit Course
+            </Button>
+          </Box>
         </Box>
         <Typography variant="h4" gutterBottom>
           {course?.courseName}
