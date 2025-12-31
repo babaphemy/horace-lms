@@ -5,6 +5,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle"
 import { useRouter } from "next/navigation"
 import { tCourseLte, tPost } from "@/types/types"
 import DynamicThumbnail from "../courses/DynamicThumb"
+import { getAccessRoleKey } from "@/utils/util"
 interface courseProp {
   data: tCourseLte
 }
@@ -115,7 +116,7 @@ const PopularCard = ({ data }: courseProp) => {
                   {author}
                 </Typography>
                 <Typography variant="caption" margin={0} color="primary">
-                  {authorRole || "Instructor"}
+                  {getAccessRoleKey(authorRole) || "Instructor"}
                 </Typography>
               </Box>
             </Box>

@@ -9,6 +9,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import { tCourseLte, tPost } from "../types/types"
 import { useRouter } from "next/navigation"
+import { getAccessRoleKey } from "@/utils/util"
 
 type SimilarCardProps = {
   course: tCourseLte
@@ -101,7 +102,7 @@ const SimilarCard = ({ course }: SimilarCardProps) => {
                   {author}
                 </Typography>
                 <Typography variant="caption" margin={0} color="primary">
-                  {course?.authorRole || "Software Engineer"}
+                  {getAccessRoleKey(course?.authorRole) || "Software Engineer"}
                 </Typography>
               </Box>
             </Box>

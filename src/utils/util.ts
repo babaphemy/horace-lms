@@ -22,3 +22,17 @@ export const AccessRoles = {
   GUEST: "ROLE_GUEST",
 } as const
 export type AccessRole = (typeof AccessRoles)[keyof typeof AccessRoles]
+
+/**
+ * Returns the key (role name) for a given AccessRole value
+ * @param roleValue - The role value
+ * @returns The role key (e.g., "INSTRUCTOR") or undefined
+ */
+export const getAccessRoleKey = (
+  roleValue: string | undefined
+): string | undefined => {
+  if (!roleValue) return undefined
+  return Object.keys(AccessRoles).find(
+    (key) => AccessRoles[key as keyof typeof AccessRoles] === roleValue
+  )
+}
