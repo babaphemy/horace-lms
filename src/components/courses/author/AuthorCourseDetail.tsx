@@ -207,7 +207,7 @@ const AuthorCourseDetail: React.FC = () => {
       {data && (
         <Paper sx={{ p: 3, mt: 3 }}>
           <Typography variant="h5" gutterBottom>
-            Enrolled Students
+            Enrolled Students {data?.length ?? 0}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             Manage and track student progress for this course

@@ -965,6 +965,21 @@ const getUserProgress = async (userId: string) => {
   }
   return response.json()
 }
+const getStudentCourseProgress = async ({
+  courseId,
+  studentId,
+}: {
+  courseId: string
+  studentId: string
+}) => {
+  const response = await fetchWithAuth(
+    `${basePath}progress/course/${courseId}/student/${studentId}`
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 const courseGrantAccess = async (dto: CorporateAuthRequest) => {
   const response = await fetchWithAuth(
     `${basePath}course/org/authenticate-user`,
@@ -1166,4 +1181,5 @@ export {
   userQuizScores,
   addScore,
   getUserInfo,
+  getStudentCourseProgress,
 }

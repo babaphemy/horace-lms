@@ -171,7 +171,7 @@ function StudentRow({
 
   const { data: courseProgress } = useQuery<CourseProgressResponse | null>({
     queryKey: ["courseProgress", courseId, student?.id],
-    queryFn: () => getCourseProgressForStudent(courseId, student?.email ?? ""),
+    queryFn: () => getCourseProgressForStudent(courseId, student?.id ?? ""),
     enabled: !!courseId && !!student?.id,
   })
 
