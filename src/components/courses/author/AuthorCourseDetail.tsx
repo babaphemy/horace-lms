@@ -75,21 +75,18 @@ const AuthorCourseDetail: React.FC = () => {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header */}
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 4 }}>
         <Box
           sx={{
             mb: 3,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 2,
           }}
         >
-          <Button
-            startIcon={<ArrowBack />}
-            component={Link}
-            href="/dashboard"
-            sx={{ mb: 2 }}
-          >
+          <Button startIcon={<ArrowBack />} component={Link} href="/dashboard">
             Back to Dashboard
           </Button>
 
@@ -98,12 +95,11 @@ const AuthorCourseDetail: React.FC = () => {
             component={Link}
             variant="contained"
             href={`/dashboard/courses/add?cid=${course.id}`}
-            sx={{ mb: 2 }}
           >
             Edit Course
           </Button>
         </Box>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
           {course?.courseName}
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -111,78 +107,137 @@ const AuthorCourseDetail: React.FC = () => {
         </Typography>
       </Box>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         {/* Course Overview */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <Paper sx={{ p: 3, width: "100%", height: "100%" }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper
+            sx={{
+              p: 3,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 2 }}
+            >
               Course Overview
             </Typography>
-            <Typography
-              variant="body1"
-              component="div"
-              sx={{
-                mb: 2,
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(course?.overview || ""),
-                }}
-              />
-            </Typography>
 
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <School color="primary" sx={{ mr: 1 }} />
-                  <Typography variant="body2">
-                    <strong>Category:</strong> {course?.category}
-                  </Typography>
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                  lineHeight: 1.6,
+                }}
+              >
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(
+                      course?.overview || "No overview available"
+                    ),
+                  }}
+                />
+              </Typography>
+            </Box>
+
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                  <School color="primary" sx={{ fontSize: 20 }} />
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                    >
+                      Category
+                    </Typography>
+                    <Typography variant="body2" fontWeight={500}>
+                      {course?.category}
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <People color="primary" sx={{ mr: 1 }} />
-                  <Typography variant="body2">
-                    <strong>Target:</strong> {course?.target}
-                  </Typography>
+                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                  <People color="primary" sx={{ fontSize: 20 }} />
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                    >
+                      Target Audience
+                    </Typography>
+                    <Typography variant="body2" fontWeight={500}>
+                      {course?.target}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <Assessment color="primary" sx={{ mr: 1 }} />
-                  <Typography variant="body2">
-                    <strong>Price:</strong> ${course?.price}
-                  </Typography>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                  <Assessment color="primary" sx={{ fontSize: 20 }} />
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                    >
+                      Price
+                    </Typography>
+                    <Typography variant="body2" fontWeight={500}>
+                      ${course?.price}
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <Schedule color="primary" sx={{ mr: 1 }} />
-                  <Typography variant="body2">
-                    <strong>Created:</strong>{" "}
-                    {new Date(course?.createdOn).toLocaleDateString()}
-                  </Typography>
+                <Box display="flex" alignItems="center" gap={1} mb={2}>
+                  <Schedule color="primary" sx={{ fontSize: 20 }} />
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                    >
+                      Created
+                    </Typography>
+                    <Typography variant="body2" fontWeight={500}>
+                      {new Date(course?.createdOn).toLocaleDateString()}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
             </Grid>
 
             {/* Instructor Info */}
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h6" gutterBottom>
+            <Divider sx={{ my: 3 }} />
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ fontWeight: 600, mb: 2 }}
+            >
               Instructor
             </Typography>
-            <Box display="flex" alignItems="center">
-              <Avatar sx={{ mr: 2 }}>
+            <Box display="flex" alignItems="center" gap={2}>
+              <Avatar sx={{ width: 48, height: 48, bgcolor: "primary.main" }}>
                 {course?.author?.firstname.charAt(0)}
                 {course?.author?.lastname.charAt(0)}
               </Avatar>
-              <Box>
-                <Typography variant="body1">
+              <Box flex={1}>
+                <Typography variant="body1" fontWeight={500}>
                   {course?.author?.firstname} {course?.author?.lastname}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 0.5 }}
+                >
                   {course?.author?.email}
                 </Typography>
                 <Chip
@@ -190,7 +245,6 @@ const AuthorCourseDetail: React.FC = () => {
                   size="small"
                   color="primary"
                   variant="outlined"
-                  sx={{ mt: 1 }}
                 />
               </Box>
             </Box>
@@ -205,8 +259,8 @@ const AuthorCourseDetail: React.FC = () => {
 
       {/* Students List Section */}
       {data && (
-        <Paper sx={{ p: 3, mt: 3 }}>
-          <Typography variant="h5" gutterBottom>
+        <Paper sx={{ p: 3, mt: 4 }}>
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
             Enrolled Students
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
