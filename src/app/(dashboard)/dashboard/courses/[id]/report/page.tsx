@@ -116,9 +116,12 @@ const CourseReportPage = () => {
 
   // Map students to their quiz scores and progress
   const studentReports: StudentReport[] = useMemo(() => {
-    if (!students || !userScores || !progress) {
+    if (!students || !userScores) {
       return []
     }
+
+    // Ensure progress is an array
+    const progressArray = Array.isArray(progress) ? progress : []
 
     return students.map((student) => {
       // Find quiz scores for this student
@@ -126,12 +129,13 @@ const CourseReportPage = () => {
         (score) => score.userId === student.id
       )
 
-      // Find progress report for this student by email
-      const studentProgress = Array.isArray(progress)
-        ? progress.find((p: ProgressReport) => p.email === student.email)
-        : null
+      const studentProgress =
+        progressArray.find(
+          (p: ProgressReport) =>
+            p.email?.toLowerCase().trim() ===
+            student.email?.toLowerCase().trim()
+        ) || null
 
-      // Calculate average quiz score percentage
       const averageQuizScore =
         studentQuizScores.length > 0
           ? Math.round(
