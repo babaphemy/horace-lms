@@ -16,14 +16,17 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Button,
 } from "@mui/material"
-import { Search, MoreVert, Visibility } from "@mui/icons-material"
+import { Search, MoreVert, Visibility, Download } from "@mui/icons-material"
 
 import { useRouter } from "next/navigation"
 import { Quiz, tCourse, tUser, CourseProgressResponse } from "@/types/types"
 import { getCourseProgressForStudent, userQuizScores } from "@/app/api/rest"
 import { useQuery } from "react-query"
 import useQuizSummary from "@/hooks/useQuizSummary"
+import * as XLSX from "xlsx"
+import { notifyError, notifySuccess } from "@/utils/notification"
 
 interface StudentsListProps {
   students: tUser[]
@@ -73,10 +76,160 @@ export const StudentsList: React.FC<StudentsListProps> = ({
     handleMenuClose()
   }
 
+  const handleExportToExcel = async () => {
+    try {
+      if (!filteredStudents || filteredStudents.length === 0) {
+        notifyError("No students to export")
+        return
+      }
+
+      // Collect data for all students
+      const exportData = await Promise.all(
+        filteredStudents.map(async (student) => {
+          try {
+            // Fetch student progress and scores
+            const [progressResponse, scoresResponse] = await Promise.allSettled(
+              [
+                getCourseProgressForStudent(courseId, student.email ?? ""),
+                userQuizScores(student?.id as string),
+              ]
+            )
+
+            const courseProgress =
+              progressResponse.status === "fulfilled"
+                ? progressResponse.value
+                : null
+            const userScores =
+              scoresResponse.status === "fulfilled"
+                ? scoresResponse.value
+                : null
+
+            // Calculate metrics
+            const lessonProgress = courseProgress
+              ? Math.round(courseProgress.overallProgressPercentage || 0)
+              : 0
+            const completedLessons = courseProgress?.completedLessons || 0
+            const totalLessons = courseProgress?.totalLessons || 0
+
+            // Calculate quiz metrics
+            let averageScore = 0
+            let quizCompletionRate = 0
+            let quizProgress = 0
+
+            if (courseQuiz && userScores) {
+              const quizzes = courseQuiz || []
+              const totalQuizzes = quizzes.length
+
+              if (totalQuizzes > 0) {
+                let totalScorePercentage = 0
+                let completedQuizCount = 0
+
+                quizzes.forEach((quiz: Quiz) => {
+                  const quizScore = userScores?.find(
+                    (score) => String(score.quizId) === String(quiz.id)
+                  )
+
+                  if (quizScore) {
+                    completedQuizCount++
+                    const maxScore =
+                      quizScore.maxScore > 0 ? quizScore.maxScore : 100
+                    const scorePercentage =
+                      maxScore > 0 ? (quizScore.score / maxScore) * 100 : 0
+                    totalScorePercentage += Math.min(scorePercentage, 100)
+                  }
+                })
+
+                averageScore =
+                  totalQuizzes > 0
+                    ? Math.round(totalScorePercentage / totalQuizzes)
+                    : 0
+                quizCompletionRate =
+                  totalQuizzes > 0
+                    ? Math.round((completedQuizCount / totalQuizzes) * 100)
+                    : 0
+                quizProgress = quizCompletionRate
+              }
+            }
+
+            const lastActivityDate = courseProgress?.lastAccessedAt
+              ? new Date(courseProgress.lastAccessedAt).toLocaleDateString()
+              : "No activity"
+
+            const enrollmentDate = student?.createdOn
+              ? new Date(student.createdOn).toLocaleDateString()
+              : "N/A"
+
+            return {
+              "Student Name": `${student.firstname} ${student.lastname}`,
+              Email: student.email || "N/A",
+              "Course Progress (%)": lessonProgress,
+              "Lessons Completed": `${completedLessons}/${totalLessons}`,
+              "Avg Quiz Score (%)": averageScore,
+              "Quiz Progress (%)": quizProgress,
+              "Quiz Completion Rate (%)": quizCompletionRate,
+              "Last Activity": lastActivityDate,
+              "Enrollment Date": enrollmentDate,
+            }
+          } catch {
+            // Return basic info if data fetch fails
+            return {
+              "Student Name": `${student.firstname} ${student.lastname}`,
+              Email: student.email || "N/A",
+              "Course Progress (%)": "N/A",
+              "Lessons Completed": "N/A",
+              "Avg Quiz Score (%)": "N/A",
+              "Quiz Progress (%)": "N/A",
+              "Quiz Completion Rate (%)": "N/A",
+              "Last Activity": "N/A",
+              "Enrollment Date": student?.createdOn
+                ? new Date(student.createdOn).toLocaleDateString()
+                : "N/A",
+            }
+          }
+        })
+      )
+
+      // Create workbook and worksheet
+      const wb = XLSX.utils.book_new()
+      const ws = XLSX.utils.json_to_sheet(exportData)
+
+      // Auto-size columns
+      if (exportData.length > 0) {
+        const maxWidth = 20
+        const wscols = Object.keys(exportData[0] || {}).map((key) => ({
+          wch: Math.min(
+            Math.max(
+              key.length,
+              ...exportData.map(
+                (row) => String(row[key as keyof typeof row] || "").length
+              )
+            ),
+            maxWidth
+          ),
+        }))
+        ws["!cols"] = wscols
+      }
+
+      XLSX.utils.book_append_sheet(wb, ws, "Students")
+
+      // Generate filename with course name and date
+      const courseName = course?.courseName || "Course"
+      const sanitizedCourseName = courseName.replace(/[^a-z0-9]/gi, "_")
+      const dateStr = new Date().toISOString().split("T")[0]
+      const fileName = `${sanitizedCourseName}_Students_${dateStr}.xlsx`
+
+      // Write file
+      XLSX.writeFile(wb, fileName)
+      notifySuccess("Students data exported successfully")
+    } catch {
+      notifyError("Failed to export students data")
+    }
+  }
+
   return (
     <Box>
       {/* Search and Filters */}
-      <Box sx={{ mb: 3 }}>
+      <Box sx={{ mb: 3, display: "flex", gap: 2, alignItems: "center" }}>
         <TextField
           fullWidth
           variant="outlined"
@@ -91,6 +244,15 @@ export const StudentsList: React.FC<StudentsListProps> = ({
             ),
           }}
         />
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Download />}
+          onClick={handleExportToExcel}
+          sx={{ whiteSpace: "nowrap" }}
+        >
+          Export to Excel
+        </Button>
       </Box>
 
       {/* Students Table */}

@@ -397,10 +397,10 @@ const DashboardPage = () => {
                   <Analytics sx={{ mr: 1, fontSize: 18 }} />
                   View Analytics
                 </MenuItem>
-                <MenuItem onClick={() => handleMenuClose("students")}>
+                {/* <MenuItem onClick={() => handleMenuClose("students")}>
                   <People sx={{ mr: 1, fontSize: 18 }} />
                   Manage Students
-                </MenuItem>
+                </MenuItem> */}
               </Menu>
             </CardContent>
           </Card>
