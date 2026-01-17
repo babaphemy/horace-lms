@@ -28,6 +28,8 @@ import useQuizSummary from "@/hooks/useQuizSummary"
 import * as XLSX from "xlsx"
 import { notifyError, notifySuccess } from "@/utils/notification"
 
+// TODO: Delete this component and use the new one in the report page
+
 interface StudentsListProps {
   students: tUser[]
   courseId: string

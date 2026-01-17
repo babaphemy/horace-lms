@@ -17,7 +17,6 @@ import {
   CorporateAuthRequest,
   TUserScore,
   TAddQuizScore,
-  TQuizScores,
   CourseDTOResponse,
   CourseProgressResponse,
   LessonProgressRequest,
@@ -495,6 +494,25 @@ const userQuizScores = async (userId: string): Promise<TUserScore[]> => {
   }
   return response.json()
 }
+const usersQuizScores = async (userIds: string[]): Promise<TUserScore[]> => {
+  const response = await fetchWithAuth(
+    `${basePath}course/quiz/scores/by-user-ids?userIds=${userIds.join(",")}`
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
+const getUserQuizScores = async (userId: string): Promise<TUserScore[]> => {
+  const response = await fetchWithAuth(
+    `${basePath}course/quiz/scores?userId=${userId}`
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 
 const registeredStudents = async (cid: string): Promise<tUser[]> => {
   const response = await fetchWithAuth(`${basePath}course/students/${cid}`)
@@ -503,6 +521,7 @@ const registeredStudents = async (cid: string): Promise<tUser[]> => {
   }
   return response.json()
 }
+
 const contactUs = async (data: {
   firstname: string
   lastname: string
@@ -965,6 +984,13 @@ const getUserProgress = async (userId: string) => {
   }
   return response.json()
 }
+const courseReport = async (cid: string) => {
+  const response = await fetchWithAuth(`${basePath}course/report/${cid}`)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 const courseGrantAccess = async (dto: CorporateAuthRequest) => {
   const response = await fetchWithAuth(
     `${basePath}course/org/authenticate-user`,
@@ -980,16 +1006,6 @@ const courseGrantAccess = async (dto: CorporateAuthRequest) => {
 }
 const courseAccessToken = async () => {
   const response = await fetch(`${basePath}course/user/token-info`, cookieAuth)
-  if (!response.ok) {
-    throw new Error(response.statusText)
-  }
-  return response.json()
-}
-
-const getUserQuizScores = async (userId: string): Promise<TQuizScores[]> => {
-  const response = await fetchWithAuth(
-    `${basePath}course/quiz/scores?userId=${userId}`
-  )
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -1094,9 +1110,9 @@ export const getCourseProgressForStudent = async (
 }
 
 export {
-  getUserQuizScores,
   courseGrantAccess,
   courseAccessToken,
+  courseReport,
   saveMyProgress,
   saveLessonProgress,
   getLessonProgress,
@@ -1164,6 +1180,8 @@ export {
   lessonQuiz,
   allCourseQuiz,
   userQuizScores,
+  usersQuizScores,
+  getUserQuizScores,
   addScore,
   getUserInfo,
 }
