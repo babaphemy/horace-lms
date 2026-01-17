@@ -985,7 +985,9 @@ const getUserProgress = async (userId: string) => {
   return response.json()
 }
 const courseReport = async (cid: string) => {
-  const response = await fetchWithAuth(`${basePath}course/report/${cid}`)
+  const response = await fetchWithAuth(
+    `${basePath}progress/course/report/${cid}`
+  )
   if (!response.ok) {
     throw new Error(response.statusText)
   }
