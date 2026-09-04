@@ -455,32 +455,42 @@ What is the severity?
 How should the incident be contained?
 How should systems be recovered?
 How can recurrence be prevented?
-They then present their findings to an instructor acting as the client/CEO. 6. STUDENT PORTFOLIO
+They then present their findings to an instructor acting as the client/CEO.
+
+## 6. Student Portfolio
+
 Every student should leave with a portfolio containing:
-Cybersecurity Risk Assessment
-Personal Cyber Lab
-Linux Hardening Project
-Network Security Assessment
-Windows/Active Directory Project
-Vulnerability Assessment
-Penetration Testing Report
-Web Application Security Assessment
-SOC Investigation
-Incident Response Report
-Digital Forensics Report
-Cloud Security Assessment
-Python Security Tool
-Final Capstone
-This portfolio becomes part of their employment evidence. 7. ASSESSMENT SYSTEM
+
+- Cybersecurity Risk Assessment
+- Personal Cyber Lab
+- Linux Hardening Project
+- Network Security Assessment
+- Windows/Active Directory Project
+- Vulnerability Assessment
+- Penetration Testing Report
+- Web Application Security Assessment
+- SOC Investigation
+- Incident Response Report
+- Digital Forensics Report
+- Cloud Security Assessment
+- Python Security Tool
+- Final Capstone
+
+This portfolio becomes part of their employment evidence.
+
+## 7. Assessment System
+
 I recommend avoiding an examination-heavy model.
-Component Weight
-Theory/Knowledge 15%
-Hands-on Labs 35%
-Individual Projects 20%
-Professional Documentation 10%
-Teamwork/Participation 5%
-Final Capstone 15%
-Total 100%
+
+| Component | Weight |
+| --- | --- |
+| Theory/Knowledge | 15% |
+| Hands-on Labs | 35% |
+| Individual Projects | 20% |
+| Professional Documentation | 10% |
+| Teamwork/Participation | 5% |
+| Final Capstone | 15% |
+| Total | 100% |
 
 Practical competency rule
 A student should not pass a technical module simply because they scored highly on a written examination.

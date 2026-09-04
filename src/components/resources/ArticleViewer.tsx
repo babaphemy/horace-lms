@@ -1,5 +1,5 @@
 import { Resource } from "@/types/types"
-import { sanitizeHtml } from "@/utils/sanitizeHtml"
+import { useSanitizedHtml } from "@/utils/sanitizeHtml"
 import { ArrowLeft, Calendar, ExternalLink } from "lucide-react"
 import Link from "next/link"
 
@@ -18,6 +18,7 @@ const ArticleViewer = ({ resource }: { resource: Resource }) => {
     <h3>Conclusion</h3>
     <p>Summary of the article content...</p>
   `
+  const sanitizedArticleContent = useSanitizedHtml(articleContent)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -67,7 +68,7 @@ const ArticleViewer = ({ resource }: { resource: Resource }) => {
             {/* Article Content */}
             <div
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(articleContent) }}
+              dangerouslySetInnerHTML={{ __html: sanitizedArticleContent }}
             />
           </div>
         </article>

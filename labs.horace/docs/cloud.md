@@ -21,17 +21,18 @@ From Cloud Beginner to Platform Engineer — through hands-on infrastructure, au
    Instead, students repeatedly build the same application/platform concepts across the three clouds.
    For example:
 
-Capability AWS Azure Google Cloud
-Virtual machines EC2 Azure Virtual Machines Compute Engine
-Object storage S3 Blob Storage Cloud Storage
-Identity IAM Microsoft Entra ID / Azure RBAC Cloud IAM
-Kubernetes EKS AKS GKE
-Container registry ECR Azure Container Registry Artifact Registry
-Serverless/container apps Lambda / ECS Functions / Container Apps Cloud Run
-Network VPC Virtual Network VPC
-Monitoring CloudWatch Azure Monitor Cloud Monitoring
-IaC Terraform / CloudFormation Terraform / Bicep Terraform
-CI/CD CodePipeline/CodeBuild + GitHub Azure DevOps/GitHub Cloud Build/GitHub
+| Capability | AWS | Azure | Google Cloud |
+| --- | --- | --- | --- |
+| Virtual machines | EC2 | Azure Virtual Machines | Compute Engine |
+| Object storage | S3 | Blob Storage | Cloud Storage |
+| Identity | IAM | Microsoft Entra ID / Azure RBAC | Cloud IAM |
+| Kubernetes | EKS | AKS | GKE |
+| Container registry | ECR | Azure Container Registry | Artifact Registry |
+| Serverless/container apps | Lambda / ECS | Functions / Container Apps | Cloud Run |
+| Network | VPC | Virtual Network | VPC |
+| Monitoring | CloudWatch | Azure Monitor | Cloud Monitoring |
+| IaC | Terraform / CloudFormation | Terraform / Bicep | Terraform |
+| CI/CD | CodePipeline/CodeBuild + GitHub | Azure DevOps/GitHub | Cloud Build/GitHub |
 
 The purpose isn't to make students memorize 100 services.
 It is to teach:
@@ -43,17 +44,18 @@ Google Cloud Documentation 2. GRADUATION OUTCOMES
 By graduation, students should be able to:
 For example:
 
-Capability AWS Azure Google Cloud
-Virtual machines EC2 Azure Virtual Machines Compute Engine
-Object storage S3 Blob Storage Cloud Storage
-Identity IAM Microsoft Entra ID / Azure RBAC Cloud IAM
-Kubernetes EKS AKS GKE
-Container registry ECR Azure Container Registry Artifact Registry
-Serverless/container apps Lambda / ECS Functions / Container Apps Cloud Run
-Network VPC Virtual Network VPC
-Monitoring CloudWatch Azure Monitor Cloud Monitoring
-IaC Terraform / CloudFormation Terraform / Bicep Terraform
-CI/CD CodePipeline/CodeBuild + GitHub Azure DevOps/GitHub Cloud Build/GitHub
+| Capability | AWS | Azure | Google Cloud |
+| --- | --- | --- | --- |
+| Virtual machines | EC2 | Azure Virtual Machines | Compute Engine |
+| Object storage | S3 | Blob Storage | Cloud Storage |
+| Identity | IAM | Microsoft Entra ID / Azure RBAC | Cloud IAM |
+| Kubernetes | EKS | AKS | GKE |
+| Container registry | ECR | Azure Container Registry | Artifact Registry |
+| Serverless/container apps | Lambda / ECS | Functions / Container Apps | Cloud Run |
+| Network | VPC | Virtual Network | VPC |
+| Monitoring | CloudWatch | Azure Monitor | Cloud Monitoring |
+| IaC | Terraform / CloudFormation | Terraform / Bicep | Terraform |
+| CI/CD | CodePipeline/CodeBuild + GitHub | Azure DevOps/GitHub | Cloud Build/GitHub |
 
 The purpose isn't to make students memorize 100 services.
 It is to teach:
@@ -619,53 +621,74 @@ CAPSTONE REQUIREMENTS
    Health checks
    Backup/recovery
    Failure testing
-   3-CLOUD ARCHITECTURE CHALLENGE
-   The final assessment should ask students:
-   "If your company suddenly decides it wants to move from AWS to Azure or Google Cloud, how much of your platform can you reuse?"
-   This forces students to understand abstraction and portability, rather than memorizing AWS/Azure/GCP buttons.
-   STUDENT PORTFOLIO
-   Every graduate should leave with:
-   Linux administration project
-   Cloud architecture diagram
-   AWS deployment
-   AWS networking project
-   AWS security project
-   Azure deployment
-   Azure networking project
-   Azure security project
-   Google Cloud deployment
-   Google Cloud networking project
-   Google Cloud operations project
-   Dockerized application
-   Kubernetes project
-   EKS deployment
-   AKS deployment
-   GKE deployment
-   Terraform infrastructure project
-   CI/CD pipeline
-   Monitoring/observability project
-   Final multi-cloud platform project
-   That's an extremely strong portfolio for a junior platform/cloud candidate.
-   PRACTICAL CLASS STRUCTURE
-   I'd use the same philosophy as your Cybersecurity program.
-   Session 1 — Learn
-   Instructor:
-   Explain → Demonstrate → Discuss
+
+### 3-Cloud Architecture Challenge
+
+The final assessment should ask students:
+
+"If your company suddenly decides it wants to move from AWS to Azure or Google Cloud, how much of your platform can you reuse?"
+
+This forces students to understand abstraction and portability, rather than memorizing AWS/Azure/GCP buttons.
+
+### Student Portfolio
+
+Every graduate should leave with:
+
+- Linux administration project
+- Cloud architecture diagram
+- AWS deployment
+- AWS networking project
+- AWS security project
+- Azure deployment
+- Azure networking project
+- Azure security project
+- Google Cloud deployment
+- Google Cloud networking project
+- Google Cloud operations project
+- Dockerized application
+- Kubernetes project
+- EKS deployment
+- AKS deployment
+- GKE deployment
+- Terraform infrastructure project
+- CI/CD pipeline
+- Monitoring/observability project
+- Final multi-cloud platform project
+
+That's an extremely strong portfolio for a junior platform/cloud candidate.
+
+### Practical Class Structure
+
+I'd use the same philosophy as your Cybersecurity program.
+
+#### Session 1 — Learn
+
+Instructor:
+
+Explain → Demonstrate → Discuss
 
 Approximately 30% theory / 70% demonstration.
 
-Session 2 — Build
+#### Session 2 — Build
+
 Students reproduce the environment themselves.
-Session 3 — Break & Fix
+
+#### Session 3 — Break & Fix
+
 Give students a broken environment.
+
 For example:
 
 "The production API is returning 502 errors. You are the platform engineer. Find the problem and restore service."
+
 This is extremely important.
+
 Platform engineers get paid to solve infrastructure problems, not simply to create infrastructure.
 
-CLOUD ROTATION MODEL
+### Cloud Rotation Model
+
 One thing I strongly recommend is not teaching AWS for 8 weeks, then Azure for 8 weeks, then GCP for 8 weeks.
+
 Students will forget the earlier platforms.
 
 Instead, use comparison labs.
@@ -687,16 +710,19 @@ How is identity handled?
 How is billing calculated?
 How would Terraform abstract this?
 This develops genuine cloud-engineering understanding.
-ASSESSMENT MODEL
-Component Weight
-Cloud Fundamentals 10%
-Hands-on Labs 30%
-Cloud Projects 20%
-Infrastructure as Code 10%
-CI/CD & Automation 10%
-Documentation 5%
-Capstone 15%
-Total 100%
+
+### Assessment Model
+
+| Component | Weight |
+| --- | --- |
+| Cloud Fundamentals | 10% |
+| Hands-on Labs | 30% |
+| Cloud Projects | 20% |
+| Infrastructure as Code | 10% |
+| CI/CD & Automation | 10% |
+| Documentation | 5% |
+| Capstone | 15% |
+| Total | 100% |
 
 Again, I would make practical demonstration mandatory.
 A student shouldn't pass because they know:

@@ -3,28 +3,48 @@ A strong Platform Engineering / Cloud Professional program will live or die by t
 
 I would design your lab system as a training platform of its own.
 
-1. The Lab Philosophy
-   The lab should follow this progression:
-   Instructor Demo → Guided Lab → Independent Lab → Broken Lab → Real-World Challenge → Capstone
-   For example, don't teach Kubernetes only by showing students how to create a Deployment.
-   Instead:
+## 1. The Lab Philosophy
 
-Stage 1 — Build
-Deploy a web application to Kubernetes.
-Stage 2 — Modify
-Scale it from 2 replicas to 5.
-Stage 3 — Break
-A deployment is failing. Find out why.
-Stage 4 — Troubleshoot
-The application is returning 503 errors. Restore service.
-Stage 5 — Automate
-Create the Kubernetes infrastructure and deployment using Terraform/CI/CD.
-Stage 6 — Productionize
-Add monitoring, alerts, security and rollback.
-That's what turns a cloud course into a professional skills program. 2. Build One Large "Cloud Campus"
+The lab should follow this progression:
+
+Instructor Demo → Guided Lab → Independent Lab → Broken Lab → Real-World Challenge → Capstone
+
+For example, don't teach Kubernetes only by showing students how to create a Deployment.
+
+Instead:
+
+### Stage 1 — Build
+
+- Deploy a web application to Kubernetes.
+
+### Stage 2 — Modify
+
+- Scale it from 2 replicas to 5.
+
+### Stage 3 — Break
+
+- A deployment is failing. Find out why.
+
+### Stage 4 — Troubleshoot
+
+- The application is returning 503 errors. Restore service.
+
+### Stage 5 — Automate
+
+- Create the Kubernetes infrastructure and deployment using Terraform/CI/CD.
+
+### Stage 6 — Productionize
+
+- Add monitoring, alerts, security and rollback.
+
+That's what turns a cloud course into a professional skills program.
+
+## 2. Build One Large "Cloud Campus"
+
 Rather than creating dozens of unrelated labs, I recommend creating a permanent Cloud & Platform Engineering Campus.
 Think of it as your school's virtual data center.
 
+```text
                  ┌───────────────────────┐
                  │       TRAINING        │
                  │       CENTER          │
@@ -56,6 +76,7 @@ VPC/VNet VNet VPC
 │ STUDENT │
 │ PROJECTS │
 └───────────┘
+```
 
 The important component is the Lab Control Platform.
 It controls:
