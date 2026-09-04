@@ -1,22 +1,21 @@
 import DOMPurify from "dompurify"
-import { useEffect, useState } from "react"
+import { useMemo } from "react"
+
+const canUseBrowserDom = () =>
+  typeof window !== "undefined" && typeof window.document !== "undefined"
 
 export const sanitizeHtml = (html?: string | null) => {
   const dirtyHtml = html ?? ""
 
-  if (typeof window === "undefined") {
+  if (!canUseBrowserDom()) {
     return ""
   }
 
   return DOMPurify.sanitize(dirtyHtml)
 }
 
-export const useSanitizedHtml = (html?: string | null) => {
-  const [sanitizedHtml, setSanitizedHtml] = useState("")
-
-  useEffect(() => {
-    setSanitizedHtml(sanitizeHtml(html))
-  }, [html])
-
-  return sanitizedHtml
-}
+export const useSanitizedHtml = (html?: string | null, fallback = "") =>
+  useMemo(
+    () => (canUseBrowserDom() ? sanitizeHtml(html) : fallback),
+    [fallback, html]
+  )
