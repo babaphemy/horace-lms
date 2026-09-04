@@ -32,6 +32,12 @@ npm run lint
 npm run validate
 ```
 
+- Run the full CI gate locally:
+
+```bash
+npm run ci
+```
+
 - Build for production:
 
 ```bash
