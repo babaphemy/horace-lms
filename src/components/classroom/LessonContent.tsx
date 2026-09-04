@@ -22,6 +22,7 @@ import VideoPlayerWithProgress from "./VideoPlayerWithProgress"
 import ReactPlayer from "react-player"
 import { useEffect, useRef } from "react"
 import { LessonDto } from "@/types/types"
+import { sanitizeHtml } from "@/utils/sanitizeHtml"
 
 const PdfViewer = dynamic(() => import("./PdfViewer"), {
   ssr: false,
@@ -70,7 +71,7 @@ const HTMLLesson: React.FC<HTMLLessonProps> = ({ lesson, onComplete }) => {
         {lesson.content ? (
           <div
             className="lesson-html-content"
-            dangerouslySetInnerHTML={{ __html: lesson.content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(lesson.content) }}
           />
         ) : (
           <Typography variant="body1" color="text.secondary" align="center">

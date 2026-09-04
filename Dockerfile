@@ -1,10 +1,15 @@
-FROM --platform=linux/arm64 node:22-slim
+FROM node:22-slim
 WORKDIR /app
+
+ENV HUSKY=0
+ENV NEXT_TELEMETRY_DISABLED=1
+
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 
+RUN npm run validate
 RUN npm run build
 
 EXPOSE 3000

@@ -26,6 +26,7 @@ import React, { useState } from "react"
 import { Controller, useFieldArray, useFormContext } from "react-hook-form"
 import RichEditor from "./Editor"
 import FileUploadZone from "./FileUploadZone"
+import { sanitizeHtml } from "@/utils/sanitizeHtml"
 
 const AddLessonForm = () => {
   const { watch } = useFormContext()
@@ -311,7 +312,11 @@ const HTMLContentEditor: React.FC<{
                   backgroundColor: "#fafafa",
                 }}
               >
-                <div dangerouslySetInnerHTML={{ __html: currentContent }} />
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeHtml(currentContent),
+                  }}
+                />
               </Paper>
             </Box>
           )}

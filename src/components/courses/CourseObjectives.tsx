@@ -15,6 +15,7 @@ import { ReactElement, useState } from "react"
 import { tCurriculum, tPost } from "../../types/types"
 import CourseReview from "./CourseReview"
 import { fromNow } from "@/utils/fromNow"
+import { sanitizeHtml } from "@/utils/sanitizeHtml"
 const ranges = {
   overview: "Overview",
   reviews: "Reviews",
@@ -103,7 +104,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
                   variant="body1"
                   className="mb-4"
                   dangerouslySetInnerHTML={{
-                    __html: overview,
+                    __html: sanitizeHtml(overview),
                   }}
                 />
               )}

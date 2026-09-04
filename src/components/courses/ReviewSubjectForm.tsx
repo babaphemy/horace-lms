@@ -11,6 +11,7 @@ import {
   Chip,
 } from "@mui/material"
 import { useFormContext } from "react-hook-form"
+import { sanitizeHtml } from "@/utils/sanitizeHtml"
 
 const ReviewSubjectForm = () => {
   const { watch, setValue } = useFormContext()
@@ -197,7 +198,7 @@ const ReviewSubjectForm = () => {
                                   fontSize: "0.875rem",
                                 }}
                                 dangerouslySetInnerHTML={{
-                                  __html: lesson.content,
+                                  __html: sanitizeHtml(lesson.content),
                                 }}
                               />
                             ) : (
