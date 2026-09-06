@@ -7,49 +7,49 @@ import { Appcontext } from "@/context/AppContext"
 import { useContext } from "react"
 export const plans: Plan[] = [
   {
-    name: "Basic",
-    price: { US: "$10", NG: "₦14,000" },
-    slug: "basic",
+    name: "Self-Paced Labs",
+    price: { US: "$79", NG: "₦120,000" },
+    slug: "self-paced-labs",
     duration: "/month",
-    description: "Ideal for small schools or individual educators.",
+    description: "For learners who want structured projects and checkpoints.",
     features: [
-      "User Management",
-      "Course Creation",
-      "Quiz and Assessment",
-      "Basic Reporting",
-      "Email Support",
-      "Payment System",
+      "Skill track catalog access",
+      "Guided hands-on labs",
+      "Automated checkpoint feedback",
+      "Portfolio project publishing",
+      "Community support",
+      "Skill progress dashboard",
     ],
   },
   {
-    name: "Standard",
-    price: { US: "$30", NG: "₦42,000" },
-    slug: "standard",
+    name: "Mentored Track",
+    price: { US: "$199", NG: "₦300,000" },
+    slug: "mentored-track",
     duration: "/month",
-    description: "Perfect for mid-sized schools and corporate organizations.",
+    description: "For learners who want expert review and career proof.",
     features: [
-      "All Basic Features",
-      "Advanced Reporting",
-      "AI Agent",
-      "Priority Support",
-      "Custom Branding",
-      "Certificates and Badges",
+      "Everything in Self-Paced Labs",
+      "1:1 and group mentorship",
+      "Project rubric review",
+      "Verified skill certificate",
+      "Portfolio critique",
+      "Priority Q&A response",
     ],
   },
   {
-    name: "Standard+",
+    name: "Team Upskilling",
     price: { US: "Custom Pricing", NG: "Custom Pricing" },
-    slug: "standard-plus",
+    slug: "team-upskilling",
 
-    duration: "/choice",
-    description: "Custom solutions for large institutions or districts.",
+    duration: "/team",
+    description: "For teams that need practical training and reporting.",
     features: [
-      "All Standard Features",
-      "Dedicated Account Manager",
-      "Custom Integrations",
-      "Advanced Analytics",
-      "On-site Training",
-      "White Labeling",
+      "Bulk invitations by email or CSV",
+      "Assigned skill tracks",
+      "Aggregate lab progress",
+      "Certificate tracking",
+      "CSV and PDF reporting",
+      "Dedicated implementation support",
     ],
   },
 ]
@@ -67,11 +67,18 @@ const Pricing: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-200">
+    <div className="px-4 py-16 bg-[#eef5f6]">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-semibold text-center my-10">
-          Pricing Plans
+        <p className="text-center font-bold uppercase text-[#0F5E76]">
+          Outcome-based plans
+        </p>
+        <h2 className="text-3xl md:text-5xl font-extrabold text-center mt-3 mb-5">
+          Pick the support level your goal needs.
         </h2>
+        <p className="text-center text-gray-600 max-w-3xl mx-auto text-lg">
+          Choose self-paced labs, a mentored career track, or a team program
+          with aggregate progress and certificate reporting.
+        </p>
         <div className="flex flex-wrap justify-center gap-10 my-10">
           {plans.map((plan, index) => (
             <PricingPlan
