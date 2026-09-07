@@ -1,6 +1,7 @@
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded"
 import PlayCircleRoundedIcon from "@mui/icons-material/PlayCircleRounded"
 import { Box, Button, Container, Stack, Typography } from "@mui/material"
+import techBootcampHero from "@/assets/img/tech_bootcamp_1.jpg"
 import Link from "next/link"
 
 const HeaderBanner = () => (
@@ -9,8 +10,7 @@ const HeaderBanner = () => (
     sx={{
       minHeight: { xs: 620, md: 680 },
       color: "white",
-      backgroundImage:
-        "linear-gradient(90deg, rgba(5, 35, 45, 0.92) 0%, rgba(6, 45, 58, 0.76) 46%, rgba(6, 45, 58, 0.18) 100%), url(/img/lms-banner.png)",
+      backgroundImage: `linear-gradient(90deg, rgba(5, 35, 45, 0.92) 0%, rgba(6, 45, 58, 0.76) 46%, rgba(6, 45, 58, 0.18) 100%), url(${techBootcampHero.src})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
       display: "flex",
