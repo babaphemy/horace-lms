@@ -67,7 +67,7 @@ const Pricing: React.FC = () => {
   }
 
   return (
-    <div className="px-4 py-16 bg-[#eef5f6]">
+    <div id="pricing" className="px-4 py-16 bg-[#eef5f6]">
       <div className="max-w-7xl mx-auto">
         <p className="text-center font-bold uppercase text-[#0F5E76]">
           Outcome-based plans

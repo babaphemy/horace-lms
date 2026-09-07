@@ -258,6 +258,7 @@ const ClassroomPage = () => {
                 progress={progressDataForCard}
                 userScores={userScores}
                 courseProgressData={courseProgressData}
+                userId={session?.user?.id || ""}
               />
             </Box>
           </Grid>
