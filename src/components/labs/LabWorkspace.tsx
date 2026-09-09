@@ -2,6 +2,7 @@
 
 import {
   createSubmissionId,
+  getAllLabSubmissionsKey,
   getLabCheckpoints,
   getLabSubmissionsKey,
   getLabWorkspaceKey,
@@ -115,17 +116,22 @@ const LabWorkspace = ({
   }, [loaded, workspace.notes, workspace.artifactUrl, workspaceKey])
 
   const handleSubmit = () => {
+    const submittedAt = new Date()
+    const dueAt = new Date(submittedAt)
+    dueAt.setDate(dueAt.getDate() + 7)
+
     const nextSubmission: LabSubmission = {
       id: createSubmissionId(courseId, lessonId),
+      userId: userId || "guest",
       courseId,
       lessonId,
       lessonTitle,
       artifactUrl: workspace.artifactUrl.trim(),
       notes: workspace.notes.trim(),
-      status: "Reviewed",
-      outcome: "Pass",
-      public: true,
-      submittedAt: new Date().toISOString(),
+      status: "Submitted",
+      public: false,
+      submittedAt: submittedAt.toISOString(),
+      dueAt: dueAt.toISOString(),
       skills: ["Project execution", "Testing", "Documentation"],
     }
 
@@ -137,6 +143,17 @@ const LabWorkspace = ({
       submissionsKey,
       JSON.stringify([nextSubmission, ...submissions])
     )
+
+    const queueKey = getAllLabSubmissionsKey()
+    const queueExisting = window.localStorage.getItem(queueKey)
+    const queueSubmissions = queueExisting
+      ? (JSON.parse(queueExisting) as LabSubmission[])
+      : []
+    window.localStorage.setItem(
+      queueKey,
+      JSON.stringify([nextSubmission, ...queueSubmissions])
+    )
+
     setSubmitted(nextSubmission)
   }
 
@@ -175,8 +192,8 @@ const LabWorkspace = ({
       <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 } }}>
         {submitted && (
           <Alert severity="success" sx={{ mb: 3 }}>
-            Lab submitted and marked Reviewed / Pass for this MVP. It is now
-            available on your portfolio page.
+            Lab submitted for mentor review. It will appear in your portfolio
+            after a reviewer marks it Pass.
           </Alert>
         )}
 
@@ -347,8 +364,7 @@ const LabWorkspace = ({
             <Divider sx={{ my: 3 }} />
             <Typography variant="body2" color="text.secondary">
               Submission status path: Submitted, In Review, Reviewed. This MVP
-              marks passing submissions as Reviewed / Pass locally until the
-              mentor review API is added.
+              stores review state locally until the mentor review API is added.
             </Typography>
           </Box>
         </Stack>
