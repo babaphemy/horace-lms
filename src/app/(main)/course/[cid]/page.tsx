@@ -7,6 +7,7 @@ import GroupRoundedIcon from "@mui/icons-material/GroupRounded"
 import PlayCircleRoundedIcon from "@mui/icons-material/PlayCircleRounded"
 import WorkspacePremiumRoundedIcon from "@mui/icons-material/WorkspacePremiumRounded"
 import {
+  Avatar,
   Box,
   Button,
   Chip,
@@ -225,18 +226,60 @@ const TrackDetail = async ({ params }: TrackDetailProps) => {
                           height: "100%",
                         }}
                       >
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <GroupRoundedIcon color="primary" />
-                          <Typography variant="h6" fontWeight={900}>
-                            {mentor.name}
-                          </Typography>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                          <Avatar
+                            src={mentor.photo}
+                            alt={mentor.name}
+                            sx={{ width: 56, height: 56 }}
+                          />
+                          <Box>
+                            <Typography variant="h6" fontWeight={900}>
+                              {mentor.name}
+                            </Typography>
+                            <Typography color="text.secondary">
+                              {mentor.expertise}
+                            </Typography>
+                          </Box>
                         </Stack>
                         <Typography color="text.secondary" sx={{ mt: 1 }}>
-                          {mentor.expertise}
+                          {mentor.bio}
                         </Typography>
+                        <Stack
+                          direction="row"
+                          gap={1}
+                          flexWrap="wrap"
+                          sx={{ mt: 2 }}
+                        >
+                          {mentor.tags.map((tag) => (
+                            <Chip key={tag} label={tag} size="small" />
+                          ))}
+                        </Stack>
                         <Typography sx={{ mt: 2 }} fontWeight={800}>
-                          Average response: {mentor.responseTime}
+                          Response: {mentor.responseTime} / Rating:{" "}
+                          {mentor.rating.toFixed(1)}
                         </Typography>
+                        <Stack
+                          direction={{ xs: "column", sm: "row" }}
+                          spacing={1}
+                          sx={{ mt: 2 }}
+                        >
+                          <Button
+                            component={Link}
+                            href={`/mentorship/book?trackId=${track.id}&mentorId=${mentor.id}`}
+                            variant="contained"
+                            size="small"
+                          >
+                            Book Session
+                          </Button>
+                          <Button
+                            component={Link}
+                            href={`/mentorship/ask?trackId=${track.id}&mentorId=${mentor.id}`}
+                            variant="outlined"
+                            size="small"
+                          >
+                            Ask Mentor
+                          </Button>
+                        </Stack>
                       </Box>
                     </Grid>
                   ))}

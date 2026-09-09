@@ -10,6 +10,7 @@ import {
 import AssignmentTurnedInRoundedIcon from "@mui/icons-material/AssignmentTurnedInRounded"
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded"
+import MarkUnreadChatAltRoundedIcon from "@mui/icons-material/MarkUnreadChatAltRounded"
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded"
 import {
   Alert,
@@ -271,6 +272,20 @@ const LabWorkspace = ({
                 size="large"
               >
                 View Portfolio
+              </Button>
+              <Button
+                component={Link}
+                href={`/mentorship/ask?trackId=${encodeURIComponent(
+                  courseId
+                )}&lessonId=${encodeURIComponent(
+                  lessonId
+                )}&title=${encodeURIComponent(
+                  lessonTitle
+                )}&userId=${encodeURIComponent(userId || "guest")}`}
+                size="large"
+                startIcon={<MarkUnreadChatAltRoundedIcon />}
+              >
+                Ask Mentor
               </Button>
             </Stack>
           </Box>

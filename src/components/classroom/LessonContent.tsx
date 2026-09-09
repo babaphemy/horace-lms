@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   IconButton,
+  Stack,
   styled,
   Typography,
 } from "@mui/material"
@@ -11,6 +12,7 @@ import {
   Code,
   Comment,
   Favorite,
+  MarkUnreadChatAlt,
   OpenInNew,
   PictureAsPdf,
   PlayCircle,
@@ -227,6 +229,13 @@ const LessonContent: React.FC<LessonContentProps> = ({
   )}&title=${encodeURIComponent(lesson.title || "Hands-on Lab")}&userId=${encodeURIComponent(
     userId || "guest"
   )}`
+  const askMentorHref = `/mentorship/ask?trackId=${encodeURIComponent(
+    lesson.tid || "course"
+  )}&lessonId=${encodeURIComponent(
+    lesson.id || "lesson"
+  )}&title=${encodeURIComponent(lesson.title || "Lesson")}&userId=${encodeURIComponent(
+    userId || "guest"
+  )}`
 
   const launchLab = isHandsOnLesson(lesson) ? (
     <Box
@@ -253,14 +262,24 @@ const LessonContent: React.FC<LessonContentProps> = ({
           review.
         </Typography>
       </Box>
-      <Button
-        href={labHref}
-        variant="contained"
-        startIcon={<OpenInNew />}
-        sx={{ minWidth: 150 }}
-      >
-        Launch Lab
-      </Button>
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+        <Button
+          href={labHref}
+          variant="contained"
+          startIcon={<OpenInNew />}
+          sx={{ minWidth: 150 }}
+        >
+          Launch Lab
+        </Button>
+        <Button
+          href={askMentorHref}
+          variant="outlined"
+          startIcon={<MarkUnreadChatAlt />}
+          sx={{ minWidth: 150 }}
+        >
+          Ask Mentor
+        </Button>
+      </Stack>
     </Box>
   ) : null
 

@@ -37,9 +37,15 @@ export interface SkillTrack {
   modules: TrackModule[]
   outcomes: LearnerOutcome[]
   mentors: {
+    id: string
     name: string
     expertise: string
+    bio: string
+    photo: string
+    tags: string[]
     responseTime: string
+    rating: number
+    openSlots: string[]
   }[]
 }
 
@@ -114,14 +120,34 @@ export const skillTracks: SkillTrack[] = [
     ],
     mentors: [
       {
+        id: "amina-bello",
         name: "Amina Bello",
         expertise: "Industrial robotics, safety reviews",
+        bio: "Helps learners turn robotics concepts into safe, testable workcell plans.",
+        photo: "/img/junaid.png",
+        tags: ["Robotics", "Safety", "Integration"],
         responseTime: "Within 24 hours",
+        rating: 4.8,
+        openSlots: [
+          "September 9, 2026, 10:00 AM WAT",
+          "September 11, 2026, 2:00 PM WAT",
+          "September 15, 2026, 4:00 PM WAT",
+        ],
       },
       {
+        id: "daniel-okoro",
         name: "Daniel Okoro",
         expertise: "Embedded control and diagnostics",
+        bio: "Reviews control logic, debugging notes, and hardware-adjacent lab submissions.",
+        photo: "/img/boy.png",
+        tags: ["Embedded", "Diagnostics", "Control"],
         responseTime: "Within 1 business day",
+        rating: 4.7,
+        openSlots: [
+          "September 10, 2026, 11:00 AM WAT",
+          "September 14, 2026, 3:00 PM WAT",
+          "September 17, 2026, 1:00 PM WAT",
+        ],
       },
     ],
   },
@@ -189,9 +215,19 @@ export const skillTracks: SkillTrack[] = [
     ],
     mentors: [
       {
+        id: "ife-adeyemi",
         name: "Ife Adeyemi",
         expertise: "AI prototyping and product strategy",
+        bio: "Guides learners through AI use case framing, API prototypes, and evaluation decisions.",
+        photo: "/img/boy.webp",
+        tags: ["AI", "Product", "Evaluation"],
         responseTime: "Within 18 hours",
+        rating: 4.9,
+        openSlots: [
+          "September 9, 2026, 1:00 PM WAT",
+          "September 12, 2026, 10:00 AM WAT",
+          "September 16, 2026, 5:00 PM WAT",
+        ],
       },
     ],
   },
@@ -324,9 +360,19 @@ export const skillTracks: SkillTrack[] = [
     ],
     mentors: [
       {
+        id: "maya-chen",
         name: "Maya Chen",
         expertise: "Product motion and visual storytelling",
+        bio: "Helps learners improve timing, transitions, and presentation quality for motion reels.",
+        photo: "/img/group.webp",
+        tags: ["Motion", "Storyboards", "Critique"],
         responseTime: "Within 24 hours",
+        rating: 4.8,
+        openSlots: [
+          "September 10, 2026, 9:00 AM WAT",
+          "September 13, 2026, 2:00 PM WAT",
+          "September 18, 2026, 11:00 AM WAT",
+        ],
       },
     ],
   },
