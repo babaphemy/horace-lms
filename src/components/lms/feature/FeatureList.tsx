@@ -1,115 +1,79 @@
 import {
   AccountTreeRounded,
-  CardGiftcard,
-  MobileFriendly,
-  Payment,
+  AssignmentTurnedInRounded,
+  BuildRounded,
+  GroupsRounded,
+  WorkspacePremiumRounded,
 } from "@mui/icons-material"
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings"
 import AnalyticsIcon from "@mui/icons-material/Analytics"
-import BiotechIcon from "@mui/icons-material/Biotech"
-import CastForEducationIcon from "@mui/icons-material/CastForEducation"
-import HowToRegIcon from "@mui/icons-material/HowToReg"
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks"
 import MarkUnreadChatAltIcon from "@mui/icons-material/MarkUnreadChatAlt"
-import PersonIcon from "@mui/icons-material/Person"
 import QuizIcon from "@mui/icons-material/Quiz"
-import SchoolIcon from "@mui/icons-material/School"
-import SecurityIcon from "@mui/icons-material/Security"
 import { Feature } from "../../../types/types"
 import FeatureCard from "./FeatureCard"
 
 const features: Feature[] = [
   {
-    icon: HowToRegIcon,
-    title: "Automated Enrollment",
+    icon: AccountTreeRounded,
+    title: "Role-Based Skill Tracks",
     description:
-      "Streamline your student intake with automated enrollment processes.",
+      "Programs are organized around target roles, outcomes, duration, level, and the practical skills learners need to prove.",
   },
   {
-    icon: SchoolIcon,
-    title: "Course and Classroom Management",
+    icon: BuildRounded,
+    title: "Hands-On Labs",
     description:
-      "Easily create, manage, and distribute course materials from a single dashboard.",
-  },
-  {
-    icon: PersonIcon,
-    title: "Student Information Management ",
-    description:
-      "Monitor student progress and generate reports in just a few clicks.",
-  },
-  {
-    icon: CastForEducationIcon,
-    title: "AI Agent",
-    description: "AI agent for course creation and content generation.",
-  },
-  {
-    icon: AdminPanelSettingsIcon,
-    title: "Admin Management ",
-    description:
-      "Manage videos, assets, certificates, video encoding and transcoding.",
-  },
-  {
-    icon: MarkUnreadChatAltIcon,
-    title: "Messaging System ",
-    description: "Email, SMS and in-app communication between all users.",
-  },
-  {
-    icon: LibraryBooksIcon,
-    title: "Digital Library ",
-    description:
-      "Share and access books and resources from top libraries globally.",
-  },
-  {
-    icon: AnalyticsIcon,
-    title: "Reporting, AI & Analytics ",
-    description:
-      "AI powered reports and insightful vizualizations to monitor and measure performance and advise for improvement.",
+      "Every track moves learners into guided labs, checkpoints, and project work instead of passive content only.",
   },
   {
     icon: QuizIcon,
-    title: "CBT",
-    description: "Create and manage Computer Based Tests for your students.",
-  },
-  {
-    icon: BiotechIcon,
-    title: "Hands-on Projects ",
+    title: "Checkpoint Feedback",
     description:
-      "Build and manage hands-on projects in Robotics, AI, Game Development, and Animation.",
+      "Automated checks and mentor review points help learners correct course before final submission.",
   },
   {
-    icon: SecurityIcon,
-    title: "Security & Privacy ",
+    icon: GroupsRounded,
+    title: "Mentor Support",
     description:
-      "Role based access control of resources and enhanced security of data with periodic back-up.",
+      "Learners can get contextual help, book sessions, and receive project feedback tied to their active track.",
   },
   {
-    icon: MobileFriendly,
-    title: "Mobile Accessibility ",
-    description: "Responsive and mobile first design .",
-  },
-  {
-    icon: Payment,
-    title: "Payment System ",
-    description: "Automated fee and transaction management and payment system.",
-  },
-  {
-    icon: AccountTreeRounded,
-    title: "API Integration ",
+    icon: AssignmentTurnedInRounded,
+    title: "Reviewed Projects",
     description:
-      "Well documented API for integration with other systems and platforms.",
+      "Submissions can move from submitted to in review to pass or revise with rubrics that keep feedback actionable.",
   },
   {
-    icon: CardGiftcard,
-    title: "Schorlaship Management",
-    description: "Manage schorlaship and awards for students.",
+    icon: WorkspacePremiumRounded,
+    title: "Portfolio And Certificates",
+    description:
+      "Passed projects become portfolio entries and verified certificates list the specific competencies demonstrated.",
+  },
+  {
+    icon: AnalyticsIcon,
+    title: "Progress Analytics",
+    description:
+      "Learners and teams can see completed labs, verified skills, and progress toward job-readiness.",
+  },
+  {
+    icon: MarkUnreadChatAltIcon,
+    title: "Contextual Q&A",
+    description:
+      "Questions stay attached to the lab, lesson, and learner context so mentors can answer faster.",
   },
 ]
 const FeatureList: React.FC = () => (
-  <div className="p-8 max-w-7xl mx-auto">
-    <h2 className="text-3xl md:text-4xl font-semibold text-center my-10">
-      Key Features
+  <div className="px-4 py-16 max-w-7xl mx-auto">
+    <p className="text-center font-bold uppercase text-[#00A9C1]">
+      Platform workflow
+    </p>
+    <h2 className="text-3xl md:text-5xl font-extrabold text-center mt-3 mb-5 text-gray-900">
+      Learn, build, get reviewed, and publish proof.
     </h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-10 ">
+    <p className="text-center text-gray-600 max-w-3xl mx-auto text-lg">
+      Horace combines structured curriculum with the practical workspace and
+      mentorship layer learners need to turn training into evidence.
+    </p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-10 ">
       {features.map((feature, index) => (
         <FeatureCard key={index} feature={feature} />
       ))}

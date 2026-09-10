@@ -112,6 +112,7 @@ const ClassroomPage = () => {
                 {userToken?.userId && currentLesson && (
                   <LessonContent
                     lesson={currentLesson}
+                    courseId={userToken?.courseId || ""}
                     userId={userToken?.userId}
                   />
                 )}

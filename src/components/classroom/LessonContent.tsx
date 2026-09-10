@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   IconButton,
+  Stack,
   styled,
   Typography,
 } from "@mui/material"
@@ -11,6 +12,8 @@ import {
   Code,
   Comment,
   Favorite,
+  MarkUnreadChatAlt,
+  OpenInNew,
   PictureAsPdf,
   PlayCircle,
   Share,
@@ -22,6 +25,7 @@ import VideoPlayerWithProgress from "./VideoPlayerWithProgress"
 import ReactPlayer from "react-player"
 import { useEffect, useRef } from "react"
 import { LessonDto } from "@/types/types"
+import { isHandsOnLesson } from "@/utils/labs"
 import { useSanitizedHtml } from "@/utils/sanitizeHtml"
 
 const PdfViewer = dynamic(() => import("./PdfViewer"), {
@@ -31,6 +35,7 @@ const PdfViewer = dynamic(() => import("./PdfViewer"), {
 
 interface LessonContentProps {
   lesson: LessonDto
+  courseId: string
   userId: string
   onComplete?: () => void
   onProgress?: (_percentage: number) => void
@@ -175,6 +180,7 @@ const getContentType = (lesson: LessonDto): string => {
 
 const LessonContent: React.FC<LessonContentProps> = ({
   lesson,
+  courseId,
   userId,
   onComplete,
   onProgress,
@@ -218,72 +224,136 @@ const LessonContent: React.FC<LessonContentProps> = ({
   }
 
   const contentType = getContentType(lesson)
+  const routeCourseId = courseId || lesson.tid || "course"
+  const labHref = `/course/lab?courseId=${encodeURIComponent(
+    routeCourseId
+  )}&lessonId=${encodeURIComponent(
+    lesson.id || "lesson"
+  )}&title=${encodeURIComponent(lesson.title || "Hands-on Lab")}&userId=${encodeURIComponent(
+    userId || "guest"
+  )}`
+  const askMentorHref = `/mentorship/ask?trackId=${encodeURIComponent(
+    routeCourseId
+  )}&lessonId=${encodeURIComponent(
+    lesson.id || "lesson"
+  )}&title=${encodeURIComponent(lesson.title || "Lesson")}&userId=${encodeURIComponent(
+    userId || "guest"
+  )}`
+
+  const launchLab = isHandsOnLesson(lesson) ? (
+    <Box
+      sx={{
+        mb: 2,
+        p: 2,
+        border: "1px solid",
+        borderColor: "primary.light",
+        borderRadius: 1,
+        bgcolor: "primary.50",
+        display: "flex",
+        gap: 2,
+        justifyContent: "space-between",
+        alignItems: { xs: "stretch", sm: "center" },
+        flexDirection: { xs: "column", sm: "row" },
+      }}
+    >
+      <Box>
+        <Typography variant="subtitle1" fontWeight="bold">
+          Hands-on lab available
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Launch the workspace, save your progress, and submit your project for
+          review.
+        </Typography>
+      </Box>
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+        <Button
+          href={labHref}
+          variant="contained"
+          startIcon={<OpenInNew />}
+          sx={{ minWidth: 150 }}
+        >
+          Launch Lab
+        </Button>
+        <Button
+          href={askMentorHref}
+          variant="outlined"
+          startIcon={<MarkUnreadChatAlt />}
+          sx={{ minWidth: 150 }}
+        >
+          Ask Mentor
+        </Button>
+      </Stack>
+    </Box>
+  ) : null
 
   switch (contentType) {
     case "video":
       return (
-        <VideoPlaceholder>
-          {lesson.id ? (
-            <VideoPlayerWithProgress
-              lesson={{ ...lesson, id: lesson.id as string }}
-              streamUrl={streamUrl}
-              userId={userId}
-              playerRef={playerRef}
-              onProgress={(progress) => {
-                const percentage = Math.round(progress * 100)
-                onProgress?.(percentage)
-              }}
-              onComplete={onComplete}
-            />
-          ) : (
-            <>
-              <VideoPlaceholderSVG title={lesson?.title || ""} />
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+        <>
+          {launchLab}
+          <VideoPlaceholder>
+            {lesson.id ? (
+              <VideoPlayerWithProgress
+                lesson={{ ...lesson, id: lesson.id as string }}
+                streamUrl={streamUrl}
+                userId={userId}
+                playerRef={playerRef}
+                onProgress={(progress) => {
+                  const percentage = Math.round(progress * 100)
+                  onProgress?.(percentage)
                 }}
-              >
-                <IconButton
+                onComplete={onComplete}
+              />
+            ) : (
+              <>
+                <VideoPlaceholderSVG title={lesson?.title || ""} />
+                <Box
                   sx={{
-                    color: "white",
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    "&:hover": {
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    },
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <PlayCircle sx={{ fontSize: 60 }} />
-                </IconButton>
-              </Box>
-              <VideoControls>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <PlayCircle fontSize="small" />
-                  <ProgressIndicator>
-                    <ProgressFill />
-                  </ProgressIndicator>
-                </Box>
-                <Box>
-                  <IconButton size="small" sx={{ color: "white" }}>
-                    <Favorite fontSize="small" />
-                  </IconButton>
-                  <IconButton size="small" sx={{ color: "white" }}>
-                    <Comment fontSize="small" />
-                  </IconButton>
-                  <IconButton size="small" sx={{ color: "white" }}>
-                    <Share fontSize="small" />
+                  <IconButton
+                    sx={{
+                      color: "white",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 0, 0.7)",
+                      },
+                    }}
+                  >
+                    <PlayCircle sx={{ fontSize: 60 }} />
                   </IconButton>
                 </Box>
-              </VideoControls>
-            </>
-          )}
-        </VideoPlaceholder>
+                <VideoControls>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <PlayCircle fontSize="small" />
+                    <ProgressIndicator>
+                      <ProgressFill />
+                    </ProgressIndicator>
+                  </Box>
+                  <Box>
+                    <IconButton size="small" sx={{ color: "white" }}>
+                      <Favorite fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" sx={{ color: "white" }}>
+                      <Comment fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" sx={{ color: "white" }}>
+                      <Share fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </VideoControls>
+              </>
+            )}
+          </VideoPlaceholder>
+        </>
       )
 
     case "pdf":
@@ -343,34 +413,46 @@ const LessonContent: React.FC<LessonContentProps> = ({
 
     case "text":
     case "html":
-      return <HTMLLesson lesson={lesson} onComplete={onComplete} />
+      return (
+        <>
+          {launchLab}
+          <HTMLLesson lesson={lesson} onComplete={onComplete} />
+        </>
+      )
 
     case "code":
       return (
-        <DocumentContainer
-          sx={{ fontFamily: "monospace", bgcolor: "#282c34", color: "#f8f8f2" }}
-        >
-          <Box sx={{ mb: 2, display: "flex", alignItems: "center" }}>
-            <Code sx={{ mr: 1 }} />
-            <Typography variant="subtitle1">
-              {lesson.title || "Code Example"}
-            </Typography>
-          </Box>
-          <Box
-            component="pre"
+        <>
+          {launchLab}
+          <DocumentContainer
             sx={{
-              overflow: "auto",
-              p: 2,
-              borderRadius: 1,
-              bgcolor: "#1e1e1e",
-              color: "#d4d4d4",
-              fontSize: "0.9rem",
-              flex: 1,
+              fontFamily: "monospace",
+              bgcolor: "#282c34",
+              color: "#f8f8f2",
             }}
           >
-            {lesson.content || "// No code content available"}
-          </Box>
-        </DocumentContainer>
+            <Box sx={{ mb: 2, display: "flex", alignItems: "center" }}>
+              <Code sx={{ mr: 1 }} />
+              <Typography variant="subtitle1">
+                {lesson.title || "Code Example"}
+              </Typography>
+            </Box>
+            <Box
+              component="pre"
+              sx={{
+                overflow: "auto",
+                p: 2,
+                borderRadius: 1,
+                bgcolor: "#1e1e1e",
+                color: "#d4d4d4",
+                fontSize: "0.9rem",
+                flex: 1,
+              }}
+            >
+              {lesson.content || "// No code content available"}
+            </Box>
+          </DocumentContainer>
+        </>
       )
 
     case "audio":
@@ -429,37 +511,41 @@ const LessonContent: React.FC<LessonContentProps> = ({
 
     default:
       return (
-        <DocumentContainer>
-          <Typography variant="h6" gutterBottom>
-            {lesson.title || "Lesson Content"}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" mb={2}>
-            Content type: {contentType || "unknown"}
-          </Typography>
-          {lesson.content ? (
-            <Box>
-              <Typography variant="body2" color="text.secondary" mb={2}>
-                File extension not recognized. You can download the file below:
-              </Typography>
-              <Button
-                variant="contained"
-                startIcon={<CloudDownload />}
-                href={lesson.content}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  setTimeout(() => onComplete?.(), 500)
-                }}
-              >
-                Download File
-              </Button>
-            </Box>
-          ) : (
-            <Typography variant="body1" color="text.secondary" align="center">
-              No content available for this lesson.
+        <>
+          {launchLab}
+          <DocumentContainer>
+            <Typography variant="h6" gutterBottom>
+              {lesson.title || "Lesson Content"}
             </Typography>
-          )}
-        </DocumentContainer>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              Content type: {contentType || "unknown"}
+            </Typography>
+            {lesson.content ? (
+              <Box>
+                <Typography variant="body2" color="text.secondary" mb={2}>
+                  File extension not recognized. You can download the file
+                  below:
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<CloudDownload />}
+                  href={lesson.content}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    setTimeout(() => onComplete?.(), 500)
+                  }}
+                >
+                  Download File
+                </Button>
+              </Box>
+            ) : (
+              <Typography variant="body1" color="text.secondary" align="center">
+                No content available for this lesson.
+              </Typography>
+            )}
+          </DocumentContainer>
+        </>
       )
   }
 }
