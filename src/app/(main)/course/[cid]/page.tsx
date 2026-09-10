@@ -26,6 +26,12 @@ interface TrackDetailProps {
   params: Promise<{ cid: string }>
 }
 
+const checkoutPlanByTier: Record<string, string> = {
+  "Self-Paced Labs": "self-paced-labs",
+  "Mentored Track": "mentored-track",
+  "Team Upskilling": "team-upskilling",
+}
+
 export async function generateStaticParams() {
   return skillTracks.map((track) => ({ cid: track.id }))
 }
@@ -58,6 +64,8 @@ const TrackDetail = async ({ params }: TrackDetailProps) => {
     (sum, module) => sum + module.hours,
     0
   )
+  const checkoutPlan = checkoutPlanByTier[track.tier] || "mentored-track"
+  const checkoutHref = `/checkout?plan=${checkoutPlan}&locale=US`
 
   return (
     <Box sx={{ bgcolor: "#f6fafb" }}>
@@ -111,7 +119,7 @@ const TrackDetail = async ({ params }: TrackDetailProps) => {
               >
                 <Button
                   component={Link}
-                  href="/checkout"
+                  href={checkoutHref}
                   variant="contained"
                   size="large"
                   sx={{ bgcolor: "#00A9C1", "&:hover": { bgcolor: "#078fa3" } }}
@@ -359,7 +367,7 @@ const TrackDetail = async ({ params }: TrackDetailProps) => {
               </Stack>
               <Button
                 component={Link}
-                href="/checkout"
+                href={checkoutHref}
                 variant="contained"
                 fullWidth
                 size="large"

@@ -38,6 +38,9 @@ const CheckoutContent: React.FC = () => {
   const amt = locale === "NG" ? planDetail.price.NG : planDetail.price.US
 
   const convertedAmt = parseFloat(amt.replace(/[^\d.]/g, ""))
+  const checkoutAmount = Number.isFinite(convertedAmt)
+    ? convertedAmt * 100
+    : Number.NaN
 
   const selectedTotal = data?.length
     ? data
@@ -45,7 +48,7 @@ const CheckoutContent: React.FC = () => {
           selectedTransactions.includes(tranx.id)
         )
         .reduce((sum: number, item: Tranx) => sum + (item?.amount ?? 0), 0)
-    : convertedAmt * 100
+    : checkoutAmount
 
   return (
     <>

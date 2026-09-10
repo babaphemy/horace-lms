@@ -215,6 +215,7 @@ const ClassroomPage = () => {
                 {session?.user?.id && currentLesson && currentTopicId && (
                   <LessonContent
                     lesson={currentLesson}
+                    courseId={id || ""}
                     userId={session?.user?.id}
                     onComplete={() => {
                       if (currentLesson.id && currentTopicId) {

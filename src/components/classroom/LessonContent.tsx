@@ -35,6 +35,7 @@ const PdfViewer = dynamic(() => import("./PdfViewer"), {
 
 interface LessonContentProps {
   lesson: LessonDto
+  courseId: string
   userId: string
   onComplete?: () => void
   onProgress?: (_percentage: number) => void
@@ -179,6 +180,7 @@ const getContentType = (lesson: LessonDto): string => {
 
 const LessonContent: React.FC<LessonContentProps> = ({
   lesson,
+  courseId,
   userId,
   onComplete,
   onProgress,
@@ -222,15 +224,16 @@ const LessonContent: React.FC<LessonContentProps> = ({
   }
 
   const contentType = getContentType(lesson)
+  const routeCourseId = courseId || lesson.tid || "course"
   const labHref = `/course/lab?courseId=${encodeURIComponent(
-    lesson.tid || "course"
+    routeCourseId
   )}&lessonId=${encodeURIComponent(
     lesson.id || "lesson"
   )}&title=${encodeURIComponent(lesson.title || "Hands-on Lab")}&userId=${encodeURIComponent(
     userId || "guest"
   )}`
   const askMentorHref = `/mentorship/ask?trackId=${encodeURIComponent(
-    lesson.tid || "course"
+    routeCourseId
   )}&lessonId=${encodeURIComponent(
     lesson.id || "lesson"
   )}&title=${encodeURIComponent(lesson.title || "Lesson")}&userId=${encodeURIComponent(

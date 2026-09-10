@@ -57,13 +57,60 @@ export function createMentorshipId(prefix: string) {
   return `${prefix}-${Date.now()}`
 }
 
+function escapeIcsText(value: string) {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/\n/g, "\\n")
+    .replace(/,/g, "\\,")
+    .replace(/;/g, "\\;")
+}
+
+function formatIcsDate(date: Date) {
+  return date
+    .toISOString()
+    .replace(/[-:]/g, "")
+    .replace(/\.\d{3}Z$/, "Z")
+}
+
+function parseWatSlot(slot: string) {
+  const match = slot.match(
+    /^([A-Za-z]+) (\d{1,2}), (\d{4}), (\d{1,2}):(\d{2}) (AM|PM) WAT$/
+  )
+
+  if (!match) return null
+
+  const [, monthName, day, year, hour, minute, period] = match
+  const month = new Date(`${monthName} 1, ${year}`).getMonth()
+
+  if (Number.isNaN(month)) return null
+
+  const rawHour = Number(hour)
+  const normalizedHour =
+    period === "PM" ? (rawHour % 12) + 12 : rawHour === 12 ? 0 : rawHour
+
+  return new Date(
+    Date.UTC(
+      Number(year),
+      month,
+      Number(day),
+      normalizedHour - 1,
+      Number(minute)
+    )
+  )
+}
+
 export function buildCalendarHref(booking: MentorshipBooking) {
+  const startDate =
+    parseWatSlot(booking.slot) ||
+    new Date(Date.parse(booking.createdAt) || Date.now())
+  const endDate = new Date(startDate.getTime() + 60 * 60 * 1000)
   const details = [
     `Track: ${booking.trackTitle}`,
     `Mentor: ${booking.mentorName}`,
+    `Slot: ${booking.slot}`,
     `Format: ${booking.format}`,
     "Join details will be shared in-platform.",
-  ].join("\\n")
+  ].join("\n")
 
   const ics = [
     "BEGIN:VCALENDAR",
@@ -71,9 +118,12 @@ export function buildCalendarHref(booking: MentorshipBooking) {
     "PRODID:-//Horace LMS//Mentorship//EN",
     "BEGIN:VEVENT",
     `UID:${booking.id}@horacelearning.local`,
-    `SUMMARY:Horace Mentorship: ${booking.trackTitle}`,
-    `DESCRIPTION:${details}`,
-    `LOCATION:Horace LMS`,
+    `DTSTAMP:${formatIcsDate(new Date())}`,
+    `DTSTART:${formatIcsDate(startDate)}`,
+    `DTEND:${formatIcsDate(endDate)}`,
+    `SUMMARY:${escapeIcsText(`Horace Mentorship: ${booking.trackTitle}`)}`,
+    `DESCRIPTION:${escapeIcsText(details)}`,
+    `LOCATION:${escapeIcsText("Horace LMS")}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ].join("\n")
