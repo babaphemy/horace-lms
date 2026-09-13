@@ -22,6 +22,7 @@ import {
   AccessTime,
   Grade,
   CheckCircle,
+  DataObject,
 } from "@mui/icons-material"
 import {
   LessonDto,
@@ -32,6 +33,7 @@ import {
   LessonProgressData,
 } from "@/types/types"
 import { useRouter } from "next/navigation"
+import { isHandsOnLesson } from "@/utils/labs"
 
 interface Topic {
   id: string
@@ -50,6 +52,7 @@ interface ContentCardProps {
   progress: LessonProgressData[]
   userScores: TUserScore[] | undefined
   courseProgressData?: CourseProgressResponse | null
+  userId?: string
 }
 
 interface CertificateEligibilityProps {
@@ -105,6 +108,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   progress,
   userScores,
   courseProgressData,
+  userId,
 }) => {
   const [expandedTopics, setExpandedTopics] = useState<{
     [key: string]: boolean
@@ -176,6 +180,18 @@ const ContentCard: React.FC<ContentCardProps> = ({
 
   const handleQuizClick = (quiz: QuizItem) => {
     router.push(`/course/${courseId}/${quiz.lessonId}`)
+  }
+
+  const handleLabClick = (lesson: LessonDto) => {
+    router.push(
+      `/course/lab?courseId=${encodeURIComponent(
+        courseId
+      )}&lessonId=${encodeURIComponent(
+        lesson.id || "lesson"
+      )}&title=${encodeURIComponent(
+        lesson.title || "Hands-on Lab"
+      )}&userId=${encodeURIComponent(userId || "guest")}`
+    )
   }
 
   // Calculate topic progress from backend data
@@ -415,6 +431,61 @@ const ContentCard: React.FC<ContentCardProps> = ({
                                     )}
                                   </Box>
                                 </ListItem>
+
+                                {isHandsOnLesson(lesson) && (
+                                  <Box sx={{ ml: 2, mb: 1 }}>
+                                    <ListItem
+                                      onClick={() => handleLabClick(lesson)}
+                                      sx={{
+                                        backgroundColor: "secondary.50",
+                                        border: "1px solid",
+                                        borderColor: "secondary.light",
+                                        borderRadius: 1,
+                                        cursor: "pointer",
+                                        py: 1,
+                                        "&:hover": {
+                                          backgroundColor: "secondary.100",
+                                          borderColor: "secondary.main",
+                                        },
+                                      }}
+                                    >
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          width: "100%",
+                                          gap: 1,
+                                        }}
+                                      >
+                                        <DataObject
+                                          color="secondary"
+                                          fontSize="small"
+                                        />
+                                        <ListItemText
+                                          primary="Launch Lab"
+                                          secondary="Workspace, checkpoints, submission"
+                                          primaryTypographyProps={{
+                                            variant: "caption",
+                                            fontWeight: "bold",
+                                          }}
+                                          secondaryTypographyProps={{
+                                            variant: "caption",
+                                          }}
+                                        />
+                                        <Chip
+                                          size="small"
+                                          label="Lab"
+                                          color="secondary"
+                                          variant="outlined"
+                                          sx={{
+                                            height: 18,
+                                            fontSize: "0.65rem",
+                                          }}
+                                        />
+                                      </Box>
+                                    </ListItem>
+                                  </Box>
+                                )}
 
                                 {/* Quiz Item */}
                                 {lessonQuiz && (

@@ -1,20 +1,21 @@
 import Link from "next/link"
 
 const ContactLms: React.FC = () => (
-  <section className="bg-blue-600 text-white py-12 text-center">
+  <section className="bg-[#0F5E76] text-white py-16 text-center">
     <div className="max-w-4xl mx-auto px-6">
-      <h2 className="text-3xl font-bold text-balance">
-        Get Started with Horace LMS Today!
+      <h2 className="text-3xl md:text-5xl font-extrabold text-balance">
+        Start with a track, leave with proof of skill.
       </h2>
-      <p className="mt-4 text-lg">
-        Contact us to schedule a demo or sign up for a free trial.
+      <p className="mt-4 text-lg text-white/85">
+        Explore practical tracks for individuals or build a hands-on upskilling
+        program for your team.
       </p>
       <Link
-        href="/contact"
+        href="/courses"
         passHref
-        className="inline-block mt-6 bg-white text-blue-600 font-semibold py-2 px-6 rounded shadow hover:bg-gray-100 transition-colors duration-200"
+        className="inline-block mt-6 bg-white text-[#0F5E76] font-semibold py-3 px-6 rounded shadow hover:bg-gray-100 transition-colors duration-200"
       >
-        Contact Us
+        Browse Skill Tracks
       </Link>
     </div>
   </section>
