@@ -1,6 +1,7 @@
 "use client"
 
 import Footer from "@/components/Footer"
+import SkillReadinessProgress from "@/components/skills/SkillReadinessProgress"
 import { getLabSubmissionsKey, LabSubmission } from "@/utils/labs"
 import PublicRoundedIcon from "@mui/icons-material/PublicRounded"
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded"
@@ -131,17 +132,44 @@ const PortfolioPage = () => {
                   projects.
                 </Typography>
               </Box>
-              <Button
-                component={Link}
-                href={`/certificate/skills?userId=${encodeURIComponent(
-                  userId || "guest"
-                )}`}
-                variant="contained"
-                startIcon={<WorkspacePremiumRoundedIcon />}
-                sx={{ bgcolor: "#00A9C1", "&:hover": { bgcolor: "#078fa3" } }}
-              >
-                Issue Certificate
-              </Button>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
+                <Button
+                  component={Link}
+                  href={`/certificate/skills?userId=${encodeURIComponent(
+                    userId || "guest"
+                  )}`}
+                  variant="contained"
+                  startIcon={<WorkspacePremiumRoundedIcon />}
+                  sx={{
+                    bgcolor: "#00A9C1",
+                    "&:hover": { bgcolor: "#078fa3" },
+                  }}
+                >
+                  Issue Certificate
+                </Button>
+                <Button
+                  component={Link}
+                  href={`/progress/skills?userId=${encodeURIComponent(
+                    userId || "guest"
+                  )}`}
+                  variant="outlined"
+                  sx={{
+                    color: "white",
+                    borderColor: "rgba(255,255,255,0.62)",
+                    "&:hover": { borderColor: "white" },
+                  }}
+                >
+                  View Progress
+                </Button>
+              </Stack>
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+              <SkillReadinessProgress
+                userId={userId}
+                compact
+                showHeader={false}
+              />
             </Box>
 
             <Box
