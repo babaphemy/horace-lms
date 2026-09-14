@@ -17,8 +17,6 @@ import {
   Assignment,
   MoreVert,
   People,
-  Person,
-  Star,
   VideoLibrary,
   PhotoCamera,
   Edit,
@@ -322,7 +320,7 @@ const DashboardPage = () => {
                             variant="outlined"
                           />
                         </Box>
-                        <Box
+                        {/* <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
@@ -356,7 +354,7 @@ const DashboardPage = () => {
                               {course?.assetCount?.rating}
                             </Typography>
                           </Box>
-                        </Box>
+                        </Box> */}
                       </Box>
 
                       <Tooltip title="Course options">

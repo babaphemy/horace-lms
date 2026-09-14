@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import {
   Table,
   TableBody,
@@ -16,8 +16,10 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material"
-import { Search, MoreVert, Visibility } from "@mui/icons-material"
+import { Search, MoreVert, Visibility, CheckCircle } from "@mui/icons-material"
 
 import { useRouter } from "next/navigation"
 import { Quiz, tCourse, tUser, CourseProgressResponse } from "@/types/types"
@@ -40,16 +42,45 @@ export const StudentsList: React.FC<StudentsListProps> = ({
   const [searchTerm, setSearchTerm] = useState("")
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedStudent, setSelectedStudent] = useState<tUser | null>(null)
+  const [showCompletedOnly, setShowCompletedOnly] = useState(false)
 
   const { courseQuiz } = useQuizSummary({ courseId: courseId as string })
+  const [studentCompletionMap, setStudentCompletionMap] = useState<
+    Map<string, boolean>
+  >(new Map())
 
-  const filteredStudents = students?.filter(
-    (student) =>
-      `${student?.firstname} ${student?.lastname}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Track completion status for all students
+  // We'll update this map as progress data loads in StudentRow components
+  useEffect(() => {
+    const map = new Map<string, boolean>()
+    students?.forEach((student) => {
+      if (student.id) {
+        map.set(student.id, false) // Initialize as not completed
+      }
+    })
+    setStudentCompletionMap(map)
+  }, [students])
+
+  // Filter students based on search term and completion status
+  const filteredStudents = useMemo(() => {
+    let filtered =
+      students?.filter(
+        (student) =>
+          `${student?.firstname} ${student?.lastname}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          student.email.toLowerCase().includes(searchTerm.toLowerCase())
+      ) || []
+
+    // Apply completion filter if enabled
+    if (showCompletedOnly) {
+      filtered = filtered.filter(
+        (student) => student.id && studentCompletionMap.get(student.id) === true
+      )
+    }
+
+    return filtered
+  }, [students, searchTerm, showCompletedOnly, studentCompletionMap])
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -73,10 +104,50 @@ export const StudentsList: React.FC<StudentsListProps> = ({
     handleMenuClose()
   }
 
+  const handleFilterChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newFilter: string | null
+  ) => {
+    if (newFilter !== null) {
+      setShowCompletedOnly(newFilter === "completed")
+    }
+  }
+
+  const completedCount = useMemo(() => {
+    return (
+      students?.filter(
+        (student) => student.id && studentCompletionMap.get(student.id) === true
+      ).length || 0
+    )
+  }, [students, studentCompletionMap])
+
   return (
     <Box>
       {/* Search and Filters */}
-      <Box sx={{ mb: 3 }}>
+      <Box
+        sx={{
+          mb: 3,
+          display: "flex",
+          gap: 2,
+          alignItems: "start",
+          flexDirection: "column",
+        }}
+      >
+        <ToggleButtonGroup
+          value={showCompletedOnly ? "completed" : "all"}
+          exclusive
+          onChange={handleFilterChange}
+          aria-label="student filter"
+        >
+          <ToggleButton value="all" aria-label="all students">
+            All Students ({students?.length || 0})
+          </ToggleButton>
+          <ToggleButton value="completed" aria-label="completed students">
+            <CheckCircle sx={{ mr: 1 }} />
+            Completed ({completedCount})
+          </ToggleButton>
+        </ToggleButtonGroup>
+
         <TextField
           fullWidth
           variant="outlined"
@@ -118,6 +189,13 @@ export const StudentsList: React.FC<StudentsListProps> = ({
                 student={student}
                 courseId={courseId}
                 key={student.id}
+                onCompletionStatusChange={(studentId, isCompleted) => {
+                  setStudentCompletionMap((prev) => {
+                    const newMap = new Map(prev)
+                    newMap.set(studentId, isCompleted)
+                    return newMap
+                  })
+                }}
               />
             ))}
           </TableBody>
@@ -140,10 +218,14 @@ export const StudentsList: React.FC<StudentsListProps> = ({
       {filteredStudents.length === 0 && (
         <Box textAlign="center" py={6}>
           <Typography variant="h6" color="text.secondary">
-            No students found
+            {showCompletedOnly
+              ? "No completed students found"
+              : "No students found"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Try adjusting your search criteria
+            {showCompletedOnly
+              ? "No students have completed all lessons yet"
+              : "Try adjusting your search criteria"}
           </Typography>
         </Box>
       )}
@@ -156,12 +238,14 @@ function StudentRow({
   courseQuiz,
   handleMenuOpen,
   courseId,
+  onCompletionStatusChange,
 }: {
   courseQuiz: Quiz[]
   course: tCourse
   student: tUser
   courseId: string
   handleMenuOpen: (_e: React.MouseEvent<HTMLElement>, _student: tUser) => void
+  onCompletionStatusChange?: (_studentId: string, _isCompleted: boolean) => void
 }) {
   const { data: userScores } = useQuery({
     queryFn: () => userQuizScores(student?.id as string),
@@ -190,6 +274,16 @@ function StudentRow({
       totalLessons: courseProgress.totalLessons || 0,
     }
   }, [courseProgress])
+
+  // Notify parent of completion status when progress data changes
+  useEffect(() => {
+    if (courseProgress && onCompletionStatusChange && student.id) {
+      const isCompleted =
+        courseProgress.completedLessons === courseProgress.totalLessons &&
+        courseProgress.totalLessons > 0
+      onCompletionStatusChange(student.id, isCompleted)
+    }
+  }, [courseProgress, onCompletionStatusChange, student.id])
 
   // Quiz metrics
   const { averageScore, quizCompletionRate, quizProgress } = useMemo(() => {
