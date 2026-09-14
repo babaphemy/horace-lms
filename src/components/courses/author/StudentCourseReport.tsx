@@ -80,7 +80,6 @@ export const StudentCourseReport: React.FC<StudentCourseReportProps> = ({
     enabled: !!studentId,
   })
 
-  //? Calculate course progress from progress data endpoint
   const {
     lessonProgress,
     completedLessons,

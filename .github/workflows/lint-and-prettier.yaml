@@ -1,35 +1,41 @@
-name: Lint and Prettier
+name: CI
 
 on:
+  push:
+    branches:
+      - main
+      - release/**
   pull_request:
     branches:
       - main
       - release/**
+  workflow_dispatch:
 
 jobs:
-  lint-and-prettier:
+  quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    env:
+      CI: true
+      HUSKY: 0
+      NEXT_TELEMETRY_DISABLED: 1
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run prettier
-        run: npm run format
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Run typecheck
-        run: npm run check-types
-
-      - name: Run lint check
-        run: npm run check-lint
+      - name: Run CI checks
+        run: npm run ci

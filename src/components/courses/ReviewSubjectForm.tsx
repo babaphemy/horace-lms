@@ -11,6 +11,27 @@ import {
   Chip,
 } from "@mui/material"
 import { useFormContext } from "react-hook-form"
+import { useSanitizedHtml } from "@/utils/sanitizeHtml"
+
+const LessonContentPreview = ({ content }: { content?: string | null }) => {
+  const sanitizedContent = useSanitizedHtml(content)
+
+  return (
+    <Box
+      sx={{
+        mt: 0.5,
+        mb: 1.5,
+        pl: 1,
+        borderLeft: "2px solid",
+        borderColor: "divider",
+        fontSize: "0.875rem",
+      }}
+      dangerouslySetInnerHTML={{
+        __html: sanitizedContent,
+      }}
+    />
+  )
+}
 
 const ReviewSubjectForm = () => {
   const { watch, setValue } = useFormContext()
@@ -187,19 +208,7 @@ const ReviewSubjectForm = () => {
                                 ).toLocaleDateString()})`}
                             </Typography>
                             {lesson.content ? (
-                              <Box
-                                sx={{
-                                  mt: 0.5,
-                                  mb: 1.5,
-                                  pl: 1,
-                                  borderLeft: "2px solid",
-                                  borderColor: "divider",
-                                  fontSize: "0.875rem",
-                                }}
-                                dangerouslySetInnerHTML={{
-                                  __html: lesson.content,
-                                }}
-                              />
+                              <LessonContentPreview content={lesson.content} />
                             ) : (
                               <Typography
                                 variant="body2"

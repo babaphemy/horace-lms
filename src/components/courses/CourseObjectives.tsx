@@ -15,6 +15,7 @@ import { ReactElement, useState } from "react"
 import { tCurriculum, tPost } from "../../types/types"
 import CourseReview from "./CourseReview"
 import { fromNow } from "@/utils/fromNow"
+import { useSanitizedHtml } from "@/utils/sanitizeHtml"
 const ranges = {
   overview: "Overview",
   reviews: "Reviews",
@@ -46,6 +47,7 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
     registered,
   } = props
   const [tabValue, setTabValue] = useState(0)
+  const sanitizedOverview = useSanitizedHtml(overview)
 
   return (
     <>
@@ -101,9 +103,10 @@ const CourseObjectives: React.FC<Props> = (props: Props): ReactElement => {
               {overview && (
                 <Typography
                   variant="body1"
+                  component="div"
                   className="mb-4"
                   dangerouslySetInnerHTML={{
-                    __html: overview,
+                    __html: sanitizedOverview,
                   }}
                 />
               )}

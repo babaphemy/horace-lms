@@ -14,10 +14,32 @@ bun dev
 
 ## Prettier
 
-- format all files:
-- yarn prettier . --write
+- Format all files:
 
-- for ci:
-- npx prettier . --check
-- npx eslint --fix .
-- npx eslint ./src
+```bash
+npm run format
+```
+
+- Check formatting:
+
+```bash
+npm run lint
+```
+
+- Validate code:
+
+```bash
+npm run validate
+```
+
+- Run the full CI gate locally:
+
+```bash
+npm run ci
+```
+
+- Build for production:
+
+```bash
+npm run build
+```
