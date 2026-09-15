@@ -145,7 +145,7 @@ const AuthorCourseDetail: React.FC = () => {
               disabled={isSettingFeatured}
               sx={{ mb: 2 }}
             >
-              {isCourseFeatured ? "Featured" : "Set as Featured"}
+              {isCourseFeatured ? "Remove Featured" : "Set as Featured"}
             </Button>
             <Button
               startIcon={<Edit />}
