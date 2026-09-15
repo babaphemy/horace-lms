@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import {
   Table,
   TableBody,
@@ -45,16 +45,21 @@ export const StudentsList: React.FC<StudentsListProps> = ({
   const [searchTerm, setSearchTerm] = useState("")
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedStudent, setSelectedStudent] = useState<tUser | null>(null)
-
   const { courseQuiz } = useQuizSummary({ courseId: courseId as string })
 
-  const filteredStudents = students?.filter(
-    (student) =>
-      `${student?.firstname} ${student?.lastname}`
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Filter students based on search term and completion status
+  const filteredStudents = useMemo(() => {
+    const filtered =
+      students?.filter(
+        (student) =>
+          `${student?.firstname} ${student?.lastname}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          student.email.toLowerCase().includes(searchTerm.toLowerCase())
+      ) || []
+
+    return filtered
+  }, [students, searchTerm])
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLElement>,
@@ -320,12 +325,14 @@ function StudentRow({
   courseQuiz,
   handleMenuOpen,
   courseId,
+  onCompletionStatusChange,
 }: {
   courseQuiz: Quiz[]
   course: tCourse
   student: tUser
   courseId: string
   handleMenuOpen: (_e: React.MouseEvent<HTMLElement>, _student: tUser) => void
+  onCompletionStatusChange?: (_studentId: string, _isCompleted: boolean) => void
 }) {
   const { data: userScores } = useQuery({
     queryFn: () => userQuizScores(student?.id as string),
@@ -335,7 +342,7 @@ function StudentRow({
 
   const { data: courseProgress } = useQuery<CourseProgressResponse | null>({
     queryKey: ["courseProgress", courseId, student?.id],
-    queryFn: () => getCourseProgressForStudent(courseId, student?.email ?? ""),
+    queryFn: () => getCourseProgressForStudent(courseId, student?.id ?? ""),
     enabled: !!courseId && !!student?.id,
   })
 
@@ -354,6 +361,16 @@ function StudentRow({
       totalLessons: courseProgress.totalLessons || 0,
     }
   }, [courseProgress])
+
+  // Notify parent of completion status when progress data changes
+  useEffect(() => {
+    if (courseProgress && onCompletionStatusChange && student.id) {
+      const isCompleted =
+        courseProgress.completedLessons === courseProgress.totalLessons &&
+        courseProgress.totalLessons > 0
+      onCompletionStatusChange(student.id, isCompleted)
+    }
+  }, [courseProgress, onCompletionStatusChange, student.id])
 
   // Quiz metrics
   const { averageScore, quizCompletionRate, quizProgress } = useMemo(() => {
