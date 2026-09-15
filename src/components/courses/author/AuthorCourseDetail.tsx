@@ -77,7 +77,11 @@ const AuthorCourseDetail: React.FC = () => {
       onSuccess: () => {
         queryClient.invalidateQueries(["course", id, userId])
         queryClient.invalidateQueries(["featured-courses"])
-        notifySuccess("Course set as featured successfully!")
+        notifySuccess(
+          isCourseFeatured
+            ? "Course removed from featured successfully!"
+            : "Course set as featured successfully!"
+        )
       },
       onError: (error: Error) => {
         notifyError(`Failed to set course as featured: ${error.message}`)
