@@ -84,7 +84,7 @@ const AuthorCourseDetail: React.FC = () => {
         )
       },
       onError: (error: Error) => {
-        notifyError(`Failed to set course as featured: ${error.message}`)
+        notifyError(`Failed to update course featured status: ${error.message}`)
       },
     }
   )
