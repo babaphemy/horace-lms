@@ -39,6 +39,7 @@ interface LessonContentProps {
   userId: string
   onComplete?: () => void
   onProgress?: (_percentage: number) => void
+  hasPublishedQuiz?: boolean
 }
 
 interface HTMLLessonProps {
@@ -175,7 +176,11 @@ const getContentType = (lesson: LessonDto): string => {
   if (lesson?.type?.toLowerCase() === "video" || lesson.video) {
     return "video"
   }
-  return extension || "unknown"
+  if (extension) return extension
+  const type = lesson.type?.toLowerCase()
+  if (type === "text" || type === "html") return type
+  if (type === "assignment" || type === "quiz") return type
+  return type || "unknown"
 }
 
 const LessonContent: React.FC<LessonContentProps> = ({
@@ -184,6 +189,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
   userId,
   onComplete,
   onProgress,
+  hasPublishedQuiz,
 }) => {
   const playerRef = useRef<ReactPlayer>(null)
   const hasMarkedComplete = useRef(false)
@@ -229,9 +235,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
     routeCourseId
   )}&lessonId=${encodeURIComponent(
     lesson.id || "lesson"
-  )}&title=${encodeURIComponent(lesson.title || "Hands-on Lab")}&userId=${encodeURIComponent(
-    userId || "guest"
-  )}`
+  )}&title=${encodeURIComponent(lesson.title || "Hands-on Lab")}`
   const askMentorHref = `/mentorship/ask?trackId=${encodeURIComponent(
     routeCourseId
   )}&lessonId=${encodeURIComponent(
@@ -418,6 +422,31 @@ const LessonContent: React.FC<LessonContentProps> = ({
           {launchLab}
           <HTMLLesson lesson={lesson} onComplete={onComplete} />
         </>
+      )
+
+    case "assignment":
+      return (
+        <Stack spacing={2}>
+          <DocumentContainer sx={{ minHeight: 0 }}>
+            <Typography variant="overline" color="primary" fontWeight={800}>
+              Assignment brief
+            </Typography>
+            <HTMLLesson lesson={lesson} onComplete={onComplete} />
+          </DocumentContainer>
+          {launchLab}
+        </Stack>
+      )
+
+    case "quiz":
+      return (
+        <Stack spacing={2}>
+          <HTMLLesson lesson={lesson} onComplete={onComplete} />
+          {!hasPublishedQuiz && (
+            <Alert severity="info">
+              Practice set not published yet — use the brief to self-test.
+            </Alert>
+          )}
+        </Stack>
       )
 
     case "code":
