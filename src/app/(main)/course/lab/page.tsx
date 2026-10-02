@@ -6,7 +6,6 @@ interface LabPageProps {
     courseId?: string
     lessonId?: string
     title?: string
-    userId?: string
   }>
 }
 
@@ -38,7 +37,6 @@ const LabPage = async ({ searchParams }: LabPageProps) => {
       courseId={courseId}
       lessonId={lessonId}
       lessonTitle={lessonTitle}
-      userId={params.userId || "guest"}
     />
   )
 }

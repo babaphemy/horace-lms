@@ -108,7 +108,6 @@ const ContentCard: React.FC<ContentCardProps> = ({
   progress,
   userScores,
   courseProgressData,
-  userId,
 }) => {
   const [expandedTopics, setExpandedTopics] = useState<{
     [key: string]: boolean
@@ -188,9 +187,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
         courseId
       )}&lessonId=${encodeURIComponent(
         lesson.id || "lesson"
-      )}&title=${encodeURIComponent(
-        lesson.title || "Hands-on Lab"
-      )}&userId=${encodeURIComponent(userId || "guest")}`
+      )}&title=${encodeURIComponent(lesson.title || "Hands-on Lab")}`
     )
   }
 
