@@ -69,7 +69,7 @@ const Footer = () => {
               </Typography>
               <List sx={footerStyles.noLeftPadding}>
                 {group.links.map((item) => (
-                  <ListItem key={item.href}>
+                  <ListItem key={item.label}>
                     <Link href={item.href} style={footerStyles.link}>
                       {item.label}
                     </Link>
@@ -204,7 +204,6 @@ const footerGroups = [
     links: [
       { label: "Home", href: "/" },
       { label: "Skill Tracks", href: "/courses" },
-      { label: "Preview Labs", href: "/courses#preview-labs" },
       { label: "Pricing", href: "/#pricing" },
     ],
   },

@@ -75,7 +75,7 @@ const HeaderBanner = () => (
           </Button>
           <Button
             component={Link}
-            href="/courses#preview-labs"
+            href="/course/lab"
             variant="outlined"
             size="large"
             startIcon={<PlayCircleRoundedIcon />}
