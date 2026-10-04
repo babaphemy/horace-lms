@@ -185,9 +185,11 @@ export default function LabWorkspace({
   const canSubmit =
     workspace.notes.trim().length >= 20 &&
     workspace.artifactUrl.trim().length > 0 &&
-    status !== "loading"
+    status === "authenticated" &&
+    !!session?.user?.id
 
   const submit = () => {
+    if (!canSubmit) return
     const now = new Date()
     const due = new Date(now)
     due.setDate(due.getDate() + 7)
@@ -476,6 +478,11 @@ export default function LabWorkspace({
               }))
             }
           />
+          {status === "unauthenticated" && (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              <Link href="/login">Log in</Link> to submit your lab.
+            </Alert>
+          )}
           <Stack direction={{ xs: "column", sm: "row" }} gap={1.5} mt={2}>
             <Button variant="contained" disabled={!canSubmit} onClick={submit}>
               Submit lab
