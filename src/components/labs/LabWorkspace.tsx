@@ -171,12 +171,12 @@ export default function LabWorkspace({
       JSON.stringify(next)
     )
   }
-  const completedSteps = definition.steps.filter(
-    (step, index) =>
-      index < workspace.activeStep ||
-      results[step.autoCheck?.tool || ""]?.passed ||
+  const stepCompletion = definition.steps.map(
+    (step) =>
+      !!(step.autoCheck && results[step.autoCheck.tool]?.passed) ||
       (step.evidence === "file-link" && !!workspace.artifactUrl)
-  ).length
+  )
+  const completedSteps = stepCompletion.filter(Boolean).length
   const progress = Math.round((completedSteps / definition.steps.length) * 100)
   const canSubmit =
     workspace.notes.trim().length >= 20 &&
@@ -324,10 +324,10 @@ export default function LabWorkspace({
                   variant={
                     workspace.activeStep === index ? "contained" : "text"
                   }
-                  color={index < completedSteps ? "success" : "primary"}
+                  color={stepCompletion[index] ? "success" : "primary"}
                   sx={{ justifyContent: "flex-start", textAlign: "left" }}
                 >
-                  {index < completedSteps && (
+                  {stepCompletion[index] && (
                     <CheckCircleRoundedIcon sx={{ mr: 1 }} fontSize="small" />
                   )}
                   {index + 1}. {step.title}
