@@ -60,11 +60,23 @@ const Courses = () => {
   const handleSearch = useMemo(
     () =>
       debounce((query: string) => {
+        const filteredCourses =
+          currentFilter.value === "all"
+            ? allCourses
+            : allCourses.filter(
+                (course) =>
+                  course?.category
+                    ?.split(",")
+                    .includes(currentFilter.value.toLowerCase()) ||
+                  course?.courseName
+                    ?.toLowerCase()
+                    .includes(currentFilter.value.toLowerCase())
+              )
         if (!query.trim()) {
-          setFilteredData(allCourses)
+          setFilteredData(filteredCourses)
           return
         }
-        const fuse = new Fuse<tCourseLte>(allCourses, {
+        const fuse = new Fuse<tCourseLte>(filteredCourses, {
           keys: ["category", "courseName"],
           includeMatches: true,
           minMatchCharLength: 3,
@@ -72,7 +84,7 @@ const Courses = () => {
         const results: FuseResult<tCourseLte>[] = fuse.search(query)
         setFilteredData(results.map((item) => item.item))
       }, 700),
-    [allCourses]
+    [allCourses, currentFilter]
   )
 
   useEffect(() => () => handleSearch.cancel(), [handleSearch])
