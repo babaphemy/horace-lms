@@ -121,13 +121,25 @@ export default function LabWorkspace({
 
   useEffect(() => {
     const saved = localStorage.getItem(workspaceKey)
-    if (saved) setWorkspace({ ...initialState, ...JSON.parse(saved) })
+    if (saved) {
+      try {
+        setWorkspace({ ...initialState, ...JSON.parse(saved) })
+      } catch {
+        // Keep the default workspace when saved data is invalid.
+      }
+    }
     const states: Record<string, Record<string, unknown>> = {}
     definition.tools.forEach((tool) => {
       const raw = localStorage.getItem(
         getLabPlaygroundKey(courseId, lessonId, tool)
       )
-      if (raw) states[tool] = JSON.parse(raw)
+      if (raw) {
+        try {
+          states[tool] = JSON.parse(raw)
+        } catch {
+          // Let this tool use its default state when saved data is invalid.
+        }
+      }
     })
     setToolStates(states)
     setLoaded(true)
