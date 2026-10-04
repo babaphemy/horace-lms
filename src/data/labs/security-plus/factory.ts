@@ -1,4 +1,5 @@
 import { LabDefinition, LabEnvironment, PlaygroundToolId } from "../types"
+import { labChecks } from "./checks"
 
 const defaultRubric = [
   {
@@ -37,6 +38,7 @@ export function lab(
   deliverables: string[],
   skills: string[]
 ): LabDefinition {
+  const check = labChecks[slugify(title)]
   return {
     slug: slugify(title),
     domain,
@@ -57,8 +59,11 @@ export function lab(
             ? "tool-result"
             : "note",
       autoCheck:
-        index === 1 && tools[0]
-          ? { tool: tools[0], rule: "complete" }
+        index === 1 && check
+          ? {
+              tool: check.tool,
+              rule: check.rule,
+            }
           : undefined,
     })),
     deliverables,

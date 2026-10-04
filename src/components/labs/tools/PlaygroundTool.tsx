@@ -1,16 +1,9 @@
 "use client"
 
 import { PlaygroundToolId, ToolProps } from "@/data/labs"
+import { validateLabCheck } from "@/data/labs/security-plus/checks"
 import { labFixtures } from "@/data/labs/security-plus/fixtures"
-import {
-  Alert,
-  Box,
-  Button,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material"
+import { Alert, Box, Button, Stack, TextField, Typography } from "@mui/material"
 import { useState } from "react"
 
 type State = Record<string, unknown>
@@ -67,42 +60,49 @@ const labels: Record<PlaygroundToolId, { title: string; prompt: string }> = {
 
 export default function PlaygroundTool({
   toolId,
+  rule,
   state,
   onChange,
   onResult,
-}: ToolProps<State> & { toolId: PlaygroundToolId }) {
+}: ToolProps<State> & { toolId: PlaygroundToolId; rule?: string }) {
   const [busy, setBusy] = useState(false)
   const value = String(state.value || "")
   const output = String(state.output || "")
   const fixture = labFixtures[toolId]
   const run = async () => {
     setBusy(true)
-    let nextOutput = value.trim()
-    if (toolId === "hash") {
-      const digest = await crypto.subtle.digest(
-        "SHA-256",
-        new TextEncoder().encode(value)
-      )
-      nextOutput = Array.from(new Uint8Array(digest))
-        .map((byte) => byte.toString(16).padStart(2, "0"))
-        .join("")
-    } else if (!nextOutput)
-      nextOutput = "Completed with bundled Northwind Clinic fixture"
-    const next = {
-      ...state,
-      value,
-      output: nextOutput,
-      completedAt: new Date().toISOString(),
+    try {
+      let nextOutput = value.trim()
+      if (toolId === "hash") {
+        const digest = await crypto.subtle.digest(
+          "SHA-256",
+          new TextEncoder().encode(value)
+        )
+        nextOutput = Array.from(new Uint8Array(digest))
+          .map((byte) => byte.toString(16).padStart(2, "0"))
+          .join("")
+      }
+      const validation = validateLabCheck(toolId, rule || "", value)
+      const next = {
+        ...state,
+        value,
+        output: nextOutput,
+        passed: validation.passed,
+        message: validation.message,
+        completedAt: validation.passed ? new Date().toISOString() : null,
+      }
+      onChange(next)
+      onResult({ tool: toolId, rule, ...validation, data: next })
+    } catch {
+      onResult({
+        tool: toolId,
+        rule,
+        passed: false,
+        message: "The local check failed to run. Please try again.",
+      })
+    } finally {
+      setBusy(false)
     }
-    onChange(next)
-    onResult({
-      tool: toolId,
-      rule: "complete",
-      passed: true,
-      message: `${labels[toolId].title} checkpoint complete.`,
-      data: next,
-    })
-    setBusy(false)
   }
   return (
     <Stack spacing={2}>
@@ -137,30 +137,16 @@ export default function PlaygroundTool({
             : JSON.stringify(fixture, null, 2)}
         </Box>
       )}
-      {toolId === "controls" || toolId === "iam" ? (
-        <TextField
-          select
-          label="Decision"
-          value={value}
-          onChange={(event) =>
-            onChange({ ...state, value: event.target.value })
-          }
-        >
-          <MenuItem value="keep">Keep / correct</MenuItem>
-          <MenuItem value="modify">Modify</MenuItem>
-          <MenuItem value="revoke">Revoke / incorrect</MenuItem>
-        </TextField>
-      ) : (
-        <TextField
-          multiline
-          minRows={5}
-          label="Workbench input and findings"
-          value={value}
-          onChange={(event) =>
-            onChange({ ...state, value: event.target.value })
-          }
-        />
-      )}
+      <TextField
+        multiline
+        minRows={5}
+        label="Workbench input and findings"
+        helperText={
+          rule ? validateLabCheck(toolId, rule, "").message : undefined
+        }
+        value={value}
+        onChange={(event) => onChange({ ...state, value: event.target.value })}
+      />
       <Button variant="contained" onClick={run} disabled={busy}>
         {busy
           ? "Running locally…"
@@ -168,8 +154,16 @@ export default function PlaygroundTool({
             ? "Compute SHA-256"
             : "Run check"}
       </Button>
+      {Boolean(state.message) && (
+        <Alert severity={state.passed ? "success" : "warning"}>
+          {String(state.message)}
+        </Alert>
+      )}
       {output && (
-        <Alert severity="success" sx={{ overflowWrap: "anywhere" }}>
+        <Alert
+          severity={state.passed ? "success" : "info"}
+          sx={{ overflowWrap: "anywhere" }}
+        >
           {output}
         </Alert>
       )}

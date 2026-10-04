@@ -173,7 +173,11 @@ export default function LabWorkspace({
   }
   const stepCompletion = definition.steps.map(
     (step) =>
-      !!(step.autoCheck && results[step.autoCheck.tool]?.passed) ||
+      !!(
+        step.autoCheck &&
+        results[step.autoCheck.tool]?.rule === step.autoCheck.rule &&
+        results[step.autoCheck.tool]?.passed
+      ) ||
       (step.evidence === "file-link" && !!workspace.artifactUrl)
   )
   const completedSteps = stepCompletion.filter(Boolean).length
@@ -363,6 +367,11 @@ export default function LabWorkspace({
                 {activeTool && (
                   <PlaygroundTool
                     toolId={activeTool}
+                    rule={
+                      definition.steps.find(
+                        (step) => step.autoCheck?.tool === activeTool
+                      )?.autoCheck?.rule
+                    }
                     state={toolStates[activeTool] || {}}
                     onChange={(next) => setToolState(activeTool, next)}
                     onResult={(result) =>
