@@ -70,9 +70,7 @@ const Courses = () => {
           minMatchCharLength: 3,
         })
         const results: FuseResult<tCourseLte>[] = fuse.search(query)
-        setFilteredData(
-          results.length > 0 ? results.map((item) => item.item) : allCourses
-        )
+        setFilteredData(results.map((item) => item.item))
       }, 700),
     [allCourses]
   )
