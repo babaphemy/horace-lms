@@ -160,7 +160,7 @@ const BackendCourseDetail = () => {
   const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([])
   const queryClient = useQueryClient()
   const router = useRouter()
-  const userId = decodedUid || sessionUser?.id || null
+  const userId = sessionUser?.id || decodedUid || null
 
   const { data: userScores } = useQuery({
     queryFn: () => userQuizScores(userId as string),
