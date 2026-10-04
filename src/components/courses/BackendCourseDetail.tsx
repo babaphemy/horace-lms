@@ -248,11 +248,10 @@ const BackendCourseDetail = () => {
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
       notifySuccess("You are now enrolled!")
-      queryClient.invalidateQueries(["acourse", cid, userId])
+      queryClient.invalidateQueries(["course", cid, userId])
     },
-    onError: (error) => {
+    onError: () => {
       notifyError("Enrollment Failed, Please Try Again!")
-      throw error
     },
   })
   const authenticateUser = async (userData: CorporateAuthRequest) => {
