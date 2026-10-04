@@ -25,6 +25,7 @@ import {
   LessonMaterial,
   CourseProgressResponse,
   LessonProgressData,
+  QuizItem,
 } from "@/types/types"
 import useQuizSummary from "@/hooks/useQuizSummary"
 import LessonResources from "@/components/classroom/LessonResources"
@@ -217,6 +218,9 @@ const ClassroomPage = () => {
                     lesson={currentLesson}
                     courseId={id || ""}
                     userId={session?.user?.id}
+                    hasPublishedQuiz={courseQuiz?.some(
+                      (quiz: QuizItem) => quiz.lessonId === currentLesson.id
+                    )}
                     onComplete={() => {
                       if (currentLesson.id && currentTopicId) {
                         markLessonComplete(currentLesson.id, currentTopicId)

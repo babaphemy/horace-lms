@@ -47,7 +47,15 @@ export interface SkillCertificate {
   competencies: string[]
 }
 
-const LAB_TYPES = ["code", "handson", "hands-on", "lab", "project", "exercise"]
+export const LAB_TYPES = [
+  "assignment",
+  "code",
+  "handson",
+  "hands-on",
+  "lab",
+  "project",
+  "exercise",
+]
 
 export const labKeywords = [
   "lab",
@@ -65,6 +73,8 @@ export function isHandsOnLesson(lesson?: LessonDto | null) {
   if (!lesson) return false
 
   const type = lesson.type?.toLowerCase() || ""
+  if (type) return type === "assignment" || LAB_TYPES.includes(type)
+
   const title = lesson.title?.toLowerCase() || ""
   const content = lesson.content?.toLowerCase() || ""
 
@@ -74,6 +84,14 @@ export function isHandsOnLesson(lesson?: LessonDto | null) {
       (keyword) => title.includes(keyword) || content.includes(keyword)
     )
   )
+}
+
+export function getLabPlaygroundKey(
+  courseId: string,
+  lessonId: string,
+  toolId: string
+) {
+  return `horace.lab.playground.${courseId}.${lessonId}.${toolId}`
 }
 
 export function getLabCheckpoints(lessonTitle: string): LabCheckpoint[] {

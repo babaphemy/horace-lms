@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer"
+import BackendCourseDetail from "@/components/courses/BackendCourseDetail"
 import { getSkillTrack, skillTracks } from "@/data/skillTracks"
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded"
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded"
@@ -19,7 +20,6 @@ import {
 } from "@mui/material"
 import Image from "next/image"
 import Link from "next/link"
-import { notFound } from "next/navigation"
 import React from "react"
 
 interface TrackDetailProps {
@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: TrackDetailProps) {
 
   if (!track) {
     return {
-      title: "Skill Track Not Found | Horace LMS",
+      title: "Course | Horace LMS",
     }
   }
 
@@ -56,8 +56,9 @@ const TrackDetail = async ({ params }: TrackDetailProps) => {
   const { cid } = await params
   const track = getSkillTrack(cid)
 
+  // Not a curated skill track: treat it as a backend course id.
   if (!track) {
-    notFound()
+    return <BackendCourseDetail />
   }
 
   const totalHours = track.modules.reduce(
