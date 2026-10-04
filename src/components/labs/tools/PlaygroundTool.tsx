@@ -147,7 +147,24 @@ export default function PlaygroundTool({
           rule ? validateLabCheck(toolId, rule, "").message : undefined
         }
         value={value}
-        onChange={(event) => onChange({ ...state, value: event.target.value })}
+        onChange={(event) => {
+          const next = {
+            ...state,
+            value: event.target.value,
+            output: "",
+            passed: false,
+            message: "Input changed. Run the check again.",
+            completedAt: null,
+          }
+          onChange(next)
+          onResult({
+            tool: toolId,
+            rule,
+            passed: false,
+            message: next.message,
+            data: next,
+          })
+        }}
       />
       <Button variant="contained" onClick={run} disabled={busy}>
         {busy
