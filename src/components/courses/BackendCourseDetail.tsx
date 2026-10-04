@@ -160,7 +160,7 @@ const BackendCourseDetail = () => {
   const [similarCourses, setSimilarCourses] = React.useState<tCourseLte[]>([])
   const queryClient = useQueryClient()
   const router = useRouter()
-  const userId = decodedUid || sessionUser?.id || null
+  const userId = sessionUser?.id || decodedUid || null
 
   const { data: userScores } = useQuery({
     queryFn: () => userQuizScores(userId as string),
@@ -248,11 +248,10 @@ const BackendCourseDetail = () => {
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
       notifySuccess("You are now enrolled!")
-      queryClient.invalidateQueries(["acourse", cid, userId])
+      queryClient.invalidateQueries(["course", cid, userId])
     },
-    onError: (error) => {
+    onError: () => {
       notifyError("Enrollment Failed, Please Try Again!")
-      throw error
     },
   })
   const authenticateUser = async (userData: CorporateAuthRequest) => {
