@@ -82,7 +82,9 @@ export default function PlaygroundTool({
           .map((byte) => byte.toString(16).padStart(2, "0"))
           .join("")
       }
-      const validation = validateLabCheck(toolId, rule || "", value)
+      const validation = rule
+        ? validateLabCheck(toolId, rule, value)
+        : { passed: true, message: "" }
       const next = {
         ...state,
         value,
