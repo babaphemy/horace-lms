@@ -1,8 +1,11 @@
-import { Card, CardContent, CardHeader } from "@mui/material"
+import { Alert, Button, Card, CardContent, CardHeader } from "@mui/material"
 import { School } from "@mui/icons-material"
 import { Plan, TCountryCode } from "@/types/types"
-import Paystack from "./Payment/Paystack"
 import ElementsForm from "./Payment/ElementsForm"
+import { useMutation } from "react-query"
+import { startSubscriptionCheckout } from "@/app/api/rest"
+import { useState } from "react"
+import { SubscriptionCheckoutResponse } from "@/types/types"
 
 interface Props {
   planDetail: Plan
@@ -21,6 +24,28 @@ function requiresCustomContact(planDetail: Plan, amt: number) {
 
 const RenderPayment: React.FC<Props> = ({ planDetail, amt, locale }) => {
   const isCustomPricing = requiresCustomContact(planDetail, amt)
+  const [checkout, setCheckout] = useState<SubscriptionCheckoutResponse | null>(
+    null
+  )
+  const mutation = useMutation({
+    mutationFn: startSubscriptionCheckout,
+    onSuccess: (result) => {
+      if (result.provider === "PAYSTACK" && result.authorizationUrl) {
+        window.location.assign(result.authorizationUrl)
+        return
+      }
+      setCheckout(result)
+    },
+  })
+
+  const beginCheckout = () => {
+    if (!planDetail.id) return
+    mutation.mutate({
+      planId: planDetail.id,
+      currency: locale === "NG" ? "NGN" : "USD",
+      provider: locale === "NG" ? "PAYSTACK" : "STRIPE",
+    })
+  }
 
   return (
     <Card className="w-full max-w-2xl">
@@ -41,19 +66,52 @@ const RenderPayment: React.FC<Props> = ({ planDetail, amt, locale }) => {
           <h3 className="mb-2 font-semibold">Order Summary</h3>
           <div className="space-y-1 text-sm">
             <p>Plan: {planDetail.name}</p>
+            <p>Access period: {planDetail.duration}</p>
+            <p>This payment does not renew automatically.</p>
 
-            {!isCustomPricing && <p>Amount: {formatAmount(amt, locale)}</p>}
-          </div>
-        </div>
-        {!isCustomPricing && (
-          <div className="space-y-4">
-            {locale === "NG" ? (
-              <Paystack plan={planDetail} />
-            ) : (
-              <ElementsForm amt={amt} />
+            {!isCustomPricing && (
+              <p>Amount: {formatAmount(checkout?.amount ?? amt, locale)}</p>
             )}
           </div>
+        </div>
+        {mutation.isError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {mutation.error instanceof Error
+              ? mutation.error.message
+              : "Unable to start payment."}
+          </Alert>
         )}
+        {!isCustomPricing && !checkout && (
+          <Button
+            fullWidth
+            variant="contained"
+            disabled={mutation.isLoading || !planDetail.id}
+            onClick={beginCheckout}
+          >
+            {mutation.isLoading
+              ? "Preparing payment..."
+              : "Continue to payment"}
+          </Button>
+        )}
+        {!isCustomPricing &&
+          checkout?.provider === "STRIPE" &&
+          !checkout.clientSecret && (
+            <Alert severity="error">
+              The payment provider did not return a payment session. Please
+              start again.
+            </Alert>
+          )}
+        {!isCustomPricing &&
+          checkout?.provider === "STRIPE" &&
+          checkout.clientSecret && (
+            <div className="space-y-4">
+              <ElementsForm
+                amt={checkout.amount}
+                reference={checkout.reference}
+                clientSecret={checkout.clientSecret}
+              />
+            </div>
+          )}
       </CardContent>
     </Card>
   )

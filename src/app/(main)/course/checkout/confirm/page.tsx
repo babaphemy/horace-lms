@@ -1,6 +1,6 @@
 "use client"
 
-import { verifySubscriptionPayment } from "@/app/api/rest"
+import { verifyCoursePayment } from "@/app/api/rest"
 import { CheckCircle, X } from "@mui/icons-material"
 import { Alert, Button, CircularProgress } from "@mui/material"
 import Link from "next/link"
@@ -8,12 +8,11 @@ import { useSearchParams } from "next/navigation"
 import React, { Suspense } from "react"
 import { useQuery } from "react-query"
 
-const ConfirmPageContent = () => {
-  const searchParams = useSearchParams()
-  const reference = searchParams.get("reference")
+const CoursePaymentConfirmation = () => {
+  const reference = useSearchParams().get("reference")
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["subscription-payment", reference],
-    queryFn: () => verifySubscriptionPayment(reference as string),
+    queryKey: ["course-payment", reference],
+    queryFn: () => verifyCoursePayment(reference as string),
     enabled: Boolean(reference),
     retry: false,
   })
@@ -27,7 +26,7 @@ const ConfirmPageContent = () => {
         {isLoading ? (
           <>
             <CircularProgress />
-            <p className="mt-4">Verifying payment with the provider...</p>
+            <p className="mt-4">Verifying course payment...</p>
           </>
         ) : isError ? (
           <>
@@ -40,30 +39,31 @@ const ConfirmPageContent = () => {
               Check again
             </Button>
           </>
-        ) : data?.active ? (
+        ) : data ? (
           <>
             <CheckCircle className="h-12 w-12 text-green-600 mx-auto" />
-            <h1 className="text-2xl font-bold mt-4">LMS access activated</h1>
+            <h1 className="text-2xl font-bold mt-4">Course unlocked</h1>
             <p className="text-gray-600 my-4">
-              Your {data.plan.name} plan is active until{" "}
-              {new Date(data.expiresAt).toLocaleDateString()}.
+              Payment verified and the course has been added to your account.
             </p>
-            <Button component={Link} href="/courses" variant="contained">
-              Continue to courses
+            <Button
+              component={Link}
+              href={`/course/${data.courseId}`}
+              variant="contained"
+            >
+              Open course
             </Button>
           </>
-        ) : (
-          <Alert severity="warning">Subscription activation is pending.</Alert>
-        )}
+        ) : null}
       </div>
     </div>
   )
 }
 
-const ConfirmPage = () => (
+const CoursePaymentConfirmPage = () => (
   <Suspense fallback={<CircularProgress />}>
-    <ConfirmPageContent />
+    <CoursePaymentConfirmation />
   </Suspense>
 )
 
-export default ConfirmPage
+export default CoursePaymentConfirmPage

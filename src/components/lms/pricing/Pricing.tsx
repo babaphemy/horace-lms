@@ -5,57 +5,20 @@ import PricingPlan from "./PricingPlan"
 import { notifyInfo } from "@/utils/notification"
 import { Appcontext } from "@/context/AppContext"
 import { useContext } from "react"
-export const plans: Plan[] = [
-  {
-    name: "Self-Paced Labs",
-    price: { US: "$79", NG: "₦120,000" },
-    slug: "self-paced-labs",
-    duration: "/month",
-    description: "For learners who want structured projects and checkpoints.",
-    features: [
-      "Skill track catalog access",
-      "Guided hands-on labs",
-      "Automated checkpoint feedback",
-      "Portfolio project publishing",
-      "Community support",
-      "Skill progress dashboard",
-    ],
-  },
-  {
-    name: "Mentored Track",
-    price: { US: "$199", NG: "₦300,000" },
-    slug: "mentored-track",
-    duration: "/month",
-    description: "For learners who want expert review and career proof.",
-    features: [
-      "Everything in Self-Paced Labs",
-      "1:1 and group mentorship",
-      "Project rubric review",
-      "Verified skill certificate",
-      "Portfolio critique",
-      "Priority Q&A response",
-    ],
-  },
-  {
-    name: "Team Upskilling",
-    price: { US: "Custom Pricing", NG: "Custom Pricing" },
-    slug: "team-upskilling",
+import { useQuery } from "react-query"
+import { fetchSupportPlans } from "@/app/api/rest"
+import { mapSupportPlan } from "@/utils/supportPlan"
+import { Alert, CircularProgress } from "@mui/material"
 
-    duration: "/team",
-    description: "For teams that need practical training and reporting.",
-    features: [
-      "Bulk invitations by email or CSV",
-      "Assigned skill tracks",
-      "Aggregate lab progress",
-      "Certificate tracking",
-      "CSV and PDF reporting",
-      "Dedicated implementation support",
-    ],
-  },
-]
 const Pricing: React.FC = () => {
   const router = useRouter()
   const { locale } = useContext(Appcontext)
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["support-plans"],
+    queryFn: fetchSupportPlans,
+    staleTime: 5 * 60 * 1000,
+  })
+  const plans = data?.map(mapSupportPlan) ?? []
 
   const choosePlan = (plan: Plan) => {
     const selectedPlan = plans.find((p) => p.name === plan.name)
@@ -77,8 +40,19 @@ const Pricing: React.FC = () => {
         </h2>
         <p className="text-center text-gray-600 max-w-3xl mx-auto text-lg">
           Choose self-paced labs, a mentored career track, or a team program
-          with aggregate progress and certificate reporting.
+          with aggregate progress and certificate reporting. Each payment grants
+          access for the displayed period and does not renew automatically.
         </p>
+        {isLoading && (
+          <div className="flex justify-center my-10">
+            <CircularProgress />
+          </div>
+        )}
+        {isError && (
+          <Alert severity="error" sx={{ my: 4 }}>
+            We couldn&apos;t load support plans. Please try again shortly.
+          </Alert>
+        )}
         <div className="flex flex-wrap justify-center gap-10 my-10">
           {plans.map((plan, index) => (
             <PricingPlan

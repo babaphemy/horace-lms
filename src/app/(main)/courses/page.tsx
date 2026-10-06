@@ -1,6 +1,6 @@
 "use client"
 
-import { featuredCourses, fetchCourses } from "@/app/api/rest"
+import { fetchCourses } from "@/app/api/rest"
 import Footer from "@/components/Footer"
 import CourseData from "@/components/courses/CourseData"
 import CoursesSearch from "@/components/courses/CoursesSearch"
@@ -38,9 +38,7 @@ const Courses = () => {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["courses-catalog", userId, currentPage],
-    queryFn: userId
-      ? () => fetchCourses(userId, currentPage, 10)
-      : () => featuredCourses(),
+    queryFn: () => fetchCourses(userId, currentPage, 10),
     refetchOnWindowFocus: false,
   })
 
@@ -152,7 +150,7 @@ const Courses = () => {
           allCourses={allCourses}
         />
 
-        {(isError || data?.error) && (
+        {isError && (
           <Alert severity="error" sx={{ mb: 3 }}>
             We couldn&apos;t load courses right now. Please try again shortly.
           </Alert>
@@ -164,10 +162,10 @@ const Courses = () => {
           filteredData={filteredData}
         />
 
-        {data?.totalPages > 1 && (
+        {(data?.totalPages ?? 0) > 1 && (
           <Stack spacing={2} alignItems="center" sx={{ mt: 4, mb: 4 }}>
             <Pagination
-              count={data.totalPages}
+              count={data?.totalPages ?? 1}
               page={currentPage + 1}
               onChange={handlePageChange}
               color="primary"

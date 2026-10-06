@@ -2,8 +2,8 @@ import ContactLms from "@/components/lms/ContactLms"
 import HeaderBanner from "@/components/lms/Headerbanner"
 import SchoolLogos from "@/components/lms/SchoolLogos"
 import FeatureList from "@/components/lms/feature/FeatureList"
+import FeaturedCourses from "@/components/lms/FeaturedCourses"
 import Pricing from "@/components/lms/pricing/Pricing"
-import { skillTracks } from "@/data/skillTracks"
 import { Box, Button, Container, Stack, Typography } from "@mui/material"
 import Link from "next/link"
 import { generateMetadata } from "../metadata"
@@ -51,68 +51,7 @@ const Lms = () => {
             Browse All Tracks
           </Button>
         </Stack>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, minmax(0, 1fr))",
-              md: "repeat(4, minmax(0, 1fr))",
-            },
-            gap: 2,
-          }}
-        >
-          {skillTracks.map((track) => (
-            <Box
-              key={track.id}
-              component={Link}
-              href={`/course/${track.id}`}
-              sx={{
-                color: "inherit",
-                textDecoration: "none",
-                border: "1px solid #d8e3e8",
-                borderRadius: 2,
-                overflow: "hidden",
-                minHeight: 360,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                transition: "border-color 160ms ease, transform 160ms ease",
-                "&:hover": {
-                  borderColor: "#00A9C1",
-                  transform: "translateY(-2px)",
-                },
-              }}
-            >
-              <Box
-                component="img"
-                src={track.thumbnail}
-                alt={`${track.title} preview`}
-                sx={{
-                  width: "100%",
-                  height: 150,
-                  objectFit: "cover",
-                  display: "block",
-                  bgcolor: "#eef5f6",
-                }}
-              />
-              <Box sx={{ p: 2, flex: 1 }}>
-                <Typography variant="caption" color="text.secondary">
-                  {track.domain} / {track.level}
-                </Typography>
-                <Typography variant="h6" fontWeight={800} sx={{ mt: 1 }}>
-                  {track.title}
-                </Typography>
-                <Typography color="text.secondary" sx={{ mt: 1 }}>
-                  {track.outcome}
-                </Typography>
-              </Box>
-              <Typography color="#0F5E76" fontWeight={800} sx={{ p: 2, pt: 0 }}>
-                {track.duration} / {track.price}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
+        <FeaturedCourses />
       </Container>
       <Box>
         <FeatureList />

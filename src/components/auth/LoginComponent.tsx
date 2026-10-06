@@ -67,6 +67,10 @@ const Login = (props: Props) => {
     msg: string
   } | null>(null)
   const redirectFrom = params.get("redirect")
+  const redirectTarget =
+    redirectFrom?.startsWith("/") && !redirectFrom.startsWith("//")
+      ? redirectFrom
+      : "/courses"
 
   useEffect(() => {
     // @ts-expect-error: next auth already defined this correctly
@@ -78,10 +82,16 @@ const Login = (props: Props) => {
       ) {
         router.push("/dashboard")
       } else {
-        router.push(redirectFrom || "/courses")
+        router.push(redirectTarget)
       }
     }
-  }, [status, session?.user?.email, session?.user?.roles, router, redirectFrom])
+  }, [
+    status,
+    session?.user?.email,
+    session?.user?.roles,
+    router,
+    redirectTarget,
+  ])
 
   const {
     control,
