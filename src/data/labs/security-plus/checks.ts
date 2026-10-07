@@ -194,7 +194,9 @@ export function validateLabCheck(
   )
   if (rule === "encryption-round-trip") {
     const field = (name: string) =>
-      value.match(new RegExp(`^[ \\t]*${name}[ \\t]*:[ \\t]*(.+)$`, "im"))?.[1].trim()
+      value
+        .match(new RegExp(`^[ \\t]*${name}[ \\t]*:[ \\t]*(.+)$`, "im"))?.[1]
+        .trim()
     const plaintext = field("plaintext")
     const decrypted = field("decrypted")
     const ciphertext = field("ciphertext")
