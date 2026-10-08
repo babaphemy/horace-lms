@@ -68,7 +68,9 @@ const Login = (props: Props) => {
   } | null>(null)
   const redirectFrom = params.get("redirect")
   const redirectTarget =
-    redirectFrom?.startsWith("/") && !redirectFrom.startsWith("//")
+    redirectFrom?.startsWith("/") &&
+    !redirectFrom.startsWith("//") &&
+    !redirectFrom.includes("\\")
       ? redirectFrom
       : "/courses"
 

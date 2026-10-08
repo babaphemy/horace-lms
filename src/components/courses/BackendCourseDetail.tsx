@@ -162,6 +162,7 @@ const BackendCourseDetail = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
   const userId = sessionUser?.id || decodedUid || null
+  const requiresPersonalSubscription = Boolean(sessionUser?.id)
 
   const {
     data: subscription,
@@ -170,7 +171,7 @@ const BackendCourseDetail = () => {
   } = useQuery({
     queryKey: ["current-subscription", userId],
     queryFn: fetchCurrentSubscription,
-    enabled: Boolean(sessionUser?.id),
+    enabled: requiresPersonalSubscription,
     refetchOnWindowFocus: true,
   })
 
@@ -291,15 +292,15 @@ const BackendCourseDetail = () => {
       return
     }
 
-    if (subscriptionLoading) {
+    if (requiresPersonalSubscription && subscriptionLoading) {
       notifyError("Please wait while we check your LMS plan.")
       return
     }
-    if (subscriptionError) {
+    if (requiresPersonalSubscription && subscriptionError) {
       notifyError("We could not verify your LMS plan. Please try again.")
       return
     }
-    if (!subscription?.active) {
+    if (requiresPersonalSubscription && !subscription?.active) {
       notifyError("Choose or renew an LMS plan before enrolling in a course.")
       router.push("/#pricing")
       return
@@ -315,7 +316,15 @@ const BackendCourseDetail = () => {
     }
   }
   const gotoClass = async () => {
-    if (sessionUser?.id && !subscription?.active) {
+    if (requiresPersonalSubscription && subscriptionLoading) {
+      notifyError("Please wait while we check your LMS plan.")
+      return
+    }
+    if (requiresPersonalSubscription && subscriptionError) {
+      notifyError("We could not verify your LMS plan. Please try again.")
+      return
+    }
+    if (requiresPersonalSubscription && !subscription?.active) {
       notifyError("Renew your LMS plan to continue accessing this course.")
       router.push("/#pricing")
       return
@@ -534,21 +543,32 @@ const BackendCourseDetail = () => {
                         variant="contained"
                         className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
                         onClick={gotoClass}
+                        disabled={
+                          requiresPersonalSubscription && subscriptionLoading
+                        }
                       >
-                        {subscription?.active
-                          ? "Go To Class"
-                          : "Renew LMS Plan"}
+                        {requiresPersonalSubscription && subscriptionLoading
+                          ? "Checking LMS Plan..."
+                          : !requiresPersonalSubscription ||
+                              subscription?.active
+                            ? "Go To Class"
+                            : "Renew LMS Plan"}
                       </Button>
                     ) : (
                       <Button
                         variant="contained"
                         className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
                         onClick={handleJoinClass}
-                        disabled={subscriptionLoading}
+                        disabled={
+                          requiresPersonalSubscription && subscriptionLoading
+                        }
                       >
-                        {userId && !subscription?.active
-                          ? "Choose LMS Plan"
-                          : "Enroll"}
+                        {requiresPersonalSubscription && subscriptionLoading
+                          ? "Checking LMS Plan..."
+                          : requiresPersonalSubscription &&
+                              !subscription?.active
+                            ? "Choose LMS Plan"
+                            : "Enroll"}
                       </Button>
                     )}
 

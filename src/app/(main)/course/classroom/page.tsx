@@ -42,7 +42,7 @@ const ClassroomPage = () => {
 
   // Fetch course data
   const { data, isLoading, error } = useQuery({
-    queryKey: ["course", id, session?.user?.id],
+    queryKey: ["course-lms", id, session?.user?.id],
     queryFn: () => fetchLMS(id as string),
     refetchOnWindowFocus: false,
     enabled: !!id && !!session?.user?.id,
