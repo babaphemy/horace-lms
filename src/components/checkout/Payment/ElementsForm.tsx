@@ -9,15 +9,19 @@ import { LinearProgress } from "@mui/material"
 import ElementCheckout from "./ElementCheckout"
 import { StripeElementsOptions } from "@stripe/stripe-js"
 interface StripeProps {
-  tranx?: Transaction
+  clientSecret: string
   amt: number
+  reference: string
+  returnPath?: string
+  currency?: string
 }
-
-interface Transaction {
-  clientSecret?: string
-}
-
-const ElementsForm: React.FC<StripeProps> = ({ tranx, amt }) => {
+const ElementsForm: React.FC<StripeProps> = ({
+  clientSecret,
+  amt,
+  reference,
+  returnPath,
+  currency,
+}) => {
   const stripeOptions = useMemo(() => {
     const options: StripeElementsOptions = {
       appearance: {
@@ -26,16 +30,21 @@ const ElementsForm: React.FC<StripeProps> = ({ tranx, amt }) => {
           fontFamily: "Roboto, Open Sans, Segoe UI, sans-serif",
         },
       },
-      ...(tranx?.clientSecret ? { clientSecret: tranx.clientSecret } : {}),
+      clientSecret,
     }
     return options
-  }, [tranx?.clientSecret])
+  }, [clientSecret])
 
   return (
     <div className="container mx-auto px-4 py-8">
       {!isNaN(amt) && amt > 0 ? (
         <Elements stripe={getStripe()} options={stripeOptions}>
-          <ElementCheckout amount={amt} />
+          <ElementCheckout
+            amount={amt}
+            reference={reference}
+            returnPath={returnPath}
+            currency={currency}
+          />
         </Elements>
       ) : (
         <LinearProgress />

@@ -1,7 +1,17 @@
 import PaymentStatus from "./PaymentStatus"
 import PaymentForm from "./PaymentForm"
 
-const ElementCheckout = ({ amount }: { amount: number }) => {
+const ElementCheckout = ({
+  amount,
+  reference,
+  returnPath,
+  currency,
+}: {
+  amount: number
+  reference: string
+  returnPath?: string
+  currency?: string
+}) => {
   //   const { userId } = useContext(Appcontext)
   //   const router = useRouter()
 
@@ -14,7 +24,12 @@ const ElementCheckout = ({ amount }: { amount: number }) => {
     <div className="w-full max-w-lg">
       <PaymentStatus />
 
-      <PaymentForm amount={amount} />
+      <PaymentForm
+        amount={amount}
+        reference={reference}
+        returnPath={returnPath}
+        currency={currency}
+      />
     </div>
   )
 }

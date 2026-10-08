@@ -9,6 +9,7 @@ import subtract from "@/assets/img/subtract.webp"
 import { loginStyles } from "@/styles/loginStyles"
 import SignUpComponent from "@/components/auth/SignUpComponent"
 import Footer from "@/components/Footer"
+import { Suspense } from "react"
 const SignupForm = () => {
   useTag({ pageTitle: "signup", pagePath: "/sign-up" })
   return (
@@ -18,7 +19,9 @@ const SignupForm = () => {
         <Container maxWidth="lg">
           <Box sx={loginStyles.center}>
             <Box sx={loginStyles.box}>
-              <SignUpComponent />
+              <Suspense fallback={null}>
+                <SignUpComponent />
+              </Suspense>
               <Box sx={loginStyles.subtract}>
                 <Image
                   src={subtract}

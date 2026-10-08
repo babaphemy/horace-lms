@@ -20,6 +20,11 @@ import {
   CourseDTOResponse,
   CourseProgressResponse,
   LessonProgressRequest,
+  SupportPlanResponse,
+  SubscriptionCheckoutResponse,
+  SubscriptionSummary,
+  CourseCheckoutResponse,
+  CourseEnrollmentResponse,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -49,6 +54,16 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
       ...options.headers,
     },
   })
+}
+const responseError = async (response: Response, fallback: string) => {
+  const body = await response.text()
+  if (!body) return fallback
+  try {
+    const parsed = JSON.parse(body)
+    return parsed.error || fallback
+  } catch {
+    return body
+  }
 }
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
@@ -250,6 +265,83 @@ export const featuredCourses = async () => {
   return resp.json()
 }
 
+export const fetchSupportPlans = async (): Promise<SupportPlanResponse[]> => {
+  const response = await fetchWithAuth(`${basePath}support-plans`)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
+export const startSubscriptionCheckout = async (data: {
+  planId: string
+  currency: "USD" | "NGN"
+  provider: "STRIPE" | "PAYSTACK"
+}): Promise<SubscriptionCheckoutResponse> => {
+  const response = await fetchWithAuth(`${basePath}subscriptions/checkout`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    throw new Error((await response.text()) || "Unable to start checkout")
+  }
+  return response.json()
+}
+
+export const verifySubscriptionPayment = async (
+  reference: string
+): Promise<SubscriptionSummary> => {
+  const response = await fetchWithAuth(
+    `${basePath}subscriptions/payments/${encodeURIComponent(reference)}/verify`,
+    { method: "POST" }
+  )
+  if (!response.ok) {
+    throw new Error((await response.text()) || "Unable to verify payment")
+  }
+  return response.json()
+}
+
+export const fetchCurrentSubscription =
+  async (): Promise<SubscriptionSummary | null> => {
+    const response = await fetchWithAuth(`${basePath}subscriptions/me`)
+    if (!response.ok) {
+      throw new Error((await response.text()) || "Unable to load LMS plan")
+    }
+    const body = await response.text()
+    return body ? JSON.parse(body) : null
+  }
+
+export const startCourseCheckout = async (data: {
+  courseId: string
+  provider: "STRIPE" | "PAYSTACK"
+}): Promise<CourseCheckoutResponse> => {
+  const response = await fetchWithAuth(`${basePath}course-payments/checkout`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    throw new Error(
+      await responseError(response, "Unable to start course payment")
+    )
+  }
+  return response.json()
+}
+
+export const verifyCoursePayment = async (
+  reference: string
+): Promise<CourseEnrollmentResponse> => {
+  const response = await fetchWithAuth(
+    `${basePath}course-payments/${encodeURIComponent(reference)}/verify`,
+    { method: "POST" }
+  )
+  if (!response.ok) {
+    throw new Error(
+      await responseError(response, "Unable to verify course payment")
+    )
+  }
+  return response.json()
+}
+
 const fetchCourses = async (
   userId?: string,
   page: number = 0,
@@ -272,7 +364,7 @@ const fetchCourse = async (id: string, userid?: string) => {
   const response = await fetchWithAuth(
     userid
       ? `${basePath}course/summary/${id}?userId=${userid}`
-      : `${basePath}course/${id}`
+      : `${basePath}course/public/${id}`
   )
   if (!response.ok) {
     return { error: response.status }
@@ -282,9 +374,22 @@ const fetchCourse = async (id: string, userid?: string) => {
 const fetchLMS = async (id: string) => {
   const response = await fetchWithAuth(`${basePath}course/lms/${id}`)
   if (!response.ok) {
-    return { error: response.status }
+    const body = await response.text()
+    let message = body || "Unable to load course content"
+    try {
+      const parsed = JSON.parse(body)
+      message = parsed.error || message
+    } catch {
+      // The backend can also return a plain-text error response.
+    }
+    throw new Error(message)
   }
-  return response.json()
+  const course = await response.json()
+  return {
+    ...course,
+    courseId: course.courseId ?? course.id,
+    curriculum: course.curriculum ?? { topic: course.topics ?? [] },
+  }
 }
 const myRegisteredCourses = async (userId: string) => {
   const response = await fetchWithAuth(
@@ -439,7 +544,15 @@ const addUserCourse = async (cid: string) => {
     await PostSettings({ id: cid })
   )
   if (!response.ok) {
-    return { error: response.status }
+    const body = await response.text()
+    let message = body || "Enrollment failed"
+    try {
+      const parsed = JSON.parse(body)
+      message = parsed.error || message
+    } catch {
+      // The backend can also return a plain-text error response.
+    }
+    throw new Error(message)
   }
   return response.json()
 }

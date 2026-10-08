@@ -2,6 +2,7 @@
 import {
   addUserCourse,
   courseGrantAccess,
+  fetchCurrentSubscription,
   getUserProgress,
   userQuizScores,
 } from "@/app/api/rest"
@@ -54,7 +55,7 @@ import ReactPlayer from "react-player"
 import React, { useEffect, useMemo } from "react"
 import { useMutation, useQueryClient, useQuery } from "react-query"
 import { useParams, useRouter, useSearchParams } from "next/navigation"
-import { notifyError, notifySuccess, notifyWarn } from "@/utils/notification"
+import { notifyError, notifySuccess } from "@/utils/notification"
 import Curriculum from "@/components/courses/Curriculum"
 import { useSession } from "next-auth/react"
 import useCourse from "@/hooks/useCourse"
@@ -161,6 +162,18 @@ const BackendCourseDetail = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
   const userId = sessionUser?.id || decodedUid || null
+  const requiresPersonalSubscription = Boolean(sessionUser?.id)
+
+  const {
+    data: subscription,
+    isLoading: subscriptionLoading,
+    isError: subscriptionError,
+  } = useQuery({
+    queryKey: ["current-subscription", userId],
+    queryFn: fetchCurrentSubscription,
+    enabled: requiresPersonalSubscription,
+    refetchOnWindowFocus: true,
+  })
 
   const { data: userScores } = useQuery({
     queryFn: () => userQuizScores(userId as string),
@@ -174,15 +187,15 @@ const BackendCourseDetail = () => {
     enabled: !!userId,
   })
 
-  useEffect(() => {
-    if (status !== "loading" && !userId) {
-      notifyWarn("You need to log in to access this course.")
-      router.push("/login")
-      return
-    }
-  }, [userId, status, router])
-  const { data } = useCourse(cid as string, userId as string)
-  const { courseQuiz } = useQuizSummary({ courseId: cid as string })
+  const {
+    data,
+    isLoading: courseLoading,
+    error: courseError,
+  } = useCourse(cid as string, userId)
+  const { courseQuiz } = useQuizSummary({
+    courseId: cid as string,
+    enabled: Boolean(userId),
+  })
   const {
     courseId,
     courseName,
@@ -250,8 +263,14 @@ const BackendCourseDetail = () => {
       notifySuccess("You are now enrolled!")
       queryClient.invalidateQueries(["course", cid, userId])
     },
-    onError: () => {
-      notifyError("Enrollment Failed, Please Try Again!")
+    onError: (error) => {
+      const message =
+        error instanceof Error ? error.message : "Enrollment failed"
+      notifyError(message)
+      if (message.toLowerCase().includes("active lms plan")) {
+        queryClient.invalidateQueries(["current-subscription", userId])
+        router.push("/#pricing")
+      }
     },
   })
   const authenticateUser = async (userData: CorporateAuthRequest) => {
@@ -273,6 +292,20 @@ const BackendCourseDetail = () => {
       return
     }
 
+    if (requiresPersonalSubscription && subscriptionLoading) {
+      notifyError("Please wait while we check your LMS plan.")
+      return
+    }
+    if (requiresPersonalSubscription && subscriptionError) {
+      notifyError("We could not verify your LMS plan. Please try again.")
+      return
+    }
+    if (requiresPersonalSubscription && !subscription?.active) {
+      notifyError("Choose or renew an LMS plan before enrolling in a course.")
+      router.push("/#pricing")
+      return
+    }
+
     if (price < 1) {
       addCourseToUser.mutate(courseId)
     } else {
@@ -283,6 +316,19 @@ const BackendCourseDetail = () => {
     }
   }
   const gotoClass = async () => {
+    if (requiresPersonalSubscription && subscriptionLoading) {
+      notifyError("Please wait while we check your LMS plan.")
+      return
+    }
+    if (requiresPersonalSubscription && subscriptionError) {
+      notifyError("We could not verify your LMS plan. Please try again.")
+      return
+    }
+    if (requiresPersonalSubscription && !subscription?.active) {
+      notifyError("Renew your LMS plan to continue accessing this course.")
+      router.push("/#pricing")
+      return
+    }
     if (session?.user) {
       router.push(`/course/classroom?courseId=${courseId}`)
       return
@@ -294,7 +340,7 @@ const BackendCourseDetail = () => {
     await authenticateUser(payload)
   }
 
-  if (status === "loading") {
+  if (status === "loading" || courseLoading) {
     return (
       <Box
         display="flex"
@@ -306,8 +352,17 @@ const BackendCourseDetail = () => {
       </Box>
     )
   }
-  if (!userId) {
-    return null
+  if (courseError || data?.error) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Typography variant="h4" fontWeight={800}>
+          Course unavailable
+        </Typography>
+        <Typography color="text.secondary" sx={{ mt: 2 }}>
+          This course could not be loaded or is not currently published.
+        </Typography>
+      </Container>
+    )
   }
 
   const headerProps = {
@@ -488,16 +543,32 @@ const BackendCourseDetail = () => {
                         variant="contained"
                         className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
                         onClick={gotoClass}
+                        disabled={
+                          requiresPersonalSubscription && subscriptionLoading
+                        }
                       >
-                        Go To Class
+                        {requiresPersonalSubscription && subscriptionLoading
+                          ? "Checking LMS Plan..."
+                          : !requiresPersonalSubscription ||
+                              subscription?.active
+                            ? "Go To Class"
+                            : "Renew LMS Plan"}
                       </Button>
                     ) : (
                       <Button
                         variant="contained"
                         className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
                         onClick={handleJoinClass}
+                        disabled={
+                          requiresPersonalSubscription && subscriptionLoading
+                        }
                       >
-                        Enroll
+                        {requiresPersonalSubscription && subscriptionLoading
+                          ? "Checking LMS Plan..."
+                          : requiresPersonalSubscription &&
+                              !subscription?.active
+                            ? "Choose LMS Plan"
+                            : "Enroll"}
                       </Button>
                     )}
 

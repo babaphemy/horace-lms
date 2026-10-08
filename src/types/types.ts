@@ -288,6 +288,7 @@ export interface CourseResponse {
   brief: string
   price: number
   tax: number
+  currency: string
   posts: PostResponse[]
   signed: Record<string, string>[]
   assetCount: Record<string, number>
@@ -442,6 +443,7 @@ export interface PriceByCountry {
   US: string
 }
 export interface Plan {
+  id?: string
   name: string
   slug: string
   price: {
@@ -451,6 +453,50 @@ export interface Plan {
   description: string
   duration?: string
   features?: string[]
+}
+
+export interface SupportPlanResponse {
+  id: string
+  name: string
+  slug: string
+  description: string
+  features: string[]
+  prices: Record<string, number>
+  durationValue: number
+  durationUnit: "DAYS" | "MONTHS" | "YEARS"
+  active: boolean
+  displayOrder: number
+}
+
+export interface SubscriptionCheckoutResponse {
+  reference: string
+  provider: "STRIPE" | "PAYSTACK"
+  amount: number
+  currency: string
+  clientSecret?: string
+  authorizationUrl?: string
+  status: string
+}
+
+export interface CourseCheckoutResponse extends SubscriptionCheckoutResponse {
+  courseId: string
+}
+
+export interface CourseEnrollmentResponse {
+  id: string
+  userId: string
+  courseId: string
+  createdOn: string
+  modifiedOn: string
+}
+
+export interface SubscriptionSummary {
+  id: string
+  plan: SupportPlanResponse
+  status: "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELLED"
+  startedAt: string
+  expiresAt: string
+  active: boolean
 }
 
 export interface IPerson {

@@ -1,77 +1,97 @@
 "use client"
 
-import { handlePay } from "@/app/api/rest"
-import { Typography, Box, Divider, Button } from "@mui/material"
-import React from "react"
+import { startCourseCheckout } from "@/app/api/rest"
+import ElementsForm from "@/components/checkout/Payment/ElementsForm"
+import { CourseResponse } from "@/types/types"
+import { Alert, Box, Button, Divider, Typography } from "@mui/material"
+import React, { useState } from "react"
+import { useMutation } from "react-query"
 import ModalContainer from "../ModalContainer"
-import { tCourse } from "@/types/types"
-import { useSession } from "next-auth/react"
-import { notifyInfo } from "@/utils/notification"
 
-const PaymentModal = ({ course }: { course: tCourse }) => {
-  const { data: session } = useSession()
-  const user = session?.user
-  const author = `${course?.author?.firstname || "Horace"} ${
-    course?.author?.lastname || "Instructor"
-  }`
+const money = (value: number, currency: string) =>
+  new Intl.NumberFormat(currency === "NGN" ? "en-NG" : "en-US", {
+    style: "currency",
+    currency,
+  }).format(value)
 
-  const handleCoursePayment = async () => {
-    const payload = {
-      amt: Number(course?.price - course?.tax) * 100,
-      currency: "USD",
-      description: "Payment for " + course?.courseName,
-      name:
-        user?.firstname + " " + user?.lastname || user?.email?.split("@")[0],
-    }
+const PaymentModal = ({ course }: { course: CourseResponse }) => {
+  const [checkout, setCheckout] = useState<Awaited<
+    ReturnType<typeof startCourseCheckout>
+  > | null>(null)
+  const currency = (course?.currency || "USD").toUpperCase()
+  const basePrice = Number(course?.price || 0)
+  const tax = Number(course?.tax || 0)
+  const total = basePrice + tax
+  const mutation = useMutation({
+    mutationFn: startCourseCheckout,
+    onSuccess: (result) => {
+      if (result.provider === "PAYSTACK" && result.authorizationUrl) {
+        window.location.assign(result.authorizationUrl)
+        return
+      }
+      setCheckout(result)
+    },
+  })
 
-    if (!user) {
-      notifyInfo("Please login to continue")
-      return
-    }
-
-    if (!course?.price) {
-      notifyInfo("Course price is not set")
-      return
-    }
-
-    await handlePay(payload)
-    return
+  const startPayment = () => {
+    if (!course?.courseId) return
+    mutation.mutate({
+      courseId: course.courseId,
+      provider: currency === "NGN" ? "PAYSTACK" : "STRIPE",
+    })
   }
+
   return (
     <ModalContainer type="payment">
-      <Box>
+      <Box sx={{ maxHeight: "85vh", overflowY: "auto" }}>
         <Typography variant="h4" mb={2}>
-          Payment
+          Purchase course
         </Typography>
         <Divider />
-        <Box mt={2}>
-          <Typography variant="h6" mb={2}>
-            Author: {author}
-          </Typography>
-          <Typography variant="h6" mb={2}>
-            Course: {course?.courseName}
-          </Typography>
-          <Typography variant="h6" mb={2}>
-            Price: ${course?.price}
-          </Typography>
-          <Typography variant="h6" mb={2}>
-            Tax: ${course?.tax}
-          </Typography>
-          <Typography variant="h6" mb={2}>
-            Total: ${course?.price - course?.tax}
+        <Box my={2}>
+          <Typography variant="h6">{course?.courseName}</Typography>
+          <Typography>Course: {money(basePrice, currency)}</Typography>
+          <Typography>Tax: {money(tax, currency)}</Typography>
+          <Typography fontWeight={800}>
+            Total:{" "}
+            {checkout
+              ? money(checkout.amount / 100, checkout.currency)
+              : money(total, currency)}
           </Typography>
         </Box>
-        <Divider />
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "red !important",
-          }}
-          fullWidth
-          onClick={handleCoursePayment}
-        >
-          Pay ${course?.price - course?.tax}
-        </Button>
+        {mutation.isError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {mutation.error instanceof Error
+              ? mutation.error.message
+              : "Unable to start course payment."}
+          </Alert>
+        )}
+        {!checkout && (
+          <Button
+            variant="contained"
+            fullWidth
+            disabled={mutation.isLoading || !course?.courseId}
+            onClick={startPayment}
+          >
+            {mutation.isLoading
+              ? "Preparing payment..."
+              : "Continue to payment"}
+          </Button>
+        )}
+        {checkout?.provider === "STRIPE" && !checkout.clientSecret && (
+          <Alert severity="error">
+            Stripe did not return a payment session.
+          </Alert>
+        )}
+        {checkout?.provider === "STRIPE" && checkout.clientSecret && (
+          <ElementsForm
+            amt={checkout.amount}
+            reference={checkout.reference}
+            clientSecret={checkout.clientSecret}
+            currency={checkout.currency}
+            returnPath="/course/checkout/confirm"
+          />
+        )}
       </Box>
     </ModalContainer>
   )

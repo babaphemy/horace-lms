@@ -11,7 +11,7 @@ import {
 import FooterLte from "@/components/layout/FooterLte"
 import { useSearchParams } from "next/navigation"
 import { useQuery } from "react-query"
-import { fetchCourse, userQuizScores, getCourseProgress } from "@/app/api/rest"
+import { fetchLMS, userQuizScores, getCourseProgress } from "@/app/api/rest"
 import ContentCard from "@/components/classroom/ContentCard"
 import LessonContent from "@/components/classroom/LessonContent"
 import { useSession } from "next-auth/react"
@@ -42,8 +42,8 @@ const ClassroomPage = () => {
 
   // Fetch course data
   const { data, isLoading, error } = useQuery({
-    queryKey: ["course", id, session?.user?.id],
-    queryFn: () => fetchCourse(id as string, session?.user?.id as string),
+    queryKey: ["course-lms", id, session?.user?.id],
+    queryFn: () => fetchLMS(id as string),
     refetchOnWindowFocus: false,
     enabled: !!id && !!session?.user?.id,
   })
@@ -150,7 +150,9 @@ const ClassroomPage = () => {
     return (
       <Box p={4}>
         <Alert severity="error">
-          Failed to load course content. Please try again later.
+          {error instanceof Error
+            ? error.message
+            : "Failed to load course content. Please try again later."}
         </Alert>
       </Box>
     )
