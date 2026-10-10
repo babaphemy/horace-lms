@@ -332,6 +332,7 @@ export type tCourse = {
   updatedOn: string
   totalSteps: number
   draft: boolean
+  featured?: boolean
   posts?: tPost[]
   assetCount: {
     students: number
@@ -360,6 +361,7 @@ export type tCourseLte = {
   students?: number
   curriculum: null
   draft: boolean
+  featured?: boolean
   cost?: number
   posts: tPost[]
 }

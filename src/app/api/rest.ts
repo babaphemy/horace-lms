@@ -1000,6 +1000,17 @@ const manageDraft = async (obj: {
   return resp.json()
 }
 
+const setCourseAsFeatured = async (cid: string) => {
+  const resp = await fetchWithAuth(
+    `${basePath}course/featured/${cid}`,
+    PutSettings({})
+  )
+  if (!resp.ok) {
+    throw new Error(resp.statusText)
+  }
+  return resp.json()
+}
+
 const userOrganization = async (userId: string) => {
   const response = await fetchWithAuth(`${basePath}user/org/${userId}`)
   if (!response.ok) {
@@ -1304,6 +1315,7 @@ export {
   registerUser,
   resetOwnPass,
   resetPass,
+  setCourseAsFeatured,
   submitInterview,
   updateDp,
   uploadImageToS3,
