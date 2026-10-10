@@ -353,13 +353,31 @@ const BackendCourseDetail = () => {
     )
   }
   if (courseError || data?.error) {
+    const errorStatus = data?.error
+    const errorTitle =
+      errorStatus === 401
+        ? "Sign in required"
+        : errorStatus === 403
+          ? "Course access denied"
+          : errorStatus === 404
+            ? "Course not found"
+            : "Unable to load course"
+    const fallbackMessage =
+      errorStatus === 401
+        ? "Please sign in again to view this course."
+        : errorStatus === 403
+          ? "You do not have permission to view this course."
+          : errorStatus === 404
+            ? "This course could not be found. It may have been removed or is not published."
+            : "We could not load this course. Please try again."
+
     return (
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Typography variant="h4" fontWeight={800}>
-          Course unavailable
+          {errorTitle}
         </Typography>
         <Typography color="text.secondary" sx={{ mt: 2 }}>
-          This course could not be loaded or is not currently published.
+          {data?.message || fallbackMessage}
         </Typography>
       </Container>
     )
