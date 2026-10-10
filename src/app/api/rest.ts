@@ -313,16 +313,6 @@ export const verifySubscriptionPayment = async (
   return response.json()
 }
 
-export const fetchCurrentSubscription =
-  async (): Promise<SubscriptionSummary | null> => {
-    const response = await fetchWithAuth(`${basePath}subscriptions/me`)
-    if (!response.ok) {
-      throw new Error((await response.text()) || "Unable to load LMS plan")
-    }
-    const body = await response.text()
-    return body ? JSON.parse(body) : null
-  }
-
 export const startCourseCheckout = async (data: {
   courseId: string
   provider: "STRIPE" | "PAYSTACK"

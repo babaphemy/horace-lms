@@ -2,7 +2,6 @@
 import {
   addUserCourse,
   courseGrantAccess,
-  fetchCurrentSubscription,
   getUserProgress,
   userQuizScores,
 } from "@/app/api/rest"
@@ -162,19 +161,6 @@ const BackendCourseDetail = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
   const userId = sessionUser?.id || decodedUid || null
-  const requiresPersonalSubscription = Boolean(sessionUser?.id)
-
-  const {
-    data: subscription,
-    isLoading: subscriptionLoading,
-    isError: subscriptionError,
-  } = useQuery({
-    queryKey: ["current-subscription", userId],
-    queryFn: fetchCurrentSubscription,
-    enabled: requiresPersonalSubscription,
-    refetchOnWindowFocus: true,
-  })
-
   const { data: userScores } = useQuery({
     queryFn: () => userQuizScores(userId as string),
     queryKey: ["userQuizScores", userId],
@@ -268,7 +254,6 @@ const BackendCourseDetail = () => {
         error instanceof Error ? error.message : "Enrollment failed"
       notifyError(message)
       if (message.toLowerCase().includes("active lms plan")) {
-        queryClient.invalidateQueries(["current-subscription", userId])
         router.push("/#pricing")
       }
     },
@@ -292,20 +277,6 @@ const BackendCourseDetail = () => {
       return
     }
 
-    if (requiresPersonalSubscription && subscriptionLoading) {
-      notifyError("Please wait while we check your LMS plan.")
-      return
-    }
-    if (requiresPersonalSubscription && subscriptionError) {
-      notifyError("We could not verify your LMS plan. Please try again.")
-      return
-    }
-    if (requiresPersonalSubscription && !subscription?.active) {
-      notifyError("Choose or renew an LMS plan before enrolling in a course.")
-      router.push("/#pricing")
-      return
-    }
-
     if (price < 1) {
       addCourseToUser.mutate(courseId)
     } else {
@@ -316,19 +287,6 @@ const BackendCourseDetail = () => {
     }
   }
   const gotoClass = async () => {
-    if (requiresPersonalSubscription && subscriptionLoading) {
-      notifyError("Please wait while we check your LMS plan.")
-      return
-    }
-    if (requiresPersonalSubscription && subscriptionError) {
-      notifyError("We could not verify your LMS plan. Please try again.")
-      return
-    }
-    if (requiresPersonalSubscription && !subscription?.active) {
-      notifyError("Renew your LMS plan to continue accessing this course.")
-      router.push("/#pricing")
-      return
-    }
     if (session?.user) {
       router.push(`/course/classroom?courseId=${courseId}`)
       return
@@ -561,32 +519,17 @@ const BackendCourseDetail = () => {
                         variant="contained"
                         className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
                         onClick={gotoClass}
-                        disabled={
-                          requiresPersonalSubscription && subscriptionLoading
-                        }
                       >
-                        {requiresPersonalSubscription && subscriptionLoading
-                          ? "Checking LMS Plan..."
-                          : !requiresPersonalSubscription ||
-                              subscription?.active
-                            ? "Go To Class"
-                            : "Renew LMS Plan"}
+                        Go To Class
                       </Button>
                     ) : (
                       <Button
                         variant="contained"
                         className="bg-[#00A9C1] text-white py-2 px-10 rounded-full hover:bg-[#00A9C1]"
                         onClick={handleJoinClass}
-                        disabled={
-                          requiresPersonalSubscription && subscriptionLoading
-                        }
+                        disabled={addCourseToUser.isLoading}
                       >
-                        {requiresPersonalSubscription && subscriptionLoading
-                          ? "Checking LMS Plan..."
-                          : requiresPersonalSubscription &&
-                              !subscription?.active
-                            ? "Choose LMS Plan"
-                            : "Enroll"}
+                        {addCourseToUser.isLoading ? "Enrolling..." : "Enroll"}
                       </Button>
                     )}
 
