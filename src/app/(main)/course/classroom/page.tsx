@@ -94,9 +94,16 @@ const ClassroomPage = () => {
 
   // Calculate overall course progress
   const courseProgress = useMemo(() => {
-    if (!courseProgressData) return 0
-    return Math.round(courseProgressData.overallProgressPercentage || 0)
-  }, [courseProgressData])
+    const percentage = courseProgressData?.overallProgressPercentage
+    if (
+      progressError ||
+      typeof percentage !== "number" ||
+      !Number.isFinite(percentage)
+    ) {
+      return null
+    }
+    return Math.round(percentage)
+  }, [courseProgressData, progressError])
 
   const progressDataForCard = useMemo((): LessonProgressData[] => {
     if (!courseProgressData?.topics) return []
@@ -180,7 +187,9 @@ const ClassroomPage = () => {
                   }}
                 >
                   <Typography variant="body2" fontWeight="medium">
-                    {courseProgress}% Complete
+                    {courseProgress === null
+                      ? "Progress unavailable"
+                      : `${courseProgress}% Complete`}
                   </Typography>
                   {isUpdating && (
                     <Typography variant="caption" color="text.secondary">
@@ -188,24 +197,26 @@ const ClassroomPage = () => {
                     </Typography>
                   )}
                 </Box>
-                <LinearProgress
-                  variant="determinate"
-                  value={courseProgress}
-                  sx={{
-                    height: 6,
-                    borderRadius: 1,
-                    backgroundColor: "grey.200",
-                    "& .MuiLinearProgress-bar": {
-                      backgroundColor:
-                        courseProgress === 100
-                          ? "success.main"
-                          : "primary.main",
+                {courseProgress !== null && (
+                  <LinearProgress
+                    variant="determinate"
+                    value={courseProgress}
+                    sx={{
+                      height: 6,
                       borderRadius: 1,
-                      transition: "background-color 0.3s ease",
-                    },
-                  }}
-                />
-                {courseProgressData && (
+                      backgroundColor: "grey.200",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor:
+                          courseProgress === 100
+                            ? "success.main"
+                            : "primary.main",
+                        borderRadius: 1,
+                        transition: "background-color 0.3s ease",
+                      },
+                    }}
+                  />
+                )}
+                {courseProgress !== null && courseProgressData && (
                   <Typography
                     variant="caption"
                     color="text.secondary"
