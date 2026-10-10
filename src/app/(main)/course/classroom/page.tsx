@@ -54,16 +54,13 @@ const ClassroomPage = () => {
     enabled: !!session?.user?.id,
   })
 
-  const {
-    data: courseProgressData,
-    isLoading: isLoadingProgress,
-    error: progressError,
-  } = useQuery<CourseProgressResponse | null>({
-    queryKey: ["courseProgress", id],
-    queryFn: () => getCourseProgress(id as string),
-    enabled: !!id && !!session?.user?.id,
-    refetchOnWindowFocus: false,
-  })
+  const { data: courseProgressData, error: progressError } =
+    useQuery<CourseProgressResponse | null>({
+      queryKey: ["courseProgress", id, session?.user?.id],
+      queryFn: () => getCourseProgress(id as string),
+      enabled: !!id && !!session?.user?.id,
+      refetchOnWindowFocus: false,
+    })
 
   const { markLessonStarted, markLessonComplete, updateProgress, isUpdating } =
     useLessonProgress({
@@ -97,9 +94,16 @@ const ClassroomPage = () => {
 
   // Calculate overall course progress
   const courseProgress = useMemo(() => {
-    if (!courseProgressData) return 0
-    return Math.round(courseProgressData.overallProgressPercentage || 0)
-  }, [courseProgressData])
+    const percentage = courseProgressData?.overallProgressPercentage
+    if (
+      progressError ||
+      typeof percentage !== "number" ||
+      !Number.isFinite(percentage)
+    ) {
+      return null
+    }
+    return Math.round(percentage)
+  }, [courseProgressData, progressError])
 
   const progressDataForCard = useMemo((): LessonProgressData[] => {
     if (!courseProgressData?.topics) return []
@@ -133,7 +137,7 @@ const ClassroomPage = () => {
 
   const lessonMaterials: LessonMaterial[] = []
 
-  if (isLoading || isLoadingProgress) {
+  if (isLoading) {
     return (
       <Box
         display="flex"
@@ -146,7 +150,7 @@ const ClassroomPage = () => {
     )
   }
 
-  if (error || progressError) {
+  if (error) {
     return (
       <Box p={4}>
         <Alert severity="error">
@@ -160,6 +164,12 @@ const ClassroomPage = () => {
 
   return (
     <Box>
+      {Boolean(progressError) && (
+        <Alert severity="warning" sx={{ m: 3 }}>
+          We could not load your saved progress. You can continue taking the
+          course, but progress indicators may be out of date.
+        </Alert>
+      )}
       <MainCard>
         <Grid container>
           <Grid size={{ xs: 12, md: 8 }}>
@@ -177,7 +187,9 @@ const ClassroomPage = () => {
                   }}
                 >
                   <Typography variant="body2" fontWeight="medium">
-                    {courseProgress}% Complete
+                    {courseProgress === null
+                      ? "Progress unavailable"
+                      : `${courseProgress}% Complete`}
                   </Typography>
                   {isUpdating && (
                     <Typography variant="caption" color="text.secondary">
@@ -185,24 +197,26 @@ const ClassroomPage = () => {
                     </Typography>
                   )}
                 </Box>
-                <LinearProgress
-                  variant="determinate"
-                  value={courseProgress}
-                  sx={{
-                    height: 6,
-                    borderRadius: 1,
-                    backgroundColor: "grey.200",
-                    "& .MuiLinearProgress-bar": {
-                      backgroundColor:
-                        courseProgress === 100
-                          ? "success.main"
-                          : "primary.main",
+                {courseProgress !== null && (
+                  <LinearProgress
+                    variant="determinate"
+                    value={courseProgress}
+                    sx={{
+                      height: 6,
                       borderRadius: 1,
-                      transition: "background-color 0.3s ease",
-                    },
-                  }}
-                />
-                {courseProgressData && (
+                      backgroundColor: "grey.200",
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor:
+                          courseProgress === 100
+                            ? "success.main"
+                            : "primary.main",
+                        borderRadius: 1,
+                        transition: "background-color 0.3s ease",
+                      },
+                    }}
+                  />
+                )}
+                {courseProgress !== null && courseProgressData && (
                   <Typography
                     variant="caption"
                     color="text.secondary"
