@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material"
 import FooterLte from "@/components/layout/FooterLte"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useQuery } from "react-query"
 import { fetchLMS, userQuizScores, getCourseProgress } from "@/app/api/rest"
 import ContentCard from "@/components/classroom/ContentCard"
@@ -32,9 +32,17 @@ import LessonResources from "@/components/classroom/LessonResources"
 import { useLessonProgress } from "@/hooks/useLessonProgressB"
 
 const ClassroomPage = () => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const id = searchParams?.get("courseId")
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      const returnTo = `/course/classroom?${searchParams.toString()}`
+      router.replace(`/login?redirect=${encodeURIComponent(returnTo)}`)
+    }
+  }, [status, router, searchParams])
 
   const [tabValue, setTabValue] = useState(0)
   const [currentLesson, setCurrentLesson] = useState<LessonDto | null>(null)
@@ -137,7 +145,7 @@ const ClassroomPage = () => {
 
   const lessonMaterials: LessonMaterial[] = []
 
-  if (isLoading) {
+  if (status !== "authenticated" || isLoading) {
     return (
       <Box
         display="flex"

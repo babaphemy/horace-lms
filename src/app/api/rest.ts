@@ -41,10 +41,11 @@ import {
 } from "@/components/classroom/VideoPlayerWithProgress"
 import { TQuiz } from "@/schema/quizSchema"
 import { getSession } from "next-auth/react"
+import { logoutExpiredSession } from "@/utils/expiredSession"
 
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   const session = await getSession()
-  return fetch(url, {
+  const response = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -54,6 +55,11 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
       ...options.headers,
     },
   })
+  if (response.status === 401 && session?.user) {
+    await logoutExpiredSession()
+    throw new Error("Your session has expired. Please sign in again.")
+  }
+  return response
 }
 const responseError = async (response: Response, fallback: string) => {
   const body = await response.text()
