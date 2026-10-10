@@ -1161,6 +1161,15 @@ export const getCourseProgress = async (
 
   if (!response.ok) {
     const error = await response.text()
+    // The backend can report a first-time learner's missing progress with
+    // a non-404 status. Authentication failures must remain errors.
+    if (
+      response.status !== 401 &&
+      response.status !== 403 &&
+      /\bno progress found for this course\b/i.test(error)
+    ) {
+      return null
+    }
     throw new Error(`Failed to fetch course progress: ${error}`)
   }
 

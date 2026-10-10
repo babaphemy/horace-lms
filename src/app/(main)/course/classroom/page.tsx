@@ -54,16 +54,13 @@ const ClassroomPage = () => {
     enabled: !!session?.user?.id,
   })
 
-  const {
-    data: courseProgressData,
-    isLoading: isLoadingProgress,
-    error: progressError,
-  } = useQuery<CourseProgressResponse | null>({
-    queryKey: ["courseProgress", id],
-    queryFn: () => getCourseProgress(id as string),
-    enabled: !!id && !!session?.user?.id,
-    refetchOnWindowFocus: false,
-  })
+  const { data: courseProgressData, error: progressError } =
+    useQuery<CourseProgressResponse | null>({
+      queryKey: ["courseProgress", id, session?.user?.id],
+      queryFn: () => getCourseProgress(id as string),
+      enabled: !!id && !!session?.user?.id,
+      refetchOnWindowFocus: false,
+    })
 
   const { markLessonStarted, markLessonComplete, updateProgress, isUpdating } =
     useLessonProgress({
@@ -133,7 +130,7 @@ const ClassroomPage = () => {
 
   const lessonMaterials: LessonMaterial[] = []
 
-  if (isLoading || isLoadingProgress) {
+  if (isLoading) {
     return (
       <Box
         display="flex"
@@ -146,7 +143,7 @@ const ClassroomPage = () => {
     )
   }
 
-  if (error || progressError) {
+  if (error) {
     return (
       <Box p={4}>
         <Alert severity="error">
@@ -160,6 +157,12 @@ const ClassroomPage = () => {
 
   return (
     <Box>
+      {Boolean(progressError) && (
+        <Alert severity="warning" sx={{ m: 3 }}>
+          We could not load your saved progress. You can continue taking the
+          course, but progress indicators may be out of date.
+        </Alert>
+      )}
       <MainCard>
         <Grid container>
           <Grid size={{ xs: 12, md: 8 }}>
