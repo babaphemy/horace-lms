@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react"
 import { CookiesProvider } from "react-cookie"
 import { QueryClient, QueryClientProvider } from "react-query"
 import Ga from "../Analytics/Google/Ga"
+import SessionExpiryHandler from "@/components/auth/SessionExpiryHandler"
 
 const queryClient = new QueryClient()
 interface ProvidersProps {
@@ -19,7 +20,8 @@ export default function Providers({ children }: ProvidersProps) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={muiTheme}>
           <Ga />
-          <SessionProvider>
+          <SessionProvider refetchInterval={60}>
+            <SessionExpiryHandler />
             <CookiesProvider defaultSetOptions={{ path: "/" }}>
               <AppProvider>
                 <>
