@@ -379,7 +379,19 @@ const fetchCourse = async (id: string, userid?: string) => {
       : `${basePath}course/public/${id}`
   )
   if (!response.ok) {
-    return { error: response.status }
+    let message: string | undefined
+    try {
+      const body = await response.json()
+      message =
+        typeof body?.message === "string"
+          ? body.message
+          : typeof body?.error === "string"
+            ? body.error
+            : undefined
+    } catch {
+      // Empty or non-JSON responses use the status-specific UI fallback.
+    }
+    return { error: response.status, message }
   }
   return response.json()
 }
