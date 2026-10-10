@@ -2311,7 +2311,7 @@ export default function BeautifulApiDocs() {
                   </h4>
                   <ApiEndpoint
                     method="PUT"
-                    path="https://horacelms.com/info/s3/upload"
+                    path="https://horaceapi.horacelearning.us/info/s3/upload"
                     description="Upload files and photos"
                   >
                     <CodeBlock
@@ -2321,7 +2321,7 @@ export default function BeautifulApiDocs() {
                       copyToClipboard={copyToClipboard}
                     >
                       {`curl -X 'PUT' \\
-  'https://horacelms.com/info/s3/upload' \\
+  'https://horaceapi.horacelearning.us/info/s3/upload' \\
   -H 'accept: application/json' \\
   -H 'Content-Type: multipart/form-data' \\
   -F 'image=@2.1.svg;type=image/svg+xml'`}
@@ -2341,7 +2341,7 @@ export default function BeautifulApiDocs() {
                   </h4>
                   <ApiEndpoint
                     method="POST"
-                    path="https://horacelms.com/info/s3/video"
+                    path="https://horaceapi.horacelearning.us/info/s3/video"
                     description="Upload video files"
                   >
                     <CodeBlock
@@ -2351,7 +2351,7 @@ export default function BeautifulApiDocs() {
                       copyToClipboard={copyToClipboard}
                     >
                       {`curl -X 'POST' \\
-  'https://horacelms.com/info/s3/video' \\
+  'https://horaceapi.horacelearning.us/info/s3/video' \\
   -H 'accept: application/json' \\
   -H 'Content-Type: multipart/form-data' \\
   -F 'video=@horace-enc.mp4;type=video/mp4'`}
@@ -2384,7 +2384,7 @@ export default function BeautifulApiDocs() {
 
               <ApiEndpoint
                 method="POST"
-                path="/api/v1/course/module/lesson"
+                path="https://horaceapi.horacelearning.us/api/v1/course/module/lesson"
                 description="Add a lesson to a module"
               >
                 <h4>Lesson Types</h4>

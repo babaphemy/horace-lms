@@ -34,16 +34,7 @@ const PopularCard = ({ data }: courseProp) => {
     authorRole,
     thumbnail,
     students,
-    totalSteps,
   } = data
-  const countStudent = () => {
-    const likes = data.posts.reduce((acc: number, post: tPost) => {
-      acc += post.like
-      return acc
-    }, 0)
-    const st = students ?? 33
-    return likes + totalSteps + st
-  }
 
   const handleCardClick = () => {
     router.push(`/course/${id}`)
@@ -123,7 +114,7 @@ const PopularCard = ({ data }: courseProp) => {
             <Box sx={cardStyles.numbers}>
               <FavoriteIcon color="primary" />
               <Typography variant="body2" sx={cardStyles.between}>
-                {`${countStudent()}+ students`}
+                {`${students ?? 0} students`}
               </Typography>
             </Box>
           </Box>

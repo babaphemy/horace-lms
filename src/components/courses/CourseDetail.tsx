@@ -34,7 +34,7 @@ import { useContext, useMemo, useState } from "react"
 import { notifyError, notifySuccess } from "@/utils/notification"
 import { useSession } from "next-auth/react"
 import StarRoundedIcon from "@mui/icons-material/StarRounded"
-import { useMutation, useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import { addUserCourse, fetchCourse, myRegisteredCourses } from "@/app/api/rest"
 import ModalLogin from "../auth/ModalLogin"
 import SignUpLogin from "../auth/ModalSignUp"
@@ -57,7 +57,7 @@ export const getIcon = (type: string, url?: string) => {
 const CourseDetail = ({ cid }: { cid: string }) => {
   const { data: session } = useSession()
   const user = session?.user
-
+  const queryClient = useQueryClient()
   const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null)
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null)
   const dispatch = useContext(AppDpx)
@@ -75,6 +75,9 @@ const CourseDetail = ({ cid }: { cid: string }) => {
   })
   const addCourseToUser = useMutation(addUserCourse, {
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [["courseDetail", "enrolled-courses"]],
+      })
       notifySuccess("You are now enrolled!")
     },
     onError: (error) => {

@@ -17,10 +17,14 @@ import {
   CorporateAuthRequest,
   TUserScore,
   TAddQuizScore,
-  TQuizScores,
   CourseDTOResponse,
   CourseProgressResponse,
   LessonProgressRequest,
+  SupportPlanResponse,
+  SubscriptionCheckoutResponse,
+  SubscriptionSummary,
+  CourseCheckoutResponse,
+  CourseEnrollmentResponse,
 } from "@/types/types"
 import { loadStripe } from "@stripe/stripe-js"
 import {
@@ -50,6 +54,16 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
       ...options.headers,
     },
   })
+}
+const responseError = async (response: Response, fallback: string) => {
+  const body = await response.text()
+  if (!body) return fallback
+  try {
+    const parsed = JSON.parse(body)
+    return parsed.error || fallback
+  } catch {
+    return body
+  }
 }
 const getUsers = async (signal: AbortSignal) => {
   const resp = await fetch(`${basePath}user/users`, { signal })
@@ -238,7 +252,19 @@ export const fetchOrgCourses = async (
     `${basePath}course/org-courses?page=${page}&size=${size}&orgId=${orgid}`
   )
   if (!response.ok) {
-    return { error: response.status }
+    let message: string | undefined
+    try {
+      const body = await response.json()
+      message =
+        typeof body.message === "string"
+          ? body.message
+          : typeof body.error === "string"
+            ? body.error
+            : undefined
+    } catch {
+      // Empty or non-JSON responses use the status-specific UI fallback.
+    }
+    return { error: response.status, message }
   }
   return response.json()
 }
@@ -249,6 +275,83 @@ export const featuredCourses = async () => {
     return { error: resp.status }
   }
   return resp.json()
+}
+
+export const fetchSupportPlans = async (): Promise<SupportPlanResponse[]> => {
+  const response = await fetchWithAuth(`${basePath}support-plans`)
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
+export const startSubscriptionCheckout = async (data: {
+  planId: string
+  currency: "USD" | "NGN"
+  provider: "STRIPE" | "PAYSTACK"
+}): Promise<SubscriptionCheckoutResponse> => {
+  const response = await fetchWithAuth(`${basePath}subscriptions/checkout`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    throw new Error((await response.text()) || "Unable to start checkout")
+  }
+  return response.json()
+}
+
+export const verifySubscriptionPayment = async (
+  reference: string
+): Promise<SubscriptionSummary> => {
+  const response = await fetchWithAuth(
+    `${basePath}subscriptions/payments/${encodeURIComponent(reference)}/verify`,
+    { method: "POST" }
+  )
+  if (!response.ok) {
+    throw new Error((await response.text()) || "Unable to verify payment")
+  }
+  return response.json()
+}
+
+export const fetchCurrentSubscription =
+  async (): Promise<SubscriptionSummary | null> => {
+    const response = await fetchWithAuth(`${basePath}subscriptions/me`)
+    if (!response.ok) {
+      throw new Error((await response.text()) || "Unable to load LMS plan")
+    }
+    const body = await response.text()
+    return body ? JSON.parse(body) : null
+  }
+
+export const startCourseCheckout = async (data: {
+  courseId: string
+  provider: "STRIPE" | "PAYSTACK"
+}): Promise<CourseCheckoutResponse> => {
+  const response = await fetchWithAuth(`${basePath}course-payments/checkout`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+  if (!response.ok) {
+    throw new Error(
+      await responseError(response, "Unable to start course payment")
+    )
+  }
+  return response.json()
+}
+
+export const verifyCoursePayment = async (
+  reference: string
+): Promise<CourseEnrollmentResponse> => {
+  const response = await fetchWithAuth(
+    `${basePath}course-payments/${encodeURIComponent(reference)}/verify`,
+    { method: "POST" }
+  )
+  if (!response.ok) {
+    throw new Error(
+      await responseError(response, "Unable to verify course payment")
+    )
+  }
+  return response.json()
 }
 
 const fetchCourses = async (
@@ -273,19 +376,44 @@ const fetchCourse = async (id: string, userid?: string) => {
   const response = await fetchWithAuth(
     userid
       ? `${basePath}course/summary/${id}?userId=${userid}`
-      : `${basePath}course/${id}`
+      : `${basePath}course/public/${id}`
   )
   if (!response.ok) {
-    return { error: response.status }
+    let message: string | undefined
+    try {
+      const body = await response.json()
+      message =
+        typeof body?.message === "string"
+          ? body.message
+          : typeof body?.error === "string"
+            ? body.error
+            : undefined
+    } catch {
+      // Empty or non-JSON responses use the status-specific UI fallback.
+    }
+    return { error: response.status, message }
   }
   return response.json()
 }
 const fetchLMS = async (id: string) => {
   const response = await fetchWithAuth(`${basePath}course/lms/${id}`)
   if (!response.ok) {
-    return { error: response.status }
+    const body = await response.text()
+    let message = body || "Unable to load course content"
+    try {
+      const parsed = JSON.parse(body)
+      message = parsed.error || message
+    } catch {
+      // The backend can also return a plain-text error response.
+    }
+    throw new Error(message)
   }
-  return response.json()
+  const course = await response.json()
+  return {
+    ...course,
+    courseId: course.courseId ?? course.id,
+    curriculum: course.curriculum ?? { topic: course.topics ?? [] },
+  }
 }
 const myRegisteredCourses = async (userId: string) => {
   const response = await fetchWithAuth(
@@ -440,7 +568,15 @@ const addUserCourse = async (cid: string) => {
     await PostSettings({ id: cid })
   )
   if (!response.ok) {
-    return { error: response.status }
+    const body = await response.text()
+    let message = body || "Enrollment failed"
+    try {
+      const parsed = JSON.parse(body)
+      message = parsed.error || message
+    } catch {
+      // The backend can also return a plain-text error response.
+    }
+    throw new Error(message)
   }
   return response.json()
 }
@@ -495,6 +631,25 @@ const userQuizScores = async (userId: string): Promise<TUserScore[]> => {
   }
   return response.json()
 }
+const usersQuizScores = async (userIds: string[]): Promise<TUserScore[]> => {
+  const response = await fetchWithAuth(
+    `${basePath}course/quiz/scores/by-user-ids?userIds=${userIds.join(",")}`
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
+
+const getUserQuizScores = async (userId: string): Promise<TUserScore[]> => {
+  const response = await fetchWithAuth(
+    `${basePath}course/quiz/scores?userId=${userId}`
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 
 const registeredStudents = async (cid: string): Promise<tUser[]> => {
   const response = await fetchWithAuth(`${basePath}course/students/${cid}`)
@@ -503,6 +658,7 @@ const registeredStudents = async (cid: string): Promise<tUser[]> => {
   }
   return response.json()
 }
+
 const contactUs = async (data: {
   firstname: string
   lastname: string
@@ -976,6 +1132,15 @@ const getUserProgress = async (userId: string) => {
   }
   return response.json()
 }
+const courseReport = async (cid: string) => {
+  const response = await fetchWithAuth(
+    `${basePath}progress/course/report/${cid}`
+  )
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+  return response.json()
+}
 const courseGrantAccess = async (dto: CorporateAuthRequest) => {
   const response = await fetchWithAuth(
     `${basePath}course/org/authenticate-user`,
@@ -991,16 +1156,6 @@ const courseGrantAccess = async (dto: CorporateAuthRequest) => {
 }
 const courseAccessToken = async () => {
   const response = await fetch(`${basePath}course/user/token-info`, cookieAuth)
-  if (!response.ok) {
-    throw new Error(response.statusText)
-  }
-  return response.json()
-}
-
-const getUserQuizScores = async (userId: string): Promise<TQuizScores[]> => {
-  const response = await fetchWithAuth(
-    `${basePath}course/quiz/scores?userId=${userId}`
-  )
   if (!response.ok) {
     throw new Error(response.statusText)
   }
@@ -1105,9 +1260,9 @@ export const getCourseProgressForStudent = async (
 }
 
 export {
-  getUserQuizScores,
   courseGrantAccess,
   courseAccessToken,
+  courseReport,
   saveMyProgress,
   saveLessonProgress,
   getLessonProgress,
@@ -1176,6 +1331,8 @@ export {
   lessonQuiz,
   allCourseQuiz,
   userQuizScores,
+  usersQuizScores,
+  getUserQuizScores,
   addScore,
   getUserInfo,
 }

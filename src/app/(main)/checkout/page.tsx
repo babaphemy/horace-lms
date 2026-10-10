@@ -1,18 +1,24 @@
 "use client"
 import { useSearchParams } from "next/navigation"
-import React, { Suspense, useContext, useState } from "react"
+import React, { Suspense } from "react"
 
-import { plans } from "@/components/lms/pricing/Pricing"
-import { Appcontext } from "@/context/AppContext"
-import { TCountryCode, TransactionItem, Tranx } from "@/types/types"
-import useSWR from "swr"
-import { fetcher } from "../../api/rest"
-import { basePath } from "../../api/setting"
+import { TCountryCode } from "@/types/types"
+import { fetchSupportPlans } from "../../api/rest"
 
-import ExistingTranx from "@/components/checkout/ExistingTranx"
-import RenderAuth from "@/components/checkout/RenderAuth"
 import RenderPayment from "@/components/checkout/RenderPayment"
-import { Box, Container, Grid, Paper } from "@mui/material"
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  Paper,
+  Button,
+} from "@mui/material"
+import { useQuery } from "react-query"
+import { mapSupportPlan } from "@/utils/supportPlan"
+import { useSession } from "next-auth/react"
+import Link from "next/link"
 
 const CheckoutPage = () => (
   <Suspense fallback={<div>Loading...</div>}>
@@ -20,32 +26,39 @@ const CheckoutPage = () => (
   </Suspense>
 )
 const CheckoutContent: React.FC = () => {
-  const { userId, tranx } = useContext(Appcontext)
-  const [selectedTransactions, setSelectedTransactions] = useState<string[]>([])
-
   const searchParams = useSearchParams()
   const plan = searchParams.get("plan")
   const locale = searchParams.get("locale") as TCountryCode
-  const user_id = searchParams.get("user_id")
-  const { data } = useSWR(
-    userId || user_id ? [`${basePath}pay/istranx/${userId || user_id}`] : null,
-    fetcher
-  )
+  const { data: session, status } = useSession()
+  const {
+    data: supportPlans,
+    isLoading: plansLoading,
+    isError: plansError,
+  } = useQuery({
+    queryKey: ["support-plans"],
+    queryFn: fetchSupportPlans,
+    staleTime: 5 * 60 * 1000,
+  })
+  if (plansLoading || status === "loading") return <CircularProgress />
+  if (plansError) return <Alert severity="error">Unable to load plans.</Alert>
 
-  const planDetail = plans.find((p) => p.slug === plan)
-  if (!planDetail || !locale) return null
+  const planDetail = supportPlans
+    ?.map(mapSupportPlan)
+    .find((p) => p.slug === plan)
+  if (!planDetail || !locale) {
+    return (
+      <Alert severity="warning">
+        The selected support plan is unavailable.
+      </Alert>
+    )
+  }
 
   const amt = locale === "NG" ? planDetail.price.NG : planDetail.price.US
 
   const convertedAmt = parseFloat(amt.replace(/[^\d.]/g, ""))
-
-  const selectedTotal = data?.length
-    ? data
-        .filter((tranx: TransactionItem) =>
-          selectedTransactions.includes(tranx.id)
-        )
-        .reduce((sum: number, item: Tranx) => sum + (item?.amount ?? 0), 0)
-    : convertedAmt * 100
+  const checkoutAmount = Number.isFinite(convertedAmt)
+    ? convertedAmt * 100
+    : Number.NaN
 
   return (
     <>
@@ -58,17 +71,6 @@ const CheckoutContent: React.FC = () => {
       >
         <Container maxWidth="lg">
           <Grid container spacing={3}>
-            {data?.length > 0 && (
-              <ExistingTranx
-                data={data}
-                selectedTotal={selectedTotal}
-                selectedTransactions={selectedTransactions}
-                setSelectedTransactions={setSelectedTransactions}
-                locale={locale}
-                planDetail={planDetail}
-              />
-            )}
-
             <Grid size={{ xs: 12, md: 6 }}>
               <Paper
                 elevation={2}
@@ -78,14 +80,32 @@ const CheckoutContent: React.FC = () => {
                 }}
                 id="pay"
               >
-                {user_id || userId !== null || tranx ? (
+                {session?.user?.id ? (
                   <RenderPayment
                     planDetail={planDetail}
-                    amt={selectedTotal}
+                    amt={checkoutAmount}
                     locale={locale}
                   />
                 ) : (
-                  <RenderAuth planDetail={planDetail} locale={locale} />
+                  <Alert severity="info">
+                    Sign in before purchasing an LMS support plan.
+                    <Button
+                      component={Link}
+                      href={`/login?redirect=${encodeURIComponent(
+                        `/checkout?plan=${planDetail.slug}&locale=${locale}`
+                      )}`}
+                    >
+                      Sign in
+                    </Button>
+                    <Button
+                      component={Link}
+                      href={`/sign-up?redirect=${encodeURIComponent(
+                        `/checkout?plan=${planDetail.slug}&locale=${locale}`
+                      )}`}
+                    >
+                      Create account
+                    </Button>
+                  </Alert>
                 )}
               </Paper>
             </Grid>

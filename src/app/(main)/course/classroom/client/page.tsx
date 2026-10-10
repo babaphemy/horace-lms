@@ -13,7 +13,7 @@ import {
 import LessonHead from "@/components/classroom/LessonHead"
 import LessonResources from "@/components/classroom/LessonResources"
 import { useLessonProgress } from "@/hooks/useLessonProgress"
-import { LessonDto, LessonMaterial, TopicDto } from "@/types/types"
+import { LessonDto, LessonMaterial, QuizItem, TopicDto } from "@/types/types"
 import useQuizSummary from "@/hooks/useQuizSummary"
 import useCourse from "@/hooks/useCourse"
 
@@ -112,7 +112,11 @@ const ClassroomPage = () => {
                 {userToken?.userId && currentLesson && (
                   <LessonContent
                     lesson={currentLesson}
+                    courseId={userToken?.courseId || ""}
                     userId={userToken?.userId}
+                    hasPublishedQuiz={courseQuiz?.some(
+                      (quiz: QuizItem) => quiz.lessonId === currentLesson.id
+                    )}
                   />
                 )}
               </ContentContainer>

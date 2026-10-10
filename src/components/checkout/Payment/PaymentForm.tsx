@@ -2,16 +2,25 @@
 import { Appcontext, AppDpx } from "@/context/AppContext"
 import { Button, Card, CardContent, TextField } from "@mui/material"
 import { useCallback, useContext, useState } from "react"
-import { createPaymentIntent } from "@/app/api/rest"
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js"
 import { notifyError } from "@/utils/notification"
-import { SET_PAYMENT_STATUS, SET_PLAN, SET_TRANX } from "@/context/Action"
+import { SET_PAYMENT_STATUS } from "@/context/Action"
 import { formatAmount } from "@/utils/pay"
 
-const PaymentForm = ({ amount }: { amount: number }) => {
+const PaymentForm = ({
+  amount,
+  reference,
+  returnPath = "/checkout/confirm",
+  currency,
+}: {
+  amount: number
+  reference: string
+  returnPath?: string
+  currency?: string
+}) => {
   const [paymentType, setPaymentType] = useState<string>("")
   const dispatch = useContext(AppDpx)
-  const { plan, locale, user, tranx, paymentStatus } = useContext(Appcontext)
+  const { locale, paymentStatus } = useContext(Appcontext)
 
   const [cardholderName, setCardHolder] = useState<string>("")
 
@@ -35,32 +44,10 @@ const PaymentForm = ({ amount }: { amount: number }) => {
           notifyError(submitError.message ?? "An unknown error occurred")
           return
         }
-        if (!user?.id) {
-          notifyError("User ID is not available")
-          return
-        }
-
-        const { client_secret } = await createPaymentIntent({
-          payee: user.id,
-          description: `${plan?.name}-${plan?.duration}-${plan?.description}`,
-          name: cardholderName,
-          amount: amount,
-          currency: "USD",
-          stripe_payment_method: paymentType,
-          firstname: cardholderName,
-          callback_url: `${window.location.origin}/payment/confirm`,
-          tranx: "PLAN",
-        })
-        dispatch({
-          type: SET_TRANX,
-          payload: { ...tranx, clientSecret: client_secret },
-        })
-
         const { error: confirmError } = await stripe.confirmPayment({
           elements,
-          clientSecret: client_secret,
           confirmParams: {
-            return_url: `${window.location.origin}/checkout/confirm`,
+            return_url: `${window.location.origin}${returnPath}?reference=${encodeURIComponent(reference)}`,
             payment_method_data: {
               billing_details: { name: cardholderName },
             },
@@ -70,26 +57,13 @@ const PaymentForm = ({ amount }: { amount: number }) => {
         if (confirmError) {
           dispatch({ type: SET_PAYMENT_STATUS, payload: "error" })
           notifyError(confirmError.message ?? "An unknown error occurred")
-        } else {
-          dispatch({ type: SET_PAYMENT_STATUS, payload: "succeeded" })
-          dispatch({ type: SET_PLAN, payload: null })
         }
       } catch {
         dispatch({ type: SET_PAYMENT_STATUS, payload: "error" })
         notifyError("An unknown error occurred")
       }
     },
-    [
-      dispatch,
-      elements,
-      cardholderName,
-      plan,
-      amount,
-      stripe,
-      user?.id,
-      tranx,
-      paymentType,
-    ]
+    [dispatch, elements, cardholderName, stripe, reference, returnPath]
   )
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -132,7 +106,13 @@ const PaymentForm = ({ amount }: { amount: number }) => {
         }
         type="submit"
       >
-        Pay {formatAmount(amount, locale)}
+        Pay{" "}
+        {currency
+          ? new Intl.NumberFormat(currency === "NGN" ? "en-NG" : "en-US", {
+              style: "currency",
+              currency,
+            }).format(amount / 100)
+          : formatAmount(amount, locale)}
       </Button>
     </form>
   )

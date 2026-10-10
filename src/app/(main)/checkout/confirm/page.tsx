@@ -1,85 +1,69 @@
 "use client"
-import React, { Suspense } from "react"
+
+import { verifySubscriptionPayment } from "@/app/api/rest"
+import { CheckCircle, X } from "@mui/icons-material"
+import { Alert, Button, CircularProgress } from "@mui/material"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import useSWR from "swr"
-import { basePath } from "@/app/api/setting"
-import { fetcher } from "@/app/api/rest"
-import { Button, CircularProgress, LinearProgress } from "@mui/material"
-import { X } from "@mui/icons-material"
+import React, { Suspense } from "react"
+import { useQuery } from "react-query"
 
-const ConfirmPageContent: React.FC = () => {
+const ConfirmPageContent = () => {
   const searchParams = useSearchParams()
-  const pi = searchParams.get("payment_intent")
-  const { data, isLoading } = useSWR(`${basePath}pay/intent/${pi}`, fetcher)
+  const reference = searchParams.get("reference")
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ["subscription-payment", reference],
+    queryFn: () => verifySubscriptionPayment(reference as string),
+    enabled: Boolean(reference),
+    retry: false,
+  })
+
+  if (!reference)
+    return <Alert severity="error">Payment reference is missing.</Alert>
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
         {isLoading ? (
-          <div className="flex flex-col items-center">
-            <LinearProgress />
-            <p className="mt-2 text-gray-600">Verifying payment...</p>
-          </div>
-        ) : data?.status === "succeeded" ? (
-          <div className="text-center">
-            <div className="mb-4 inline-flex p-3 bg-green-100 rounded-full">
-              <CircularProgress />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Payment Successful!
-            </h1>
-
-            <p className="text-gray-600 mb-6">
-              Reference: HSP-{data?.metadata?.ref}
+          <>
+            <CircularProgress />
+            <p className="mt-4">Verifying payment with the provider...</p>
+          </>
+        ) : isError ? (
+          <>
+            <X className="h-12 w-12 text-red-600 mx-auto" />
+            <h1 className="text-2xl font-bold mt-4">Payment not verified</h1>
+            <p className="text-gray-600 my-4">
+              {error instanceof Error ? error.message : "Please try again."}
             </p>
-            <p className="text-gray-600 mb-6">
-              Description: Horace Subscription. {data?.description}
-            </p>
-            <p className="text-gray-600 mb-6">
-              Amount: {data?.amount / 100} {data?.currency?.toUpperCase()}
-            </p>
-            <Button
-              component="a"
-              href="/dashboard"
-              target="_blank"
-              className="w-full"
-            >
-              Go to Dashboard
+            <Button variant="contained" onClick={() => refetch()}>
+              Check again
             </Button>
-          </div>
+          </>
+        ) : data?.active ? (
+          <>
+            <CheckCircle className="h-12 w-12 text-green-600 mx-auto" />
+            <h1 className="text-2xl font-bold mt-4">LMS access activated</h1>
+            <p className="text-gray-600 my-4">
+              Your {data.plan.name} plan is active until{" "}
+              {new Date(data.expiresAt).toLocaleDateString()}.
+            </p>
+            <Button component={Link} href="/courses" variant="contained">
+              Continue to courses
+            </Button>
+          </>
         ) : (
-          <div className="text-center">
-            <div className="mb-4 inline-flex p-3 bg-red-100 rounded-full">
-              <X className="h-8 w-8 text-red-600" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Payment Failed
-            </h1>
-            <p className="text-gray-600 mb-6">
-              Please try again or contact support
-            </p>
-            <Button
-              component={Link}
-              href="/"
-              variant="outlined"
-              className="w-full"
-            >
-              Return to Home
-            </Button>
-          </div>
+          <Alert severity="warning">Subscription activation is pending.</Alert>
         )}
       </div>
     </div>
   )
 }
 
-const ConfirmPage: React.FC = () => {
-  return (
-    <Suspense fallback={<CircularProgress />}>
-      <ConfirmPageContent />
-    </Suspense>
-  )
-}
+const ConfirmPage = () => (
+  <Suspense fallback={<CircularProgress />}>
+    <ConfirmPageContent />
+  </Suspense>
+)
 
 export default ConfirmPage

@@ -17,8 +17,6 @@ import {
   Assignment,
   MoreVert,
   People,
-  Person,
-  Star,
   VideoLibrary,
   PhotoCamera,
   Edit,
@@ -86,7 +84,7 @@ const DashboardPage = () => {
         router.push(`/dashboard/courses/${selectedCourseId}/quiz`)
         break
       case "analytics":
-        router.push(`/dashboard/courses/${selectedCourseId}/detail`)
+        router.push(`/dashboard/courses/${selectedCourseId}/report`)
         break
       case "thumbnail":
         handleThumbnailUpload()
@@ -322,7 +320,7 @@ const DashboardPage = () => {
                             variant="outlined"
                           />
                         </Box>
-                        <Box
+                        {/* <Box
                           sx={{
                             display: "flex",
                             alignItems: "center",
@@ -356,7 +354,7 @@ const DashboardPage = () => {
                               {course?.assetCount?.rating}
                             </Typography>
                           </Box>
-                        </Box>
+                        </Box> */}
                       </Box>
 
                       <Tooltip title="Course options">
@@ -397,10 +395,10 @@ const DashboardPage = () => {
                   <Analytics sx={{ mr: 1, fontSize: 18 }} />
                   View Analytics
                 </MenuItem>
-                <MenuItem onClick={() => handleMenuClose("students")}>
+                {/* <MenuItem onClick={() => handleMenuClose("students")}>
                   <People sx={{ mr: 1, fontSize: 18 }} />
                   Manage Students
-                </MenuItem>
+                </MenuItem> */}
               </Menu>
             </CardContent>
           </Card>

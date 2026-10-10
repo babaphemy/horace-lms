@@ -66,9 +66,7 @@ const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         try {
-          const res = await fetchWithAuth(
-            `${basePath}user/auser/${user?.email}`
-          )
+          const res = await fetchWithAuth(`${basePath}user/auth/${user?.email}`)
           const userData = await res.json()
 
           if (res?.ok && userData && !userData.detail) {

@@ -26,7 +26,7 @@ import ReactPlayer from "react-player"
 
 interface CurriculumProps {
   data?: CourseResponse
-  quiz: QuizItem[]
+  quiz?: QuizItem[]
 }
 
 const Curriculum = ({ data, quiz }: CurriculumProps) => {
@@ -34,14 +34,14 @@ const Curriculum = ({ data, quiz }: CurriculumProps) => {
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null)
 
   const getQuizForLesson = (lessonId: string) => {
-    return quiz.find((q) => q.lessonId === lessonId)
+    return quiz?.find((q) => q.lessonId === lessonId)
   }
   const getLessonIds = (lessons: LessonDto[]) => {
     return lessons.map((lesson) => lesson.id)
   }
   const getQuizForTopic = (lessons: LessonDto[]) => {
     const lessonIds = getLessonIds(lessons)
-    return quiz?.filter((q) => lessonIds.includes(q.lessonId))
+    return quiz?.filter((q) => lessonIds.includes(q.lessonId)) ?? []
   }
 
   return (

@@ -26,7 +26,7 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline"
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline"
 import VpnKeyIcon from "@mui/icons-material/VpnKey"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { useMutation } from "react-query"
 import * as yup from "yup"
@@ -66,6 +66,8 @@ type Props = {
 const SignUpComponent = (props: Props) => {
   const { modal = false } = props
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirect")
   const dispatch = React.useContext(AppDpx)
   const [checked, setChecked] = React.useState(false)
   const [al, setAlert] = React.useState<{
@@ -91,7 +93,11 @@ const SignUpComponent = (props: Props) => {
       if (modal) {
         dispatch({ type: MODAL_SET, data: { open: false, type: "signup" } })
       } else {
-        router.push("/")
+        router.push(
+          redirectTo
+            ? `/login?redirect=${encodeURIComponent(redirectTo)}`
+            : "/login"
+        )
       }
       reset(defaultValues)
     },
@@ -126,7 +132,11 @@ const SignUpComponent = (props: Props) => {
       dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
       return
     }
-    router.push("/login")
+    router.push(
+      redirectTo
+        ? `/login?redirect=${encodeURIComponent(redirectTo)}`
+        : "/login"
+    )
   }
   const canSubmit = isValid && checked && !isLoading
   return (

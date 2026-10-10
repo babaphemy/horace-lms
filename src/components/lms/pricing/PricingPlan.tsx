@@ -19,7 +19,7 @@ interface PricingPlanProps {
 
 const PricingPlan: React.FC<PricingPlanProps> = ({ plan, locale, action }) => (
   <div className="max-w-sm w-full">
-    <Card className="min-h-[36rem] flex flex-col justify-between shadow-lg rounded-2xl">
+    <Card className="min-h-[36rem] flex flex-col justify-between shadow-sm rounded">
       <CardHeader
         title={plan.name}
         titleTypographyProps={{ variant: "h4", textAlign: "center" }}
