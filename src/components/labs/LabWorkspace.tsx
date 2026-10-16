@@ -15,6 +15,7 @@ import {
   getLabWorkspaceKey,
   LabSubmission,
 } from "@/utils/labs"
+import { getSkillTrack, skillTracks } from "@/data/skillTracks"
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
 import MarkUnreadChatAltRoundedIcon from "@mui/icons-material/MarkUnreadChatAltRounded"
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded"
@@ -60,40 +61,59 @@ const initialState: WorkspaceState = {
   activeStep: 0,
 }
 
-const fallbackDefinition = (title: string): LabDefinition => ({
-  slug: "generic-lab",
-  domain: null,
-  environment: "browser",
-  estimatedMinutes: 45,
-  objective: `Complete and document ${title}.`,
-  prerequisites: [],
-  tools: [],
-  steps: getLabCheckpoints(title).map((checkpoint, index) => ({
-    id: checkpoint.id,
-    title: checkpoint.label,
-    instructions: checkpoint.hint,
-    evidence: index === 1 ? "file-link" : "note",
-  })),
-  deliverables: ["Build log", "Final artifact link"],
-  rubric: [
-    {
-      id: "requirements",
-      label: "Requirements",
-      description: "The artifact addresses the lab scenario.",
-    },
-    {
-      id: "testing",
-      label: "Testing",
-      description: "Test evidence is documented.",
-    },
-    {
-      id: "documentation",
-      label: "Documentation",
-      description: "Decisions and outcomes are clear.",
-    },
-  ],
-  skills: ["Project execution", "Testing", "Documentation"],
-})
+const fallbackDefinition = (
+  title: string,
+  courseId?: string
+): LabDefinition => {
+  const track =
+    getSkillTrack(courseId || "") ||
+    skillTracks.find(
+      (t) =>
+        t.modules.some((m) => m.lab === title || m.title === title) ||
+        t.previewLab.title === title ||
+        t.title === title
+    )
+
+  // Only registered lab definitions can award track-specific competencies.
+  const resolvedSkills = ["Project execution", "Testing", "Documentation"]
+
+  return {
+    slug: "generic-lab",
+    domain: null,
+    environment: "browser",
+    estimatedMinutes: 45,
+    objective: track
+      ? `Complete and document ${title} for ${track.title}.`
+      : `Complete and document ${title}.`,
+    prerequisites: track ? track.prerequisites : [],
+    tools: [],
+    steps: getLabCheckpoints(title).map((checkpoint, index) => ({
+      id: checkpoint.id,
+      title: checkpoint.label,
+      instructions: checkpoint.hint,
+      evidence: index === 1 ? "file-link" : "note",
+    })),
+    deliverables: ["Build log", "Final artifact link"],
+    rubric: [
+      {
+        id: "requirements",
+        label: "Requirements",
+        description: "The artifact addresses the lab scenario.",
+      },
+      {
+        id: "testing",
+        label: "Testing",
+        description: "Test evidence is documented.",
+      },
+      {
+        id: "documentation",
+        label: "Documentation",
+        description: "Decisions and outcomes are clear.",
+      },
+    ],
+    skills: resolvedSkills,
+  }
+}
 
 export default function LabWorkspace({
   courseId,
@@ -103,8 +123,10 @@ export default function LabWorkspace({
   const { data: session, status } = useSession()
   const userId = session?.user?.id || "guest"
   const definition = useMemo(
-    () => getLabDefinition(lessonTitle) || fallbackDefinition(lessonTitle),
-    [lessonTitle]
+    () =>
+      getLabDefinition(lessonTitle) ||
+      fallbackDefinition(lessonTitle, courseId),
+    [lessonTitle, courseId]
   )
   const [workspace, setWorkspace] = useState(initialState)
   const [toolStates, setToolStates] = useState<

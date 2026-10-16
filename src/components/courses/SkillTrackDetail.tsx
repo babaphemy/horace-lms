@@ -4,7 +4,10 @@ import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded"
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded"
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded"
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded"
+import MarkUnreadChatAltRoundedIcon from "@mui/icons-material/MarkUnreadChatAltRounded"
 import {
+  Avatar,
   Box,
   Button,
   Chip,
@@ -122,6 +125,202 @@ const SkillTrackDetail = ({ track }: { track: SkillTrack }) => {
                 </Box>
               ))}
             </Stack>
+            <Box
+              component="section"
+              aria-labelledby="track-mentors"
+              sx={{ mt: 5 }}
+            >
+              <Typography
+                id="track-mentors"
+                component="h2"
+                variant="h5"
+                fontWeight={900}
+                sx={{ mb: 2 }}
+              >
+                Available mentors
+              </Typography>
+              {track.mentors.length === 0 ? (
+                <Typography color="text.secondary">
+                  This track is self-paced. No mentors are currently assigned.
+                </Typography>
+              ) : (
+                <Grid container spacing={2}>
+                  {track.mentors.map((mentor) => {
+                    const params = new URLSearchParams({
+                      trackId: track.id,
+                      mentorId: mentor.id,
+                    })
+                    return (
+                      <Grid key={mentor.id} size={{ xs: 12, sm: 6 }}>
+                        <Box
+                          sx={{
+                            border: "1px solid #dce7eb",
+                            borderRadius: 2,
+                            bgcolor: "white",
+                            p: 2.5,
+                            height: "100%",
+                            overflowWrap: "anywhere",
+                          }}
+                        >
+                          <Stack
+                            direction="row"
+                            spacing={1.5}
+                            alignItems="center"
+                          >
+                            <Avatar
+                              src={mentor.photo}
+                              alt={mentor.name}
+                              sx={{ width: 56, height: 56 }}
+                            />
+                            <Typography
+                              component="h3"
+                              variant="h6"
+                              fontWeight={800}
+                            >
+                              {mentor.name}
+                            </Typography>
+                          </Stack>
+                          <Typography fontWeight={700} sx={{ mt: 2 }}>
+                            {mentor.expertise}
+                          </Typography>
+                          <Typography color="text.secondary" sx={{ mt: 1 }}>
+                            {mentor.bio}
+                          </Typography>
+                          <Stack
+                            direction="row"
+                            flexWrap="wrap"
+                            gap={1}
+                            sx={{ my: 2 }}
+                          >
+                            {mentor.tags.map((tag) => (
+                              <Chip key={tag} label={tag} size="small" />
+                            ))}
+                          </Stack>
+                          <Typography variant="body2">
+                            Response target: {mentor.responseTime}
+                          </Typography>
+                          <Stack spacing={1} sx={{ mt: 2 }}>
+                            <Button
+                              component={Link}
+                              href={`/mentorship/book?${params}`}
+                              variant="contained"
+                              startIcon={<CalendarMonthRoundedIcon />}
+                              disabled={mentor.openSlots.length === 0}
+                            >
+                              View availability
+                            </Button>
+                            <Button
+                              component={Link}
+                              href={`/mentorship/ask?${params}`}
+                              variant="outlined"
+                              startIcon={<MarkUnreadChatAltRoundedIcon />}
+                            >
+                              Ask mentor
+                            </Button>
+                          </Stack>
+                        </Box>
+                      </Grid>
+                    )
+                  })}
+                </Grid>
+              )}
+            </Box>
+            <Box
+              component="section"
+              aria-labelledby="track-outcomes"
+              sx={{ mt: 5 }}
+            >
+              <Typography
+                id="track-outcomes"
+                component="h2"
+                variant="h5"
+                fontWeight={900}
+                sx={{ mb: 2 }}
+              >
+                What you will achieve
+              </Typography>
+              <Grid container spacing={2}>
+                {track.outcomes.map((item) => (
+                  <Grid key={item.label} size={{ xs: 12, sm: 6 }}>
+                    <Box
+                      sx={{
+                        border: "1px solid #dce7eb",
+                        borderRadius: 2,
+                        p: 2.5,
+                        bgcolor: "white",
+                        height: "100%",
+                      }}
+                    >
+                      <Typography variant="h6" fontWeight={800}>
+                        {item.label}
+                      </Typography>
+                      <Typography color="text.secondary" sx={{ mt: 1 }}>
+                        {item.detail}
+                      </Typography>
+                      <Typography
+                        color="primary"
+                        fontWeight={800}
+                        sx={{ mt: 2 }}
+                      >
+                        {item.proof}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+            <Box
+              id="preview-lab"
+              component="section"
+              aria-labelledby="preview-lab-title"
+              sx={{
+                bgcolor: "#062d3a",
+                color: "white",
+                borderRadius: 2,
+                p: { xs: 3, md: 4 },
+                mt: 5,
+              }}
+            >
+              <Typography color="#74e4ef" fontWeight={900}>
+                Free preview lab
+              </Typography>
+              <Typography
+                id="preview-lab-title"
+                variant="h4"
+                fontWeight={900}
+                sx={{ mt: 1 }}
+              >
+                {track.previewLab.title}
+              </Typography>
+              <Typography
+                sx={{ mt: 1.5, color: "rgba(255,255,255,0.82)", maxWidth: 760 }}
+              >
+                {track.previewLab.description}
+              </Typography>
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={2}
+                alignItems={{ xs: "flex-start", sm: "center" }}
+                sx={{ mt: 3 }}
+              >
+                <Typography fontWeight={800}>
+                  Estimated time: {track.previewLab.estimate}
+                </Typography>
+                <Button
+                  component={Link}
+                  href={`/course/lab?courseId=${track.id}&lessonId=preview-lab&title=${encodeURIComponent(
+                    track.previewLab.title
+                  )}`}
+                  variant="contained"
+                  sx={{
+                    bgcolor: "#00c48c",
+                    "&:hover": { bgcolor: "#00a877" },
+                  }}
+                >
+                  Try preview lab now
+                </Button>
+              </Stack>
+            </Box>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <Box
@@ -136,6 +335,28 @@ const SkillTrackDetail = ({ track }: { track: SkillTrack }) => {
                 {track.price}
               </Typography>
               <Typography color="text.secondary">{track.tier}</Typography>
+              <Typography
+                component="h2"
+                variant="subtitle1"
+                fontWeight={800}
+                sx={{ mt: 3 }}
+              >
+                Target role
+              </Typography>
+              <Typography>{track.targetRole}</Typography>
+              <Typography
+                component="h2"
+                variant="subtitle1"
+                fontWeight={800}
+                sx={{ mt: 2 }}
+              >
+                Skills covered
+              </Typography>
+              <Stack direction="row" flexWrap="wrap" gap={1} sx={{ mt: 1 }}>
+                {track.skills.map((skill) => (
+                  <Chip key={skill} label={skill} size="small" />
+                ))}
+              </Stack>
               <Divider sx={{ my: 3 }} />
               <Stack spacing={2}>
                 <Typography>

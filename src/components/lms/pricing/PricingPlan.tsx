@@ -1,5 +1,6 @@
 import { Plan, TCountryCode } from "@/types/types"
 import CheckIcon from "@mui/icons-material/Check"
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded"
 import {
   Button,
   Card,
@@ -67,10 +68,29 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ plan, locale, action }) => (
 export default PricingPlan
 
 function FeatureItem({ children }: { children: React.ReactNode }) {
+  const text = typeof children === "string" ? children : ""
+  const isExcluded =
+    text.startsWith("No ") ||
+    text.startsWith("✕") ||
+    text.includes("(Excluded)") ||
+    text.startsWith("Not included")
+
   return (
-    <Stack direction="row" alignItems="center" spacing={1}>
-      <CheckIcon color="success" fontSize="small" />
-      <Typography variant="body1">{children}</Typography>
+    <Stack direction="row" alignItems="center" spacing={1.2}>
+      {isExcluded ? (
+        <CloseRoundedIcon sx={{ color: "error.light", fontSize: 18 }} />
+      ) : (
+        <CheckIcon color="success" fontSize="small" />
+      )}
+      <Typography
+        variant="body2"
+        sx={{
+          color: isExcluded ? "text.secondary" : "text.primary",
+          textDecoration: isExcluded ? "line-through" : "none",
+        }}
+      >
+        {children}
+      </Typography>
     </Stack>
   )
 }

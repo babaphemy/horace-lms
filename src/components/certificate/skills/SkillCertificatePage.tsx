@@ -1,5 +1,7 @@
 "use client"
 
+import { skillTracks } from "@/data/skillTracks"
+import { getTrackEligibility } from "@/utils/trackEligibility"
 import {
   createSkillCertificateId,
   createVerificationCode,
@@ -9,6 +11,8 @@ import {
   LabSubmission,
   SkillCertificate,
 } from "@/utils/labs"
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
+import HourglassEmptyRoundedIcon from "@mui/icons-material/HourglassEmptyRounded"
 import QrCode2RoundedIcon from "@mui/icons-material/QrCode2Rounded"
 import WorkspacePremiumRoundedIcon from "@mui/icons-material/WorkspacePremiumRounded"
 import {
@@ -18,6 +22,10 @@ import {
   Chip,
   Container,
   Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -31,6 +39,7 @@ interface SkillCertificatePageProps {
 
 const SkillCertificatePage = ({ userId }: SkillCertificatePageProps) => {
   const [learnerName, setLearnerName] = useState("")
+  const [selectedTrackId, setSelectedTrackId] = useState(skillTracks[0].id)
   const [submissions, setSubmissions] = useState<LabSubmission[]>([])
   const [certificates, setCertificates] = useState<SkillCertificate[]>([])
   const [issuedCertificate, setIssuedCertificate] =
@@ -62,17 +71,32 @@ const SkillCertificatePage = ({ userId }: SkillCertificatePageProps) => {
     [submissions]
   )
 
-  const demonstratedSkills = useMemo(
-    () =>
-      Array.from(
-        new Set(passedSubmissions.flatMap((submission) => submission.skills))
-      ),
-    [passedSubmissions]
+  const selectedTrack = useMemo(
+    () => skillTracks.find((t) => t.id === selectedTrackId) || skillTracks[0],
+    [selectedTrackId]
   )
 
-  const canIssue = learnerName.trim() && passedSubmissions.length > 0
+  const {
+    projects: trackProjects,
+    missingProjects,
+    skills: demonstratedSkills,
+    eligible,
+  } = getTrackEligibility(selectedTrack, submissions)
+
+  const trackRequiredSkills = selectedTrack.skills
+  const verifiedTrackSkills = trackRequiredSkills.filter((s) =>
+    demonstratedSkills.has(s)
+  )
+  const missingTrackSkills = trackRequiredSkills.filter(
+    (s) => !demonstratedSkills.has(s)
+  )
+
+  // Certificate eligibility: learner must demonstrate all required track competencies
+  const isEligible = learnerName.trim().length > 0 && eligible
 
   const issueCertificate = () => {
+    if (!isEligible) return
+
     const certificateId = createSkillCertificateId(userId)
     const certificate: SkillCertificate = {
       id: certificateId,
@@ -80,15 +104,15 @@ const SkillCertificatePage = ({ userId }: SkillCertificatePageProps) => {
       verificationCode: createVerificationCode(certificateId),
       learnerName: learnerName.trim(),
       userId,
-      trackTitle: "Verified Hands-On Skill Track",
+      trackTitle: selectedTrack.title,
       issuedAt: new Date().toISOString(),
-      projectIds: passedSubmissions.map((submission) => submission.id),
-      projects: passedSubmissions.map((submission) => ({
+      projectIds: trackProjects.map((submission) => submission.id),
+      projects: trackProjects.map((submission) => ({
         title: submission.lessonTitle,
         artifactUrl: submission.artifactUrl,
       })),
-      skills: demonstratedSkills,
-      competencies: demonstratedSkills.map((skill) => `${skill}: verified`),
+      skills: selectedTrack.skills,
+      competencies: selectedTrack.skills.map((skill) => `${skill}: verified`),
     }
 
     const nextCertificates = [certificate, ...certificates]
@@ -138,8 +162,8 @@ const SkillCertificatePage = ({ userId }: SkillCertificatePageProps) => {
             Issue a certificate backed by passed projects.
           </Typography>
           <Typography sx={{ mt: 2, color: "rgba(255,255,255,0.82)" }}>
-            Certificates are available only after at least one lab project has
-            been reviewed and marked Pass.
+            Certificates require every project in the selected track to be
+            reviewed and marked Pass, with evidence for every required skill.
           </Typography>
         </Container>
       </Box>
@@ -184,37 +208,100 @@ const SkillCertificatePage = ({ userId }: SkillCertificatePageProps) => {
               learner.
             </Typography>
 
-            <Stack spacing={2}>
+            <Stack spacing={2.5}>
+              <FormControl fullWidth>
+                <InputLabel id="select-track-label">
+                  Target Skill Track
+                </InputLabel>
+                <Select
+                  labelId="select-track-label"
+                  label="Target Skill Track"
+                  value={selectedTrackId}
+                  onChange={(e) => setSelectedTrackId(e.target.value)}
+                >
+                  {skillTracks.map((t) => (
+                    <MenuItem key={t.id} value={t.id}>
+                      {t.title} ({t.domain})
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
               <TextField
-                label="Learner name"
+                label="Learner full name"
                 value={learnerName}
                 onChange={(event) => setLearnerName(event.target.value)}
                 fullWidth
+                placeholder="Enter name to appear on certificate"
               />
+
               <Box>
                 <Typography fontWeight={900} sx={{ mb: 1 }}>
-                  Verified Skills
+                  Required Track Competencies ({verifiedTrackSkills.length}/
+                  {trackRequiredSkills.length})
                 </Typography>
-                <Stack direction="row" flexWrap="wrap" gap={1}>
-                  {demonstratedSkills.length > 0 ? (
-                    demonstratedSkills.map((skill) => (
-                      <Chip key={skill} label={skill} />
-                    ))
-                  ) : (
-                    <Chip label="No verified skills yet" variant="outlined" />
-                  )}
+                <Stack spacing={1}>
+                  {trackRequiredSkills.map((skill) => {
+                    const isVerified = demonstratedSkills.has(skill)
+                    return (
+                      <Stack
+                        key={skill}
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{
+                          p: 1.5,
+                          border: "1px solid",
+                          borderColor: isVerified ? "#bbf7d0" : "#fed7aa",
+                          bgcolor: isVerified ? "#f0fdf4" : "#fffbeb",
+                          borderRadius: 1.5,
+                        }}
+                      >
+                        <Typography variant="body2" fontWeight={700}>
+                          {skill}
+                        </Typography>
+                        <Chip
+                          icon={
+                            isVerified ? (
+                              <CheckCircleRoundedIcon fontSize="small" />
+                            ) : (
+                              <HourglassEmptyRoundedIcon fontSize="small" />
+                            )
+                          }
+                          label={isVerified ? "Verified" : "Pending Project"}
+                          size="small"
+                          color={isVerified ? "success" : "warning"}
+                        />
+                      </Stack>
+                    )
+                  })}
                 </Stack>
               </Box>
+
+              {isEligible ? (
+                <Alert severity="success">
+                  All {trackRequiredSkills.length} competencies verified! Ready
+                  to issue your {selectedTrack.title} certificate.
+                </Alert>
+              ) : (
+                <Alert severity="info">
+                  {missingProjects.length > 0
+                    ? `Required projects still awaiting a Pass: ${missingProjects.map((module) => module.lab).join(", ")}.`
+                    : missingTrackSkills.length === 0 && !learnerName.trim()
+                      ? "Please enter learner name to issue certificate."
+                      : `${missingTrackSkills.length} required competency remaining: ${missingTrackSkills.join(", ")}. Pass all required projects to unlock certificate.`}
+                </Alert>
+              )}
             </Stack>
 
             <Button
               variant="contained"
               size="large"
               sx={{ mt: 3 }}
-              disabled={!canIssue}
+              disabled={!isEligible}
               onClick={issueCertificate}
             >
-              Issue Certificate
+              Issue Track Certificate
             </Button>
           </Box>
 
