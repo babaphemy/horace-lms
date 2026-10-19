@@ -16,6 +16,7 @@ import {
   LabSubmission,
 } from "@/utils/labs"
 import { getSkillTrack, skillTracks } from "@/data/skillTracks"
+import { getCheckpointStatus, isArtifactUrl } from "@/utils/labEvidence"
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
 import MarkUnreadChatAltRoundedIcon from "@mui/icons-material/MarkUnreadChatAltRounded"
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded"
@@ -49,12 +50,14 @@ interface Props {
   lessonTitle: string
 }
 interface WorkspaceState {
+  evidence: Record<string, string>
   notes: string
   artifactUrl: string
   lastSavedAt: string | null
   activeStep: number
 }
 const initialState: WorkspaceState = {
+  evidence: {},
   notes: "",
   artifactUrl: "",
   lastSavedAt: null,
@@ -137,11 +140,15 @@ export default function LabWorkspace({
     definition.tools[0] || null
   )
   const [mobilePane, setMobilePane] = useState(0)
-  const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const workspaceKey = getLabWorkspaceKey(courseId, lessonId)
 
   useEffect(() => {
+    setWorkspace(initialState)
+    setResults({})
+    setSubmitted(false)
+    setActiveTool(definition.tools[0] || null)
     const saved = localStorage.getItem(workspaceKey)
     if (saved) {
       try {
@@ -164,11 +171,11 @@ export default function LabWorkspace({
       }
     })
     setToolStates(states)
-    setLoaded(true)
+    setLoaded(workspaceKey)
   }, [courseId, lessonId, workspaceKey, definition.tools])
 
   useEffect(() => {
-    if (!loaded) return
+    if (loaded !== workspaceKey) return
     const timer = window.setTimeout(
       () =>
         localStorage.setItem(
@@ -188,25 +195,28 @@ export default function LabWorkspace({
     next: Record<string, unknown>
   ) => {
     setToolStates((current) => ({ ...current, [tool]: next }))
+    setResults((current) => {
+      const remaining = { ...current }
+      delete remaining[tool]
+      return remaining
+    })
     localStorage.setItem(
       getLabPlaygroundKey(courseId, lessonId, tool),
       JSON.stringify(next)
     )
   }
-  const stepCompletion = definition.steps.map(
-    (step) =>
-      !!(
-        step.autoCheck &&
-        results[step.autoCheck.tool]?.rule === step.autoCheck.rule &&
-        results[step.autoCheck.tool]?.passed
-      ) ||
-      (step.evidence === "file-link" && !!workspace.artifactUrl)
+  const checkpointStatuses = definition.steps.map((step) =>
+    getCheckpointStatus(step, workspace.evidence?.[step.id] || "", results)
   )
+  const stepCompletion = checkpointStatuses.map((value) => value !== "pending")
+  const activeStep = definition.steps[workspace.activeStep]
   const completedSteps = stepCompletion.filter(Boolean).length
-  const progress = Math.round((completedSteps / definition.steps.length) * 100)
+  const progress = definition.steps.length
+    ? Math.round((completedSteps / definition.steps.length) * 100)
+    : 0
   const canSubmit =
     workspace.notes.trim().length >= 20 &&
-    workspace.artifactUrl.trim().length > 0 &&
+    isArtifactUrl(workspace.artifactUrl.trim()) &&
     status === "authenticated" &&
     !!session?.user?.id
 
@@ -222,7 +232,13 @@ export default function LabWorkspace({
       lessonId,
       lessonTitle,
       artifactUrl: workspace.artifactUrl.trim(),
-      notes: workspace.notes.trim(),
+      notes: [
+        workspace.notes.trim(),
+        ...definition.steps.map(
+          (step, index) =>
+            `${step.title} [${checkpointStatuses[index]}]\n${workspace.evidence?.[step.id] || ""}`
+        ),
+      ].join("\n\n"),
       status: "Submitted",
       public: false,
       submittedAt: now.toISOString(),
@@ -371,6 +387,36 @@ export default function LabWorkspace({
                 {definition.steps[workspace.activeStep]?.instructions || ""}
               </ReactMarkdown>
             </Box>
+            {activeStep && !activeStep.autoCheck && (
+              <TextField
+                fullWidth
+                sx={{ mt: 2 }}
+                multiline={activeStep.evidence !== "file-link"}
+                minRows={activeStep.evidence !== "file-link" ? 4 : undefined}
+                label={
+                  activeStep.evidence === "file-link"
+                    ? "Checkpoint artifact URL"
+                    : "Checkpoint evidence"
+                }
+                value={workspace.evidence?.[activeStep.id] || ""}
+                helperText={
+                  checkpointStatuses[workspace.activeStep] === "recorded"
+                    ? "Evidence recorded; awaiting mentor review."
+                    : activeStep.evidence === "file-link"
+                      ? "A valid HTTP or HTTPS URL is required."
+                      : "At least 20 characters required."
+                }
+                onChange={(event) =>
+                  setWorkspace((current) => ({
+                    ...current,
+                    evidence: {
+                      ...current.evidence,
+                      [activeStep.id]: event.target.value,
+                    },
+                  }))
+                }
+              />
+            )}
           </Box>
           <Box sx={paneSx(1)}>
             <Typography variant="h6" fontWeight={900}>
@@ -424,7 +470,7 @@ export default function LabWorkspace({
               sx={{ height: 8, borderRadius: 4, my: 1 }}
             />
             <Typography fontWeight={800}>
-              {completedSteps}/{definition.steps.length} complete
+              {completedSteps}/{definition.steps.length} checkpoints recorded
             </Typography>
             <Divider sx={{ my: 2 }} />
             <Typography fontWeight={900}>Deliverables</Typography>
@@ -492,6 +538,10 @@ export default function LabWorkspace({
             fullWidth
             sx={{ mt: 2 }}
             label="Artifact link"
+            error={
+              !!workspace.artifactUrl &&
+              !isArtifactUrl(workspace.artifactUrl.trim())
+            }
             value={workspace.artifactUrl}
             onChange={(event) =>
               setWorkspace((current) => ({

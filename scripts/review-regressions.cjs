@@ -125,6 +125,55 @@ assert.equal(
   ),
   false
 )
+const { getCheckpointStatus, isArtifactUrl } = load(
+  path.join(root, "utils/labEvidence.ts")
+)
+assert.equal(isArtifactUrl("javascript:alert(1)"), false)
+assert.equal(isArtifactUrl("not a link"), false)
+assert.equal(isArtifactUrl("https://example.com/project"), true)
+const note = { id: "note", evidence: "note" }
+assert.equal(getCheckpointStatus(note, "   ", {}), "pending")
+assert.equal(
+  getCheckpointStatus(note, "Measured the sensor response at 12 ms.", {}),
+  "recorded"
+)
+assert.equal(
+  getCheckpointStatus({ evidence: "file-link" }, "invalid", {}),
+  "pending"
+)
+assert.equal(
+  getCheckpointStatus({ evidence: "file-link" }, "https://example.com", {}),
+  "recorded"
+)
+const automatic = {
+  evidence: "tool-result",
+  autoCheck: { tool: "hash", rule: "match" },
+}
+assert.equal(
+  getCheckpointStatus(
+    automatic,
+    "Manual evidence cannot bypass an automatic check.",
+    {}
+  ),
+  "pending"
+)
+assert.equal(
+  getCheckpointStatus(automatic, "", { hash: { rule: "other", passed: true } }),
+  "pending"
+)
+assert.equal(
+  getCheckpointStatus(automatic, "", {
+    hash: { rule: "match", passed: false },
+  }),
+  "pending"
+)
+assert.equal(
+  getCheckpointStatus(automatic, "", { hash: { rule: "match", passed: true } }),
+  "passed"
+)
+console.log(
+  "Passed: checkpoint evidence, artifact URLs and automatic-check isolation."
+)
 console.log(
   "Passed: four-track lab coverage, certificate eligibility, WAT dates and booking cutoff regressions."
 )
