@@ -165,7 +165,7 @@ const BackendCourseDetail = () => {
   const requiresPersonalSubscription = Boolean(sessionUser?.id)
   const {
     data: subscription,
-    isLoading: subscriptionLoading,
+    isFetching: subscriptionLoading,
     isError: subscriptionError,
     refetch: refetchSubscription,
   } = useQuery({
@@ -286,18 +286,18 @@ const BackendCourseDetail = () => {
     }
   }
 
-  const canAccessWithPlan = (enrolling: boolean) => {
+  const canAccessWithPlan = async (enrolling: boolean) => {
     if (!requiresPersonalSubscription) return true
     if (subscriptionLoading) {
       notifyError("Please wait while we check your LMS plan.")
       return false
     }
-    if (subscriptionError) {
+    const result = await refetchSubscription()
+    if (result.isError) {
       notifyError("We could not verify your LMS plan. Please try again.")
-      void refetchSubscription()
       return false
     }
-    if (!subscription?.active) {
+    if (!result.data?.active) {
       notifyError(
         enrolling
           ? "Choose or renew an LMS plan before enrolling in a course."
@@ -309,13 +309,13 @@ const BackendCourseDetail = () => {
     return true
   }
 
-  const handleJoinClass = () => {
+  const handleJoinClass = async () => {
     if (!userId) {
       dispatch({ type: MODAL_SET, data: { open: true, type: "login" } })
       return
     }
 
-    if (!canAccessWithPlan(true)) return
+    if (!(await canAccessWithPlan(true))) return
 
     if (price < 1) {
       addCourseToUser.mutate(courseId)
@@ -327,7 +327,7 @@ const BackendCourseDetail = () => {
     }
   }
   const gotoClass = async () => {
-    if (!canAccessWithPlan(false)) return
+    if (!(await canAccessWithPlan(false))) return
     if (session?.user) {
       router.push(`/course/classroom?courseId=${courseId}`)
       return
