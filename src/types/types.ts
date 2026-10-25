@@ -452,7 +452,7 @@ export interface Plan {
   }
   description: string
   duration?: string
-  features?: string[]
+  features?: (string | { label: string; included: boolean })[]
 }
 
 export interface SupportPlanResponse {
@@ -460,7 +460,7 @@ export interface SupportPlanResponse {
   name: string
   slug: string
   description: string
-  features: string[]
+  features: (string | { label: string; included: boolean })[]
   prices: Record<string, number>
   durationValue: number
   durationUnit: "DAYS" | "MONTHS" | "YEARS"

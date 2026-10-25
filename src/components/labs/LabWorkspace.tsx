@@ -15,8 +15,12 @@ import {
   getLabWorkspaceKey,
   LabSubmission,
 } from "@/utils/labs"
-import { getSkillTrack, skillTracks } from "@/data/skillTracks"
-import { getCheckpointStatus, isArtifactUrl } from "@/utils/labEvidence"
+import { getLabTrackId } from "@/utils/trackEligibility"
+import {
+  checkpointsReady,
+  getCheckpointStatus,
+  isArtifactUrl,
+} from "@/utils/labEvidence"
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
 import MarkUnreadChatAltRoundedIcon from "@mui/icons-material/MarkUnreadChatAltRounded"
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded"
@@ -64,19 +68,7 @@ const initialState: WorkspaceState = {
   activeStep: 0,
 }
 
-const fallbackDefinition = (
-  title: string,
-  courseId?: string
-): LabDefinition => {
-  const track =
-    getSkillTrack(courseId || "") ||
-    skillTracks.find(
-      (t) =>
-        t.modules.some((m) => m.lab === title || m.title === title) ||
-        t.previewLab.title === title ||
-        t.title === title
-    )
-
+const fallbackDefinition = (title: string): LabDefinition => {
   // Only registered lab definitions can award track-specific competencies.
   const resolvedSkills = ["Project execution", "Testing", "Documentation"]
 
@@ -85,10 +77,8 @@ const fallbackDefinition = (
     domain: null,
     environment: "browser",
     estimatedMinutes: 45,
-    objective: track
-      ? `Complete and document ${title} for ${track.title}.`
-      : `Complete and document ${title}.`,
-    prerequisites: track ? track.prerequisites : [],
+    objective: `Complete and document ${title}.`,
+    prerequisites: [],
     tools: [],
     steps: getLabCheckpoints(title).map((checkpoint, index) => ({
       id: checkpoint.id,
@@ -126,10 +116,8 @@ export default function LabWorkspace({
   const { data: session, status } = useSession()
   const userId = session?.user?.id || "guest"
   const definition = useMemo(
-    () =>
-      getLabDefinition(lessonTitle) ||
-      fallbackDefinition(lessonTitle, courseId),
-    [lessonTitle, courseId]
+    () => getLabDefinition(lessonTitle) || fallbackDefinition(lessonTitle),
+    [lessonTitle]
   )
   const [workspace, setWorkspace] = useState(initialState)
   const [toolStates, setToolStates] = useState<
@@ -215,6 +203,7 @@ export default function LabWorkspace({
     ? Math.round((completedSteps / definition.steps.length) * 100)
     : 0
   const canSubmit =
+    checkpointsReady(checkpointStatuses) &&
     workspace.notes.trim().length >= 20 &&
     isArtifactUrl(workspace.artifactUrl.trim()) &&
     status === "authenticated" &&
@@ -229,6 +218,7 @@ export default function LabWorkspace({
       id: createSubmissionId(courseId, lessonId),
       userId,
       courseId,
+      trackId: getLabTrackId(lessonTitle),
       lessonId,
       lessonTitle,
       artifactUrl: workspace.artifactUrl.trim(),
@@ -556,6 +546,11 @@ export default function LabWorkspace({
             </Alert>
           )}
           <Stack direction={{ xs: "column", sm: "row" }} gap={1.5} mt={2}>
+            {!checkpointsReady(checkpointStatuses) && (
+              <Alert severity="info">
+                Checkpoint evidence or validation is still pending.
+              </Alert>
+            )}
             <Button variant="contained" disabled={!canSubmit} onClick={submit}>
               Submit lab
             </Button>

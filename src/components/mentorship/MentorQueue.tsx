@@ -2,13 +2,13 @@
 
 import {
   getAllMentorshipQuestionsKey,
-  getMentorshipQuestionsKey,
   MentorshipQuestion,
-  notifyLearner,
+  answerMentorshipQuestion,
 } from "@/utils/mentorship"
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
 import MarkUnreadChatAltRoundedIcon from "@mui/icons-material/MarkUnreadChatAltRounded"
 import {
+  Alert,
   Box,
   Button,
   Chip,
@@ -20,6 +20,7 @@ import {
   Typography,
 } from "@mui/material"
 import { useEffect, useState } from "react"
+import { notifyError } from "@/utils/notification"
 
 const MentorQueue = () => {
   const [questions, setQuestions] = useState<MentorshipQuestion[]>([])
@@ -39,49 +40,14 @@ const MentorQueue = () => {
     setResponses(initialResponses)
   }, [])
 
-  const markAnswered = (questionId: string) => {
-    const responseText = responses[questionId]?.trim()
-    if (!responseText) return
-
-    const target = questions.find((q) => q.id === questionId)
-
-    const nextQuestions: MentorshipQuestion[] = questions.map((question) =>
-      question.id === questionId
-        ? {
-            ...question,
-            status: "Answered",
-            answer: responseText,
-            answeredAt: new Date().toISOString(),
-          }
-        : question
-    )
-    setQuestions(nextQuestions)
-    window.localStorage.setItem(
-      getAllMentorshipQuestionsKey(),
-      JSON.stringify(nextQuestions)
-    )
-
-    if (target?.userId) {
-      const userKey = getMentorshipQuestionsKey(target.userId)
-      const userSaved = window.localStorage.getItem(userKey)
-      const userQuestions = userSaved
-        ? (JSON.parse(userSaved) as MentorshipQuestion[])
-        : []
-      const updatedUserQuestions = userQuestions.map((q) =>
-        q.id === questionId
-          ? {
-              ...q,
-              status: "Answered" as const,
-              answer: responseText,
-              answeredAt: new Date().toISOString(),
-            }
-          : q
+  const markAnswered = async (questionId: string) => {
+    try {
+      setQuestions(
+        await answerMentorshipQuestion(questionId, responses[questionId] || "")
       )
-      window.localStorage.setItem(userKey, JSON.stringify(updatedUserQuestions))
-
-      notifyLearner(
-        target.userId,
-        `Your mentor ${target.mentorName} replied to your question on "${target.lessonTitle}".`
+    } catch (error) {
+      notifyError(
+        error instanceof Error ? error.message : "Could not save answer."
       )
     }
   }
@@ -96,6 +62,10 @@ const MentorQueue = () => {
 
   return (
     <Box sx={{ bgcolor: "#f6fafb", minHeight: "100vh" }}>
+      <Alert severity="warning">
+        Demo queue: answers are saved in this browser only and are not delivered
+        to learners on other devices.
+      </Alert>
       <Box sx={{ bgcolor: "#062d3a", color: "white", py: { xs: 6, md: 9 } }}>
         <Container maxWidth="lg">
           <Typography

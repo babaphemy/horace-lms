@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer"
 import { SkillTrack } from "@/data/skillTracks"
+import { getAvailableMentorSlots } from "@/utils/mentorship"
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded"
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded"
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
@@ -205,7 +206,9 @@ const SkillTrackDetail = ({ track }: { track: SkillTrack }) => {
                               href={`/mentorship/book?${params}`}
                               variant="contained"
                               startIcon={<CalendarMonthRoundedIcon />}
-                              disabled={mentor.openSlots.length === 0}
+                              disabled={
+                                getAvailableMentorSlots(mentor).length === 0
+                              }
                             >
                               View availability
                             </Button>

@@ -1,4 +1,5 @@
 import { Plan, TCountryCode } from "@/types/types"
+import { normalizePlanFeature } from "@/utils/supportPlan"
 import CheckIcon from "@mui/icons-material/Check"
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded"
 import {
@@ -46,7 +47,7 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ plan, locale, action }) => (
         <Divider sx={{ my: 3, width: "100%" }} />
         <Stack spacing={2} width="100%">
           {plan.features?.map((feature, index) => (
-            <FeatureItem key={index}>{feature}</FeatureItem>
+            <FeatureItem key={index} feature={normalizePlanFeature(feature)} />
           ))}
         </Stack>
       </CardContent>
@@ -67,13 +68,12 @@ const PricingPlan: React.FC<PricingPlanProps> = ({ plan, locale, action }) => (
 
 export default PricingPlan
 
-function FeatureItem({ children }: { children: React.ReactNode }) {
-  const text = typeof children === "string" ? children : ""
-  const isExcluded =
-    text.startsWith("No ") ||
-    text.startsWith("✕") ||
-    text.includes("(Excluded)") ||
-    text.startsWith("Not included")
+function FeatureItem({
+  feature,
+}: {
+  feature: { label: string; included: boolean }
+}) {
+  const isExcluded = !feature.included
 
   return (
     <Stack direction="row" alignItems="center" spacing={1.2}>
@@ -89,7 +89,7 @@ function FeatureItem({ children }: { children: React.ReactNode }) {
           textDecoration: isExcluded ? "line-through" : "none",
         }}
       >
-        {children}
+        {feature.label}
       </Typography>
     </Stack>
   )

@@ -71,7 +71,7 @@ for (const track of skillTracks) {
   assert.equal(
     getTrackEligibility(
       track,
-      submissions.map((s) => ({ ...s, courseId: "another-track" }))
+      submissions.map((s) => ({ ...s, trackId: "another-track" }))
     ).eligible,
     false
   )
@@ -86,6 +86,31 @@ for (const track of skillTracks) {
     getTrackEligibility(
       track,
       submissions.map((s) => ({ ...s, status: "Submitted" }))
+    ).eligible,
+    false
+  )
+  assert.equal(
+    getTrackEligibility(
+      track,
+      submissions.map((s) => ({ ...s, courseId: "backend-course-uuid" }))
+    ).eligible,
+    true
+  )
+  assert.equal(
+    getTrackEligibility(
+      track,
+      submissions.map((s) => ({
+        ...s,
+        courseId: "backend-course-uuid",
+        trackId: track.id,
+      }))
+    ).eligible,
+    true
+  )
+  assert.equal(
+    getTrackEligibility(
+      track,
+      submissions.map((s) => ({ ...s, lessonTitle: "Unrelated lab" }))
     ).eligible,
     false
   )
@@ -125,10 +150,14 @@ assert.equal(
   ),
   false
 )
-const { getCheckpointStatus, isArtifactUrl } = load(
+const { getCheckpointStatus, isArtifactUrl, checkpointsReady } = load(
   path.join(root, "utils/labEvidence.ts")
 )
 assert.equal(isArtifactUrl("javascript:alert(1)"), false)
+assert.equal(checkpointsReady([]), false)
+assert.equal(checkpointsReady(["pending", "pending"]), false)
+assert.equal(checkpointsReady(["recorded", "pending"]), false)
+assert.equal(checkpointsReady(["recorded", "passed"]), true)
 assert.equal(isArtifactUrl("not a link"), false)
 assert.equal(isArtifactUrl("https://example.com/project"), true)
 const note = { id: "note", evidence: "note" }
@@ -177,3 +206,171 @@ console.log(
 console.log(
   "Passed: four-track lab coverage, certificate eligibility, WAT dates and booking cutoff regressions."
 )
+
+const { mapSupportPlan } = load(path.join(root, "utils/supportPlan.ts"))
+const plan = mapSupportPlan({
+  slug: "unmentored-basic",
+  features: [
+    "No ads",
+    "No setup fees",
+    "No credit card required",
+    { label: "Mentorship", included: false },
+  ],
+  prices: {},
+  durationValue: 1,
+  durationUnit: "MONTHS",
+})
+assert.equal(plan.features.length, 4)
+assert.ok(plan.features.slice(0, 3).every((feature) => feature.included))
+assert.equal(plan.features[3].included, false)
+
+async function bookingRegressions() {
+  const m = load(path.join(root, "utils/mentorship.ts"))
+  const data = new Map()
+  global.localStorage = {
+    getItem: (key) => data.get(key) ?? null,
+    setItem: (key, value) => data.set(key, value),
+  }
+  global.window = { localStorage, dispatchEvent: () => {} }
+  let lock = Promise.resolve()
+  Object.defineProperty(global, "navigator", {
+    configurable: true,
+    value: {
+      locks: {
+        request: (_name, action) => {
+          const result = lock.then(action)
+          lock = result.catch(() => {})
+          return result
+        },
+      },
+    },
+  })
+  const track = skillTracks[0],
+    mentor = track.mentors[0]
+  const firstQuestion = {
+    id: "question-1",
+    userId: "learner",
+    question: "First question",
+    status: "Open",
+  }
+  const laterQuestion = {
+    id: "question-2",
+    userId: "learner",
+    question: "New question",
+    status: "Open",
+  }
+  localStorage.setItem(
+    m.getAllMentorshipQuestionsKey(),
+    JSON.stringify([laterQuestion, firstQuestion])
+  )
+  localStorage.setItem(
+    m.getMentorshipQuestionsKey("learner"),
+    JSON.stringify([laterQuestion, firstQuestion])
+  )
+  await m.answerMentorshipQuestion(firstQuestion.id, "Saved answer")
+  const questions = m.readMentorshipItems(m.getAllMentorshipQuestionsKey())
+  assert.equal(questions.length, 2)
+  assert.equal(
+    questions.find((question) => question.id === laterQuestion.id).status,
+    "Open"
+  )
+  assert.equal(
+    questions.find((question) => question.id === firstQuestion.id).answer,
+    "Saved answer"
+  )
+  assert.equal(
+    m.readMentorshipItems(m.getMentorshipQuestionsKey("learner"))[0].answer,
+    "Saved answer"
+  )
+  for (const date of ["2026-10-26T12:00:00Z", "2027-12-30T12:00:00Z"]) {
+    const now = Date.parse(date)
+    const slots = m.getAvailableMentorSlots(mentor, [], undefined, now)
+    assert.ok(slots.length > 0)
+    assert.ok(
+      slots.every((slot) => m.parseWatSlot(slot).getTime() > now + 12 * 3600000)
+    )
+  }
+  const slots = m.getAvailableMentorSlots(mentor)
+  const first = {
+    id: "first",
+    userId: "learner",
+    trackId: track.id,
+    mentorId: mentor.id,
+    mentorName: mentor.name,
+    slot: slots[0],
+    status: "Booked",
+  }
+  const attempts = await Promise.allSettled([
+    m.createBooking(first),
+    m.createBooking({ ...first, id: "duplicate" }),
+  ])
+  assert.equal(
+    attempts.filter((attempt) => attempt.status === "fulfilled").length,
+    1
+  )
+  await m.createBooking({
+    ...first,
+    id: "later",
+    userId: "another",
+    slot: slots[1],
+  })
+  await assert.rejects(
+    m.changeBooking(first.id, { type: "reschedule", slot: slots[1] })
+  )
+  await assert.rejects(
+    m.changeBooking(first.id, {
+      type: "reschedule",
+      slot: "November 1, 2030, 3:00 AM WAT",
+    })
+  )
+  await m.changeBooking(first.id, { type: "reschedule", slot: slots[2] })
+  await m.changeBooking(first.id, {
+    type: "meeting",
+    url: "https://example.com/session",
+  })
+  await assert.rejects(
+    m.changeBooking(first.id, { type: "meeting", url: "javascript:alert(1)" })
+  )
+  await assert.rejects(m.changeBooking(first.id, { type: "complete" }))
+  await assert.rejects(
+    m.changeBooking(
+      first.id,
+      { type: "cancel", reason: "wrong user" },
+      "intruder"
+    )
+  )
+  await m.changeBooking(
+    first.id,
+    { type: "cancel", reason: "cancel" },
+    first.userId
+  )
+  const all = m.readMentorshipItems(m.getAllMentorshipBookingsKey())
+  assert.equal(all.length, 2, "Newer bookings must survive updates")
+  const changed = all.find((booking) => booking.id === first.id)
+  assert.equal(
+    changed.slot,
+    slots[2],
+    "Cancellation must preserve the latest slot"
+  )
+  assert.deepEqual(
+    m.readMentorshipItems(m.getMentorshipBookingsKey(first.userId))[0],
+    changed
+  )
+  await assert.rejects(
+    m.changeBooking(first.id, { type: "reschedule", slot: slots[0] })
+  )
+  localStorage.setItem(
+    m.getAllMentorshipBookingsKey(),
+    JSON.stringify([{ ...first, slot: "September 9, 2026, 10:00 AM WAT" }])
+  )
+  await assert.rejects(
+    m.changeBooking(first.id, { type: "cancel", reason: "past" })
+  )
+  console.log(
+    "Passed: rolling availability, booking conflicts, fresh-state mutations, cutoff enforcement, meeting links and pricing flags."
+  )
+}
+bookingRegressions().catch((error) => {
+  console.error(error)
+  process.exitCode = 1
+})

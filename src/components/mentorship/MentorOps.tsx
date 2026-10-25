@@ -6,11 +6,12 @@ import {
   buildCalendarHref,
   getAllMentorshipBookingsKey,
   getAllMentorshipQuestionsKey,
-  getMentorshipBookingsKey,
   MentorshipBooking,
   MentorshipQuestion,
-  notifyLearner,
-  isFutureMentorshipSlot,
+  changeBooking,
+  getAvailableMentorSlots,
+  canChangeMentorshipBooking,
+  parseWatSlot,
 } from "@/utils/mentorship"
 import AssignmentLateRoundedIcon from "@mui/icons-material/AssignmentLateRounded"
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
@@ -20,6 +21,7 @@ import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded"
 import MarkUnreadChatAltRoundedIcon from "@mui/icons-material/MarkUnreadChatAltRounded"
 import VideoCameraFrontRoundedIcon from "@mui/icons-material/VideoCameraFrontRounded"
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -39,6 +41,7 @@ import {
   Typography,
 } from "@mui/material"
 import Link from "next/link"
+import { notifyError } from "@/utils/notification"
 import React, { useEffect, useState } from "react"
 
 const MentorOps = () => {
@@ -55,6 +58,7 @@ const MentorOps = () => {
     null
   )
   const [cancelReason, setCancelReason] = useState("")
+  const [meetingUrls, setMeetingUrls] = useState<Record<string, string>>({})
 
   const loadData = () => {
     if (typeof window === "undefined") return
@@ -86,6 +90,14 @@ const MentorOps = () => {
 
   useEffect(() => {
     loadData()
+    window.addEventListener("storage", loadData)
+    window.addEventListener("focus", loadData)
+    window.addEventListener("mentorship-updated", loadData)
+    return () => {
+      window.removeEventListener("storage", loadData)
+      window.removeEventListener("focus", loadData)
+      window.removeEventListener("mentorship-updated", loadData)
+    }
   }, [])
 
   const pendingSubmissions = submissions.filter((s) => s.status !== "Reviewed")
@@ -96,108 +108,44 @@ const MentorOps = () => {
 
   const allMentors = skillTracks.flatMap((t) => t.mentors)
 
-  const handleCancelBooking = () => {
-    if (
-      !cancelTarget ||
-      (cancelTarget.status !== "Booked" &&
-        cancelTarget.status !== "Rescheduled")
-    )
-      return
-    const reason = cancelReason.trim() || "Cancelled by Mentor Operations"
-
-    const updated = bookings.map((b) =>
-      b.id === cancelTarget.id
-        ? {
-            ...b,
-            status: "Cancelled" as const,
-            cancellationReason: reason,
-          }
-        : b
-    )
-
-    setBookings(updated)
-    window.localStorage.setItem(
-      getAllMentorshipBookingsKey(),
-      JSON.stringify(updated)
-    )
-
-    if (cancelTarget.userId) {
-      const userKey = getMentorshipBookingsKey(cancelTarget.userId)
-      const savedUser = window.localStorage.getItem(userKey)
-      if (savedUser) {
-        const userList = (JSON.parse(savedUser) as MentorshipBooking[]).map(
-          (b) =>
-            b.id === cancelTarget.id
-              ? {
-                  ...b,
-                  status: "Cancelled" as const,
-                  cancellationReason: reason,
-                }
-              : b
-        )
-        window.localStorage.setItem(userKey, JSON.stringify(userList))
-      }
-      notifyLearner(
-        cancelTarget.userId,
-        `Your mentorship session with ${cancelTarget.mentorName} on ${cancelTarget.slot} was cancelled: ${reason}`
+  const applyBookingAction = async (
+    id: string,
+    action: Parameters<typeof changeBooking>[1]
+  ) => {
+    try {
+      await changeBooking(id, action)
+      loadData()
+      return true
+    } catch (error) {
+      notifyError(
+        error instanceof Error ? error.message : "Booking update failed."
       )
+      return false
     }
-
-    setCancelTarget(null)
-    setCancelReason("")
   }
-
-  const handleRescheduleBooking = () => {
+  const handleCancelBooking = async () => {
     if (
-      !rescheduleTarget ||
-      !isFutureMentorshipSlot(rescheduleSlot) ||
-      (rescheduleTarget.status !== "Booked" &&
-        rescheduleTarget.status !== "Rescheduled")
-    )
-      return
-
-    const updated = bookings.map((b) =>
-      b.id === rescheduleTarget.id
-        ? {
-            ...b,
-            status: "Rescheduled" as const,
-            rescheduledSlot: rescheduleSlot,
-            slot: rescheduleSlot,
-          }
-        : b
-    )
-
-    setBookings(updated)
-    window.localStorage.setItem(
-      getAllMentorshipBookingsKey(),
-      JSON.stringify(updated)
-    )
-
-    if (rescheduleTarget.userId) {
-      const userKey = getMentorshipBookingsKey(rescheduleTarget.userId)
-      const savedUser = window.localStorage.getItem(userKey)
-      if (savedUser) {
-        const userList = (JSON.parse(savedUser) as MentorshipBooking[]).map(
-          (b) =>
-            b.id === rescheduleTarget.id
-              ? {
-                  ...b,
-                  status: "Rescheduled" as const,
-                  rescheduledSlot: rescheduleSlot,
-                  slot: rescheduleSlot,
-                }
-              : b
-        )
-        window.localStorage.setItem(userKey, JSON.stringify(userList))
-      }
-      notifyLearner(
-        rescheduleTarget.userId,
-        `Your mentorship session with ${rescheduleTarget.mentorName} has been rescheduled to ${rescheduleSlot}.`
-      )
+      cancelTarget &&
+      (await applyBookingAction(cancelTarget.id, {
+        type: "cancel",
+        reason: cancelReason.trim() || "Cancelled by Mentor Operations",
+      }))
+    ) {
+      setCancelTarget(null)
+      setCancelReason("")
     }
-
-    setRescheduleTarget(null)
-    setRescheduleSlot("")
+  }
+  const handleRescheduleBooking = async () => {
+    if (
+      rescheduleTarget &&
+      (await applyBookingAction(rescheduleTarget.id, {
+        type: "reschedule",
+        slot: rescheduleSlot,
+      }))
+    ) {
+      setRescheduleTarget(null)
+      setRescheduleSlot("")
+    }
   }
 
   // Find open slots for the targeted mentor
@@ -205,8 +153,18 @@ const MentorOps = () => {
     ? allMentors.find((m) => m.id === rescheduleTarget.mentorId)
     : null
 
+  const availableSlots = getAvailableMentorSlots(
+    targetMentor || undefined,
+    bookings,
+    rescheduleTarget?.id
+  )
+
   return (
     <Box sx={{ bgcolor: "#f6fafb", minHeight: "100vh" }}>
+      <Alert severity="warning">
+        Demo operations: only bookings and questions saved in this browser are
+        available. Changes do not notify users on other devices.
+      </Alert>
       <Box sx={{ bgcolor: "#062d3a", color: "white", py: { xs: 6, md: 8 } }}>
         <Container maxWidth="lg">
           <Typography
@@ -435,6 +393,58 @@ const MentorOps = () => {
                         <Typography variant="body2" sx={{ mt: 0.5 }}>
                           Scheduled Slot: <strong>{booking.slot}</strong>
                         </Typography>
+                        {(booking.status === "Booked" ||
+                          booking.status === "Rescheduled") && (
+                          <Stack
+                            direction={{ xs: "column", sm: "row" }}
+                            spacing={1}
+                            mt={2}
+                          >
+                            <TextField
+                              size="small"
+                              label="HTTPS meeting URL"
+                              value={
+                                meetingUrls[booking.id] ??
+                                booking.meetingUrl ??
+                                ""
+                              }
+                              onChange={(event) =>
+                                setMeetingUrls((current) => ({
+                                  ...current,
+                                  [booking.id]: event.target.value,
+                                }))
+                              }
+                            />
+                            <Button
+                              onClick={() =>
+                                applyBookingAction(booking.id, {
+                                  type: "meeting",
+                                  url:
+                                    meetingUrls[booking.id] ??
+                                    booking.meetingUrl ??
+                                    "",
+                                })
+                              }
+                            >
+                              Save meeting link
+                            </Button>
+                            <Button
+                              disabled={
+                                !parseWatSlot(booking.slot) ||
+                                parseWatSlot(booking.slot)!.getTime() +
+                                  3600000 >
+                                  Date.now()
+                              }
+                              onClick={() =>
+                                applyBookingAction(booking.id, {
+                                  type: "complete",
+                                })
+                              }
+                            >
+                              Mark completed
+                            </Button>
+                          </Stack>
+                        )}
                         {booking.cancellationReason && (
                           <Typography
                             variant="caption"
@@ -454,6 +464,7 @@ const MentorOps = () => {
                               size="small"
                               variant="outlined"
                               startIcon={<EditCalendarRoundedIcon />}
+                              disabled={!canChangeMentorshipBooking(booking)}
                               onClick={() => {
                                 setRescheduleTarget(booking)
                                 setRescheduleSlot("")
@@ -466,6 +477,7 @@ const MentorOps = () => {
                               color="error"
                               variant="outlined"
                               startIcon={<EventBusyRoundedIcon />}
+                              disabled={!canChangeMentorshipBooking(booking)}
                               onClick={() => {
                                 setCancelTarget(booking)
                                 setCancelReason("")
@@ -704,7 +716,10 @@ const MentorOps = () => {
                     color="text.secondary"
                     sx={{ display: "block", mt: 0.5 }}
                   >
-                    Open slots: <strong>{m.openSlots.length} available</strong>
+                    Open slots:{" "}
+                    <strong>
+                      {getAvailableMentorSlots(m, bookings).length} available
+                    </strong>
                   </Typography>
                 </Box>
               </Grid>
@@ -726,43 +741,33 @@ const MentorOps = () => {
               with {rescheduleTarget?.mentorName}:
             </Typography>
             <Stack spacing={1}>
-              {targetMentor?.openSlots && targetMentor.openSlots.length > 0 ? (
-                targetMentor.openSlots
-                  .filter((s) => isFutureMentorshipSlot(s))
-                  .map((s) => (
-                    <Button
-                      key={s}
-                      variant={rescheduleSlot === s ? "contained" : "outlined"}
-                      onClick={() => setRescheduleSlot(s)}
-                      fullWidth
-                    >
-                      {s}
-                    </Button>
-                  ))
+              {availableSlots.length > 0 ? (
+                availableSlots.map((s) => (
+                  <Button
+                    key={s}
+                    variant={rescheduleSlot === s ? "contained" : "outlined"}
+                    onClick={() => setRescheduleSlot(s)}
+                    fullWidth
+                  >
+                    {s}
+                  </Button>
+                ))
               ) : (
                 <Typography variant="body2" color="text.secondary">
-                  No predefined slots found. Enter custom slot below:
+                  No available slots.
                 </Typography>
               )}
             </Stack>
-            <TextField
-              sx={{ mt: 2 }}
-              label="Or enter custom slot time"
-              fullWidth
-              value={rescheduleSlot}
-              onChange={(e) => setRescheduleSlot(e.target.value)}
-              placeholder="e.g. October 20, 2026, 2:00 PM WAT"
-              error={
-                !!rescheduleSlot && !isFutureMentorshipSlot(rescheduleSlot)
-              }
-              helperText="Enter a future date, for example: October 20, 2026, 2:00 PM WAT"
-            />
           </DialogContent>
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={() => setRescheduleTarget(null)}>Cancel</Button>
             <Button
               variant="contained"
-              disabled={!isFutureMentorshipSlot(rescheduleSlot)}
+              disabled={
+                !availableSlots.includes(rescheduleSlot) ||
+                !rescheduleTarget ||
+                !canChangeMentorshipBooking(rescheduleTarget)
+              }
               onClick={handleRescheduleBooking}
             >
               Update Schedule

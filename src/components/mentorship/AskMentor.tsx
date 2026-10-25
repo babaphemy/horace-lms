@@ -157,8 +157,8 @@ const AskMentor = ({
       <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
         {submitted && (
           <Alert severity="success" sx={{ mb: 3 }}>
-            Your question has been sent to {mentor.name}. You will be notified
-            when an answer is posted.
+            Your question for {mentor.name} is saved in this browser only.
+            Cross-device mentor delivery and notifications are not connected.
           </Alert>
         )}
 

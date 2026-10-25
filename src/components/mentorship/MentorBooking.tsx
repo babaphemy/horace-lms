@@ -8,10 +8,13 @@ import {
   getMentorshipBookingsKey,
   MentorshipBooking,
   MentorshipFormat,
-  notifyLearner,
+  changeBooking,
+  createBooking,
+  getAvailableMentorSlots,
+  readMentorshipItems,
   canChangeMentorshipBooking,
-  isFutureMentorshipSlot,
 } from "@/utils/mentorship"
+import { notifyError } from "@/utils/notification"
 import { skillTracks } from "@/data/skillTracks"
 import { useSession } from "next-auth/react"
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded"
@@ -62,8 +65,9 @@ const MentorBooking = ({
   const [learnerName, setLearnerName] = useState("")
   const [learnerEmail, setLearnerEmail] = useState("")
   const [format, setFormat] = useState<MentorshipFormat>("1:1")
-  const [slot, setSlot] = useState(mentor?.openSlots[0] || "")
+  const [slot, setSlot] = useState("")
   const [booking, setBooking] = useState<MentorshipBooking | null>(null)
+  const [allBookings, setAllBookings] = useState<MentorshipBooking[]>([])
   const [userBookings, setUserBookings] = useState<MentorshipBooking[]>([])
 
   // Modal dialog state for rescheduling / cancellation
@@ -76,22 +80,39 @@ const MentorBooking = ({
   const [cancelReason, setCancelReason] = useState("")
 
   useEffect(() => {
-    if (typeof window === "undefined") return
-    const key = getMentorshipBookingsKey(userId)
-    const existing = window.localStorage.getItem(key)
-    try {
-      const parsed = existing ? JSON.parse(existing) : []
-      setUserBookings(Array.isArray(parsed) ? parsed : [])
-    } catch {
-      setUserBookings([])
+    const refresh = () => {
+      try {
+        setUserBookings(
+          readMentorshipItems<MentorshipBooking>(
+            getMentorshipBookingsKey(userId)
+          )
+        )
+        setAllBookings(
+          readMentorshipItems<MentorshipBooking>(getAllMentorshipBookingsKey())
+        )
+      } catch {
+        notifyError("Could not load saved bookings.")
+      }
+    }
+    refresh()
+    window.addEventListener("storage", refresh)
+    window.addEventListener("focus", refresh)
+    window.addEventListener("mentorship-updated", refresh)
+    return () => {
+      window.removeEventListener("storage", refresh)
+      window.removeEventListener("focus", refresh)
+      window.removeEventListener("mentorship-updated", refresh)
     }
   }, [userId])
+  const availableSlots = getAvailableMentorSlots(mentor, allBookings)
 
   const rescheduleMentor = skillTracks
     .find((item) => item.id === rescheduleTarget?.trackId)
     ?.mentors.find((item) => item.id === rescheduleTarget?.mentorId)
-  const rescheduleSlots = (rescheduleMentor?.openSlots || []).filter(
-    isFutureMentorshipSlotNow
+  const rescheduleSlots = getAvailableMentorSlots(
+    rescheduleMentor,
+    allBookings,
+    rescheduleTarget?.id
   )
 
   if (!track || !mentor) {
@@ -110,10 +131,9 @@ const MentorBooking = ({
   const canBook =
     learnerName.trim() &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(learnerEmail.trim()) &&
-    mentor.openSlots.includes(slot) &&
-    isFutureMentorshipSlot(slot)
+    availableSlots.includes(slot)
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (!canBook) return
     const bookingId = createMentorshipId("booking")
     const nextBooking: MentorshipBooking = {
@@ -131,126 +151,60 @@ const MentorBooking = ({
       createdAt: new Date().toISOString(),
     }
 
-    // Save to user storage
-    const key = getMentorshipBookingsKey(userId)
-    const existing = window.localStorage.getItem(key)
-    const bookings = existing
-      ? (JSON.parse(existing) as MentorshipBooking[])
-      : []
-    const updatedUserBookings = [nextBooking, ...bookings]
-    window.localStorage.setItem(key, JSON.stringify(updatedUserBookings))
-    setUserBookings(updatedUserBookings)
-
-    // Save to all bookings storage
-    const allKey = getAllMentorshipBookingsKey()
-    const allExisting = window.localStorage.getItem(allKey)
-    const allBookings = allExisting
-      ? (JSON.parse(allExisting) as MentorshipBooking[])
-      : []
-    window.localStorage.setItem(
-      allKey,
-      JSON.stringify([nextBooking, ...allBookings])
-    )
-
-    // Send confirmation notification to learner
-    notifyLearner(
-      userId,
-      `Mentorship session confirmed with ${mentor.name} for ${slot} (${format}).`
-    )
-
-    setBooking(nextBooking)
+    try {
+      await createBooking(nextBooking)
+      setBooking(nextBooking)
+      setSlot("")
+    } catch (error) {
+      notifyError(error instanceof Error ? error.message : "Booking failed.")
+    }
   }
 
-  const handleCancelBooking = () => {
-    if (!cancelTarget || !canChangeMentorshipBooking(cancelTarget)) return
-    const reason = cancelReason.trim() || "Learner requested cancellation."
-
-    const updateList = (list: MentorshipBooking[]) =>
-      list.map((b) =>
-        b.id === cancelTarget.id
-          ? {
-              ...b,
-              status: "Cancelled" as const,
-              cancellationReason: reason,
-            }
-          : b
+  const handleCancelBooking = async () => {
+    if (!cancelTarget) return
+    try {
+      await changeBooking(
+        cancelTarget.id,
+        {
+          type: "cancel",
+          reason: cancelReason.trim() || "Learner requested cancellation.",
+        },
+        userId
       )
-
-    // Update user bookings
-    const userKey = getMentorshipBookingsKey(userId)
-    const updatedUser = updateList(userBookings)
-    window.localStorage.setItem(userKey, JSON.stringify(updatedUser))
-    setUserBookings(updatedUser)
-
-    // Update global bookings
-    const allKey = getAllMentorshipBookingsKey()
-    const allExisting = window.localStorage.getItem(allKey)
-    if (allExisting) {
-      window.localStorage.setItem(
-        allKey,
-        JSON.stringify(updateList(JSON.parse(allExisting)))
+      setCancelTarget(null)
+      setBooking(null)
+      setCancelReason("")
+    } catch (error) {
+      notifyError(
+        error instanceof Error ? error.message : "Cancellation failed."
       )
     }
-
-    notifyLearner(
-      userId,
-      `Your mentorship session with ${cancelTarget.mentorName} on ${cancelTarget.slot} was cancelled.`
-    )
-
-    setCancelTarget(null)
-    setBooking(null)
-    setCancelReason("")
   }
 
-  const handleRescheduleBooking = () => {
-    if (
-      !rescheduleTarget ||
-      !canChangeMentorshipBooking(rescheduleTarget) ||
-      !rescheduleSlots.includes(rescheduleSlot) ||
-      !isFutureMentorshipSlot(rescheduleSlot)
-    )
-      return
-
-    const updateList = (list: MentorshipBooking[]) =>
-      list.map((b) =>
-        b.id === rescheduleTarget.id
-          ? {
-              ...b,
-              status: "Rescheduled" as const,
-              rescheduledSlot: rescheduleSlot,
-              slot: rescheduleSlot,
-            }
-          : b
+  const handleRescheduleBooking = async () => {
+    if (!rescheduleTarget) return
+    try {
+      await changeBooking(
+        rescheduleTarget.id,
+        { type: "reschedule", slot: rescheduleSlot },
+        userId
       )
-
-    // Update user bookings
-    const userKey = getMentorshipBookingsKey(userId)
-    const updatedUser = updateList(userBookings)
-    window.localStorage.setItem(userKey, JSON.stringify(updatedUser))
-    setUserBookings(updatedUser)
-
-    // Update global bookings
-    const allKey = getAllMentorshipBookingsKey()
-    const allExisting = window.localStorage.getItem(allKey)
-    if (allExisting) {
-      window.localStorage.setItem(
-        allKey,
-        JSON.stringify(updateList(JSON.parse(allExisting)))
+      setRescheduleTarget(null)
+      setBooking(null)
+      setRescheduleSlot("")
+    } catch (error) {
+      notifyError(
+        error instanceof Error ? error.message : "Rescheduling failed."
       )
     }
-
-    notifyLearner(
-      userId,
-      `Your mentorship session with ${rescheduleTarget.mentorName} was rescheduled to ${rescheduleSlot}.`
-    )
-
-    setRescheduleTarget(null)
-    setBooking(null)
-    setRescheduleSlot("")
   }
 
   return (
     <Box sx={{ bgcolor: "#f6fafb", minHeight: "100vh" }}>
+      <Alert severity="warning">
+        Demo schedule: bookings and messages are saved in this browser only. No
+        mentor is notified.
+      </Alert>
       <Box sx={{ bgcolor: "#062d3a", color: "white", py: { xs: 6, md: 9 } }}>
         <Container maxWidth="lg">
           <Typography
@@ -355,21 +309,19 @@ const MentorBooking = ({
               Open time slots
             </Typography>
             <Stack direction="row" flexWrap="wrap" gap={1.5} sx={{ mb: 3 }}>
-              {mentor.openSlots
-                .filter(isFutureMentorshipSlotNow)
-                .map((item) => (
-                  <Button
-                    key={item}
-                    variant={slot === item ? "contained" : "outlined"}
-                    startIcon={<CalendarMonthRoundedIcon />}
-                    onClick={() => setSlot(item)}
-                  >
-                    {item}
-                  </Button>
-                ))}
+              {availableSlots.map((item) => (
+                <Button
+                  key={item}
+                  variant={slot === item ? "contained" : "outlined"}
+                  startIcon={<CalendarMonthRoundedIcon />}
+                  onClick={() => setSlot(item)}
+                >
+                  {item}
+                </Button>
+              ))}
             </Stack>
 
-            {!mentor.openSlots.some(isFutureMentorshipSlotNow) && (
+            {availableSlots.length === 0 && (
               <Alert severity="info" sx={{ mb: 2 }}>
                 No upcoming slots are available for this mentor.
               </Alert>
@@ -659,7 +611,3 @@ const MentorBooking = ({
 }
 
 export default MentorBooking
-
-function isFutureMentorshipSlotNow(slot: string) {
-  return isFutureMentorshipSlot(slot)
-}

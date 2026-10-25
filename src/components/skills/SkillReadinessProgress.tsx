@@ -1,6 +1,7 @@
 "use client"
 
 import { skillTracks } from "@/data/skillTracks"
+import { belongsToTrack, getTrackEligibility } from "@/utils/trackEligibility"
 import {
   getLabSubmissionsKey,
   getSkillCertificatesKey,
@@ -78,18 +79,15 @@ const SkillReadinessProgress = ({
     )
   }, [userId])
 
-  const verifiedSkills = useMemo(
-    () => getSubmissionSkills(submissions, "Pass"),
-    [submissions]
-  )
-  const activeSkills = useMemo(
-    () => getSubmissionSkills(submissions, "active"),
-    [submissions]
-  )
-
   const trackProgress = useMemo(
     () =>
       skillTracks.map((track) => {
+        const eligibility = getTrackEligibility(track, submissions)
+        const verifiedSkills = eligibility.skills
+        const activeSkills = getSubmissionSkills(
+          submissions.filter((submission) => belongsToTrack(submission, track)),
+          "active"
+        )
         const competencies = track.skills.map((skill) => {
           let status: CompetencyStatus = "not-started"
 
@@ -107,11 +105,20 @@ const SkillReadinessProgress = ({
         const activeCount = competencies.filter(
           (competency) => competency.status === "in-progress"
         ).length
-        const completion = Math.round(
-          (verifiedCount / Math.max(track.skills.length, 1)) * 100
-        )
-        const certificate = certificates.find((item) =>
-          track.skills.every((skill) => item.skills.includes(skill))
+        const completion = eligibility.eligible
+          ? 100
+          : Math.min(
+              99,
+              Math.round(
+                ((track.modules.length -
+                  eligibility.missingProjects.length +
+                  verifiedCount) /
+                  Math.max(track.modules.length + track.skills.length, 1)) *
+                  100
+              )
+            )
+        const certificate = certificates.find(
+          (item) => item.trackTitle === track.title && eligibility.eligible
         )
 
         return {
@@ -123,7 +130,7 @@ const SkillReadinessProgress = ({
           certificate,
         }
       }),
-    [activeSkills, certificates, verifiedSkills]
+    [submissions, certificates]
   )
 
   const hasProgress = submissions.length > 0 || certificates.length > 0

@@ -45,7 +45,7 @@ export interface SkillTrack {
     tags: string[]
     responseTime: string
     rating: number
-    openSlots: string[]
+    weeklyAvailability: { weekday: number; hour: number; minute: number }[]
   }[]
 }
 
@@ -128,10 +128,10 @@ export const skillTracks: SkillTrack[] = [
         tags: ["Robotics", "Safety", "Integration"],
         responseTime: "Within 24 hours",
         rating: 4.8,
-        openSlots: [
-          "September 9, 2026, 10:00 AM WAT",
-          "September 11, 2026, 2:00 PM WAT",
-          "September 15, 2026, 4:00 PM WAT",
+        weeklyAvailability: [
+          { weekday: 3, hour: 10, minute: 0 },
+          { weekday: 5, hour: 14, minute: 0 },
+          { weekday: 2, hour: 16, minute: 0 },
         ],
       },
       {
@@ -143,10 +143,10 @@ export const skillTracks: SkillTrack[] = [
         tags: ["Embedded", "Diagnostics", "Control"],
         responseTime: "Within 1 business day",
         rating: 4.7,
-        openSlots: [
-          "September 10, 2026, 11:00 AM WAT",
-          "September 14, 2026, 3:00 PM WAT",
-          "September 17, 2026, 1:00 PM WAT",
+        weeklyAvailability: [
+          { weekday: 4, hour: 11, minute: 0 },
+          { weekday: 1, hour: 15, minute: 0 },
+          { weekday: 4, hour: 13, minute: 0 },
         ],
       },
     ],
@@ -223,10 +223,10 @@ export const skillTracks: SkillTrack[] = [
         tags: ["AI", "Product", "Evaluation"],
         responseTime: "Within 18 hours",
         rating: 4.9,
-        openSlots: [
-          "September 9, 2026, 1:00 PM WAT",
-          "September 12, 2026, 10:00 AM WAT",
-          "September 16, 2026, 5:00 PM WAT",
+        weeklyAvailability: [
+          { weekday: 3, hour: 13, minute: 0 },
+          { weekday: 6, hour: 10, minute: 0 },
+          { weekday: 3, hour: 17, minute: 0 },
         ],
       },
     ],
@@ -368,10 +368,10 @@ export const skillTracks: SkillTrack[] = [
         tags: ["Motion", "Storyboards", "Critique"],
         responseTime: "Within 24 hours",
         rating: 4.8,
-        openSlots: [
-          "September 10, 2026, 9:00 AM WAT",
-          "September 13, 2026, 2:00 PM WAT",
-          "September 18, 2026, 11:00 AM WAT",
+        weeklyAvailability: [
+          { weekday: 4, hour: 9, minute: 0 },
+          { weekday: 0, hour: 14, minute: 0 },
+          { weekday: 5, hour: 11, minute: 0 },
         ],
       },
     ],

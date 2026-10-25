@@ -1,5 +1,11 @@
 import type { LabStep, ToolResult } from "@/data/labs/types"
 
+export function checkpointsReady(
+  statuses: ("pending" | "recorded" | "passed")[]
+) {
+  return statuses.length > 0 && statuses.every((status) => status !== "pending")
+}
+
 export function isArtifactUrl(value: string) {
   try {
     const url = new URL(value)
