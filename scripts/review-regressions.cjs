@@ -53,6 +53,20 @@ for (const track of skillTracks) {
     getLabDefinition(track.previewLab.title),
     `${track.id}: preview definition missing`
   )
+  const preview = getTrackEligibility(track, [
+    {
+      ...submissions[0],
+      trackId: track.id,
+      lessonTitle: track.previewLab.title,
+      skills: track.skills,
+    },
+  ])
+  assert.equal(
+    preview.projects.length,
+    0,
+    "Preview labs must not award module credit"
+  )
+  assert.equal(preview.eligible, false)
   assert.equal(
     getTrackEligibility(track, submissions).eligible,
     true,
@@ -328,6 +342,16 @@ async function bookingRegressions() {
     type: "meeting",
     url: "https://example.com/session",
   })
+  for (const key of [
+    m.getAllMentorshipBookingsKey(),
+    m.getMentorshipBookingsKey(first.userId),
+  ]) {
+    assert.equal(
+      m.readMentorshipItems(key).find((item) => item.id === first.id)
+        .meetingUrl,
+      "https://example.com/session"
+    )
+  }
   await assert.rejects(
     m.changeBooking(first.id, { type: "meeting", url: "javascript:alert(1)" })
   )
@@ -366,6 +390,17 @@ async function bookingRegressions() {
   await assert.rejects(
     m.changeBooking(first.id, { type: "cancel", reason: "past" })
   )
+  await m.changeBooking(first.id, { type: "complete" })
+  for (const key of [
+    m.getAllMentorshipBookingsKey(),
+    m.getMentorshipBookingsKey(first.userId),
+  ]) {
+    assert.equal(
+      m.readMentorshipItems(key).find((item) => item.id === first.id).status,
+      "Completed"
+    )
+  }
+  await assert.rejects(m.changeBooking(first.id, { type: "complete" }))
   console.log(
     "Passed: rolling availability, booking conflicts, fresh-state mutations, cutoff enforcement, meeting links and pricing flags."
   )
