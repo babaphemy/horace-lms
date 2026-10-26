@@ -12,6 +12,7 @@ export interface LabCheckpoint {
 }
 
 export interface LabSubmission {
+  trackId?: string
   id: string
   userId: string
   courseId: string

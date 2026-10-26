@@ -5,12 +5,22 @@ import { m4 } from "./security-plus/m4"
 import { m5 } from "./security-plus/m5"
 import { m6 } from "./security-plus/m6"
 import { m7 } from "./security-plus/m7"
+import { trackLabDefinitions } from "./trackLabs"
 import { slugify } from "./security-plus/factory"
 
 export * from "./types"
 export { slugify }
 
-export const labDefinitions = [...m1, ...m2, ...m3, ...m4, ...m5, ...m6, ...m7]
+export const labDefinitions = [
+  ...m1,
+  ...m2,
+  ...m3,
+  ...m4,
+  ...m5,
+  ...m6,
+  ...m7,
+  ...trackLabDefinitions,
+]
 const registry = new Map(
   labDefinitions.map((definition) => [definition.slug, definition])
 )
