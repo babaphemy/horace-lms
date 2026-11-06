@@ -1,4 +1,5 @@
 "use client"
+import { notifyLabProgress } from "@/utils/labProgress"
 
 import {
   getAllLabSubmissionsKey,
@@ -56,7 +57,10 @@ const MentorSubmissions = () => {
   ).length
 
   const saveSubmissionUpdate = (reviewedSubmission: LabSubmission) => {
-    const nextQueue = submissions.map((item) =>
+    const latestQueue = JSON.parse(
+      window.localStorage.getItem(getAllLabSubmissionsKey()) || "[]"
+    ) as LabSubmission[]
+    const nextQueue = latestQueue.map((item) =>
       item.id === reviewedSubmission.id ? reviewedSubmission : item
     )
     setSubmissions(nextQueue)
@@ -74,6 +78,7 @@ const MentorSubmissions = () => {
       item.id === reviewedSubmission.id ? reviewedSubmission : item
     )
     window.localStorage.setItem(userKey, JSON.stringify(nextUserSubmissions))
+    notifyLabProgress()
   }
 
   const startReview = (submission: LabSubmission) => {

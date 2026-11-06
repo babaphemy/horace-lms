@@ -1,4 +1,5 @@
 "use client"
+import { notifyLabProgress } from "@/utils/labProgress"
 
 import {
   getLabDefinition,
@@ -245,6 +246,7 @@ export default function LabWorkspace({
       localStorage.getItem(allKey) || "[]"
     ) as LabSubmission[]
     localStorage.setItem(allKey, JSON.stringify([submission, ...all]))
+    notifyLabProgress()
     setSubmitted(true)
   }
 

@@ -35,6 +35,50 @@ function load(filename) {
   return module.exports
 }
 
+const progressEvents = new EventTarget()
+global.window = progressEvents
+const { subscribeLabProgress, notifyLabProgress } = load(
+  path.join(root, "utils/labProgress.ts")
+)
+const { getLabSubmissionsKey, getSkillCertificatesKey } = load(
+  path.join(root, "utils/labs.ts")
+)
+let refreshes = 0
+const unsubscribe = subscribeLabProgress("learner", () => {
+  refreshes++
+})
+assert.equal(refreshes, 1)
+notifyLabProgress()
+progressEvents.dispatchEvent(new Event("focus"))
+assert.equal(refreshes, 3)
+const storageChange = (key) => {
+  const event = new Event("storage")
+  Object.defineProperty(event, "key", { value: key })
+  progressEvents.dispatchEvent(event)
+}
+storageChange(getLabSubmissionsKey("another-user"))
+assert.equal(
+  refreshes,
+  3,
+  "Unrelated learner changes must not refresh this view"
+)
+storageChange(getLabSubmissionsKey("learner"))
+storageChange(getSkillCertificatesKey("learner"))
+storageChange(null)
+assert.equal(refreshes, 6)
+unsubscribe()
+notifyLabProgress()
+storageChange(null)
+progressEvents.dispatchEvent(new Event("focus"))
+assert.equal(
+  refreshes,
+  6,
+  "Unmounted or switched-user subscriptions must be removed"
+)
+console.log(
+  "Passed: readiness refresh events, learner isolation and subscription cleanup."
+)
+
 const { skillTracks } = load(path.join(root, "data/skillTracks.ts"))
 const { getTrackEligibility } = load(
   path.join(root, "utils/trackEligibility.ts")

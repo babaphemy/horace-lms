@@ -2,6 +2,7 @@
 
 import { skillTracks } from "@/data/skillTracks"
 import { belongsToTrack, getTrackEligibility } from "@/utils/trackEligibility"
+import { subscribeLabProgress } from "@/utils/labProgress"
 import {
   getLabSubmissionsKey,
   getSkillCertificatesKey,
@@ -30,14 +31,15 @@ interface SkillReadinessProgressProps {
   showHeader?: boolean
 }
 
-type CompetencyStatus = "verified" | "in-progress" | "not-started"
+type CompetencyStatus = "verified" | "in-progress" | "revise" | "not-started"
 
 function readStoredItems<T>(key: string): T[] {
   if (typeof window === "undefined") return []
 
   try {
     const saved = window.localStorage.getItem(key)
-    return saved ? (JSON.parse(saved) as T[]) : []
+    const parsed = saved ? JSON.parse(saved) : []
+    return Array.isArray(parsed) ? (parsed as T[]) : []
   } catch {
     return []
   }
@@ -45,19 +47,19 @@ function readStoredItems<T>(key: string): T[] {
 
 function getSubmissionSkills(
   submissions: LabSubmission[],
-  outcome: "Pass" | "active"
+  outcome: "revise" | "active"
 ) {
   return new Set(
     submissions
       .filter((submission) => {
-        if (outcome === "Pass") {
+        if (outcome === "revise") {
           return (
-            submission.status === "Reviewed" && submission.outcome === "Pass"
+            submission.status === "Reviewed" && submission.outcome === "Revise"
           )
         }
 
-        return !(
-          submission.status === "Reviewed" && submission.outcome === "Pass"
+        return (
+          submission.status === "Submitted" || submission.status === "In Review"
         )
       })
       .flatMap((submission) => submission.skills)
@@ -73,10 +75,14 @@ const SkillReadinessProgress = ({
   const [certificates, setCertificates] = useState<SkillCertificate[]>([])
 
   useEffect(() => {
-    setSubmissions(readStoredItems<LabSubmission>(getLabSubmissionsKey(userId)))
-    setCertificates(
-      readStoredItems<SkillCertificate>(getSkillCertificatesKey(userId))
-    )
+    return subscribeLabProgress(userId, () => {
+      setSubmissions(
+        readStoredItems<LabSubmission>(getLabSubmissionsKey(userId))
+      )
+      setCertificates(
+        readStoredItems<SkillCertificate>(getSkillCertificatesKey(userId))
+      )
+    })
   }, [userId])
 
   const trackProgress = useMemo(
@@ -88,6 +94,10 @@ const SkillReadinessProgress = ({
           submissions.filter((submission) => belongsToTrack(submission, track)),
           "active"
         )
+        const revisionSkills = getSubmissionSkills(
+          submissions.filter((submission) => belongsToTrack(submission, track)),
+          "revise"
+        )
         const competencies = track.skills.map((skill) => {
           let status: CompetencyStatus = "not-started"
 
@@ -95,6 +105,8 @@ const SkillReadinessProgress = ({
             status = "verified"
           } else if (activeSkills.has(skill)) {
             status = "in-progress"
+          } else if (revisionSkills.has(skill)) {
+            status = "revise"
           }
 
           return { skill, status }
@@ -230,7 +242,9 @@ const SkillReadinessProgress = ({
             <Stack spacing={1.25}>
               {track.competencies.map((competency) => {
                 const isVerified = competency.status === "verified"
-                const isActive = competency.status === "in-progress"
+                const isActive =
+                  competency.status === "in-progress" ||
+                  competency.status === "revise"
 
                 return (
                   <Stack
@@ -260,7 +274,9 @@ const SkillReadinessProgress = ({
                       {isVerified
                         ? "Verified"
                         : isActive
-                          ? "In review"
+                          ? competency.status === "revise"
+                            ? "Needs revision"
+                            : "Awaiting review"
                           : "Needed"}
                     </Typography>
                   </Stack>

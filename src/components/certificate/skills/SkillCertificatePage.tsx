@@ -1,4 +1,5 @@
 "use client"
+import { notifyLabProgress, subscribeLabProgress } from "@/utils/labProgress"
 
 import { skillTracks } from "@/data/skillTracks"
 import { getTrackEligibility } from "@/utils/trackEligibility"
@@ -49,18 +50,27 @@ const SkillCertificatePage = ({ userId }: SkillCertificatePageProps) => {
   const certificatesKey = getSkillCertificatesKey(userId)
 
   useEffect(() => {
-    const savedSubmissions = window.localStorage.getItem(submissionsKey)
-    setSubmissions(
-      savedSubmissions ? (JSON.parse(savedSubmissions) as LabSubmission[]) : []
-    )
+    return subscribeLabProgress(userId, () => {
+      try {
+        const savedSubmissions = window.localStorage.getItem(submissionsKey)
+        setSubmissions(
+          savedSubmissions
+            ? (JSON.parse(savedSubmissions) as LabSubmission[])
+            : []
+        )
 
-    const savedCertificates = window.localStorage.getItem(certificatesKey)
-    setCertificates(
-      savedCertificates
-        ? (JSON.parse(savedCertificates) as SkillCertificate[])
-        : []
-    )
-  }, [certificatesKey, submissionsKey])
+        const savedCertificates = window.localStorage.getItem(certificatesKey)
+        setCertificates(
+          savedCertificates
+            ? (JSON.parse(savedCertificates) as SkillCertificate[])
+            : []
+        )
+      } catch {
+        setSubmissions([])
+        setCertificates([])
+      }
+    })
+  }, [certificatesKey, submissionsKey, userId])
 
   const passedSubmissions = useMemo(
     () =>
@@ -132,6 +142,7 @@ const SkillCertificatePage = ({ userId }: SkillCertificatePageProps) => {
       JSON.stringify([certificate, ...allCertificates])
     )
     setIssuedCertificate(certificate)
+    notifyLabProgress()
   }
 
   const certificateToShow = issuedCertificate || certificates[0]
