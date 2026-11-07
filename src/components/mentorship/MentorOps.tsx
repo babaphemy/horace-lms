@@ -1,7 +1,18 @@
 "use client"
 
 import { skillTracks } from "@/data/skillTracks"
-import { getAllLabSubmissionsKey, LabSubmission } from "@/utils/labs"
+import {
+  getAllLabSubmissionsKey,
+  getLabSubmissionsKey,
+  LabSubmission,
+} from "@/utils/labs"
+import { notifyLabProgress } from "@/utils/labProgress"
+import {
+  getMentorMetrics,
+  mentorQueueThresholdKey,
+  validQueueThreshold,
+  watWeekStart,
+} from "@/utils/mentorMetrics"
 import {
   buildCalendarHref,
   getAllMentorshipBookingsKey,
@@ -34,6 +45,13 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Stack,
   Tab,
   Tabs,
@@ -49,6 +67,25 @@ const MentorOps = () => {
   const [bookings, setBookings] = useState<MentorshipBooking[]>([])
   const [questions, setQuestions] = useState<MentorshipQuestion[]>([])
   const [submissions, setSubmissions] = useState<LabSubmission[]>([])
+  const [week, setWeek] = useState(watWeekStart())
+  const [threshold, setThreshold] = useState(10)
+  const [thresholdInput, setThresholdInput] = useState("10")
+
+  useEffect(() => {
+    const refreshThreshold = (event?: StorageEvent) => {
+      if (event && event.key !== null && event.key !== mentorQueueThresholdKey)
+        return
+      const saved = localStorage.getItem(mentorQueueThresholdKey)
+      const value = saved === null ? 10 : Number(saved)
+      if (validQueueThreshold(value)) {
+        setThreshold(value)
+        setThresholdInput(String(value))
+      }
+    }
+    refreshThreshold()
+    window.addEventListener("storage", refreshThreshold)
+    return () => window.removeEventListener("storage", refreshThreshold)
+  }, [])
 
   // Modal dialog states
   const [rescheduleTarget, setRescheduleTarget] =
@@ -93,10 +130,12 @@ const MentorOps = () => {
     window.addEventListener("storage", loadData)
     window.addEventListener("focus", loadData)
     window.addEventListener("mentorship-updated", loadData)
+    window.addEventListener("horace-lab-progress-updated", loadData)
     return () => {
       window.removeEventListener("storage", loadData)
       window.removeEventListener("focus", loadData)
       window.removeEventListener("mentorship-updated", loadData)
+      window.removeEventListener("horace-lab-progress-updated", loadData)
     }
   }, [])
 
@@ -107,6 +146,50 @@ const MentorOps = () => {
   )
 
   const allMentors = skillTracks.flatMap((t) => t.mentors)
+  const metrics = getMentorMetrics(
+    allMentors,
+    bookings,
+    questions,
+    submissions,
+    week,
+    threshold
+  )
+
+  const assignReview = (id: string, mentorId: string) => {
+    try {
+      if (mentorId && !allMentors.some((mentor) => mentor.id === mentorId))
+        return
+      const key = getAllLabSubmissionsKey()
+      const latest = JSON.parse(
+        localStorage.getItem(key) || "[]"
+      ) as LabSubmission[]
+      const current = latest.find((submission) => submission.id === id)
+      if (!current || current.status === "Reviewed") return
+      const updated = { ...current, assignedMentorId: mentorId || undefined }
+      const userKey = getLabSubmissionsKey(current.userId)
+      const user = JSON.parse(
+        localStorage.getItem(userKey) || "[]"
+      ) as LabSubmission[]
+      localStorage.setItem(
+        key,
+        JSON.stringify(
+          latest.map((submission) =>
+            submission.id === id ? updated : submission
+          )
+        )
+      )
+      localStorage.setItem(
+        userKey,
+        JSON.stringify([
+          updated,
+          ...user.filter((submission) => submission.id !== id),
+        ])
+      )
+      notifyLabProgress()
+    } catch {
+      notifyError("Could not save review assignment.")
+    }
+  }
 
   const applyBookingAction = async (
     id: string,
@@ -310,6 +393,109 @@ const MentorOps = () => {
         </Grid>
 
         {/* Tab Navigation */}
+        <Box component="section" sx={{ mb: 4 }}>
+          <Stack
+            direction={{ xs: "column", md: "row" }}
+            spacing={2}
+            alignItems={{ md: "center" }}
+          >
+            <Typography variant="h6" fontWeight={800} sx={{ flex: 1 }}>
+              Weekly mentor engagement
+            </Typography>
+            <TextField
+              size="small"
+              type="date"
+              label="Week of (WAT)"
+              value={week}
+              InputLabelProps={{ shrink: true }}
+              onChange={(event) => {
+                if (event.target.value)
+                  setWeek(
+                    watWeekStart(
+                      Date.parse(`${event.target.value}T12:00:00+01:00`)
+                    )
+                  )
+              }}
+            />
+            <TextField
+              size="small"
+              type="number"
+              label="Queue alert threshold"
+              value={thresholdInput}
+              inputProps={{ min: 0, max: 10000, step: 1 }}
+              error={
+                thresholdInput === "" ||
+                !validQueueThreshold(Number(thresholdInput))
+              }
+              onChange={(event) => setThresholdInput(event.target.value)}
+            />
+            <Button
+              disabled={
+                thresholdInput === "" ||
+                !validQueueThreshold(Number(thresholdInput))
+              }
+              onClick={() => {
+                try {
+                  localStorage.setItem(mentorQueueThresholdKey, thresholdInput)
+                  setThreshold(Number(thresholdInput))
+                } catch {
+                  notifyError("Could not save queue threshold.")
+                }
+              }}
+            >
+              Save threshold
+            </Button>
+          </Stack>
+          {metrics.rows
+            .filter((row) => row.overloaded)
+            .map((row) => (
+              <Alert key={row.id} severity="warning" sx={{ mt: 2 }}>
+                {row.name}: {row.openQuestions} open questions, {row.reviews}{" "}
+                pending reviews. Queue threshold: {threshold}.
+              </Alert>
+            ))}
+          {metrics.unassignedReviews > 0 && (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              {metrics.unassignedReviews} pending reviews have no assigned
+              mentor.
+            </Alert>
+          )}
+          <TableContainer sx={{ mt: 2 }}>
+            <Table size="small" aria-label="Weekly mentor engagement">
+              <caption>
+                Sessions by scheduled week, Monday to Sunday (WAT). Booked
+                includes completed sessions; cancelled sessions are excluded.
+                Queues show all current pending work.
+              </caption>
+              <TableHead>
+                <TableRow>
+                  {[
+                    "Mentor",
+                    "Booked",
+                    "Completed",
+                    "Open questions",
+                    "Pending reviews",
+                  ].map((label) => (
+                    <TableCell key={label}>{label}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {metrics.rows.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell component="th" scope="row">
+                      {row.name}
+                    </TableCell>
+                    <TableCell>{row.booked}</TableCell>
+                    <TableCell>{row.completed}</TableCell>
+                    <TableCell>{row.openQuestions}</TableCell>
+                    <TableCell>{row.reviews}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
         <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
           <Tabs
             value={tab}
@@ -562,6 +748,29 @@ const MentorOps = () => {
                         <Typography variant="h6" fontWeight={800}>
                           {sub.lessonTitle}
                         </Typography>
+                        <TextField
+                          select
+                          size="small"
+                          label="Assigned mentor"
+                          value={
+                            allMentors.some(
+                              (mentor) => mentor.id === sub.assignedMentorId
+                            )
+                              ? sub.assignedMentorId
+                              : ""
+                          }
+                          onChange={(event) =>
+                            assignReview(sub.id, event.target.value)
+                          }
+                          sx={{ my: 1, minWidth: 200 }}
+                        >
+                          <MenuItem value="">Unassigned</MenuItem>
+                          {metrics.rows.map((mentor) => (
+                            <MenuItem key={mentor.id} value={mentor.id}>
+                              {mentor.name}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                         <Typography variant="body2" color="text.secondary">
                           Track / Course: {sub.courseId} &bull; Learner:{" "}
                           {sub.userId} &bull; Submitted:{" "}

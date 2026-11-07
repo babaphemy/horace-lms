@@ -61,7 +61,9 @@ const MentorSubmissions = () => {
       window.localStorage.getItem(getAllLabSubmissionsKey()) || "[]"
     ) as LabSubmission[]
     const nextQueue = latestQueue.map((item) =>
-      item.id === reviewedSubmission.id ? reviewedSubmission : item
+      item.id === reviewedSubmission.id
+        ? { ...reviewedSubmission, assignedMentorId: item.assignedMentorId }
+        : item
     )
     setSubmissions(nextQueue)
     window.localStorage.setItem(
@@ -75,7 +77,10 @@ const MentorSubmissions = () => {
       ? (JSON.parse(savedUserSubmissions) as LabSubmission[])
       : []
     const nextUserSubmissions = userSubmissions.map((item) =>
-      item.id === reviewedSubmission.id ? reviewedSubmission : item
+      item.id === reviewedSubmission.id
+        ? nextQueue.find((entry) => entry.id === reviewedSubmission.id) ||
+          reviewedSubmission
+        : item
     )
     window.localStorage.setItem(userKey, JSON.stringify(nextUserSubmissions))
     notifyLabProgress()

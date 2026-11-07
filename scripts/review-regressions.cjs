@@ -282,6 +282,99 @@ assert.equal(plan.features.length, 4)
 assert.ok(plan.features.slice(0, 3).every((feature) => feature.included))
 assert.equal(plan.features[3].included, false)
 
+const { getMentorMetrics, watWeekStart, validQueueThreshold } = load(
+  path.join(root, "utils/mentorMetrics.ts")
+)
+assert.equal(watWeekStart(Date.parse("2026-11-08T23:00:00Z")), "2026-11-09")
+assert.equal(watWeekStart(Date.parse("2026-11-08T22:59:59Z")), "2026-11-02")
+assert.equal(watWeekStart(Date.parse("2027-01-01T12:00:00Z")), "2026-12-28")
+assert.equal(validQueueThreshold(0), true)
+for (const value of [-1, 1.5, Infinity, NaN, 10001])
+  assert.equal(validQueueThreshold(value), false)
+const metricsMentors = [
+  { id: "mentor", name: "Mentor" },
+  { id: "mentor", name: "Mentor" },
+  { id: "idle", name: "Idle" },
+]
+const metricsBookings = [
+  {
+    mentorId: "mentor",
+    slot: "November 2, 2026, 12:00 AM WAT",
+    status: "Booked",
+  },
+  {
+    mentorId: "mentor",
+    slot: "November 8, 2026, 11:59 PM WAT",
+    status: "Completed",
+  },
+  {
+    mentorId: "mentor",
+    slot: "November 3, 2026, 1:00 PM WAT",
+    status: "Rescheduled",
+  },
+  {
+    mentorId: "mentor",
+    slot: "November 3, 2026, 1:00 PM WAT",
+    status: "Cancelled",
+  },
+  {
+    mentorId: "mentor",
+    slot: "November 9, 2026, 12:00 AM WAT",
+    status: "Booked",
+  },
+  { mentorId: "mentor", slot: "invalid", status: "Booked" },
+]
+const metricsQuestions = [
+  { mentorId: "mentor", status: "Open" },
+  { mentorId: "mentor", status: "Answered" },
+]
+const metricsReviews = [
+  { assignedMentorId: "mentor", status: "Submitted" },
+  { assignedMentorId: "mentor", status: "In Review" },
+  { assignedMentorId: "mentor", status: "Reviewed" },
+  { status: "Submitted" },
+  { assignedMentorId: "missing", status: "Submitted" },
+]
+const metrics = getMentorMetrics(
+  metricsMentors,
+  metricsBookings,
+  metricsQuestions,
+  metricsReviews,
+  "2026-11-02",
+  1
+)
+assert.equal(metrics.rows.length, 2)
+assert.deepEqual(metrics.rows[0], {
+  id: "mentor",
+  name: "Mentor",
+  booked: 3,
+  completed: 1,
+  openQuestions: 1,
+  reviews: 2,
+  overloaded: true,
+})
+assert.equal(metrics.unassignedReviews, 2)
+assert.equal(metrics.rows[1].booked, 0)
+assert.equal(
+  getMentorMetrics(
+    metricsMentors,
+    metricsBookings,
+    metricsQuestions,
+    metricsReviews,
+    "2026-11-02",
+    2
+  ).rows[0].overloaded,
+  false
+)
+assert.equal(
+  getMentorMetrics(metricsMentors, [], metricsQuestions, [], "2026-11-02", 0)
+    .rows[0].overloaded,
+  true
+)
+console.log(
+  "Passed: weekly mentor totals, WAT boundaries, unassigned reviews and strict queue thresholds."
+)
+
 async function bookingRegressions() {
   const m = load(path.join(root, "utils/mentorship.ts"))
   const data = new Map()

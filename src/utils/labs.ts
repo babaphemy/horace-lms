@@ -12,6 +12,7 @@ export interface LabCheckpoint {
 }
 
 export interface LabSubmission {
+  assignedMentorId?: string
   trackId?: string
   id: string
   userId: string
