@@ -2,6 +2,7 @@
 import EnhancedProfile from "@/components/user/EnhancedProfile"
 import EnhancedTimeline from "@/components/user/EnhancedTimeline"
 import QuickStats from "@/components/user/QuickStats"
+import SkillReadinessProgress from "@/components/skills/SkillReadinessProgress"
 import { Home, School } from "@mui/icons-material"
 import { Box, Breadcrumbs, Button, Grid, Typography } from "@mui/material"
 import { useSession } from "next-auth/react"
@@ -64,6 +65,12 @@ export default function Students() {
         </Grid>
         <Grid size={{ xs: 12, md: 8, lg: 4 }}>
           <QuickStats />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <SkillReadinessProgress
+            userId={session?.user?.id || "guest"}
+            compact
+          />
         </Grid>
       </Grid>
     </Box>
