@@ -30,6 +30,7 @@ import {
 import useQuizSummary from "@/hooks/useQuizSummary"
 import LessonResources from "@/components/classroom/LessonResources"
 import { useLessonProgress } from "@/hooks/useLessonProgressB"
+import { confirmMissingSession } from "@/utils/expiredSession"
 
 const ClassroomPage = () => {
   const { data: session, status } = useSession()
@@ -39,8 +40,13 @@ const ClassroomPage = () => {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      const returnTo = `/course/classroom?${searchParams.toString()}`
-      router.replace(`/login?redirect=${encodeURIComponent(returnTo)}`)
+      const controller = new AbortController()
+      void confirmMissingSession(controller.signal).then((confirmed) => {
+        if (!confirmed || controller.signal.aborted) return
+        const returnTo = `/course/classroom?${searchParams.toString()}`
+        router.replace(`/login?redirect=${encodeURIComponent(returnTo)}`)
+      })
+      return () => controller.abort()
     }
   }, [status, router, searchParams])
 
