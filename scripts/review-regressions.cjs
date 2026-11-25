@@ -35,6 +35,146 @@ function load(filename) {
   return module.exports
 }
 
+const { LmsAuthorization } = load(path.join(root, "utils/lmsAuthorization.ts"))
+const { AccessRoles } = load(path.join(root, "utils/roles.ts"))
+const { buildRoleUpdate, normalizeRoles } = load(
+  path.join(root, "utils/userRoles.ts")
+)
+const mentorAuth = new LmsAuthorization(
+  { id: "mentor", roles: [AccessRoles.MENTOR] },
+  { mentorTrackIds: ["assigned"], enrolledTrackIds: ["enrolled"] }
+)
+assert.equal(mentorAuth.canAccessMentorRoutes(), true)
+assert.equal(mentorAuth.isAdmin(), false)
+assert.equal(mentorAuth.isMentorOfTrack("assigned"), true)
+assert.equal(mentorAuth.isMentorOfTrack("other"), false)
+assert.equal(mentorAuth.canReadTrack("other"), false)
+assert.equal(mentorAuth.isEnrolled("enrolled"), true)
+assert.equal(mentorAuth.isEnrolled("assigned"), false)
+assert.equal(mentorAuth.ownsResource("mentor"), true)
+assert.equal(mentorAuth.ownsResource("learner"), false)
+assert.equal(mentorAuth.ownsResource(""), false)
+for (const roles of [
+  [],
+  [AccessRoles.INSTRUCTOR],
+  [AccessRoles.STUDENT],
+  [AccessRoles.USER],
+]) {
+  const auth = new LmsAuthorization(
+    { id: "other", roles },
+    { mentorTrackIds: ["assigned"] }
+  )
+  assert.equal(auth.canAccessMentorRoutes(), false)
+  assert.equal(auth.isMentorOfTrack("assigned"), false)
+}
+assert.equal(
+  new LmsAuthorization({ roles: [AccessRoles.ADMIN] }).canAccessMentorRoutes(),
+  false
+)
+assert.equal(
+  new LmsAuthorization({
+    id: "mentor",
+    roles: [AccessRoles.MENTOR],
+  }).canReadTrack("assigned"),
+  false
+)
+assert.equal(
+  new LmsAuthorization({
+    id: "admin",
+    roles: [AccessRoles.ADMIN],
+  }).canReadTrack("assigned"),
+  true
+)
+assert.deepEqual(
+  buildRoleUpdate("user", [
+    AccessRoles.MENTOR,
+    AccessRoles.USER,
+    AccessRoles.MENTOR,
+  ]),
+  { id: "user", roles: [AccessRoles.MENTOR, AccessRoles.USER] }
+)
+assert.throws(() => buildRoleUpdate("", [AccessRoles.MENTOR]))
+assert.throws(() => buildRoleUpdate("user", []))
+assert.throws(() => buildRoleUpdate("user", ["ROLE_SUPERUSER"]))
+assert.deepEqual(normalizeRoles(AccessRoles.MENTOR), [AccessRoles.MENTOR])
+assert.deepEqual(normalizeRoles(null), [])
+console.log(
+  "Passed: mentor role isolation, scoped permission predicates and role-update payload validation."
+)
+
+async function mentorRouteRegressions() {
+  let token = null
+  const module = { exports: {} }
+  const code = ts.transpileModule(
+    fs.readFileSync(path.join(root, "middleware.ts"), "utf8"),
+    {
+      compilerOptions: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2020,
+      },
+    }
+  ).outputText
+  new Function("require", "module", "exports", code)(
+    (name) => {
+      if (name === "next-auth/jwt") return { getToken: async () => token }
+      if (name === "@/utils/lmsAuthorization") return { LmsAuthorization }
+      return require(name)
+    },
+    module,
+    module.exports
+  )
+  const request = (pathname) =>
+    module.exports.middleware({
+      nextUrl: { pathname },
+      url: `http://localhost:3001${pathname}`,
+    })
+  assert.equal(
+    (await request("/mentor/ops")).headers.get("location"),
+    "http://localhost:3001/login"
+  )
+  for (const role of [
+    AccessRoles.INSTRUCTOR,
+    AccessRoles.USER,
+    AccessRoles.STUDENT,
+  ]) {
+    token = { id: "user", roles: [role] }
+    for (const route of [
+      "/mentor",
+      "/mentor/ops",
+      "/mentor/submissions/",
+      "/mentor/queue",
+      "/dashboard/settings/org/members/",
+    ]) {
+      assert.equal((await request(route)).status, 403)
+    }
+  }
+  token = { id: "mentor", roles: [AccessRoles.MENTOR] }
+  assert.equal(
+    (await request("/mentor/ops")).headers.get("x-middleware-next"),
+    "1"
+  )
+  assert.equal((await request("/dashboard/settings/org/members")).status, 403)
+  token = { id: "admin", roles: [AccessRoles.ADMIN] }
+  assert.equal(
+    (await request("/dashboard/settings/org/members/")).headers.get(
+      "x-middleware-next"
+    ),
+    "1"
+  )
+  token = null
+  assert.equal(
+    (await request("/mentorship/book")).headers.get("x-middleware-next"),
+    "1"
+  )
+  console.log(
+    "Passed: middleware role matrix, direct-route protection and public learner booking access."
+  )
+}
+mentorRouteRegressions().catch((error) => {
+  console.error(error)
+  process.exitCode = 1
+})
+
 const progressEvents = new EventTarget()
 global.window = progressEvents
 const { subscribeLabProgress, notifyLabProgress } = load(

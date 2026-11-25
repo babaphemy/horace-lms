@@ -83,6 +83,8 @@ const Login = (props: Props) => {
         session?.user?.roles?.includes(AccessRoles.INSTRUCTOR)
       ) {
         router.push("/dashboard")
+      } else if (session?.user?.roles?.includes(AccessRoles.MENTOR)) {
+        router.push("/mentor/ops")
       } else {
         router.push(redirectTarget)
       }

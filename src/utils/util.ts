@@ -14,11 +14,4 @@ export const coursefilter: FilterItem[] = [
 export const apiDocs = {
   basepath: process.env.NEXT_PUBLIC_BASEPATH || "http://localhost:5071/api/v1/",
 }
-export const AccessRoles = {
-  ADMIN: "ROLE_ADMIN",
-  INSTRUCTOR: "ROLE_INSTRUCTOR",
-  STUDENT: "ROLE_STUDENT",
-  USER: "ROLE_USER",
-  GUEST: "ROLE_GUEST",
-} as const
-export type AccessRole = (typeof AccessRoles)[keyof typeof AccessRoles]
+export { AccessRoles, type AccessRole } from "./roles"

@@ -21,6 +21,7 @@ import {
 } from "@mui/material"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
+import { LmsAuthorization } from "@/utils/lmsAuthorization"
 import { useEffect, useMemo, useState } from "react"
 
 interface AskMentorProps {
@@ -220,9 +221,11 @@ const AskMentor = ({
             >
               Send To Mentor
             </Button>
-            <Button component={Link} href="/mentor/queue" size="large">
-              View Mentor Queue
-            </Button>
+            {new LmsAuthorization(session?.user).canAccessMentorRoutes() && (
+              <Button component={Link} href="/mentor/queue" size="large">
+                View Mentor Queue
+              </Button>
+            )}
           </Stack>
         </Box>
 

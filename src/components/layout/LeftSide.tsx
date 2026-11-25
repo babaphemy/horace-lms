@@ -38,6 +38,15 @@ const LeftSide: React.FC<SidebarProps> = ({ toogleActive }) => {
   const { data: session } = useSession()
   const menuData: TNavBar[] = [
     {
+      id: 20,
+      title: "Mentor workspace",
+      allowed_roles: [AccessRoles.MENTOR, AccessRoles.ADMIN],
+      icon: <Book />,
+      active: true,
+      order: 0,
+      path: "/mentor/ops",
+    },
+    {
       id: 1,
       title: "Dashboard",
       allowed_roles: [
