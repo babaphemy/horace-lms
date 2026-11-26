@@ -33,6 +33,7 @@ import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { Session } from "next-auth"
 import { AccessRoles } from "@/utils/util"
+import { LmsAuthorization } from "@/utils/lmsAuthorization"
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -104,6 +105,7 @@ const Header = () => {
   const user = session?.user
   const isAdmin = user?.roles?.includes(AccessRoles.ADMIN)
   const isInstructor = user?.roles?.includes(AccessRoles.INSTRUCTOR)
+  const canMentor = new LmsAuthorization(user).canAccessMentorRoutes()
   const [open, setOpen] = React.useState(false)
   const dispatch = useContext(AppDpx)
 
@@ -287,6 +289,15 @@ const Header = () => {
                     open={openMenu}
                     onClose={() => handleClose()}
                   >
+                    {canMentor && (
+                      <MenuItem
+                        onClick={() => handleClose("/mentor/ops")}
+                        disableRipple
+                      >
+                        <DashboardIcon />
+                        Mentor workspace
+                      </MenuItem>
+                    )}
                     {(isAdmin || isInstructor) && (
                       <MenuItem
                         onClick={() => handleClose("/dashboard")}

@@ -1,337 +1,315 @@
 "use client"
-import React, { useState, useEffect } from "react"
+
+import { useEffect, useState } from "react"
+import { useSession, signOut } from "next-auth/react"
 import {
+  Alert,
   Box,
-  Typography,
-  Paper,
+  Button,
+  Checkbox,
+  Chip,
+  CircularProgress,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  IconButton,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  Select,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Avatar,
-  Chip,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  IconButton,
-  Alert,
-  CircularProgress,
-  Container,
+  Tooltip,
+  Typography,
 } from "@mui/material"
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
+import RefreshIcon from "@mui/icons-material/Refresh"
+import { AccessRoles } from "@/utils/roles"
+import { LmsAuthorization } from "@/utils/lmsAuthorization"
+import { normalizeRoles } from "@/utils/userRoles"
 import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Person as PersonIcon,
-} from "@mui/icons-material"
-import { useSession } from "next-auth/react"
-import { AccessRoles } from "@/utils/util"
-import { fetchOrganizationMembers, fetchUserOrganization } from "@/app/api/rest"
-import { OrganizationMember } from "@/types/types"
-import { notifyError } from "@/utils/notification"
-import { useRouter } from "next/navigation"
-import Image from "next/image"
+  changeUserRoles,
+  fetchOrganizationMembers,
+  fetchUserOrganization,
+} from "@/app/api/rest"
 
-const OrgMembers: React.FC = () => {
-  const router = useRouter()
-  const { data: session } = useSession()
-  const [members, setMembers] = useState<OrganizationMember[]>([])
-  const [loading, setLoading] = useState(true)
-  const [orgId, setOrgId] = useState<string | null>("") // 👈 store org ID
-  const [openDialog, setOpenDialog] = useState(false)
-  const [editingMember, setEditingMember] = useState<OrganizationMember | null>(
-    null
-  )
-  const [memberForm, setMemberForm] = useState({
-    name: "",
-    email: "",
-    role: AccessRoles.USER,
-  })
+interface MemberRow {
+  id: string
+  name: string
+  email: string
+  roles: string[]
+}
+const roleLabel = (role: string) => role.replace(/^ROLE_/, "").toLowerCase()
+
+export default function OrgMembers() {
+  const { data: session, status } = useSession()
+  const userId = session?.user?.id
+  const isAdmin = new LmsAuthorization(session?.user).isAdmin()
+  const [members, setMembers] = useState<MemberRow[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [emptyMessage, setEmptyMessage] = useState("")
+  const [reload, setReload] = useState(0)
+  const [editing, setEditing] = useState<MemberRow | null>(null)
+  const [roles, setRoles] = useState<string[]>([])
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState("")
+  const [success, setSuccess] = useState("")
 
   useEffect(() => {
-    const getOrgAndMembers = async () => {
-      if (!session?.user?.id) {
-        notifyError(`User is not logged in: ${orgId}`)
-        setLoading(false)
-        router.push("/login")
-        return
-      }
-
+    let disposed = false
+    setMembers([])
+    setEditing(null)
+    if (status !== "authenticated" || !isAdmin || !userId) return
+    setLoading(true)
+    setError("")
+    setEmptyMessage("")
+    const load = async () => {
       try {
-        setLoading(true)
-
-        const org = await fetchUserOrganization(session.user.id)
-        if (!org || !org.id) {
-          notifyError("No organization found for this user")
-          setLoading(false)
+        const org = await fetchUserOrganization(userId)
+        if (disposed) return
+        if (!org?.id) {
+          setEmptyMessage("No organization is associated with this account.")
           return
         }
-        setOrgId(org.id)
-
         const data = await fetchOrganizationMembers(org.id)
-
-        const transformedMembers = data.map((member: OrganizationMember) => ({
-          id: member.id,
-          name: `${member.firstname ?? ""} ${member.lastname ?? ""}`,
-          email: member.email,
-          role: member.roles || (member.roles as keyof typeof AccessRoles),
-          joinedDate:
-            member.createdOn || new Date().toISOString().split("T")[0],
-          status: member.status,
-          avatar: member.dp,
-          logo: member.logo || "",
-          website: member.website || "",
-          phone: member.phone || "",
-          createdBy: member.createdBy || "",
-        }))
-
-        setMembers(transformedMembers)
-      } catch (error) {
-        notifyError(`Error loading organization or members: ${error}`)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    getOrgAndMembers()
-  }, [session, router, orgId])
-
-  const handleOpenDialog = (member?: OrganizationMember) => {
-    if (member) {
-      setEditingMember(member)
-      setMemberForm({
-        name: member.name,
-        email: member.email,
-        role: AccessRoles.USER,
-      })
-    } else {
-      setEditingMember(null)
-      setMemberForm({
-        name: "",
-        email: "",
-        role: AccessRoles.USER,
-      })
-    }
-    setOpenDialog(true)
-  }
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false)
-    setEditingMember(null)
-    setMemberForm({
-      name: "",
-      email: "",
-      role: AccessRoles.USER,
-    })
-  }
-
-  const handleSubmit = async () => {
-    try {
-      if (editingMember) {
-        setMembers((prev) =>
-          prev.map((member) =>
-            member.id === editingMember.id
-              ? { ...member, ...memberForm }
-              : member
-          )
+        if (disposed) return
+        setMembers(
+          data.map((member) => ({
+            id: member.id,
+            name:
+              [member.firstname, member.lastname].filter(Boolean).join(" ") ||
+              member.name ||
+              member.email,
+            email: member.email,
+            roles: normalizeRoles(member.roles ?? member.role),
+          }))
         )
-      } else {
-        const newMember: OrganizationMember = {
-          id: Date.now().toString(),
-          ...memberForm,
-          joinedDate: new Date().toISOString().split("T")[0],
-          status: "pending",
-          logo: "",
-          website: "",
-          phone: "",
-          createdBy: session?.user?.id || "",
-        }
-        setMembers((prev) => [...prev, newMember])
+        if (!data.length) setEmptyMessage("No organization members found.")
+      } catch (cause) {
+        if (!disposed)
+          setError(
+            cause instanceof Error
+              ? cause.message
+              : "Could not load organization members."
+          )
+      } finally {
+        if (!disposed) setLoading(false)
       }
-      handleCloseDialog()
-    } catch (error) {
-      notifyError(`Error saving member: ${error}`)
+    }
+    void load()
+    return () => {
+      disposed = true
+    }
+  }, [userId, status, isAdmin, reload])
+
+  const save = async () => {
+    if (!editing || !isAdmin || saving || !roles.length) return
+    setSaving(true)
+    setSaveError("")
+    try {
+      await changeUserRoles(editing.id, roles)
+      if (editing.id === userId) {
+        await signOut({ callbackUrl: "/login" })
+        return
+      }
+      setSuccess(
+        `Roles updated for ${editing.name}. The member must sign in again to refresh their session.`
+      )
+      setEditing(null)
+      setReload((current) => current + 1)
+    } catch (cause) {
+      setSaveError(
+        cause instanceof Error ? cause.message : "Could not save roles."
+      )
+    } finally {
+      setSaving(false)
     }
   }
 
-  const handleDeleteMember = async (memberId: string) => {
-    if (window.confirm("Are you sure you want to remove this member?")) {
-      try {
-        setMembers((prev) => prev.filter((member) => member.id !== memberId))
-      } catch (error) {
-        notifyError(`Error deleting member : ${error}`)
-      }
-    }
-  }
-
-  if (loading) {
+  if (status === "loading")
     return (
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="400px"
-      >
-        <CircularProgress />
-      </Box>
+      <Container sx={{ py: 6 }}>
+        <CircularProgress aria-label="Checking administrator access" />
+      </Container>
     )
-  }
+  if (!isAdmin)
+    return (
+      <Container sx={{ py: 6 }}>
+        <Alert severity="error">
+          Administrator access is required to manage roles.
+        </Alert>
+      </Container>
+    )
 
   return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
-      <Box sx={{ p: 3 }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 3,
-          }}
+    <Container maxWidth="lg" sx={{ py: 3 }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent="space-between"
+        spacing={2}
+        sx={{ mb: 3 }}
+      >
+        <Typography variant="h4">Organization members</Typography>
+        <Button
+          startIcon={<RefreshIcon />}
+          disabled={loading || saving}
+          onClick={() => setReload((current) => current + 1)}
         >
-          <Typography variant="h4" component="h1">
-            Organization Members
-          </Typography>
+          Refresh
+        </Button>
+      </Stack>
+      {success && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {success}
+        </Alert>
+      )}
+      {error && (
+        <Alert
+          severity="error"
+          action={
+            <Button onClick={() => setReload((current) => current + 1)}>
+              Retry
+            </Button>
+          }
+        >
+          {error}
+        </Alert>
+      )}
+      {loading ? (
+        <Box sx={{ py: 6, textAlign: "center" }}>
+          <CircularProgress aria-label="Loading members" />
+        </Box>
+      ) : !error && !members.length ? (
+        <Alert severity="info">{emptyMessage || "No members found."}</Alert>
+      ) : (
+        !error && (
+          <TableContainer>
+            <Table size="small" aria-label="Organization member roles">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Member</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Roles</TableCell>
+                  <TableCell align="right">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {members.map((member) => (
+                  <TableRow key={member.id}>
+                    <TableCell component="th" scope="row">
+                      {member.name}
+                    </TableCell>
+                    <TableCell sx={{ overflowWrap: "anywhere" }}>
+                      {member.email}
+                    </TableCell>
+                    <TableCell>
+                      <Stack direction="row" flexWrap="wrap" gap={0.5}>
+                        {member.roles.map((role) => (
+                          <Chip
+                            size="small"
+                            key={role}
+                            label={roleLabel(role)}
+                          />
+                        ))}
+                      </Stack>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Tooltip title="Edit roles">
+                        <IconButton
+                          aria-label={`Edit roles for ${member.name}`}
+                          onClick={() => {
+                            setEditing(member)
+                            setRoles(member.roles)
+                            setSaveError("")
+                            setSuccess("")
+                          }}
+                        >
+                          <EditOutlinedIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )
+      )}
+      <Dialog
+        open={!!editing}
+        onClose={() => {
+          if (!saving) setEditing(null)
+        }}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Edit roles: {editing?.name}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            {saveError && <Alert severity="error">{saveError}</Alert>}
+            <FormControl fullWidth disabled={saving}>
+              <InputLabel id="member-roles-label">Roles</InputLabel>
+              <Select
+                multiple
+                labelId="member-roles-label"
+                label="Roles"
+                value={roles}
+                renderValue={(selected) => selected.map(roleLabel).join(", ")}
+                onChange={(event) =>
+                  setRoles(
+                    typeof event.target.value === "string"
+                      ? event.target.value.split(",")
+                      : event.target.value
+                  )
+                }
+              >
+                {[...new Set([...Object.values(AccessRoles), ...roles])].map(
+                  (role) => (
+                    <MenuItem key={role} value={role}>
+                      <Checkbox checked={roles.includes(role)} />
+                      <ListItemText primary={roleLabel(role)} />
+                    </MenuItem>
+                  )
+                )}
+              </Select>
+            </FormControl>
+            {roles.includes(AccessRoles.MENTOR) &&
+              (roles.includes(AccessRoles.ADMIN) ||
+                roles.includes(AccessRoles.INSTRUCTOR)) && (
+                <Alert severity="warning">
+                  Admin and instructor roles retain their broader permissions.
+                  Remove them for mentor-only access.
+                </Alert>
+              )}
+            {editing?.id === userId && (
+              <Alert severity="warning">
+                Changing your own roles will sign you out.
+              </Alert>
+            )}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button disabled={saving} onClick={() => setEditing(null)}>
+            Cancel
+          </Button>
           <Button
             variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => handleOpenDialog()}
+            disabled={saving || !roles.length}
+            onClick={save}
           >
-            Add Member
+            {saving ? "Saving..." : "Save roles"}
           </Button>
-        </Box>
-
-        <Alert severity="info" sx={{ mb: 3 }}>
-          Manage your organization members. Only administrators can view and
-          modify member information.
-        </Alert>
-
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Member</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell>Joined Date</TableCell>
-                <TableCell align="right">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {members.map((member) => (
-                <TableRow key={member.id}>
-                  <TableCell>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <Avatar sx={{ mr: 2 }}>
-                        {member.dp ? (
-                          <Image src={member.dp} alt={member.name} />
-                        ) : (
-                          <PersonIcon />
-                        )}
-                      </Avatar>
-                      <Typography variant="body1">{member.name}</Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{member.email}</TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {(Array.isArray(member.role)
-                        ? member.role
-                        : [member.role]
-                      ).map((role: string) => (
-                        <Chip key={role} label={role} size="small" />
-                      ))}
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(member.joinedDate).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      onClick={() => handleOpenDialog(member)}
-                      color="primary"
-                      size="small"
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDeleteMember(member.id)}
-                      color="error"
-                      size="small"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle>
-            {editingMember ? "Edit Member" : "Add New Member"}
-          </DialogTitle>
-          <DialogContent>
-            <Box
-              sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}
-            >
-              <TextField
-                fullWidth
-                label="Full Name"
-                value={memberForm.name}
-                onChange={(e) =>
-                  setMemberForm((prev) => ({ ...prev, name: e.target.value }))
-                }
-              />
-              <TextField
-                fullWidth
-                label="Email Address"
-                type="email"
-                value={memberForm.email}
-                onChange={(e) =>
-                  setMemberForm((prev) => ({ ...prev, email: e.target.value }))
-                }
-              />
-              <FormControl fullWidth>
-                <InputLabel>Role</InputLabel>
-                <Select
-                  value={memberForm.role}
-                  label="Role"
-                  onChange={(e) =>
-                    setMemberForm((prev) => ({ ...prev, role: e.target.value }))
-                  }
-                >
-                  <MenuItem value={AccessRoles.USER}>User</MenuItem>
-                  <MenuItem value={AccessRoles.INSTRUCTOR}>Instructor</MenuItem>
-                  <MenuItem value={AccessRoles.ADMIN}>Admin</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button onClick={handleSubmit} variant="contained">
-              {editingMember ? "Update" : "Add"} Member
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+        </DialogActions>
+      </Dialog>
     </Container>
   )
 }
-
-export default OrgMembers

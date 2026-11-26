@@ -42,6 +42,21 @@ import {
 import { TQuiz } from "@/schema/quizSchema"
 import { getSession } from "next-auth/react"
 import { logoutExpiredSession } from "@/utils/expiredSession"
+import { buildRoleUpdate } from "@/utils/userRoles"
+
+export const changeUserRoles = async (userId: string, roles: string[]) => {
+  const response = await fetchWithAuth(`${basePath}user/change-role`, {
+    method: "PUT",
+    body: JSON.stringify(buildRoleUpdate(userId, roles)),
+  })
+  if (!response.ok) {
+    if (response.status === 403)
+      throw new Error("Only administrators can change user roles.")
+    throw new Error(
+      await responseError(response, "Could not update user roles.")
+    )
+  }
+}
 
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   const session = await getSession()

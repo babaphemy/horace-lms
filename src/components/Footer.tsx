@@ -211,7 +211,6 @@ const footerGroups = [
     title: "Proof",
     links: [
       { label: "Portfolio", href: "/portfolio" },
-      { label: "Project Reviews", href: "/mentor/submissions" },
       { label: "Skill Certificates", href: "/certificate/skills" },
       { label: "Team Upskilling", href: "/contact" },
     ],

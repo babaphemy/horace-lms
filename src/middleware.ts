@@ -1,17 +1,26 @@
 import { NextResponse, NextRequest } from "next/server"
 import { getToken } from "next-auth/jwt"
+import { LmsAuthorization } from "@/utils/lmsAuthorization"
 
 export async function middleware(request: NextRequest) {
+  const isMemberAdministration =
+    request.nextUrl.pathname.replace(/\/$/, "") ===
+    "/dashboard/settings/org/members"
   if (
+    isMemberAdministration ||
     request.nextUrl.pathname === "/mentor" ||
     request.nextUrl.pathname.startsWith("/mentor/")
   ) {
     const token = await getToken({ req: request })
     if (!token) return NextResponse.redirect(new URL("/login", request.url))
+    const authorization = new LmsAuthorization({
+      id: token.id,
+      roles: token.roles,
+    })
     if (
-      !token.roles?.some(
-        (role) => role === "ROLE_ADMIN" || role === "ROLE_INSTRUCTOR"
-      )
+      isMemberAdministration
+        ? !authorization.isAdmin()
+        : !authorization.canAccessMentorRoutes()
     ) {
       return new NextResponse("Forbidden", { status: 403 })
     }
